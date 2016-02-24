@@ -25,7 +25,7 @@ angular.module("visitry.mobile").directive('login', function() {
             this.error = err;
           }
           else {
-            $state.go('requestVisit');
+            $state.go('profile');
           }
         });
       }

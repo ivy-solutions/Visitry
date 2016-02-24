@@ -21,9 +21,13 @@ angular.module('visitry')
       .state('register', {
         url: '/register',
         template: '<register></register>'
+      })
+      .state('profile', {
+        url: '/profile',
+        template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/requestVisit");
+    $urlRouterProvider.otherwise("/login");
   })
   .run( function ($rootScope, $state) {
     $rootScope.$on( '$stateChangeError', function (event, toState, toParams, fromState, fromParams, error ) {

@@ -23,6 +23,7 @@ Package.onUse(function(api) {
     'client/auth/register/register.html',
     'client/auth/reset-password/reset-password.component.js',
     'client/auth/reset-password/reset-password.html',
+    'client/users/profile.html',
     'client/visitry/visitry.html',
     'client/styles/main.less'
   ], 'client')

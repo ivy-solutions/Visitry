@@ -22,7 +22,7 @@ angular.module("visitry.browser").directive('login', function() {
             this.error = err
           }
           else {
-            $state.go('visits')
+            $state.go('profile')
           }
         });
       };

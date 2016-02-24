@@ -14,4 +14,20 @@ Meteor.startup(function ()  {
       Agencies.insert( agencies[i]);
     }
   }
+  if (Visits.find().count() === 0 ){
+    var visits = [
+      {
+        'owner':'Adam',
+        'description': 'Social Visit',
+        'location' : {
+          'latitude' : 42.3601,
+          'longitude' : -71.0589
+        }
+      }
+    ];
+    for ( i = 0 ; i < visits.length; i++ ) {
+      Visits.insert(visits[i]);
+    }
+  }
+
 });
