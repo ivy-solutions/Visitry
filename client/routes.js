@@ -12,7 +12,7 @@ angular.module('visitry')
       })
       .state('requestVisit', {
         url: '/requestVisit',
-        template: '<request-visit></request-visit>'
+        template: '<pending-visit></pending-visit>'
       })
       .state('login', {
         url: '/login',
