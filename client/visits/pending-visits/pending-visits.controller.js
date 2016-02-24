@@ -1,14 +1,16 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicModal) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, RequestVisit) {
   $reactive(this).attach($scope);
   this.showDelete = false;
   this.canSwipe = true;
   this.listSort = {
     date: 1
   };
+
   this.subscribe('visits');
+
   this.helpers({
     pendingVisits: ()=> {
       var visits = Visits.find({}, {sort: this.getReactively('listSort')});
@@ -25,4 +27,14 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
       return dateSortedVisits;
     }
   });
+
+  this.showRequestVisitModal = function(){
+    RequestVisit.showModal();
+  };
+  this.hideRequestVisitModal = function(){
+    RequestVisit.hideModal();
+  };
+
 });
+
+
