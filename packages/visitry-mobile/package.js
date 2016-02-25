@@ -22,6 +22,8 @@ Package.onUse(function(api) {
     'client/auth/login/login.html',
     'client/users/profile.html',
     'client/visitry/visitry.html',
+    'client/visits/pending-visits/pending-visits.html',
+    'client/visits/request-visit/request-visit-modal.html'
     'client/visits/list-requests/list-requests.html',
     'client/visits/request-visit/pending-visits.html',
     'client/styles/login.less',

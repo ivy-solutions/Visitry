@@ -1,7 +1,11 @@
 <ion-view view-title="Pending Visits">
+  <ion-nav-buttons side="secondary" class="show">
+    <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
+    </button>
+  </ion-nav-buttons>
   <ion-content class="has-header">
-    <ion-list show-delete="pendingVisit.showDelete" can-swipe="pendingVisit.canSwipe">
-      <div ng-repeat="dateVisits in pendingVisit.pendingVisits">
+    <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
+      <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
         <div class="item item-divider">
           {{dateVisits.date|date:'longDate'}}
         </div>

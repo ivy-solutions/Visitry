@@ -10,9 +10,16 @@ angular.module('visitry')
         url: '/visits',
         template: '<list-visits></list-visits>'
       })
-      .state('requestVisit', {
-        url: '/requestVisit',
-        template: '<pending-visit></pending-visit>'
+      .state('pendingVisits', {
+        url: '/pendingVisits',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/visits/pending-visits/pending-visits.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/pending-visits/pending-visits.html';
+          }
+        },
+        controller: 'pendingVisitsCtrl as pendingVisits'
       })
       .state('listRequests', {
         url: '/listRequests',
@@ -31,12 +38,12 @@ angular.module('visitry')
         template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/requestVisit");
+    $urlRouterProvider.otherwise("/pendingVisits");
   })
-  .run( function ($rootScope, $state) {
-    $rootScope.$on( '$stateChangeError', function (event, toState, toParams, fromState, fromParams, error ) {
+  .run(function ($rootScope, $state) {
+    $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED')
         $state.go('requestVisit');
     });
-});
+  });
 
