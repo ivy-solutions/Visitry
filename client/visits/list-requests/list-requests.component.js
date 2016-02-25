@@ -14,29 +14,10 @@ angular.module('visitry').directive('listRequests', function () {
     controllerAs: 'listRequests',
     controller: function ($scope, $stateParams, $reactive) {
       $reactive(this).attach($scope);
-      this.canSwipe = true;
-      this.listSort = {
-        date: 1
-      };
-      this.subscribe('visits');
+      this.showDelete = false;
+      this.canSwipe = false;
 
-      //TODO need future requests that are not taken
-      this.helpers({
-        openVisitRequests: ()=> {
-          var visits = Visits.find({}, {sort: this.getReactively('listSort')});
-          var dateSortedVisits = [];
-          visits.forEach(function(visit){
-
-            if (dateSortedVisits.length && (new Date(+dateSortedVisits[dateSortedVisits.length - 1].date)).getDate() === (new Date(+visit.date)).getDate()) {
-              dateSortedVisits[dateSortedVisits.length - 1].visits.push(visit);
-            }
-            else {
-              dateSortedVisits.push({"date": visit.date, "visits": [visit]})
-            }
-          });
-          return dateSortedVisits;
-        }
-      });
+      this.subscribe('availableVisits');
     }
   }
 });

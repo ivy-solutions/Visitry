@@ -45,6 +45,14 @@ Meteor.startup(function ()  {
           "latitude": 42.3601,
           "longitude": -71.0589
         }
+      },
+      {
+        "date": '1461124800000',  //mar 20, 2016
+        "notes": '9pm works best',
+        "location": {
+          "latitude": 42.3601,
+          "longitude": -71.0589
+        }
       }
     ];
     for ( var i = 0; i < visits.length; i++ ) {

@@ -14,6 +14,10 @@ angular.module('visitry')
         url: '/requestVisit',
         template: '<pending-visit></pending-visit>'
       })
+      .state('listRequests', {
+        url: '/listRequests',
+        template: '<list-requests></list-requests>'
+      })
       .state('login', {
         url: '/login',
         template: '<login></login>'
@@ -27,7 +31,7 @@ angular.module('visitry')
         template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/requestVisit");
   })
   .run( function ($rootScope, $state) {
     $rootScope.$on( '$stateChangeError', function (event, toState, toParams, fromState, fromParams, error ) {
