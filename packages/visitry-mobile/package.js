@@ -21,6 +21,7 @@ Package.onUse(function(api) {
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',
     'client/visitry/visitry.html',
+    'client/visits/request-visit/pending-visits.html'
     'client/auth/login/login.less'
   ], 'client');
 });

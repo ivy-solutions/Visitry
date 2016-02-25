@@ -14,19 +14,41 @@ Meteor.startup(function ()  {
       Agencies.insert( agencies[i]);
     }
   }
-  if (Visits.find().count() === 0 ){
+  if(Visits.find().count() ===0){
     var visits = [
       {
-        'owner':'Adam',
-        'description': 'Social Visit',
-        'location' : {
-          'latitude' : 42.3601,
-          'longitude' : -71.0589
+        "visitorId": '1',
+        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
+        "date": '1459958365000',
+        "notes": '1pm works best',
+        "location": {
+          "latitude": 42.3601,
+          "longitude": -71.0589
+        }
+      },
+      {
+        "visitorId": '1',
+        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
+        "date": '1460995165000',
+        "notes": '3pm works best',
+        "location": {
+          "latitude": 42.3601,
+          "longitude": -71.0589
+        }
+      },
+      {
+        "visitorId": '1',
+        "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
+        "date": '1461005965000',
+        "notes": '10pm works best',
+        "location": {
+          "latitude": 42.3601,
+          "longitude": -71.0589
         }
       }
     ];
-    for ( i = 0 ; i < visits.length; i++ ) {
-      Visits.insert(visits[i]);
+    for ( var i = 0; i < visits.length; i++ ) {
+      Visits.insert( visits[i]);
     }
   }
 

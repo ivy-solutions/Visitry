@@ -1,0 +1,21 @@
+<ion-view view-title="Choose to Visit">
+    <ion-content class="has-header">
+        <ion-list show-delete="openVisit.showDelete" can-swipe="openVisit.canSwipe">
+            <div ng-repeat="dateVisits in pendingVisit.pendingVisits">
+                <div class="item item-divider">
+                    {{dateVisits.date|date:'longDate'}}
+                </div>
+                <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar">
+                    <img ng-src="{{visit.visitorImg}}">
+                    <h2>FIRST LAST</h2>
+                    <p>{{visit.notes}}</p>
+                    <ion-option-button class="button-assertive">
+                        Delete
+                    </ion-option-button>
+                    <ion-delete-button>
+                    </ion-delete-button>
+                </ion-item>
+            </div>
+        </ion-list>
+    </ion-content>
+</ion-view>
