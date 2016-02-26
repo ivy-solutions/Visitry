@@ -47,15 +47,15 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "date": '1461124800000',  //mar 20, 2016
-        "notes": '9pm works best',
+        "date": '1484197200000',  //12/12/2016
+        "notes": 'pick me, please',
         "location": {
           "latitude": 42.3601,
           "longitude": -71.0589
         }
       }
     ];
-    for ( var i = 0; i < visits.length; i++ ) {
+    for ( i = 0; i < visits.length; i++ ) {
       Visits.insert( visits[i]);
     }
   }

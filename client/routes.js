@@ -23,7 +23,14 @@ angular.module('visitry')
       })
       .state('listRequests', {
         url: '/listRequests',
-        template: '<list-requests></list-requests>'
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/visits/list-requests/list-requests.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/list-requests/list-requests.html';
+          }
+        },
+        controller: 'listRequestsCtrl as listRequests'
       })
       .state('login', {
         url: '/login',

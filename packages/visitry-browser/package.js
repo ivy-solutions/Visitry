@@ -26,7 +26,6 @@ Package.onUse(function(api) {
     'client/users/profile.html',
     'client/visitry/visitry.html',
     'client/visits/list-requests/list-requests.html',
-    'client/visits/request-visit/pending-visits.html',
     'client/styles/main.less'
   ], 'client')
 });

@@ -26,6 +26,9 @@ boilerplate-generator@1.0.4
 caching-compiler@1.0.0
 caching-html-compiler@1.0.2
 callback-hook@1.0.4
+cfs:base-package@0.0.30
+cfs:gridfs@0.0.33
+cfs:storage-adapter@0.2.3
 check@1.1.0
 dburles:mongo-collection-instances@0.3.4
 ddp@1.2.2
@@ -64,6 +67,7 @@ mobile-experience@1.0.1
 mobile-status-bar@1.0.6
 mongo@1.1.3
 mongo-id@1.0.1
+mongo-livedata@1.0.9
 npm-bcrypt@0.7.8_2
 npm-mongo@1.4.39_1
 observe-sequence@1.0.7
@@ -71,6 +75,7 @@ okland:accounts-phone@0.0.21
 ordered-dict@1.0.4
 pbastowski:angular-babel@1.0.9
 promise@0.5.1
+raix:eventemitter@0.1.3
 random@1.0.5
 rate-limit@1.0.0
 reactive-dict@1.1.3

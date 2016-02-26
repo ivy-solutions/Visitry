@@ -1,13 +1,10 @@
 <ion-view view-title="Choose to Visit">
     <ion-content class="has-header">
-        <ion-list show-delete="listRequests.showDelete" can-swipe="listRequests.canSwipe">
-            <ion-item ng-repeat="possibleVisit in listRequests.availableVisits" class="item-avatar">
-                 <h2>FIRST L.</h2>
-                <p>{{possibleVisit.notes}}</p>
-                <ion-option-button class="button-assertive">
-                    Select
-                </ion-option-button>
-             </ion-item>
+        <ion-list>
+            <ion-item ng-repeat="visit in listRequests.openVisits" class="item-avatar">
+                <h2>FIRST L.</h2>
+                <p>{{visit.notes}}</p>
+            </ion-item>
         </ion-list>
     </ion-content>
 </ion-view>
