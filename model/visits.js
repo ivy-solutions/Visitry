@@ -3,7 +3,7 @@
  */
 Visits = new Mongo.Collection("visits");
 
-/*/!*!//TODO check role
+!//TODO check role
  Visits.allow({
  insert: function (userId, visit) {
  return true;
@@ -13,6 +13,6 @@ Visits = new Mongo.Collection("visits");
  },
  remove: function (userId, visit) {
  return true;
- }*!/
-});*/
+ }
+});
 

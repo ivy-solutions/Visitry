@@ -5,10 +5,42 @@
     </div>
     <h1 class="title">Request Visit</h1>
     <div class="buttons" side="secondary" ng-click="requestVisit.submit()">
-      <button class="button button-clear button-primary">Done</button>
+      <button class="button button-clear button-primary">Submit</button>
     </div>
   </ion-header-bar>
   <ion-content>
-    Hey stop peaking! I'm still working on this part.
+    This is a change
+    <form>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <i class="icon ion-location placeholder-icon"></i>
+          <input type="text" placeholder="Location" ng-model="requestVisit.visitRequest.location">
+        </label>
+      </div>
+      <div class="item item-divider">
+        Date
+      </div>
+      <label class="item item-input">
+        <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
+        <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
+      </label>
+      <ion-list>
+        <div class="item item-divider">
+          Time
+        </div>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'9'">Morning</ion-radio>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'1'">Afternoon</ion-radio>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'4'">Evening</ion-radio>
+      </ion-list>
+      <div class="item item-divider">
+        Notes
+      </div>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <textarea ng-model="requestVisit.visitRequest.notes" rows="3">
+            </textarea>
+        </label>
+        </div>
+    </form>
   </ion-content>
 </ion-modal-view>
