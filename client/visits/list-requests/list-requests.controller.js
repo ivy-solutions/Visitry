@@ -7,11 +7,14 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
   this.showDelete = false;
   this.canSwipe = false;
 
-  this.subscribe('availableVisits');
+  this.subscribe('visits');
 
   this.helpers({
     openVisits: () => {
-       return Visits.find();
+      let selector = {
+        'visitorId': {$exists: false}
+      };
+      return Visits.find(selector);
     }
   });
 
