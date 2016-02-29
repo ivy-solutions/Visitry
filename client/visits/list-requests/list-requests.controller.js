@@ -4,9 +4,6 @@
 angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
 
-  this.showDelete = false;
-  this.canSwipe = false;
-
   this.subscribe('visits');
 
   this.helpers({
@@ -17,5 +14,6 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
       return Visits.find(selector);
     }
   });
+
 
 });

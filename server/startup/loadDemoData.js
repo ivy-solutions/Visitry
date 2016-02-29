@@ -47,11 +47,23 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "date": '1484197200000',  //12/12/2016
+        "requestorId": 4,
+        "date": '1484197200000',
+        "timeOfDay": "Morning",
         "notes": 'pick me, please',
         "location": {
           "latitude": 42.3601,
           "longitude": -71.0589
+        }
+      },
+      {
+        "requestorId": '2',
+        "date": '1456710108224',
+        "timeOfDay": "Afternoon",
+        "notes": 'Shall we go for coffee?',
+        "location": {
+          "latitude": 42,
+          "longitude": -71
         }
       }
     ];

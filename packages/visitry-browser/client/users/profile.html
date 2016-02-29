@@ -15,8 +15,16 @@
 
             <form name="profileForm" layout="column" layout-fill layout-padding layout-margin>
                 <md-input-container >
-                    <label> Name </label>
-                    <input type="text" ng-model="profile.name" placeholder="name" aria-label="name" required/>
+                    <label> First Name </label>
+                    <input type="text" ng-model="profile.firstName" placeholder="firstName" aria-label="firstName" required/>
+                </md-input-container>
+                <md-input-container >
+                    <label> Last Name </label>
+                    <input type="text" ng-model="profile.lastName" placeholder="lastName" aria-label="lastName" required/>
+                </md-input-container>
+                <md-input-container >
+                    <label> Language </label>
+                    <input type="text" ng-model="profile.language" placeholder="language" aria-label="language" required/>
                 </md-input-container>
                 <md-divider class="inset"></md-divider>
 
