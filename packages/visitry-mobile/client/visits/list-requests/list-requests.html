@@ -1,10 +1,18 @@
-<ion-view view-title="Choose to Visit">
-    <ion-content class="has-header">
+<ion-view view-title="Visit Requests">
+    <ion-content>
         <ion-list>
-            <ion-item ng-repeat="visit in listRequests.openVisits" class="item-avatar">
-                <h2>FIRST L.</h2>
+            <ion-item ng-repeat="visit in listRequests.openVisits" class="item-button-right">
+                <h2>{{visit.date | weekdayDate}}</h2>
+                <h2>{{visit.timeOfDay}}</h2>
+                <h3>First L.</h3>
                 <p>{{visit.notes}}</p>
+                <ion-button class="button icon-right ion-checkmark-round">&nbsp; I will Visit</ion-button>
             </ion-item>
         </ion-list>
     </ion-content>
 </ion-view>
+<ion-footer-bar align-title="center" class="bar bar-footer bar-balanced">
+    <buttons class="buttons" ng-click="upcomingVisits()">
+        <button class="button">Upcoming</button>
+    </buttons>
+</ion-footer-bar>

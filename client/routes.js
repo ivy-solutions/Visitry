@@ -45,7 +45,7 @@ angular.module('visitry')
         template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/pendingVisits");
+    $urlRouterProvider.otherwise("/listRequests");
   })
   .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
