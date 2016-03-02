@@ -1,0 +1,17 @@
+<ion-view view-title="My Upcoming Visits">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="visit in listRequests.myUpcomingVisits" >
+                <h2>{{visit.date | weekdayDate}}</h2>
+                <h2>{{visit.timeOfDay}}</h2>
+                <h3>First L.</h3>
+                <p>{{visit.notes}}</p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
+<ion-footer-bar align-title="center" class="bar bar-footer bar-balanced">
+    <buttons class="buttons">
+        <button class="button">Requests</button>
+    </buttons>
+</ion-footer-bar>

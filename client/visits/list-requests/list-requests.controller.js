@@ -9,7 +9,14 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
   this.helpers({
     openVisits: () => {
       let selector = {
-        'visitorId': {$exists: false}
+          'visitorId': {$exists: false},
+          'date': {$gt: new Date()}
+      };
+      return Visits.find(selector);
+    },
+    myUpcomingVisits: () => {
+      let selector = {
+        'visitorId' : Meteor.userId()
       };
       return Visits.find(selector);
     }

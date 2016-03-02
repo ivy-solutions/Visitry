@@ -19,7 +19,7 @@ Meteor.startup(function ()  {
       {
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": '1459958365000',
+        "date": new Date(2016,3,1),
         "notes": '1pm works best',
         "location": {
           "latitude": 42.3601,
@@ -29,7 +29,7 @@ Meteor.startup(function ()  {
       {
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": '1460995165000',
+        "date": new Date(2016,3,15),
         "notes": '3pm works best',
         "location": {
           "latitude": 42.3601,
@@ -39,7 +39,7 @@ Meteor.startup(function ()  {
       {
         "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": '1461005965000',
+        "date": new Date(2016,3,16),
         "notes": '10pm works best',
         "location": {
           "latitude": 42.3601,
@@ -48,7 +48,7 @@ Meteor.startup(function ()  {
       },
       {
         "requestorId": 4,
-        "date": '1484197200000',
+        "date": new Date(2016,1,29),
         "timeOfDay": "Morning",
         "notes": 'pick me, please',
         "location": {
@@ -58,7 +58,7 @@ Meteor.startup(function ()  {
       },
       {
         "requestorId": '2',
-        "date": '1456710108224',
+        "date": new Date(2016,3,15),
         "timeOfDay": "Afternoon",
         "notes": 'Shall we go for coffee?',
         "location": {

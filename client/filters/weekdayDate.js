@@ -6,7 +6,7 @@ angular.module('visitry').filter('weekdayDate', function () {
     if (!input) {
       return input;
     }
-    var _date = new Date(parseInt(input));
+    var _date = input;
     var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var dayOfWeek = days[_date.getDay()];
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
