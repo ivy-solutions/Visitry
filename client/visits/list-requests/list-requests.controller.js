@@ -4,7 +4,7 @@
 angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
 
-   this.helpers({
+  this.helpers({
      openVisits: () => {
       let selector = {
           'visitorId': {$exists: false},
@@ -17,7 +17,10 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
         'visitorId' : Meteor.userId()
       };
       return Visits.find(selector);
-    }
+    },
+     users: () => { //I don't undertsand why I need this for getRequestor to work
+       return Meteor.users.find({});
+     }
   });
 
   this.subscribe('visits');
@@ -27,10 +30,10 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
 
   this.getRequestor = function (visit) {
     if (!visit)
-      return 'got nothing';
+      return 'No such visit';
     let requestor = Meteor.users.findOne({username : visit.requestorUsername });
     if (!requestor)
-      return 'No such user';
+      return 'No such user for ' + visit.requestorUsername;
     return requestor;
   };
 
