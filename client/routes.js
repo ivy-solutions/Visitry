@@ -34,7 +34,14 @@ angular.module('visitry')
       })
       .state('login', {
         url: '/login',
-        template: '<login></login>'
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/auth/login/login.html';
+          } else {
+            return '/packages/visitry-browser/client/auth/login/login.html';
+          }
+        },
+        controller: 'loginCtrl as login'
       })
       .state('register', {
         url: '/register',

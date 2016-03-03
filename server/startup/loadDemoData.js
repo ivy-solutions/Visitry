@@ -47,7 +47,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorId": 4,
+        "requestorUsername": 'sarahc2',
         "date": new Date(2016,1,29),
         "timeOfDay": "Morning",
         "notes": 'pick me, please',
@@ -57,7 +57,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorId": '2',
+        "requestorUsername": 'requestor4',
         "date": new Date(2016,3,15),
         "timeOfDay": "Afternoon",
         "notes": 'Shall we go for coffee?',
@@ -65,11 +65,33 @@ Meteor.startup(function ()  {
           "latitude": 42,
           "longitude": -71
         }
+      },
+      {
+        "requestorUsername": 'sarahc2',
+        "date": new Date(2016,3,17),
+        "timeOfDay": "Morning",
+        "notes": 'I need to walk Bowser.',
+        "location": {
+          "latitude": 42,
+          "longitude": -71
+        }
       }
+
     ];
     for ( i = 0; i < visits.length; i++ ) {
       Visits.insert( visits[i]);
     }
+  }
+
+  if (Meteor.users.find().count() === 0) {
+    Accounts.createUser({
+      username: 'sarahc2', email: 'sarahcoletti12@gmail.com', password: 'vpass9901', _id: 2,
+      profile: {firstName: 'Sarah', lastName: 'Coletti'}
+    });
+    Accounts.createUser({
+      username: 'requestor4', email: 'rq@gmail.com', password: 'vpass9901', _id: 4,
+      profile: {firstName: 'Raoul', lastName: 'Robbins'}
+    });
   }
 
 });

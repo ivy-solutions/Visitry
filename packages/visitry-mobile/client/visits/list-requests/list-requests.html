@@ -3,8 +3,8 @@
         <ion-list>
             <ion-item ng-repeat="visit in listRequests.openVisits" class="item-button-right">
                 <h2>{{visit.date | weekdayDate}}</h2>
-                <h2>{{visit.timeOfDay}}</h2>
-                <h3>First L.</h3>
+                <h4>{{visit.timeOfDay}}</h4>
+                <h3>{{listRequests.getRequestor(visit) | firstNameLastInitial}}</h3>
                 <p>{{visit.notes}}</p>
                 <ion-button class="button icon-right ion-checkmark-round">&nbsp; I will Visit</ion-button>
             </ion-item>
