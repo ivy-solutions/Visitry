@@ -37,9 +37,11 @@ Meteor.startup(function ()  {
         }
       },
       {
+        "requestorUsername": 'requestor4',
         "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": new Date(2016,3,16),
+        "date": new Date(2016,3,21),
+        "scheduledTime": new Date(2016, 3, 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
           "latitude": 42.3601,

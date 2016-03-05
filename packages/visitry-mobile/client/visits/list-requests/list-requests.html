@@ -2,7 +2,7 @@
     <ion-content>
         <ion-list>
             <ion-item ng-repeat="visit in listRequests.openVisits" class="item-button-right" href="/visits/{{visit._id}}">
-                <h2>{{visit.date | weekdayDate}}</h2>
+                <h2>{{visit.date | date: "EEEE, MMMM d"}}</h2>
                 <h4>{{visit.timeOfDay}}</h4>
                 <h3>{{listRequests.getRequestor(visit) | firstNameLastInitial}}</h3>
                 <p>{{visit.notes}}</p>
@@ -12,7 +12,7 @@
     </ion-content>
 </ion-view>
 <ion-footer-bar align-title="center" class="bar bar-footer bar-balanced">
-    <buttons class="buttons" ng-click="upcomingVisits()">
-        <button class="button">Upcoming</button>
+    <buttons class="buttons">
+        <button class="button" ng-click="listRequests.viewUpcomingVisits()">Upcoming</button>
     </buttons>
 </ion-footer-bar>

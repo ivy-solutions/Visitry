@@ -32,6 +32,17 @@ angular.module('visitry')
         },
         controller: 'listRequestsCtrl as listRequests'
       })
+      .state('upcoming', {
+        url: '/visits/upcoming',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/visits/list-requests/list-upcoming.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/list-requests/list-upcoming.html';
+          }
+        },
+        controller: 'listRequestsCtrl as listRequests'
+      })
       .state('visitDetails', {
         url: '/visits/:visitId',
         templateUrl: ()=> {
