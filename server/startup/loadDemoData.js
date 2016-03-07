@@ -39,7 +39,8 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requesterId":'1',
+        "requesterId": '1',
+        "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "date": 1461005965000,
         "notes": '10pm works best',
@@ -49,7 +50,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorId": 4,
+        "requesterId": 4,
         "date": '1484197200000',
         "timeOfDay": "Morning",
         "notes": 'pick me, please',
@@ -59,7 +60,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorId": '2',
+        "requesterId": '2',
         "date": '1456710108224',
         "timeOfDay": "Afternoon",
         "notes": 'Shall we go for coffee?',
@@ -72,6 +73,17 @@ Meteor.startup(function ()  {
     for ( i = 0; i < visits.length; i++ ) {
       Visits.insert( visits[i]);
     }
+  }
+
+  if (Meteor.users.find().count() === 0) {
+    Accounts.createUser({
+      username: 'sarahc2', email: 'sarahcoletti12@gmail.com', password: 'vpass9901', _id: 2,
+      profile: {firstName: 'Sarah', lastName: 'Coletti'}
+    });
+    Accounts.createUser({
+      username: 'requestor4', email: 'rq@gmail.com', password: 'vpass9901', _id: 4,
+      profile: {firstName: 'Raoul', lastName: 'Robbins'}
+    });
   }
 
 });

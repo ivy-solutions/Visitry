@@ -25,6 +25,8 @@ Package.onUse(function(api) {
     'client/visits/pending-visits/pending-visits.html',
     'client/visits/request-visit/request-visit-modal.html',
     'client/visits/list-requests/list-requests.html',
+    'client/visits/list-requests/list-upcoming.html',
+    'client/visits/visit-details/visit-details.html',
     'client/visits/pending-visits/cancel-visit-popup.html',
     'client/styles/login.less',
     'client/styles/main.less'

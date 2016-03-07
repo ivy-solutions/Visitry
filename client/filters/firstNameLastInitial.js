@@ -5,7 +5,7 @@
 angular.module('visitry').filter('firstNameLastInitial', function () {
   return function (user) {
     if (!user) {
-      return '';
+      return 'No User';
     }
 
     if (user.profile && (user.profile.firstName || user.profile.lastName) ) {

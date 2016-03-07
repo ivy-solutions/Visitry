@@ -32,9 +32,38 @@ angular.module('visitry')
         },
         controller: 'listRequestsCtrl as listRequests'
       })
+      .state('upcoming', {
+        url: '/visits/upcoming',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/visits/list-requests/list-upcoming.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/list-requests/list-upcoming.html';
+          }
+        },
+        controller: 'listRequestsCtrl as listRequests'
+      })
+      .state('visitDetails', {
+        url: '/visits/:visitId',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/visits/visit-details/visit-details.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/visit-details/visit-details.html';
+          }
+        },
+        controller: 'visitDetailsCtrl as visitDetails'
+      })
       .state('login', {
         url: '/login',
-        template: '<login></login>'
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/auth/login/login.html';
+          } else {
+            return '/packages/visitry-browser/client/auth/login/login.html';
+          }
+        },
+        controller: 'loginCtrl as login'
       })
       .state('register', {
         url: '/register',

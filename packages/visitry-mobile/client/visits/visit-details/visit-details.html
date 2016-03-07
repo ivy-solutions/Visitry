@@ -1,0 +1,26 @@
+/**
+ * Created by sarahcoletti on 3/2/16.
+ */
+<ion-view view-title="Visit Request" ng-controller="visitDetailsCtrl as visitDetails">
+  <ion-content>
+      <ion-list>
+        <ion-item>
+          <h2>{{visitDetails.visit.date | date: "EEEE, MMMM d"}}</h2>
+          <h4>{{visitDetails.visit.timeOfDay}}</h4>
+            <p>{{visitDetails.visit.notes}}</p>
+        </ion-item>
+          <ion-item>
+            <h3>Requested by {{visitDetails.visitRequestor | firstNameLastInitial}}</h3>
+              <ion-list>Interests
+                  <ion-item>Interest1</ion-item>
+                  <ion-item>Interest2</ion-item>
+                  <ion-item>Interest3</ion-item>
+              </ion-list>
+          </ion-item>
+
+      </ion-list>
+      <div class="buttons">
+          <button class="button button-clear button-balanced" ng-click="visitDetails.close()">Cancel</button>
+      </div>
+  </ion-content>
+</ion-view>
