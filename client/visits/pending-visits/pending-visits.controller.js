@@ -1,7 +1,8 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit,$rootScope,$state) {
+
   $reactive(this).attach($scope);
   this.showDelete = false;
   this.canSwipe = true;

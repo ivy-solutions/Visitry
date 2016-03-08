@@ -6,7 +6,8 @@ let modulesToLoad = [
   'ui.router',
   'accounts.ui',
   'angularUtils.directives.dirPagination',
-  'ngMaterial'
+  'ngMaterial',
+  'ionic-ratings'
 ];
 
 if (Meteor.isCordova) {
