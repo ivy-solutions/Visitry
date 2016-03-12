@@ -12,9 +12,7 @@
           <ion-item>
             <h3>Requested by {{visitDetails.visitRequestor | firstNameLastInitial}}</h3>
               <ion-list>Interests
-                  <ion-item>Interest1</ion-item>
-                  <ion-item>Interest2</ion-item>
-                  <ion-item>Interest3</ion-item>
+                  <ion-item ng-repeat="interest in visitDetails.requestorInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>
 

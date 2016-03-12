@@ -29,4 +29,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     $location.path('/listRequests');
   };
 
+  this.requestorInterests = () => {
+    let requestor = this.visitRequestor;
+    console.log( "requestor:" + requestor);
+    return requestor.profile.interests;
+  }
+
 });

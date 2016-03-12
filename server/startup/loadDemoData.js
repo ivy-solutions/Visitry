@@ -92,7 +92,7 @@ Meteor.startup(function ()  {
     });
     Accounts.createUser({
       username: 'requestor4', email: 'rq@gmail.com', password: 'vpass9901', _id: 4,
-      profile: {firstName: 'Raoul', lastName: 'Robbins'}
+      profile: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII veteran', 'Red Sox fan', 'grows orchids']}
     });
   }
 
