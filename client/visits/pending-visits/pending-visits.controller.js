@@ -17,11 +17,11 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
       var dateSortedVisits = [];
       visits.forEach(function (visit) {
 
-        if (dateSortedVisits.length && (new Date(+dateSortedVisits[dateSortedVisits.length - 1].date)).getDate() === (new Date(+visit.date)).getDate()) {
+        if (dateSortedVisits.length && (new Date(+dateSortedVisits[dateSortedVisits.length - 1].date)).getDate() === (new Date(+visit.requestedDate)).getDate()) {
           dateSortedVisits[dateSortedVisits.length - 1].visits.push(visit);
         }
         else {
-          dateSortedVisits.push({"date": visit.date, "visits": [visit]})
+          dateSortedVisits.push({"date": visit.requestedDate, "visits": [visit]})
         }
       });
       return dateSortedVisits;
