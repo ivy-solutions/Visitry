@@ -5,8 +5,8 @@
   <ion-content>
       <ion-list>
         <ion-item>
-          <h2>{{visitDetails.visit.date | date: "EEEE, MMMM d"}}</h2>
-          <h4>{{visitDetails.visit.timeOfDay}}</h4>
+          <h2>{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</h2>
+          <h4>{{visitDetails.visit.requestedDate | timeOfDay }}</h4>
             <p>{{visitDetails.visit.notes}}</p>
         </ion-item>
           <ion-item>

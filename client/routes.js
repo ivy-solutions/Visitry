@@ -21,27 +21,27 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits'
       })
-      .state('listRequests', {
-        url: '/listRequests',
+      .state('browseRequests', {
+        url: '/visitor/browseRequests',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/list-requests/list-requests.html';
+            return '/packages/visitry-mobile/client/visits/browse-visit-requests/browse-visit-requests.html';
           } else {
-            return '/packages/visitry-browser/client/visits/list-requests/list-requests.html';
+            return '/packages/visitry-browser/client/visits/browse-visit-requests/browse-visit-requests.html';
           }
         },
-        controller: 'listRequestsCtrl as listRequests'
+        controller: 'browseVisitRequestsCtrl as browseVisitRequests'
       })
       .state('upcoming', {
-        url: '/visits/upcoming',
+        url: '/visitor/upcoming',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/list-requests/list-upcoming.html';
+            return '/packages/visitry-mobile/client/visits/visitor-view-upcoming/visitor-view-upcoming.html';
           } else {
-            return '/packages/visitry-browser/client/visits/list-requests/list-upcoming.html';
+            return '/packages/visitry-browser/client/visits/visitor-view-upcoming/visitor-view-upcoming.html';
           }
         },
-        controller: 'listRequestsCtrl as listRequests'
+        controller: 'visitorViewUpcomingCtrl as visitorViewUpcoming'
       })
       .state('visitDetails', {
         url: '/visits/:visitId',
@@ -74,7 +74,7 @@ angular.module('visitry')
         template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/listRequests");
+    $urlRouterProvider.otherwise("/visitor/browseRequests");
   })
   .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {

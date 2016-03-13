@@ -26,7 +26,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   ////////
   this.close = () => {
-    $location.path('/listRequests');
+    $location.path('/visitor/browseRequests');
   };
 
   this.requestorInterests = () => {

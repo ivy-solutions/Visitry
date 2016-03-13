@@ -13,18 +13,20 @@ angular.module('visitry').directive('visitry', function () {
     },
     controllerAs: 'visitry',
     controller: function( $scope, $reactive ) {
-//      $reactive(this).attach($scope);
+ //     $reactive(this).attach($scope);
 
-      this.isLoggedIn = () => {
-        console.log('userid:' + Meteor.userId())
+      $scope.isLoggedIn = () => {
+        console.log('userid:' + Meteor.userId());
         return Meteor.userId() !== null;
       };
 
-      this.currentUser = () => {
+      $scope.currentUser = () => {
+        console.log( "current User" + Meteor.userId());
         return Meteor.user();
       };
 
-      this.logout = () => {
+      $scope.logout = () => {
+        console.log( "logout")
         Accounts.logout();
       };
     }

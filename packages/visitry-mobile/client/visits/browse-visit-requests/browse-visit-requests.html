@@ -1,0 +1,18 @@
+<ion-view view-title="Visit Requests">
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right" href="/visits/{{visit._id}}">
+                <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}</h2>
+                <h4>{{visit.requestedDate | timeOfDay }}</h4>
+                <h3>{{browseVisitRequests.getRequestor(visit) | firstNameLastInitial}}</h3>
+                <p>{{visit.notes}}</p>
+                <ion-button class="button icon-right ion-checkmark-round" >&nbsp; I will Visit</ion-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
+<ion-footer-bar align-title="center" class="bar bar-footer bar-balanced">
+    <buttons class="buttons">
+        <button class="button" ng-click="browseVisitRequests.viewUpcomingVisits()">Upcoming</button>
+    </buttons>
+</ion-footer-bar>

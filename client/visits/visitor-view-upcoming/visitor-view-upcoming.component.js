@@ -1,30 +1,26 @@
 /**
+ * Created by sarahcoletti on 3/13/16.
+ */
+/**
  * Created by sarahcoletti on 2/24/16.
  */
-angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stateParams, $reactive, $location) {
+angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location) {
   $reactive(this).attach($scope);
 
   this.helpers({
-     openVisits: () => {
-      let selector = {
-          'visitorId': {$exists: false},
-          'date': {$gt: new Date()}
-      };
-      return Visits.find(selector);
-    },
-    myUpcomingVisits: () => {
+    upcomingVisits: () => {
       var startOfToday = new Date();
       startOfToday.setHours(0,0,0,0);
       let selector = {
         'visitorId' : {$exists: true},
-        'scheduledTime': {$exists: true},
-        'scheduledTime': {$gt: startOfToday}
+        'visitTime': {$exists: true},
+        'visitTime': {$gt: startOfToday}
       };
       return Visits.find(selector);
     },
-     users: () => { //I don't understand why I need this for getRequestor to work
-       return Meteor.users.find({});
-     }
+    users: () => { //I don't understand why I need this for getRequestor to work
+      return Meteor.users.find({});
+    }
   });
 
   this.subscribe('visits');
@@ -41,11 +37,8 @@ angular.module('visitry').controller('listRequestsCtrl', function ($scope, $stat
     return requestor;
   };
 
-  this.viewUpcomingVisits = function () {
-    $location.path("/visits/upcoming")
-  };
   this.viewRequests = function () {
-    $location.path("/listRequests")
+    $location.path("/visitor/browseRequests")
   };
 
 

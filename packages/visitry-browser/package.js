@@ -25,7 +25,8 @@ Package.onUse(function(api) {
     'client/auth/reset-password/reset-password.html',
     'client/users/profile.html',
     'client/visitry/visitry.html',
-    'client/visits/list-requests/list-requests.html',
+    'client/visits/browse-visit-requests/browse-visit-requests.html',
+    'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
     'client/styles/main.less'
   ], 'client')
 });

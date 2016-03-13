@@ -19,7 +19,7 @@ Meteor.startup(function ()  {
       {
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": new Date(2016,3,1),
+        "requestedDate": new Date(2016,3,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
           "latitude": 42.3601,
@@ -29,7 +29,7 @@ Meteor.startup(function ()  {
       {
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": new Date(2016,3,15),
+        "requestedDate": new Date(2016,3,15,16,0,0,0),
         "notes": '3pm works best',
         "location": {
           "latitude": 42.3601,
@@ -40,8 +40,8 @@ Meteor.startup(function ()  {
         "requestorUsername": 'requestor4',
         "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "date": new Date(2016,3,21),
-        "scheduledTime": new Date(2016, 3, 21, 13, 30, 0, 0),
+        "requestedDate": new Date(2016,3,21,9,0,0,0),
+        "visitTime": new Date(2016, 3, 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
           "latitude": 42.3601,
@@ -50,8 +50,7 @@ Meteor.startup(function ()  {
       },
       {
         "requestorUsername": 'sarahc2',
-        "date": new Date(2016,1,29),
-        "timeOfDay": "Morning",
+        "requestedDate": new Date(2016,1,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
           "latitude": 42.3601,
@@ -60,8 +59,7 @@ Meteor.startup(function ()  {
       },
       {
         "requestorUsername": 'requestor4',
-        "date": new Date(2016,3,15),
-        "timeOfDay": "Afternoon",
+        "requestedDate": new Date(2016,3,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
           "latitude": 42,
@@ -70,8 +68,7 @@ Meteor.startup(function ()  {
       },
       {
         "requestorUsername": 'sarahc2',
-        "date": new Date(2016,3,17),
-        "timeOfDay": "Morning",
+        "requestedDate": new Date(2016,3,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
           "latitude": 42,

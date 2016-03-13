@@ -22,7 +22,7 @@ angular.module("visitry.browser").directive('register', function() {
             this.error=err;
           }
           else {
-            $state.go('login')
+            $state.go('profile')
           }
         })
       }

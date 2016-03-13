@@ -6,7 +6,7 @@
     <div class="navbar-right navbar-text">
         <md-button ng-href="/login" >Login</md-button>
         <md-button ng-href="/register" >Sign up</md-button>
-        <div>{{ visitry.currentUser | displayName }}</div>
+        <div>{{ visitry.currentUser.firstName }}</div>
         <md-button ng-click="visitry.logout()">Logout</md-button>
     </div>
 </md-toolbar>
