@@ -6,6 +6,17 @@ angular.module('visitry')
     $locationProvider.html5Mode(true);
 
     $stateProvider
+      .state('home', {
+        url: '/home',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/home/home.html';
+          } else {
+            return '/packages/visitry-browser/client/home/home.html';
+          }
+        },
+        controller: 'homeCtrl as home'
+      })
       .state('visits', {
         url: '/visits',
         template: '<list-visits></list-visits>'
@@ -74,12 +85,12 @@ angular.module('visitry')
         template: '<profile></profile>'
       });
 
-    $urlRouterProvider.otherwise("/pendingVisits");
+    $urlRouterProvider.otherwise("/login");
   })
   .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED')
-        $state.go('requestVisit');
+        $state.go('login');
     });
   });
 

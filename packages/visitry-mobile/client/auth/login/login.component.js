@@ -1,27 +1,26 @@
 /**
  * Created by sarahcoletti on 2/15/16.
  */
-angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stateParams, $reactive) {
+angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $state, $reactive) {
   $reactive(this).attach($scope);
 
-  this.isStepTwo = false;
-  this.phoneNumber = '';
-  this.verificationCode = '';
-  this.error = '';
-
-  this.verifyPhone = () => {
-    Accounts.requestPhoneVerification(this.phoneNumber);
-    this.isStepTwo = true;
+  this.credentials = {
+    username: '',
+    password: ''
   };
 
-  this.verifyCode = () => {
-    Accounts.verifyPhone(this.phoneNumber, this.verificationCode, (err) => {
+  this.error = '';
+
+  this.login = () => {
+    Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
+        console.log("username:" + this.credentials.username + " err: " + err);
         this.error = err;
       }
       else {
-        $state.go('profile');
+        console.log('Login success ' + this.credentials.username);
+        $state.go('home');
       }
     });
-  }
+  };
 });

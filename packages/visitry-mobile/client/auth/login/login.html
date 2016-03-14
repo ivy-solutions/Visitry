@@ -1,15 +1,16 @@
-<ion-view title="Your phone number">
-    <ion-nav-buttons side="right">
-        <button ng-click="login.verifyPhone()" ng-disabled="!login.phoneNumber || login.phoneNumber.length === 0" class="button button-clear button-positive">Done</button>
-    </ion-nav-buttons>
-    <ion-content class="login">
-        <div class="text-center instructions">
-            Please confirm your country code and enter your phone number
-        </div>
-        <div class="list">
+<ion-view title="Login User" hide-back-button=true>
+    <ion-content class="padding">
+        <ion-item class="card padding">
             <label class="item item-input">
-                <input ng-model="login.phoneNumber" on-return="login.verifyCode()" type="text" placeholder="Your phone number">
+                <input type="text" ng-model="login.credentials.username" placeholder="Username" />
             </label>
-        </div>
+            <label class="item item-input">
+                <input type="password" ng-model="login.credentials.password" placeholder="Password" />
+            </label>
+            <div class="padding">
+                <button class="button button-block" ng-click="login.login()">Login</button>
+                <button class="button button-block" ng-click="createAccount()">New Account</button>
+            </div>
+        </ion-item>
     </ion-content>
 </ion-view>

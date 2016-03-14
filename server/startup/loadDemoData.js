@@ -37,7 +37,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'requestor4',
+        "requestorUsername": 'Requestor1',
         "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "requestedDate": new Date(2016,3,21,9,0,0,0),
@@ -49,7 +49,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'sarahc2',
+        "requestorUsername": 'Requestor2',
         "requestedDate": new Date(2016,1,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
@@ -58,7 +58,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'requestor4',
+        "requestorUsername": 'Requestor3',
         "requestedDate": new Date(2016,3,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
@@ -67,7 +67,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'sarahc2',
+        "requestorUsername": 'Requestor2',
         "requestedDate": new Date(2016,3,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
@@ -84,12 +84,24 @@ Meteor.startup(function ()  {
 
   if (Meteor.users.find().count() === 0) {
     Accounts.createUser({
-      username: 'sarahc2', email: 'sarahcoletti12@gmail.com', password: 'vpass9901', _id: 2,
+      username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99',
       profile: {firstName: 'Sarah', lastName: 'Coletti'}
     });
     Accounts.createUser({
-      username: 'requestor4', email: 'rq@gmail.com', password: 'vpass9901', _id: 4,
-      profile: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII veteran', 'Red Sox fan', 'grows orchids']}
+      username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
+      profile: {firstName: 'Vivian', lastName: 'Visitor'}
+    });
+    Accounts.createUser({
+      username: 'Requestor1', email: 'rq1@gmail.com', password: 'Visitry99',
+      profile: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
+    });
+    Accounts.createUser({
+      username: 'Requestor2', email: 'rq2@gmail.com', password: 'Visitry99',
+      profile: {firstName: 'Rita', lastName: 'Smith', interests:['Hiking', 'Grandchildren']}
+    });
+    Accounts.createUser({
+      username: 'Requestor3', email: 'rq3@gmail.com', password: 'Visitry99',
+      profile: {firstName: 'Ron', lastName: 'Wang', interests:['Has 4 cats', 'Sings in church choir']}
     });
   }
 
