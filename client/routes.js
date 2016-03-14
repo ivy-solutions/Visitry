@@ -30,7 +30,14 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/visits/pending-visits/pending-visits.html';
           }
         },
-        controller: 'pendingVisitsCtrl as pendingVisits'
+        controller: 'pendingVisitsCtrl as pendingVisits',
+        resolve:{
+          feedback:function($location){
+            //TODO: if(visits.find({feedbackId:null,requesterId:Meteor.UserId()}).count())
+            //var visitId="";
+            //$location.url('/visits/'+visitId+'/feedback');
+          }
+        }
       })
       .state('browseRequests', {
         url: '/visitor/browseRequests',
@@ -83,7 +90,11 @@ angular.module('visitry')
       .state('profile', {
         url: '/profile',
         template: '<profile></profile>'
-      });
+      })
+    .state('visits.feedback',{
+      url:'/visits/:visitId/feedback',
+      template:'<feedback></feedback>'
+    });
 
     $urlRouterProvider.otherwise("/login");
   })

@@ -11,9 +11,10 @@
         </div>
         <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar">
           <img ng-src="{{visit.visitorImg}}">
-          <h2>FIRST LAST</h2>
+          <h2 ng-if="!visit.visitorId">Pending...</h2>
+          <h2 ng-if="visit.visitorId">John Doe</h2>
           <p>{{visit.notes}}</p>
-          <ion-option-button class="button-assertive">
+          <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
             Delete
           </ion-option-button>
           <ion-delete-button>

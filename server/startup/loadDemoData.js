@@ -17,6 +17,7 @@ Meteor.startup(function ()  {
   if(Visits.find().count() ===0){
     var visits = [
       {
+        "requesterId":'1',
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "requestedDate": new Date(2016,3,1,13,0,0,0),
@@ -27,6 +28,7 @@ Meteor.startup(function ()  {
         }
       },
       {
+        "requesterId":'1',
         "visitorId": '1',
         "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "requestedDate": new Date(2016,3,15,16,0,0,0),
@@ -75,7 +77,6 @@ Meteor.startup(function ()  {
           "longitude": -71
         }
       }
-
     ];
     for ( i = 0; i < visits.length; i++ ) {
       Visits.insert( visits[i]);

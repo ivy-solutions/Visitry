@@ -1,5 +1,4 @@
 angular.module('visitry').service('RequestVisit', function ($rootScope, $ionicModal) {
-  let templateUrl = 'client/templates/new-chat.html';
 
   this.showModal = showModal;
   this.hideModal = hideModal;

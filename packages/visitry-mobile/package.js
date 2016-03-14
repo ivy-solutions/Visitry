@@ -15,6 +15,7 @@ Package.onUse(function(api) {
   api.use('angular');
   api.use('driftyco:ionic');
   api.use('less');
+  api.use('mquandalle:bower');
 
   api.addFiles([
     'client/lib/module.js',
@@ -28,8 +29,11 @@ Package.onUse(function(api) {
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
     'client/visits/visit-details/visit-details.html',
+    'client/visits/pending-visits/cancel-visit-popup.html',
     'client/styles/login.less',
-    'client/styles/main.less'
+    'client/styles/main.less',
+    'client/feedback/feedback.import.less',
+    'client/feedback/feedback.html'
   ], 'client');
 });
 

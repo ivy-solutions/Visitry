@@ -1,0 +1,6 @@
+{
+  "name": "visitry",
+  "dependencies": {
+    "ionic-ratings": "~0.2.0"
+  }
+}

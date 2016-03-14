@@ -1,0 +1,40 @@
+<ion-view view-title="Rate Your Visit">
+  <ion-content class="has-header">
+    <form>
+    <ion-list>
+      <ion-item class="item-avatar">
+        <img ng-src="">
+        <h2>John Doe</h2>
+        <p>Nov 2, 1991 Afternoon</p>
+      </ion-item>
+      <div class="item item-divider">
+        Rate your visitor
+      </div>
+      <ion-item>
+        <ionic-ratings ratingsobj='feedback.visitorRating'></ionic-ratings>
+        <div class="list list-inset">
+          <label class="item item-input">
+        <textarea rows="3" ng-model="feedback.feedbackResponse.visitorComments" placeholder="Leave a Comment">
+            </textarea>
+            </label>
+          </div>
+      </ion-item>
+      <div class="item item-divider">
+        Rate your visit
+      </div>
+      <ion-item>
+        <ionic-ratings ratingsobj='feedback.visitRating'></ionic-ratings>
+        <div class="list list-inset">
+          <label class="item item-input">
+        <textarea rows="3" ng-model="feedback.feedbackResponse.visitComments" placeholder="Leave a Comment">
+            </textarea>
+          </label>
+        </div>
+      </ion-item>
+      </ion-list>
+    <button class="button button-block button-calm" ng-click="feedback.submitFeedback()">
+      Submit
+    </button>
+    </form>
+  </ion-content>
+</ion-view>

@@ -1,7 +1,8 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, RequestVisit) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit,$rootScope,$state) {
+
   $reactive(this).attach($scope);
   this.showDelete = false;
   this.canSwipe = true;
@@ -28,13 +29,31 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
     }
   });
 
-  this.showRequestVisitModal = function(){
+  this.showRequestVisitModal = function () {
     RequestVisit.showModal();
   };
-  this.hideRequestVisitModal = function(){
+  this.hideRequestVisitModal = function () {
     RequestVisit.hideModal();
   };
 
+  this.showCancelVisitConfirm = function (visit) {
+    var confirmMessage = '';
+    if (visit.visitorId) {
+      confirmMessage = "Do you want to cancel your visit with " + visit.visitorId + "?"
+    }
+    else {
+      confirmMessage = "Do you want to cancel your visit request on " + new Date(visit.date).toLocaleDateString("en-US");
+    }
+    var confirmPopup = $ionicPopup.confirm({
+      template: confirmMessage,
+      cancelText: 'No',
+      okText: 'Yes'
+    });
+    confirmPopup.then((result)=> {
+      if (result) {
+        Visits.remove(visit._id);
+      }
+    })
+  }
+
 });
-
-
