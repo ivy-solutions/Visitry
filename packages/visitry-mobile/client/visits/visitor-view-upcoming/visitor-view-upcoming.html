@@ -9,8 +9,7 @@
         </ion-list>
     </ion-content>
 </ion-view>
-<ion-footer-bar align-title="center" class="bar bar-footer bar-balanced">
-    <buttons class="buttons">
-        <button class="button" ng-click="visitorViewUpcoming.viewRequests()">Requests</button>
-    </buttons>
-</ion-footer-bar>
+<ion-tabs class="tabs-balanced tabs-icon-top">
+    <ion-tab title="Home" icon-on="ion-leaf" icon-off="ion-leaf" href="/visitor/browseRequests"></ion-tab>
+    <ion-tab title="Upcoming" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="/visitor/upcoming"></ion-tab>
+</ion-tabs>
