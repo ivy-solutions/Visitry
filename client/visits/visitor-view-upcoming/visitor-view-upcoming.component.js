@@ -12,7 +12,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
       var startOfToday = new Date();
       startOfToday.setHours(0,0,0,0);
       let selector = {
-        'visitorId' : {$exists: true},
+        'visitorId' : Meteor.userId(),
         'visitTime': {$exists: true},
         'visitTime': {$gt: startOfToday}
       };
