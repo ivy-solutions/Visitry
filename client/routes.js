@@ -89,7 +89,14 @@ angular.module('visitry')
       })
       .state('profile', {
         url: '/profile',
-        template: '<profile></profile>'
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitry-mobile/client/users/profile.html';
+          } else {
+            return '/packages/visitry-browser/client/users/profile.html';
+          }
+        },
+        controller: 'profileCtrl as profile'
       })
     .state('visits.feedback',{
       url:'/visits/:visitId/feedback',

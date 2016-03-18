@@ -1,27 +1,39 @@
 <ion-view title="Profile">
-    <ion-nav-buttons side="right">
-        <button ng-click="profile.updateName()" ng-disabled="!profile.name || profile.name.length === 0" class="button button-clear button-positive">Done</button>
-    </ion-nav-buttons>
 
     <ion-content class="profile">
+
         <a class="profile-picture positive" ng-click="profile.updatePicture()">
             <div ng-if="profile.currentUser.profile.picture">
                 <img ng-src="{{ profile.currentUser.profile.picture }}" alt="profile picture">
                 edit
             </div>
-            <div ng-if="!profile.currentUser.profile.picture" class="upload-placehoder">
+            <div ng-if="!profile.currentUser.profile.picture" class="upload-placeholder">
                 Add photo
             </div>
         </a>
 
-        <div class="instructions">
-            Enter your name and add an optional profile picture
-        </div>
-
-        <div class="list profile-name">
-            <label class="item item-input">
-                <input ng-model="profile.name" on-return="profile.updateName()" type="text" placeholder="Your name">
+        <div class="list">
+            <label class="item item-input item-floating-label">
+                <span class="input-label">First Name</span>
+                <input ng-model="profile.firstName" on-return="profile.updateFirstName()" type="text" placeholder="First Name"/>
+             </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Last Name</span>
+                <input ng-model="profile.lastName" on-return="profile.updateLastName()" type="text" placeholder="Last Name"/>
             </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label">Email Address</span>
+                <input ng-model="profile.email" on-return="profile.updateEmail()" type="text" placeholder="Email Address"/>
+            </label>
+            <div class="list list-inset">
+                <label class="item item-input">
+                    <span class="input-label">Interests</span>
+                    <input type="text" >
+                </label>
+                <label class="item item-input">
+                    <input type="text" >
+                </label>
+            </div>
         </div>
     </ion-content>
 </ion-view>
