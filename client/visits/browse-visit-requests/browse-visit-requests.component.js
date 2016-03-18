@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $filter, $ionicPopup) {
   $reactive(this).attach($scope);
 
   this.helpers({
@@ -32,7 +32,29 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   };
 
   this.viewUpcomingVisits = function () {
-    $location.path("/visitor/upcoming")
+    $location.path("/visitor/upcoming");
   };
+
+  this.scheduleVisit = function(visit ) {
+    var confirmMessage = '';
+    var requestorName = $filter('firstNameLastInitial')(this.getRequestor(visit));
+    confirmMessage = "Schedule a visit with " + requestorName + "?";
+
+    var confirmPopup = $ionicPopup.confirm({
+      template: confirmMessage,
+      cancelText: 'Cancel',
+      okText: 'Yes'
+    });
+    confirmPopup.then((result)=> {
+      if (result) {
+        Visits.update(visit._id,{
+          $set: { visitorId: Meteor.userId(),
+          visitTime: visit.requestedDate} //TODO until time selector implemented
+        });
+        $location.path("/visitor/upcoming");
+      }
+    })
+
+  }
 
 });
