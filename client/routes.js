@@ -98,8 +98,8 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
-    .state('visits.feedback',{
-      url:'/visits/:visitId/feedback',
+    .state('feedback',{
+      url:'/feedback',
       template:'<feedback></feedback>'
     });
 

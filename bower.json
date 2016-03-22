@@ -1,6 +1,7 @@
 {
   "name": "visitry",
   "dependencies": {
-    "ionic-ratings": "~0.2.0"
+    "ionic-ratings": "~0.2.0",
+    "angular-google-places-autocomplete": "~0.2.7"
   }
 }

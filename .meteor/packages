@@ -30,3 +30,5 @@ visitry-mobile
 cfs:gridfs
 mquandalle:bower
 aldeed:simple-schema
+jeremy:geocomplete
+mrt:googlemaps

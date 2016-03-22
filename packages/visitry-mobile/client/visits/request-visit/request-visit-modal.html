@@ -13,7 +13,7 @@
       <div class="list list-inset">
         <label class="item item-input">
           <i class="icon ion-location placeholder-icon"></i>
-          <input type="text" placeholder="Location" ng-model="requestVisit.visitRequest.location">
+          <input type="text" id="locationInput" placeholder="Enter an Address" ng-model="requestVisit.visitRequest.location">
         </label>
       </div>
       <div class="item item-divider">
@@ -27,9 +27,9 @@
         <div class="item item-divider">
           Time
         </div>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'9'">Morning</ion-radio>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'1'">Afternoon</ion-radio>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="'4'">Evening</ion-radio>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="9">Morning</ion-radio>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="13">Afternoon</ion-radio>
+        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="16">Evening</ion-radio>
       </ion-list>
       <div class="item item-divider">
         Notes
@@ -39,7 +39,7 @@
           <textarea ng-model="requestVisit.visitRequest.notes" rows="3">
             </textarea>
         </label>
-        </div>
+      </div>
     </form>
   </ion-content>
 </ion-modal-view>

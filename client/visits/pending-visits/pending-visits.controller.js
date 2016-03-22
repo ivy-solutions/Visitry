@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit,$rootScope,$state) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit, $filter) {
 
   $reactive(this).attach($scope);
   this.showDelete = false;
@@ -11,23 +11,18 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   };
 
   this.subscribe('visits');
+  this.subscribe('users');
 
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visits.find({}, {sort: this.getReactively('listSort')});
-      var dateSortedVisits = [];
-      visits.forEach(function (visit) {
-
-        if (dateSortedVisits.length && (new Date(+dateSortedVisits[dateSortedVisits.length - 1].date)).getDate() === (new Date(+visit.requestedDate)).getDate()) {
-          dateSortedVisits[dateSortedVisits.length - 1].visits.push(visit);
-        }
-        else {
-          dateSortedVisits.push({"date": visit.requestedDate, "visits": [visit]})
-        }
-      });
-      return dateSortedVisits;
+      var visits = Visits.find({requesterId:Meteor.userId()}, {sort: this.getReactively('listSort')});
+      return Meteor.myFunctions.dateSortArray(visits);
     }
   });
+
+  this.getUserFirstName =(userId)=>{
+    return Meteor.users.findOne(userId).profile.firstName;
+  };
 
   this.showRequestVisitModal = function () {
     RequestVisit.showModal();
@@ -39,10 +34,10 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.showCancelVisitConfirm = function (visit) {
     var confirmMessage = '';
     if (visit.visitorId) {
-      confirmMessage = "Do you want to cancel your visit with " + visit.visitorId + "?"
+      confirmMessage = "Do you want to cancel your visit with " + this.getUserFirstName(visit.visitorId) + "?"
     }
     else {
-      confirmMessage = "Do you want to cancel your visit request on " + new Date(visit.date).toLocaleDateString("en-US");
+      confirmMessage = "Do you want to cancel your visit request on " + $filter('date')(new Date(visit.requestedDate));
     }
     var confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,

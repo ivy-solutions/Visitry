@@ -29,7 +29,6 @@ Package.onUse(function(api) {
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
     'client/visits/visit-details/visit-details.html',
-    'client/visits/pending-visits/cancel-visit-popup.html',
     'client/styles/login.less',
     'client/styles/main.less',
     'client/feedback/feedback.import.less',

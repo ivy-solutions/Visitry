@@ -1,20 +1,26 @@
-angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, RequestVisit) {
+angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
   $reactive(this).attach($scope);
-
+  $timeout(function(){
+    if (GoogleMaps.loaded()) {
+      $('#locationInput').geocomplete();
+    }
+  });
   this.visitRequest = {
     location: '',
     date: '',
-    time: '',
+    time: 0,
     notes: ''
   };
+
 
   this.submit = function () {
     var newVisit = {
       requesterId: Meteor.userId(),
       location: getLocation(this.visitRequest.location),
-      date: Date.parse(this.visitRequest.date) + (this.visitRequest.time * 3600000),
+      requestedDate: (new Date(this.visitRequest.date)).setHours(this.visitRequest.time),
       notes: this.visitRequest.notes
     };
+    console.log(newVisit);
     Visits.insert(newVisit);
     hideRequestVisitModal();
   };
@@ -28,6 +34,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 });
 
 function getLocation(location) {
+  //TODO: This function might not be necessary
   var coordinates = {
     latitude: 0,
     longitude: 0
