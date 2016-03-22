@@ -41,7 +41,6 @@ Meteor.methods({
 
     check(email, String);
 
-    console.log( "email:" + email)
     if (email && Meteor.user().emails) {
       Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
     }
