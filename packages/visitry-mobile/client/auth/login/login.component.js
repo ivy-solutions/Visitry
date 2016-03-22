@@ -8,8 +8,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     username: '',
     password: ''
   };
-
-  this.error = '';
+  this.profile
 
   this.login = () => {
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
@@ -22,6 +21,18 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       }
     });
   };
+  this.createAccount = () => {
+    Accounts.createUser({username:this.credentials.username, password:this.credentials.password}, (err) => {
+      if (err) {
+        return handleError(err);
+      }
+      else {
+        console.log( 'Account created for ' + this.credentials.username);
+        $state.go('profile')
+      }
+    });
+  };
+
   function handleError(err) {
       console.log('Authentication error ', err);
 

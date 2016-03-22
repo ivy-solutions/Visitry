@@ -2,14 +2,14 @@
     <ion-content class="padding">
         <ion-item class="card padding">
             <label class="item item-input">
-                <input type="text" ng-model="login.credentials.username" placeholder="Username (Vivian or Requestor1,2,3,4)" />
+                <input type="text" ng-model="login.credentials.username" placeholder="Username" />
             </label>
             <label class="item item-input">
-                <input type="password" ng-model="login.credentials.password" placeholder="Password (Visitry99)" />
+                <input type="password" ng-model="login.credentials.password" placeholder="Password" />
             </label>
             <div class="padding">
                 <button class="button button-block" ng-click="login.login()">Login</button>
-                <button class="button button-block" ng-click="createAccount()">New Account (not yet working)</button>
+                <button class="button button-block" ng-click="login.createAccount()">New Account</button>
             </div>
         </ion-item>
     </ion-content>
