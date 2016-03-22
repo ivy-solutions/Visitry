@@ -10,9 +10,9 @@
             <p>{{visitDetails.visit.notes}}</p>
         </ion-item>
           <ion-item>
-            <h3>Requested by {{visitDetails.visitRequestor | firstNameLastInitial}}</h3>
+            <h3>Requested by {{visitDetails.visitRequester | firstNameLastInitial}}</h3>
               <ion-list>Interests
-                  <ion-item ng-repeat="interest in visitDetails.requestorInterests()">{{interest}}</ion-item>
+                  <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>
 

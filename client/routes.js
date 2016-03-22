@@ -6,17 +6,6 @@ angular.module('visitry')
     $locationProvider.html5Mode(true);
 
     $stateProvider
-      .state('home', {
-        url: '/home',
-        templateUrl: ()=> {
-          if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/home/home.html';
-          } else {
-            return '/packages/visitry-browser/client/home/home.html';
-          }
-        },
-        controller: 'homeCtrl as home'
-      })
       .state('visits', {
         url: '/visits',
         template: '<list-visits></list-visits>'

@@ -15,25 +15,21 @@
         <div class="list">
             <label class="item item-input item-floating-label">
                 <span class="input-label">First Name</span>
-                <input ng-model="profile.firstName" on-return="profile.updateFirstName()" type="text" placeholder="First Name"/>
+                <input ng-model="profile.firstName" type="text" placeholder="First Name"/>
              </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Last Name</span>
-                <input ng-model="profile.lastName" on-return="profile.updateLastName()" type="text" placeholder="Last Name"/>
+                <input ng-model="profile.lastName" type="text" placeholder="Last Name"/>
             </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Email Address</span>
-                <input ng-model="profile.email" on-return="profile.updateEmail()" type="text" placeholder="Email Address"/>
+                <input ng-model="profile.email" type="email" placeholder="Email Address"/>
             </label>
-            <div class="list list-inset">
-                <label class="item item-input">
-                    <span class="input-label">Interests</span>
-                    <input type="text" >
-                </label>
-                <label class="item item-input">
-                    <input type="text" >
-                </label>
-            </div>
         </div>
+        <ion-radio ng-model="role" ng-value="requester">Request Visits</ion-radio>
+        <ion-radio ng-model="role" ng-value="visitor">Visit Others</ion-radio>
+        <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
+            Submit
+        </button>
     </ion-content>
 </ion-view>

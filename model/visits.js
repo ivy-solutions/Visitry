@@ -32,8 +32,8 @@ LocationSchema = new SimpleSchema({
 });
 
 Visits.schema = new SimpleSchema({
-    requestorId: {type: String, optional:true},  //TODO optional for now, can't get seed data to work when I use id
-    requestorUsername: {type: String, optional:true},  //TODO not needed in the long run - here, to get seed data to work
+    requesterId: {type: String, optional:true},  //TODO optional for now, can't get seed data to work when I use id
+    requesterUsername: {type: String, optional:true},  //TODO not needed in the long run - here, to get seed data to work
     location: {type: LocationSchema },
     requestedDate: {type: Date},
     notes: {type: String, optional:true},

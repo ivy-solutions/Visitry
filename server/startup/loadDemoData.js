@@ -39,7 +39,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'Requestor1',
+        "requesterUsername": 'Requester1',
         "visitorId": '1',
         "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "requestedDate": new Date(2016,3,21,9,0,0,0),
@@ -51,7 +51,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'Requestor2',
+        "requesterUsername": 'Requester2',
         "requestedDate": new Date(2016,1,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
@@ -60,7 +60,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'Requestor3',
+        "requesterUsername": 'Requester3',
         "requestedDate": new Date(2016,3,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
@@ -69,7 +69,7 @@ Meteor.startup(function ()  {
         }
       },
       {
-        "requestorUsername": 'Requestor2',
+        "requesterUsername": 'Requester2',
         "requestedDate": new Date(2016,3,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
@@ -93,15 +93,15 @@ Meteor.startup(function ()  {
       profile: {firstName: 'Vivian', lastName: 'Visitor'}
     });
     Accounts.createUser({
-      username: 'Requestor1', email: 'rq1@gmail.com', password: 'Visitry99',
+      username: 'Requester1', email: 'rq1@gmail.com', password: 'Visitry99',
       profile: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
     });
     Accounts.createUser({
-      username: 'Requestor2', email: 'rq2@gmail.com', password: 'Visitry99',
+      username: 'Requester2', email: 'rq2@gmail.com', password: 'Visitry99',
       profile: {firstName: 'Rita', lastName: 'Smith', interests:['Hiking', 'Grandchildren']}
     });
     Accounts.createUser({
-      username: 'Requestor3', email: 'rq3@gmail.com', password: 'Visitry99',
+      username: 'Requester3', email: 'rq3@gmail.com', password: 'Visitry99',
       profile: {firstName: 'Ron', lastName: 'Wang', interests:['Has 4 cats', 'Sings in church choir']}
     });
   }

@@ -12,7 +12,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
       };
       return Visits.find(selector);
     },
-     users: () => { //I don't understand why I need this for getRequestor to work
+     users: () => { //I don't understand why I need this for getRequester to work
        return Meteor.users.find({});
      }
   });
@@ -22,19 +22,19 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   ////////
 
-  this.getRequestor = function (visit) {
+  this.getRequester = function (visit) {
     if (!visit)
       return 'No such visit';
-    var requestor;
-    if ( visit.requestorId ) {
-      requestor = Meteor.users.findOne({_id: visit.requestorId});
-    } else if (visit.requestorUsername ) {
-      requestor = Meteor.users.findOne({username: visit.requestorUsername});
+    var requester;
+    if ( visit.requesterId ) {
+      requester = Meteor.users.findOne({_id: visit.requesterId});
+    } else if (visit.requesterUsername ) {
+      requester = Meteor.users.findOne({username: visit.requesterUsername});
     }
-    if (!requestor)
-      return 'No such user for ' + visit.requestorUsername? visit.requestorName : visit.requestorId;
+    if (!requester)
+      return 'No such user for ' + visit.requesterUsername? visit.requesterName : visit.requesterId;
 
-    return requestor;
+    return requester;
   };
 
   this.viewUpcomingVisits = function () {
@@ -43,8 +43,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   this.scheduleVisit = function(visit ) {
     var confirmMessage = '';
-    var requestorName = $filter('firstNameLastInitial')(this.getRequestor(visit));
-    confirmMessage = "Schedule a visit with " + requestorName + "?";
+    var requesterName = $filter('firstNameLastInitial')(this.getRequester(visit));
+    confirmMessage = "Schedule a visit with " + requesterName + "?";
 
     var confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,

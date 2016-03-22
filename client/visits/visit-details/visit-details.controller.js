@@ -10,19 +10,19 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       console.log("id:" + $stateParams.visitId);
       return Visits.findOne({_id: $stateParams.visitId});
     },
-    visitRequestor: () => {
+    visitrequester: () => {
       let visit = Visits.findOne({_id : this.visitId});
       if (!visit)
         return 'No such visit';
-      var requestor;
-      if ( visit.requestorId ) {
-        requestor = Meteor.users.findOne({_id: visit.requestorId});
-      } else if (visit.requestorUsername ) {
-        requestor = Meteor.users.findOne({username: visit.requestorUsername});
+      var requester;
+      if ( visit.requesterId ) {
+        requester = Meteor.users.findOne({_id: visit.requesterId});
+      } else if (visit.requesterUsername ) {
+        requester = Meteor.users.findOne({username: visit.requesterUsername});
       }
-      if (!requestor)
-        return 'No such user for ' + visit.requestorUsername? visit.requestorName : visit.requestorId;
-      return requestor;
+      if (!requester)
+        return 'No such user for ' + visit.requesterUsername? visit.requesterName : visit.requesterId;
+      return requester;
     }
   });
 
@@ -34,10 +34,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     $location.path('/visitor/browseRequests');
   };
 
-  this.requestorInterests = () => {
-    let requestor = this.visitRequestor;
-    console.log( "requestor:" + requestor);
-    return requestor.profile.interests;
+  this.requesterInterests = () => {
+    let requester = this.visitrequester;
+    console.log( "requester:" + requester);
+    return requester.profile.interests;
   }
 
 });

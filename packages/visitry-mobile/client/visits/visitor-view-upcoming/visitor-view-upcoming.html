@@ -3,7 +3,7 @@
         <ion-list>
             <ion-item ng-repeat="visit in visitorViewUpcoming.upcomingVisits" href="/visits/{{visit._id}}">
                 <h2>{{visit.visitTime | date:"EEEE, MMMM d 'at' h:mma"}}</h2>
-                <h3>{{visitorViewUpcoming.getRequestor(visit) | firstNameLastInitial}}</h3>
+                <h3>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h3>
                 <p>{{visit.notes}}</p>
             </ion-item>
         </ion-list>

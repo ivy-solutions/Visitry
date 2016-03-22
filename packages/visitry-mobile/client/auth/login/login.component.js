@@ -17,7 +17,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       }
       else {
         console.log('Login success ' + this.credentials.username);
-        $state.go('home');
+        $state.go('browseRequests');
       }
     });
   };
