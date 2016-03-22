@@ -42,5 +42,5 @@ Visits.schema = new SimpleSchema({
     feedbackId: {type: String, optional: true}  //filled in after visit
 });
 
-Visits.attachSchema(Visits.schema);
+//Visits.attachSchema(Visits.schema); //TODO we aren't quite ready to adhere to the schema
 
