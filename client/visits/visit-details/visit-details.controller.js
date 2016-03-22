@@ -14,9 +14,14 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       let visit = Visits.findOne({_id : this.visitId});
       if (!visit)
         return 'No such visit';
-      let requestor = Meteor.users.findOne({username : visit.requestorUsername });
+      var requestor;
+      if ( visit.requestorId ) {
+        requestor = Meteor.users.findOne({_id: visit.requestorId});
+      } else if (visit.requestorUsername ) {
+        requestor = Meteor.users.findOne({username: visit.requestorUsername});
+      }
       if (!requestor)
-        return 'No such user for ' + this.visit.requestorUsername;
+        return 'No such user for ' + visit.requestorUsername? visit.requestorName : visit.requestorId;
       return requestor;
     }
   });
