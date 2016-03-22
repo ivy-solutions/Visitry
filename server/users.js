@@ -32,16 +32,20 @@ Meteor.methods({
 
     return Meteor.users.update(this.userId, {$set: {'profile.firstName': firstName, 'profile.lastName': lastName}});
   },
-  updateLastName(name)
+  updateEmail(email)
   {
     if (!this.userId) {
       throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update name.');
+        'Must be logged in to update email.');
     }
 
-    //check(name, String);
+    check(email, String);
 
-    return Meteor.users.update(this.userId, {$set: {'profile.lastName': name}});
+    console.log( "email:" + email)
+    if (email && Meteor.user().emails) {
+      Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
+    }
+    return Accounts.addEmail(Meteor.userId(), email );
   }
 
 });

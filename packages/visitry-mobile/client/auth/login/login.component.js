@@ -27,8 +27,9 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         return handleError(err);
       }
       else {
+
         console.log( 'Account created for ' + this.credentials.username);
-        $state.go('profile')
+        $state.go('profile');
       }
     });
   };
@@ -37,7 +38,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       console.log('Authentication error ', err);
 
       $ionicPopup.alert({
-        title: 'User with that username and password not found.',
+        title: err.reason || 'User with that username and password not found.',
         template: 'Please try again',
         okType: 'button-positive button-clear'
       });

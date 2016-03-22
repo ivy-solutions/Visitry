@@ -6,30 +6,31 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   let user = Meteor.user();
 
+  this.username = user.username
   this.firstName = user && user.profile ? user.profile.firstName : '';
   this.lastName = user && user.profile ? user.profile.lastName : '';
-  this.email = user ? user.emails[0].address : '';
-  this.role
+  this.primaryEmail = user && user.emails ? user.emails[0].address : '';
+  this.role = 'requester';
 
 
   /////////
-  //TODO work in progress
-  this.submitUpdate = () => {
-    console.log("update name: " + this.firstName + " " + this.lastName);
+   this.submitUpdate = () => {
+    console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as "+ this.role);
     if (_.isEmpty(this.firstName) && _.isEmpty(this.lastName)) return;
 
     Meteor.call('updateName', this.firstName, this.lastName, (err) => {
       if (err) return handleError(err);
     });
 
-    Meteor.call('updateEmail', this.email, (err) => {
+    Meteor.call('updateEmail', this.primaryEmail, (err) => {
       if (err) return handleError(err);
     });
 
-    if (this.role == "visitor")
+    if (this.role == "visitor") {
       $state.go('browseRequests');
-    else
+    } else {
       $state.go('pendingVisits');
+    }
   };
 
   function updatePicture() {
