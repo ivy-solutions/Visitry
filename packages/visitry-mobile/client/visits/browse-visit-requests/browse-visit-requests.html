@@ -1,11 +1,11 @@
-<ion-view title="Choose to Visit">
+<ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content>
         <ion-list>
             <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right">
                 <a href="/visits/{{visit._id}}">
                     <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}</h2>
                     <h4>{{visit.requestedDate | timeOfDay }}</h4>
-                    <h3>{{browseVisitRequests.getRequestor(visit) | firstNameLastInitial}}</h3>
+                    <h3>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}</h3>
                     <p>{{visit.notes}}</p>
                 </a>
                 <button class="button icon ion-checkmark-circled" ng-click="browseVisitRequests.scheduleVisit(visit)"></button>

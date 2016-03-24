@@ -32,12 +32,15 @@ LocationSchema = new SimpleSchema({
 });
 
 Visits.schema = new SimpleSchema({
-    requestorId: {type: String},
-    visitorId: { type: String, optional:true},  //filled in when visit booked
+    requesterId: {type: String, optional:true},  //TODO optional for now, can't get seed data to work when I use id
+    requesterUsername: {type: String, optional:true},  //TODO not needed in the long run - here, to get seed data to work
     location: {type: LocationSchema },
     requestedDate: {type: Date},
     notes: {type: String, optional:true},
-    feedbackId: {type: String, optional: true},
-    visitTime: {type: Date }
+    visitorId: { type: String, optional:true},  //filled in when visit booked
+    visitTime: {type: Date, optional:true },
+    feedbackId: {type: String, optional: true}  //filled in after visit
 });
+
+//Visits.attachSchema(Visits.schema); //TODO we aren't quite ready to adhere to the schema
 

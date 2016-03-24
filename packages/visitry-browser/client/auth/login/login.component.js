@@ -19,7 +19,7 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
           }
           else {
             console.log('Login success ' + this.credentials.username);
-            $state.go('home');
+            $state.go('browseRequests');
           }
         });
       };
