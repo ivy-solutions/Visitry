@@ -72,19 +72,3 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     RequestVisit.hideModal();
   }
 });
-
-function getLocation(location) {
-  //TODO: This function might not be necessary
-  var coordinates = {
-    latitude: 0,
-    longitude: 0
-  };
-  if (location === 'Home') {
-    //TODO: get home location from profile
-    coordinates.latitude = 42.3601;
-    coordinates.longitude = -71.0589;
-  } else {
-    //TODO: figure out how to get location from whatever they enter
-  }
-  return coordinates;
-}
