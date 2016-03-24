@@ -7,9 +7,7 @@ let modulesToLoad = [
   'accounts.ui',
   'angularUtils.directives.dirPagination',
   'ngMaterial',
-  'ionic-ratings',
-  'google.places',
-  'ion-google-place'
+  'ionic-ratings'
 ];
 
 if (Meteor.isCordova) {
@@ -30,3 +28,5 @@ if (Meteor.isCordova)
   angular.element(document).on("deviceready", onReady);
 else
   angular.element(document).ready(onReady);
+
+

@@ -31,6 +31,8 @@ Package.onUse(function(api) {
     'client/styles/login.less',
     'client/styles/main.less',
     'client/feedback/feedback.import.less',
+    'client/visits/request-visit/google-places-autocomplete.import.less',
+    'client/visits/request-visit/request-visit.import.less',
     'client/feedback/feedback.html'
   ], 'client');
 });

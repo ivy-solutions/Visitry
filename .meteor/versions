@@ -77,7 +77,6 @@ mongo@1.1.3
 mongo-id@1.0.1
 mongo-livedata@1.0.9
 mquandalle:bower@1.5.2_1
-mrt:googlemaps@0.1.1
 npm-bcrypt@0.7.8_2
 npm-mongo@1.4.39_1
 observe-sequence@1.0.7

@@ -53,6 +53,7 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,3,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
+          "name":"Boston",
           "latitude": 42.3601,
           "longitude": -71.0589
         }
@@ -64,6 +65,7 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,3,15,16,0,0,0),
         "notes": '3pm works best',
         "location": {
+          "name":"Boston",
           "latitude": 42.3601,
           "longitude": -71.0589
         }
@@ -76,6 +78,7 @@ Meteor.startup(function ()  {
         "visitTime": new Date(2016, 3, 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
+          "name":"Boston",
           "latitude": 42.3601,
           "longitude": -71.0589
         }
@@ -85,6 +88,7 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,1,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
+          "name":"Boston",
           "latitude": 42.3601,
           "longitude": -71.0589
         }
@@ -94,6 +98,7 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,3,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
+          "name":"Boston",
           "latitude": 42,
           "longitude": -71
         }
@@ -103,6 +108,7 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,3,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
+          "name":"Boston",
           "latitude": 42,
           "longitude": -71
         }
