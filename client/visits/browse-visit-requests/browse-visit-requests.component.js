@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $filter, $ionicPopup) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $state, $stateParams) {
   $reactive(this).attach($scope);
 
   this.helpers({
@@ -16,6 +16,20 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
        return Meteor.users.find({});
      }
   });
+
+  $scope.timePickerObject = {
+    inputEpochTime: ((new Date()).getHours() * 60 * 60),  //Optional
+    step: 15,  //Optional
+    format: 12,  //Optional
+    titleLabel: 'Visit Time',  //Optional
+    setLabel: 'Set',  //Optional
+    closeLabel: 'Close',  //Optional
+    setButtonType: 'button-positive',  //Optional
+    closeButtonType: 'button-stable',  //Optional
+    callback: function (val) {    //Mandatory
+      timePickerCallback(val);
+    }
+  };
 
   this.subscribe('visits');
   this.subscribe('users');
@@ -41,26 +55,30 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     $location.path("/visitor/upcoming");
   };
 
-  this.scheduleVisit = function(visit ) {
-    var confirmMessage = '';
-    var requesterName = $filter('firstNameLastInitial')(this.getRequester(visit));
-    confirmMessage = "Schedule a visit with " + requesterName + "?";
+  this.visitDetails = function (id) {
+    $state.go( 'visitDetails', {visitId: id} );
+  };
 
-    var confirmPopup = $ionicPopup.confirm({
-      template: confirmMessage,
-      cancelText: 'Cancel',
-      okText: 'Yes'
-    });
-    confirmPopup.then((result)=> {
-      if (result) {
-        Visits.update(visit._id,{
-          $set: { visitorId: Meteor.userId(),
-          visitTime: visit.requestedDate} //TODO until time selector implemented
-        });
-        $location.path("/visitor/upcoming");
-      }
-    })
+  this.showScheduleVisitModal = function (id) {
+    ScheduleVisit.showModal(id);
+  };
+  this.hideScheduleVisitModal = function () {
+    ScheduleVisit.hideModal();
+  };
+
+  this.setTime = function(id) {
+    console.log("visit id:" + id);
+  }
+
+  function timePickerCallback(val) {
+     if (typeof (val) === 'undefined') {
+      console.log('Time not selected');
+    } else {
+      var selectedTime = new Date(val * 1000);
+      console.log('The time is ', selectedTime.getUTCHours(), ':', selectedTime.getUTCMinutes(), 'in UTC');
+    }
 
   }
+
 
 });

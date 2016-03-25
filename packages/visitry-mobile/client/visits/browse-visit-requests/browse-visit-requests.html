@@ -1,14 +1,18 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
-     <ion-content>
+     <ion-content class="has-header">
         <ion-list>
             <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right">
-                <a href="/visits/{{visit._id}}">
-                    <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}</h2>
-                    <h4>{{visit.requestedDate | timeOfDay }}</h4>
+                <a ng-click="browseVisitRequests.visitDetails(visit._id)">
+                    <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}, {{visit.requestedDate | timeOfDay }}</h2>
                     <h3>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}</h3>
                     <p>{{visit.notes}}</p>
                 </a>
-                <button class="button icon ion-checkmark-circled" ng-click="browseVisitRequests.scheduleVisit(visit)"></button>
+                <ionic-timepicker class="button" input-obj="timePickerObject">
+                    <button class="button icon ion-ios-clock overflowShow" >
+                        <standard-time-meridian etime='timePickerObject.inputEpochTime'></standard-time-meridian>
+                    </button>
+                </ionic-timepicker>
+
             </ion-item>
         </ion-list>
     </ion-content>

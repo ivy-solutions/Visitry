@@ -7,7 +7,8 @@ let modulesToLoad = [
   'accounts.ui',
   'angularUtils.directives.dirPagination',
   'ngMaterial',
-  'ionic-ratings'
+  'ionic-ratings',
+  'ionic-timepicker'
 ];
 
 if (Meteor.isCordova) {
