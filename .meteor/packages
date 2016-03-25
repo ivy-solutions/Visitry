@@ -31,3 +31,4 @@ cfs:gridfs
 mquandalle:bower
 aldeed:simple-schema
 aldeed:collection2
+jeremy:geocomplete
