@@ -1,8 +1,13 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $state, $stateParams) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $state, $ionicModal) {
   $reactive(this).attach($scope);
+  this.showDelete = false;
+  this.canSwipe = true;
+  this.listSort = {
+    requestedDate: 1
+  };
 
   this.helpers({
      openVisits: () => {
@@ -16,20 +21,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
        return Meteor.users.find({});
      }
   });
-
-  $scope.timePickerObject = {
-    inputEpochTime: ((new Date()).getHours() * 60 * 60),  //Optional
-    step: 15,  //Optional
-    format: 12,  //Optional
-    titleLabel: 'Visit Time',  //Optional
-    setLabel: 'Set',  //Optional
-    closeLabel: 'Close',  //Optional
-    setButtonType: 'button-positive',  //Optional
-    closeButtonType: 'button-stable',  //Optional
-    callback: function (val) {    //Mandatory
-      timePickerCallback(val);
-    }
-  };
 
   this.subscribe('visits');
   this.subscribe('users');
@@ -59,24 +50,36 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     $state.go( 'visitDetails', {visitId: id} );
   };
 
+/*
   this.showScheduleVisitModal = function (id) {
     ScheduleVisit.showModal(id);
   };
   this.hideScheduleVisitModal = function () {
     ScheduleVisit.hideModal();
   };
+*/
 
-  this.setTime = function(id) {
-    console.log("visit id:" + id);
+  this.scheduleVisit = function(visit) {
+    console.log("visit id:" + visit._id);
+    $scope.visit = visit;
+    $scope.modalCtrl.show();
+  };
+
+  $ionicModal.fromTemplateUrl(getModalHtml(), function(modal) {
+    $scope.modalCtrl = modal;
+  }, {
+    scope: $scope,  // give the modal access to parent scope
+    animation: 'slide-in-left'
+  });
+
+
+function getModalHtml() {
+  if (Meteor.isCordova) {
+    return '/packages/visitry-mobile/client/visits/schedule-visit/schedule-visit-modal.html'
   }
-
-  function timePickerCallback(val) {
-     if (typeof (val) === 'undefined') {
-      console.log('Time not selected');
-    } else {
-      var selectedTime = new Date(val * 1000);
-      console.log('The time is ', selectedTime.getUTCHours(), ':', selectedTime.getUTCMinutes(), 'in UTC');
-    }
+  else {
+    return '/packages/vistry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
+  }
 
   }
 

@@ -1,22 +1,19 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header">
-        <ion-list>
+        <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
             <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right">
                 <a ng-click="browseVisitRequests.visitDetails(visit._id)">
                     <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}, {{visit.requestedDate | timeOfDay }}</h2>
                     <h3>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}</h3>
                     <p>{{visit.notes}}</p>
                 </a>
-                <ionic-timepicker class="button" input-obj="timePickerObject">
-                    <button class="button icon ion-ios-clock overflowShow" >
-                        <standard-time-meridian etime='timePickerObject.inputEpochTime'></standard-time-meridian>
-                    </button>
-                </ionic-timepicker>
-
+                 <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
+                 </ion-option-button>
             </ion-item>
         </ion-list>
     </ion-content>
 </ion-view>
+
 <ion-tabs class="tabs-balanced tabs-icon-top">
     <ion-tab title="Home" icon-on="ion-leaf" icon-off="ion-leaf" href="/visitor/browseRequests"></ion-tab>
     <ion-tab title="Upcoming" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="/visitor/upcoming"></ion-tab>

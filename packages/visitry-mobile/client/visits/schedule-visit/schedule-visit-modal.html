@@ -1,0 +1,35 @@
+/**
+ * Created by sarahcoletti on 3/25/16.
+ */
+<ion-modal-view ng-controller="scheduleVisitModalCtrl as scheduleVisit">
+  <ion-header-bar>
+    <div class="buttons" side="primary">
+      <button class="button button-clear button-primary" ng-click="scheduleVisit.cancel()">Cancel</button>
+    </div>
+    <h1 class="title">Schedule Visit</h1>
+    <div class="buttons" side="secondary" ng-click="scheduleVisit.submit(visit)">
+      <button class="button button-clear button-primary">Submit</button>
+    </div>
+    </ion-header-bar>
+  <ion-content>
+    <form>
+        <ionic-timepicker class="button" input-obj="timePickerObject">
+            <ion-button class="button icon ion-ios-clock overflowShow" >
+                <standard-time-meridian etime='visit.requestedDate'> Schedule Visit on {{visit.requestedDate | date: "EEEE, MMMM d"}}</standard-time-meridian>
+            </ion-button>
+        </ionic-timepicker>
+      <div class="list list-inset">
+        <div class="item item-divider">
+          <strong>Message for </strong>
+        </div>
+      </div>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <textarea ng-model="requestVisit.visitRequest.notes" rows="3">
+              I am looking forward to visiting you on...
+          </textarea>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>
