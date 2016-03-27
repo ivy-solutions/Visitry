@@ -10,7 +10,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       console.log("id:" + $stateParams.visitId);
       return Visits.findOne({_id: $stateParams.visitId});
     },
-    visitrequester: () => {
+    visitRequester: () => {
       let visit = Visits.findOne({_id : this.visitId});
       if (!visit)
         return 'No such visit';
@@ -35,7 +35,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.requesterInterests = () => {
-    let requester = this.visitrequester;
+    let requester = this.visitRequester;
     console.log( "requester:" + requester);
     return requester.profile.interests;
   }
