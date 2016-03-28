@@ -29,17 +29,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    if (!visit)
-      return 'No such visit';
-    var requester;
-    if ( visit.requesterId ) {
-      requester = Meteor.users.findOne({_id: visit.requesterId});
-    } else if (visit.requesterUsername ) {
-      requester = Meteor.users.findOne({username: visit.requesterUsername});
-    }
-    if (!requester)
-      return 'No such user for ' + visit.requesterUsername? visit.requesterName : visit.requesterId;
-    return requester;
+    return Meteor.myFunctions.getRequester(visit);
   };
 
   this.viewRequests = function () {

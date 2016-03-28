@@ -28,18 +28,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    if (!visit)
-      return 'No such visit';
-    var requester;
-    if ( visit.requesterId ) {
-      requester = Meteor.users.findOne({_id: visit.requesterId});
-    } else if (visit.requesterUsername ) {
-      requester = Meteor.users.findOne({username: visit.requesterUsername});
-    }
-    if (!requester)
-      return 'No such user for ' + visit.requesterUsername? visit.requesterName : visit.requesterId;
-
-    return requester;
+    return Meteor.myFunctions.getRequester(visit)
   };
 
   this.viewUpcomingVisits = function () {
@@ -49,15 +38,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.visitDetails = function (id) {
     $state.go( 'visitDetails', {visitId: id} );
   };
-
-/*
-  this.showScheduleVisitModal = function (id) {
-    ScheduleVisit.showModal(id);
-  };
-  this.hideScheduleVisitModal = function () {
-    ScheduleVisit.hideModal();
-  };
-*/
 
   this.scheduleVisit = function(visit) {
     console.log("visit id:" + visit._id);
@@ -73,14 +53,13 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   });
 
 
-function getModalHtml() {
-  if (Meteor.isCordova) {
-    return '/packages/visitry-mobile/client/visits/schedule-visit/schedule-visit-modal.html'
-  }
-  else {
-    return '/packages/vistry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
-  }
-
+  function getModalHtml() {
+    if (Meteor.isCordova) {
+      return '/packages/visitry-mobile/client/visits/schedule-visit/schedule-visit-modal.html'
+    }
+    else {
+      return '/packages/vistry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
+    }
   }
 
 
