@@ -21,11 +21,15 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve:{
-          feedback:function($location){
+/*          feedback:function($location,$scope,$reactive){
             //TODO: if(visits.find({feedbackId:null,requesterId:Meteor.UserId()}).count())
             //var visitId="";
             //$location.url('/visits/'+visitId+'/feedback');
-          }
+
+            Meteor.subscribe('visits');
+            var v = Visits.findOne({feedbackId:null});
+            console.log(v)
+          }*/
         }
       })
       .state('browseRequests', {

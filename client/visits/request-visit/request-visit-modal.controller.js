@@ -56,7 +56,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
           latitude: this.visitRequest.location.details.geometry.location.lat(),
           longitude: this.visitRequest.location.details.geometry.location.lng()
         },
-        requestedDate: (new Date(this.visitRequest.date)).setHours(this.visitRequest.time),
+        requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
         notes: this.visitRequest.notes
       };
       console.log(newVisit);

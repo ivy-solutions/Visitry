@@ -4,13 +4,13 @@
         <ion-header-bar class="bar-dark">
          </ion-header-bar>
         <ion-content>
-            <ul class="list">
+            <ion-list>
                 <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
-                <a href="/profile" class="item" menu-close>Profile</a>
-                <a href="/logout" class="item" ng-click="visitry.logout()" menu-close>Logout</a>
-                <a href="/visitor/browseRequests" class="item" menu-close>As Visitor</a>
-                <a href="/pendingVisits" class="item" menu-close>As Requester</a>
-            </ul>
+                <ion-item href="/profile" menu-close>Profile</ion-item>
+                <ion-item href="/logout" class="item" ng-click="visitry.logout()" menu-close>Logout</ion-item>
+                <ion-item href="/visitor/browseRequests" menu-close>As Visitor</ion-item>
+                <ion-item href="/pendingVisits" menu-close>As Requester</ion-item>
+            </ion-list>
         </ion-content>
     </ion-side-menu>
 
