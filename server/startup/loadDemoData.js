@@ -43,7 +43,7 @@ Meteor.startup(function ()  {
     var vivian = Meteor.users.findOne({username:'Vivian'});
     var requester1 = Meteor.users.findOne({username:'requester1'});
     var requester2 = Meteor.users.findOne({username:'requester2'});
-    var requester3 = Meteor.users.findOne({username:'requester3'})
+    var requester3 = Meteor.users.findOne({username:'requester3'});
 
     var visits = [
       {
@@ -101,6 +101,18 @@ Meteor.startup(function ()  {
           "name":"Boston",
           "latitude": 42,
           "longitude": -71
+        }
+      },
+      {
+        "requesterId":requester1._id,
+        "visitorId": sarahc._id,
+        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
+        "requestedDate": new Date(2016,0,1,13,0,0,0),
+        "notes": 'This already happened',
+        "location": {
+          "name":"Boston",
+          "latitude": 42.3601,
+          "longitude": -71.0589
         }
       },
       {

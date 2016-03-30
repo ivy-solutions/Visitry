@@ -4,16 +4,16 @@
 Visits = new Mongo.Collection("visits");
 
 
- Visits.allow({
- insert: function (userId, visit) {
+Visits.allow({
+  insert: function (userId, visit) {
     return true;
- },
- update: function (userId, visit, fields, modifier) {
+  },
+  update: function (userId, visit, fields, modifier) {
     return true;
- },
- remove: function (userId, visit) {
+  },
+  remove: function (userId, visit) {
     return true;
- }
+  }
 });
 
 LocationSchema = new SimpleSchema({

@@ -1,26 +1,25 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, RequestVisit, $filter) {
-
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup, RequestVisit, $filter) {
   $reactive(this).attach($scope);
-  this.showDelete = false;
-  this.canSwipe = true;
-  this.listSort = {
-    date: 1
-  };
-
   this.subscribe('visits');
   this.subscribe('users');
 
+  this.showDelete = false;
+  this.canSwipe = true;
+  this.listSort = {
+    requestedDate: 1
+  };
+
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visits.find({requesterId:Meteor.userId()}, {sort: this.getReactively('listSort')});
+      var visits = Visits.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
       return Meteor.myFunctions.dateSortArray(visits);
     }
   });
 
-  this.getUserFirstName =(userId)=>{
+  this.getUserFirstName = (userId)=> {
     return Meteor.users.findOne(userId).profile.firstName;
   };
 
