@@ -39,12 +39,27 @@ Meteor.methods({
         'Must be logged in to update email.');
     }
 
-    check(email, String);
-
     if (email && Meteor.user().emails) {
       Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
     }
+    check(email, String);
+
     return Accounts.addEmail(Meteor.userId(), email );
-  }
+  },
+  updateLocation(loc) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update location.');
+    }
+
+    var location = {
+      name: loc.name,
+      latitude: loc.latitude,
+      longitude: loc.longitude
+    };
+
+    return Meteor.users.update(this.userId, {$set: {'location': location}} );
+
+    }
 
 });

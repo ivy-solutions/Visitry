@@ -7,6 +7,10 @@
 angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location) {
   $reactive(this).attach($scope);
 
+  this.listSort = {
+    visitTime: 1
+  };
+
   this.helpers({
     upcomingVisits: () => {
       var startOfToday = new Date();
@@ -16,7 +20,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
         'visitTime': {$exists: true},
         'visitTime': {$gt: startOfToday}
       };
-      return Visits.find(selector);
+      return Visits.find(selector, {sort: this.getReactively('listSort')});
     },
     users: () => { //I don't understand why I need this for getRequester to work
       return Meteor.users.find({});
