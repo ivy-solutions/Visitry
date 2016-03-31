@@ -46,7 +46,7 @@ Meteor.methods({
 
     return Accounts.addEmail(Meteor.userId(), email );
   },
-  updateLocation(loc) {
+  updateLocation(loc, vicinity) {
     if (!this.userId) {
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update location.');
@@ -58,7 +58,7 @@ Meteor.methods({
       longitude: loc.longitude
     };
 
-    return Meteor.users.update(this.userId, {$set: {'location': location}} );
+    return Meteor.users.update(this.userId, {$set: {'location': location, 'vicinity': vicinity}} );
 
     }
 

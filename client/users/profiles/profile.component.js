@@ -14,6 +14,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       name: '',
       details: {}
   };
+  this.vicinity = user ? user.vicinity : 2;
+  this.vicinityOptions = ['2 miles', '5 miles', '10 miles', '20 miles','50 miles'];
   this.role = 'requester';
 
   var submitPressed = false;
@@ -38,7 +40,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
          latitude: this.location.details.geometry.location.lat(),
          longitude: this.location.details.geometry.location.lng()
        }
-       Meteor.call('updateLocation', newLocation, (err) => {
+       var numMiles = this.vicinityOptions[this.vicinity].match(/\d+/);
+       console.log( "update vicinity : " + numMiles);
+       Meteor.call('updateLocation', newLocation, numMiles, (err) => {
          if (err) return handleError(err);
        });
 

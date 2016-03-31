@@ -29,6 +29,11 @@
                 <span flex></span>
                 <span class="error-message" ng-hide="profile.isLocationValid()">Oops you forgot a location</span>
             </div>
+            <label class="item item-input item-select">
+                <span class="input-label">Show visits within:</span>
+                <select ng-model="profile.vicinity" ng-options="profile.vicinityOptions.indexOf(item) as item for item in profile.vicinityOptions">
+                </select>
+            </label>
             <label class="item item-input item-floating-label">
                 <span class="input-label">Email Address</span>
                 <input ng-model="profile.primaryEmail" type="email" placeholder="Email Address"/>
