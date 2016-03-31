@@ -4,9 +4,8 @@
             <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right">
                 <a ng-click="browseVisitRequests.visitDetails(visit._id)">
                     <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}, {{visit.requestedDate | timeOfDay }}</h2>
-                    <h3>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}</h3>
-                    <p>{{visit.notes}}</p>
-                    <h4>{{browseVisitRequests.getDistanceToVisitLocation(visit) | number:2 }} miles away</h4>
+                    <p><strong>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}} </strong> : {{visit.notes}}</p>
+                    <h4>{{browseVisitRequests.getDistanceToVisitLocation(visit) | number:1 }} miles from home</h4>
                 </a>
                  <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
                  </ion-option-button>

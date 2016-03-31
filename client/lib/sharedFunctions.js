@@ -22,11 +22,9 @@ Meteor.myFunctions = {
     var requester;
     if ( visit.requesterId ) {
       requester = Meteor.users.findOne({_id: visit.requesterId});
-    } else if (visit.requesterUsername ) {
-      requester = Meteor.users.findOne({username: visit.requesterUsername});
     }
     if (!requester)
-      return 'No such user for ' + visit.requesterUsername? visit.requesterName : visit.requesterId;
+      return 'No such user for ' + visit.requesterId;
 
     return requester;
   }

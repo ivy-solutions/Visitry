@@ -13,15 +13,12 @@
               Near: {{visitDetails.approximateLocation()}}
           </ion-item>
           <ion-item>
-            <h3>Requested by {{visitDetails.visitRequester | firstNameLastInitial}}</h3>
+            <h3>Requested by {{visitDetails.getRequester() | firstNameLastInitial}}</h3>
               <ion-list>Interests
                   <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>
 
       </ion-list>
-      <div class="buttons">
-          <button class="button button-clear button-balanced" ng-click="visitDetails.close()">Cancel</button>
-      </div>
-  </ion-content>
+   </ion-content>
 </ion-view>
