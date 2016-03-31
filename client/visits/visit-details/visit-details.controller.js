@@ -37,7 +37,20 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.requesterInterests = () => {
     let requester = this.visitRequester;
     console.log( "requester:" + requester);
-    return requester.profile.interests;
+    if (requester.profile && requester.profile.interests)
+      return requester.profile.interests;
+    return '';
+  }
+
+  this.approximateLocation = () => {
+    let visit = Visits.findOne({_id : this.visitId});
+    if ( visit.location) {
+      var parts = visit.location.name.split(',');
+      if (parts.length > 1) {
+        return parts[0].match(/\D+/) + "," + parts[1];
+      }
+    }
+    return '';
   }
 
 });

@@ -10,6 +10,9 @@
             <p>{{visitDetails.visit.notes}}</p>
         </ion-item>
           <ion-item>
+              Near: {{visitDetails.approximateLocation()}}
+          </ion-item>
+          <ion-item>
             <h3>Requested by {{visitDetails.visitRequester | firstNameLastInitial}}</h3>
               <ion-list>Interests
                   <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
