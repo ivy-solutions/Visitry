@@ -8,7 +8,8 @@ let modulesToLoad = [
   'angularUtils.directives.dirPagination',
   'ngMaterial',
   'ionic-ratings',
-  'ionic-timepicker'
+  'ionic-timepicker',
+  'ion-profile-picture'
 ];
 
 if (Meteor.isCordova) {

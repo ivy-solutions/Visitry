@@ -1,13 +1,9 @@
 <ion-view title="Profile">
 
     <ion-content class="profile">
-
-        <a class="profile-picture positive">
-            <ion-profile-picture ng-model="myPicture"></ion-profile-picture>
-        </a>
-
+            <ion-profile-picture ng-model="profile.picture"></ion-profile-picture>
         <div class="list">
-            <label class="item item-input item-floating-label">
+             <label class="item item-input item-floating-label">
                 <span class="input-label">First Name</span>
                 <input ng-model="profile.firstName" type="text" placeholder="First Name"/>
              </label>
@@ -38,10 +34,11 @@
                 <span class="input-label">Email Address</span>
                 <input ng-model="profile.primaryEmail" type="email" placeholder="Email Address"/>
             </label>
+            <label class="item item-input">
+                <ion-radio ng-model="profile.role" ng-value="'requester'">Request Visits</ion-radio><ion-radio ng-model="profile.role" ng-value="'visitor'">Visit Others</ion-radio>
+            </label>
         </div>
-        <ion-radio ng-model="profile.role" ng-value="'requester'">Request Visits</ion-radio>
-        <ion-radio ng-model="profile.role" ng-value="'visitor'">Visit Others</ion-radio>
-        <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
+         <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
             Submit
         </button>
     </ion-content>
