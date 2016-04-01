@@ -11,18 +11,32 @@ angular.module('visitry').directive('feedback', function () {
     controllerAs: 'feedback',
     controller: function ($scope, $reactive,$state, $stateParams) {
       $reactive(this).attach($scope);
+      this.subscribe('visits');
+      this.subscribe('users');
 
-      this.visit = Visits.findOne({_id:$stateParams.visitId});
 
       var feedbackResponse = {
-        visitorId:'',
-        requesterId:'',
+        visitorId: '',
+        requesterId:Meteor.userId(),
         visitorRating: 0,
         visitorComments:'',
         visitRating:0,
         visitComments:'',
-        visitId:''
+        visitId: $stateParams.visitId
       };
+
+      this.visitor = '';
+
+      this.helpers({
+        visit: ()=>{
+          var v = Visits.findOne({_id:$stateParams.visitId});
+          if(v){
+            feedbackResponse.visitorId = v.visitorId;
+            this.visitor = Meteor.users.findOne({_id:v.visitorId});
+          }
+          return v
+        }
+      });
 
       this.visitorRating = {
         minRating: 1,
@@ -43,9 +57,15 @@ angular.module('visitry').directive('feedback', function () {
       };
       this.submitFeedback = ()=>{
         //TODO: data validation here, add the user data
-
-        Feedback.insert(feedbackResponse);
-        $state.go('pendingVisits')
+        var feedbackId = Feedback.insert(feedbackResponse);
+        Visits.update(feedbackResponse.visitId,{$set: {feedbackId: feedbackId}},{upsert:false,multi:false},function(err,updates){
+          if(err){
+            console.log(err);
+          }
+          else{
+            $state.go('pendingVisits')
+          }
+        })
       }
     }
   }

@@ -21,15 +21,19 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve:{
-/*          feedback:function($location,$scope,$reactive){
-            //TODO: if(visits.find({feedbackId:null,requesterId:Meteor.UserId()}).count())
-            //var visitId="";
-            //$location.url('/visits/'+visitId+'/feedback');
-
-            Meteor.subscribe('visits');
-            var v = Visits.findOne({feedbackId:null});
-            console.log(v)
-          }*/
+          feedback:function($location){
+            const visits = Meteor.subscribe('visits');
+            Tracker.autorun(()=>{
+              const isReady = visits.ready();
+              var visitNeedingFeedback = Visits.findOne({feedbackId:null,requesterId:Meteor.userId(),requestedDate:{$lt:new Date()}});
+              if(isReady && visitNeedingFeedback){
+                console.log("Yes lets go to feedbacks");
+                $location.url('/feedback/'+ visitNeedingFeedback._id);
+              }else{
+                console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
+              }
+            })
+          }
         }
       })
       .state('browseRequests', {
@@ -88,7 +92,7 @@ angular.module('visitry')
         controller: 'profileCtrl as profile'
       })
     .state('feedback',{
-      url:'/feedback',
+      url:'/feedback/:visitId',
       template:'<feedback></feedback>'
     });
 

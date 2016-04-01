@@ -4,8 +4,8 @@
       <ion-list>
         <ion-item class="item-avatar">
           <img ng-src="">
-          <h2>John Doe</h2>
-          <p>Nov 2, 1991 Afternoon</p>
+          <h2>{{feedback.visitor.profile.firstName}}</h2>
+          <p>{{feedback.visit.requestedDate| date:mediumDate}}</p>
         </ion-item>
         <div class="item item-divider">
           Rate your visitor
