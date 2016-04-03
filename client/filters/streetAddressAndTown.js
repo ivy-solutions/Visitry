@@ -7,8 +7,11 @@ angular.module('visitry').filter('streetAddressAndTown', function () {
       return 'No location Specified';
     }
 
-    var parts = visit.location.name.split(',');
-    return parts[0] + parts[1];
-
+    if ( location.name ) {
+      var parts = location.name.split(',');
+      if (parts.size() >= 2)
+        return parts[0] + parts[1];
+    }
+    return location
   }
 });

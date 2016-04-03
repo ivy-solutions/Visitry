@@ -1,11 +1,24 @@
 <ion-view view-title="Upcoming Visits">
-    <ion-content>
-        <ion-list>
-            <ion-item ng-repeat="visit in visitorViewUpcoming.upcomingVisits" href="/visits/{{visit._id}}">
-                <h2>{{visit.visitTime | dayMonthDateAtHourMinute }}</h2>
-                <h3>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h3>
-                <p>{{visit.notes}}</p>
-            </ion-item>
+    <ion-content class="has-header">
+        <ion-list show-delete="visitorViewUpcoming.showDelete" can-swipe="visitorViewUpcoming.canSwipe">
+            <div ng-repeat="visitsByDate in visitorViewUpcoming.upcomingVisits">
+                <div class="item item-divider">
+                    {{visitsByDate.date|date: "EEE., MMMM d"}}
+                </div>
+                <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
+                    <img ng-src="{{visitorViewUpcoming.getRequesterImage(visit)}}"/>
+                    <div class="timeOfDay">{{visit.visitTime | date: "h:mm"}}</div>
+                    <div class="visitInfo">
+                        <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
+                            <h2>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h2>
+                            <h2>{{visit.location.name | streetAddressAndTown}}</h2>
+                            <p>{{visit.notes | limitTo:100 }}{{visit.notes.length >100 ?'...':''}}</p>
+                        </a>
+                    </div>
+                    <ion-option-button class="button" ng-click="visitorViewUpcoming.cancelVisit(visit)">
+                    </ion-option-button>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>

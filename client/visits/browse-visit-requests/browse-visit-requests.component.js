@@ -38,7 +38,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
     return requester.profile.picture ? requester.profile.picture : "";
-  }
+  };
 
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have alocation, then make the result 0
