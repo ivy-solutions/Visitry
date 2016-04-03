@@ -1,11 +1,11 @@
 /**
  * Created by sarahcoletti on 3/13/16.
  */
-angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location) {
+angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location, $state) {
   $reactive(this).attach($scope);
 
-  this.showDelete = true;
-  this.canSwipe = true;
+  this.showDelete = false;
+  this.canSwipe = false;
   this.listSort = {
     visitTime: 1
   };
@@ -43,17 +43,14 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
     return requester.profile.picture ? requester.profile.picture : "";
   };
 
-  this.viewRequests = function () {
-    $location.path("/visitor/browseRequests")
-  };
-
   this.visitDetails = function (id) {
+    console.log ('visitDetails of :' + id);
     $state.go( 'visitDetails', {visitId: id} );
   };
 
   this.cancelVisit = function (visit) {
     //TODO popup confirmation and then remove Visitor Id and visistTime
-  }
+  };
 
 
 });
