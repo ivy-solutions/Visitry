@@ -18,7 +18,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
           'visitorId': {$exists: false},
           'requestedDate': {$gt: new Date()}
       };
-      return Visits.find(selector, {sort: this.getReactively('listSort')} );
+      var visits = Visits.find(selector, {sort: this.getReactively('listSort')} );
+      return Meteor.myFunctions.dateSortArray(visits);
     },
      users: () => { //I don't understand why I need this for getRequester to work
        return Meteor.users.find({});
@@ -33,6 +34,11 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.getRequester = function (visit) {
     return Meteor.myFunctions.getRequester(visit)
   };
+
+  this.getRequesterImage = function(visit) {
+    var requester = this.getRequester(visit);
+    return requester.profile.picture ? requester.profile.picture : "";
+  }
 
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have alocation, then make the result 0

@@ -1,15 +1,23 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header">
         <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
-            <ion-item ng-repeat="visit in browseVisitRequests.openVisits" class="item-button-right">
-                <a ng-click="browseVisitRequests.visitDetails(visit._id)">
-                    <h2>{{visit.requestedDate | date: "EEEE, MMMM d"}}, {{visit.requestedDate | timeOfDay }}</h2>
-                    <p><strong>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}} </strong> : {{visit.notes}}</p>
-                    <h4>{{browseVisitRequests.getDistanceToVisitLocation(visit) | number:1 }} miles from home</h4>
-                </a>
-                 <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
+            <div ng-repeat="dateVisits in browseVisitRequests.openVisits">
+                <div class="item item-divider">
+                    {{dateVisits.date|date: "EEE., MMMM d"}}
+                </div>
+                <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar">
+                    <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}">
+                    <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
+                    <div class="visitInfo">
+                        <a ng-click="browseVisitRequests.visitDetails(visit._id)">
+                            <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}} <span style="float:right">{{browseVisitRequests.getDistanceToVisitLocation(visit) | number:1 }} miles</span></h2>
+                            <p>{{visit.notes | limitTo:100 }}{{visit.notes.length >100 ?'...':''}}</p>
+                        </a>
+                    </div>
+                    <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
                  </ion-option-button>
-            </ion-item>
+                </ion-item>
+            </div>
         </ion-list>
     </ion-content>
 </ion-view>
