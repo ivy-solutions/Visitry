@@ -4,17 +4,19 @@
 <ion-view view-title="Visit Request" ng-controller="visitDetailsCtrl as visitDetails">
   <ion-content>
       <ion-list>
-        <ion-item>
-          <h2>{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</h2>
-          <h4>{{visitDetails.visit.requestedDate | timeOfDay }}</h4>
-            <p>{{visitDetails.visit.notes}}</p>
-        </ion-item>
+        <ion-item class="item-avatar">
+            <img ng-src="{{visitDetails.getRequesterImage(visit)}}"/>
+            <h2>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}} <span style="float:right">{{visitDetails.visit.requestedDate | timeOfDay }}</span></h2>
+             <div class="visitInfo">
+                <h2>{{visitDetails.getRequester(visit) | firstNameLastInitial}}</h2>
+                <p>{{visitDetails.visit.notes}}</p>
+            </div>
+         </ion-item>
           <ion-item>
               Near: {{visitDetails.approximateLocation()}}
           </ion-item>
           <ion-item>
-            <h3>Requested by {{visitDetails.getRequester() | firstNameLastInitial}}</h3>
-              <ion-list>Interests
+              <ion-list>{{visitDetails.getRequester(visit)| firstNameLastInitial}}'s Interests
                   <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>

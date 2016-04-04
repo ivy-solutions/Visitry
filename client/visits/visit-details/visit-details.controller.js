@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 3/2/16.
  */
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $location) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $location, $filter) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
@@ -24,6 +24,12 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return Meteor.myFunctions.getRequester(this.visit)
   };
 
+  this.getRequesterImage = function(visit) {
+    var requester = this.getRequester(visit);
+    return requester.profile.picture ? requester.profile.picture : "";
+  };
+
+
   this.requesterInterests = () => {
     let requester = this.getRequester();
     console.log( "requester:" + requester);
@@ -33,7 +39,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   }
 
   this.approximateLocation = () => {
-    let visit = Visits.findOne({_id : this.visitId});
+    let visit = this.visit;
     if ( visit.location) {
       // strip out street numbers
       var parts = visit.location.name.split(',');
