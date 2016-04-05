@@ -6,7 +6,7 @@
       <ion-list>
         <ion-item class="item-avatar">
             <img ng-src="{{visitDetails.getRequesterImage(visit)}}"/>
-            <h2>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}} <span style="float:right">{{visitDetails.visit.requestedDate | timeOfDay }}</span></h2>
+            <h2>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}} <span class="time">{{visitDetails.visit.requestedDate | timeOfDay }}</span></h2>
              <div class="visitInfo">
                 <h2>{{visitDetails.getRequester(visit) | firstNameLastInitial}}</h2>
                 <p>{{visitDetails.visit.notes}}</p>

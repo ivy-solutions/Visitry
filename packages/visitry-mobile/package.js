@@ -33,6 +33,7 @@ Package.onUse(function(api) {
     'client/styles/login.less',
     'client/styles/main.less',
     'client/feedback/feedback.import.less',
+    'client/visits/visit-details/visit-details.import.less',
     'client/visits/request-visit/google-places-autocomplete.import.less',
     'client/visits/schedule-visit/schedule-visit.import.less',
     'client/visits/browse-visit-requests/browse-visit-requests.import.less',

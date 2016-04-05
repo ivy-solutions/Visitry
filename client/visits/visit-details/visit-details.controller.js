@@ -40,11 +40,13 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.approximateLocation = () => {
     let visit = this.visit;
-    if ( visit.location) {
-      // strip out street numbers
-      var parts = visit.location.name.split(',');
-      if (parts.length > 1) {
-        return parts[0].match(/\D+/) + "," + parts[1];
+    if ( visit && typeof visit.location === "object") {
+      if ( typeof visit.location.name == "string") {
+        // strip out street numbers
+        var parts = visit.location.name.split(',');
+        if (parts.length > 1) {
+          return parts[0].match(/\D+/) + "," + parts[1];
+        }
       }
     }
     return '';
