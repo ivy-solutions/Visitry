@@ -13,17 +13,29 @@
     </ion-header-bar>
   <ion-content>
     <form>
+        <div class="item item-divider">
+            <div layout="row">
+                <strong>Date</strong>
+            </div>
+        </div>
+        <div class="list list-inset">
+            <span class="scheduledDate">{{visit.requestedDate | date: "EEEE, MMMM d"}}</span>
+        </div>
+        <div class="item item-divider">
+            <div layout="row">
+                <strong>Time</strong>
+            </div>
+        </div>
         <div class="list list-inset">
             <ionic-timepicker class="button" input-obj="timePickerObject">
-                <button class="button button-block overflowShow" >
-                    For {{visit.requestedDate | timeOfDay }} of {{visit.requestedDate | date: "EEEE, MMMM d"}}
+                <button class="button overflowShow icon ion-ios-clock" >
                 </button>
             </ionic-timepicker>
-            {{scheduleVisit.getSelectedTime() | date: "h:mm a"}}
+            <span class="scheduledTime">{{scheduleVisit.getSelectedTime() | date: "h:mm a"}}</span>
         </div>
-      <div class="list list-inset">
         <div class="item item-divider">
-          <strong>Message for {{scheduleVisit.getRequester(visit) | firstNameLastInitial}}:</strong>
+            <div layout="row">
+            <strong>Message for {{scheduleVisit.getRequester(visit) | firstNameLastInitial}}:</strong>
         </div>
       </div>
       <div class="list list-inset">
