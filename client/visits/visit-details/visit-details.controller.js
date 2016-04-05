@@ -36,7 +36,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     if (requester.profile && requester.profile.interests)
       return requester.profile.interests;
     return '';
-  }
+  };
 
   this.approximateLocation = () => {
     let visit = this.visit;
@@ -44,8 +44,18 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       if ( typeof visit.location.name == "string") {
         // strip out street numbers
         var parts = visit.location.name.split(',');
-        if (parts.length > 1) {
-          return parts[0].match(/\D+/) + "," + parts[1];
+        console.log(parts);
+        var numParts = parts.length;
+        if ( numParts >=2 ) {
+          var inexactAddress = parts[0].match(/\D+/);
+          for (i = 1; i < parts.length-2; i++) {
+            inexactAddress += "," + parts[i].match(/\D+/);
+          }
+          return inexactAddress;
+        }
+        else {
+          // less than 2 parts - must just be town
+          return visit.location.name;
         }
       }
     }
