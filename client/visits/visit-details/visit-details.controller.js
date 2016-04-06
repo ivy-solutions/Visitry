@@ -44,7 +44,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       if ( typeof visit.location.name == "string") {
         // strip out street numbers
         var parts = visit.location.name.split(',');
-        console.log(parts);
         var numParts = parts.length;
         if ( numParts >=2 ) {
           var inexactAddress = parts[0].match(/\D+/);
