@@ -9,7 +9,8 @@ let modulesToLoad = [
   'ngMaterial',
   'ionic-ratings',
   'ionic-timepicker',
-  'ion-profile-picture'
+  'ion-profile-picture',
+  'angularMoment'
 ];
 
 if (Meteor.isCordova) {

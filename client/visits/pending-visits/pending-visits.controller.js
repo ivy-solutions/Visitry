@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup, RequestVisit, $filter) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
   $reactive(this).attach($scope);
   this.subscribe('visits');
   this.subscribe('users');
@@ -29,6 +29,10 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.hideRequestVisitModal = function () {
     RequestVisit.hideModal();
   };
+  this.getTimeSinceRequested = function(date){
+    var now = new Date();
+    return moment(now).diff(moment(date),'days');
+  }
 
   this.showCancelVisitConfirm = function (visit) {
     var confirmMessage = '';
@@ -46,6 +50,9 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
     confirmPopup.then((result)=> {
       if (result) {
         Visits.remove(visit._id);
+      }
+      else{
+        $ionicListDelegate.closeOptionButtons();
       }
     })
   }

@@ -1,4 +1,4 @@
-<ion-view view-title="Pending Visits">
+<ion-view view-title="Requested Visits">
   <ion-nav-buttons side="secondary" class="show">
     <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
     </button>
@@ -9,20 +9,22 @@
         <div class="item item-divider">
           {{dateVisits.date|date:'longDate'}}
         </div>
-        <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar">
+        <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
+                  on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
           <img ng-src="{{visit.visitorImg}}">
           <div layout="row">
-            <h2 ng-if="!visit.visitorId">Pending... </h2>
+            <h2 ng-if="!visit.visitorId">Requested <span
+                ng-if="!(pendingVisits.getTimeSinceRequested(visit.createdAt)===0)">{{visit.createdAt |amDifference : null : 'days' }} day </span><span
+                ng-if="pendingVisits.getTimeSinceRequested(visit.createdAt)===0">{{visit.createdAt |amDifference : null : 'hours' }} hours </span>ago
+            </h2>
             <h2 ng-if="visit.visitorId">{{pendingVisits.getUserFirstName(visit.visitorId)}}</h2>
             <span flex></span>
-            <p>{{visit.location.name | limitTo:20}}<span ng-if="visit.location.name.length > 20">...</span></p>
+            <p>{{visit.location.name | limitTo:10}}<span ng-if="visit.location.name.length > 10">...</span></p>
           </div>
           <p>{{visit.notes}}</p>
           <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
-            Delete
+            Cancel Visit
           </ion-option-button>
-          <ion-delete-button>
-          </ion-delete-button>
         </ion-item>
       </div>
     </ion-list>

@@ -51,6 +51,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
       var newVisit = {
         requesterId: Meteor.userId(),
+        createdAt:new Date(),
         location: {
           name: this.visitRequest.location.name,
           latitude: this.visitRequest.location.details.geometry.location.lat(),
