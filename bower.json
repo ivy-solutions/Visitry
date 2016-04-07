@@ -4,6 +4,7 @@
     "ionic-ratings": "~0.2.0",
     "angular-google-places-autocomplete": "~0.2.7",
     "ion-google-place": "~0.0.1",
-    "ionic-timepicker": "~0.4.0"
+    "ionic-timepicker": "~0.4.0",
+    "ion-profile-picture": "*"
   }
 }
