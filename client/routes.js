@@ -80,6 +80,10 @@ angular.module('visitry')
         },
         controller: 'loginCtrl as login'
       })
+      .state('register', {
+        url: '/register',
+        template: '<register></register>'
+      })
       .state('profile', {
         url: '/profile',
         templateUrl: ()=> {

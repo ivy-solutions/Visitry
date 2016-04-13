@@ -22,16 +22,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     });
   };
   this.createAccount = () => {
-    Accounts.createUser({username:this.credentials.username, password:this.credentials.password}, (err) => {
-      if (err) {
-        return handleError(err);
-      }
-      else {
-
-        console.log( 'Account created for ' + this.credentials.username);
-        $state.go('profile');
-      }
-    });
+      $state.go('register');
   };
 
   function handleError(err) {

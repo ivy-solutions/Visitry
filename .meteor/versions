@@ -14,6 +14,7 @@ angular:angular@1.4.8
 angular:angular-animate@1.4.8
 angular:angular-aria@1.4.8
 angular:angular-material@1.0.6
+angular:angular-messages@1.4.8
 angular:angular-sanitize@1.4.8
 angularui:angular-ui-bootstrap@0.13.0
 angularui:angular-ui-router@0.2.15

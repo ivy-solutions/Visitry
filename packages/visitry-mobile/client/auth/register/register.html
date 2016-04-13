@@ -1,0 +1,55 @@
+<ion-view title="Register">
+
+    <ion-content class="register padding">
+        <ion-item class="card padding">
+            <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
+                <div class="list">
+                    <label class="item item-input">
+                        <input ng-model="register.firstName" name="firstName" type="text" placeholder="First name" required />
+                    </label>
+                    <div layout="row" ng-show="registrationForm.firstName.$error && (registrationForm.firstName.$touched || registrationForm.$submitted)" ng-messages="registrationForm.firstName.$error">
+                        <span flex></span>
+                        <span class="error-message" ng-messages-include="error-list.html"></span>
+                    </div>
+                    <label class="item item-input">
+                        <input ng-model="register.lastName" name="lastName" type="text" placeholder="Last name" required/>
+                    </label>
+                     <div layout="row" ng-show="registrationForm.lastName.$error && (registrationForm.lastName.$touched || registrationForm.$submitted)" ng-messages="registrationForm.lastName.$error">
+                        <span flex></span>
+                        <span class="error-message" ng-messages-include="error-list.html"></span>
+                    </div>
+                    <label class="item item-input">
+                         <input ng-model="register.credentials.username" name="username" type="text" placeholder="Username" required ng-minlength="5" ng-maxlength="20"/>
+                    </label>
+                    <div layout="row" ng-show="registrationForm.username.$error && (registrationForm.username.$touched || registrationForm.$submitted)" ng-messages="registrationForm.username.$error">
+                        <span flex></span>
+                        <span class="error-message" ng-messages-include="error-list.html"></span>
+                    </div>
+                    <label class="item item-input">
+                         <input type="password" name="password" ng-model="register.credentials.password" placeholder="Password" ng-minlength="5" ng-maxlength="20" required>
+                    </label>
+                    <div layout="row" ng-show="registrationForm.password.$error && registrationForm.$submitted" ng-messages="registrationForm.password.$error">
+                        <span flex></span>
+                        <span class="error-message" ng-messages-include="error-list.html"></span>
+                    </div>
+
+                 </div>
+                <div class="padding">
+                    <button class="button button-block" >Submit</button>
+                </div>
+            </form>
+        </ion-item>
+    </ion-content>
+</ion-view>
+
+<script id="error-list.html" type="text/ng-template">
+    <div class="error-message" ng-message="required">
+        This field is required.
+    </div>
+    <div class="error-message" ng-message="minlength">
+        Must be least 5 characters.
+    </div>
+    <div class="error-message" ng-message="maxlength">
+        Type no more than 20 characters.
+    </div>
+</script>

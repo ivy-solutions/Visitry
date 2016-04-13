@@ -21,6 +21,8 @@ Package.onUse(function(api) {
     'client/lib/module.js',
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',
+    'client/auth/register/register.component.js',
+    'client/auth/register/register.html',
     'client/users/profile.html',
     'client/visitry/visitry.html',
     'client/visits/browse-visit-requests/browse-visit-requests.html',

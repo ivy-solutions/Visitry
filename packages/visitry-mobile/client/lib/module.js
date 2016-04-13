@@ -1,4 +1,4 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-angular.module('visitry.mobile', ['ionic']);
+angular.module('visitry.mobile', ['ionic', 'ngMessages']);
