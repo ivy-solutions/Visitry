@@ -11,6 +11,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.listSort = {
     requestedDate: 1
   };
+  this.currentUser;
 
   this.helpers({
      openVisits: () => {
@@ -27,12 +28,14 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   });
 
   this.subscribe('visits');
-  this.subscribe('users');
+  this.subscribe('users', function() {
+    this.currentUser = Meteor.user();
+  });
 
   ////////
 
   this.getRequester = function (visit) {
-    return Meteor.myFunctions.getRequester(visit)
+    return Meteor.myFunctions.getRequester(visit);
   };
 
   this.getRequesterImage = function(visit) {
@@ -43,7 +46,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have alocation, then make the result 0
     var toLocation = visit.location;
-    var fromLocation = Meteor.user().location ? Meteor.user.location : toLocation;
+    var fromLocation = this.currentUser && this.currentUser.location ? this.currentUser.location : toLocation;
     var EarthRadiusInMiles = 3956.0
     var EarthRadiusInKilometers = 6367.0
     var fromLatRads = degreesToRadians(42.331186);
