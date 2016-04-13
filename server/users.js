@@ -69,6 +69,6 @@ Meteor.methods({
 
  //   check(data, String);
 
-    return Meteor.users.update(this.userId, { $set: { 'picture': data } });
+    return Meteor.users.update(this.userId, { $set: { 'profile.picture': data } });
   }
 });

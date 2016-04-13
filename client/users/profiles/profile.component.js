@@ -4,32 +4,37 @@
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
 
-  let user = Meteor.users.find(Meteor.userId());
-
-  this.username = user ? user.username : '';
-  this.firstName = user && user.profile ? user.profile.firstName : '';
-  this.lastName = user && user.profile ? user.profile.lastName : '';
-  this.primaryEmail = user && user.emails ? user.emails[0].address : '';
+  this.username;
+  this.firstName;
+  this.lastName;
+  this.primaryEmail;
   this.location = {
       name: '',
       details: {}
   };
-  this.vicinity = user ? user.vicinity : 2;
+  this.vicinity;
   this.vicinityOptions = ['2 miles', '5 miles', '10 miles', '20 miles','50 miles'];
   this.role = 'requester';
   this.picture;
+  this.currentUser;
 
   var submitPressed = false;
+
+  this.subscribe('users', function () {
+    this.currentUser = Meteor.user();
+    this.username = this.currentUser ? this.currentUser.username : '';
+    this.firstName = this.currentUser && this.currentUser.profile ? this.currentUser.profile.firstName : '';
+    this.lastName = this.currentUser && this.currentUser.profile ? this.currentUser.profile.lastName : '';
+    this.primaryEmail = this.currentUser && this.currentUser.emails ? this.currentUser.emails[0].address : '';
+    this.vicinity = this.currentUser ? this.currentUser.vicinity : 2;
+    this.picture = this.currentUser && this.currentUser.profile.picture ? this.currentUser.profile.picture : '';
+  });
 
   /////////
    this.submitUpdate = () => {
      submitPressed=true;
-     if (this.isLocationValid() && this.isNameValid() ) {
+     if (this.isLocationValid() ) {
        console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
-
-       Meteor.call('updateName', this.firstName, this.lastName, (err) => {
-         if (err) return handleError(err);
-       });
 
        Meteor.call('updateEmail', this.primaryEmail, (err) => {
          if (err) return handleError(err);
@@ -61,12 +66,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     }
     return true;
   };
-  this.isNameValid = ()=> {
-    if ( submitPressed ) {
-      return !(_.isEmpty(this.firstName)) && !(_.isEmpty(this.lastName));
-    }
-    return true;
-   };
 
   this.disableTap = function () {
     container = document.getElementsByClassName('pac-container');

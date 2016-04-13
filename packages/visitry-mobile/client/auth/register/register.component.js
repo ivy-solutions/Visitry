@@ -26,7 +26,12 @@ angular.module("visitry.mobile").directive('register', function() {
               Meteor.call('updateName', this.firstName, this.lastName, (err) => {
                 if (err) return handleError(err);
               });
-              $state.go('profile')
+              Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
+                if (err) {
+                  return handleError(err)
+                }
+                $state.go('profile')
+              });
             }
           })
         }

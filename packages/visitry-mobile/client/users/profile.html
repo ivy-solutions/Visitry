@@ -1,38 +1,23 @@
-<ion-view title="Profile">
+<ion-view title="{{profile.username}}">
 
     <ion-content class="profile">
+        <div class="username">{{profile.firstName}} {{profile.lastName}}</div>
             <ion-profile-picture ng-model="profile.picture"></ion-profile-picture>
-        <div class="list">
-             <label class="item item-input item-floating-label">
-                <span class="input-label">First Name</span>
-                <input ng-model="profile.firstName" type="text" placeholder="First Name"/>
-             </label>
-            <label class="item item-input item-floating-label">
-                <span class="input-label">Last Name</span>
-                <input ng-model="profile.lastName" type="text" placeholder="Last Name"/>
-            </label>
-            <div layout="row">
-                <span flex></span>
-                <span class="error-message" ng-hide="profile.isNameValid()">Oops you must have a name</span>
-            </div>
+         <div class="list">
             <label class="item item-input">
                  <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
                        ng-model="profile.location.name"
                        details="profile.location.details" ng-focus="profile.disableTap()"/>
              </label>
-            <div layout="row">
-                <span flex></span>
-                <span class="error-message" ng-hide="profile.isLocationValid()">Oops you forgot a location</span>
-            </div>
             <label class="item item-input item-select">
                 <span class="input-label">Show visits within:</span>
                 <select ng-model="profile.vicinity" ng-options="profile.vicinityOptions.indexOf(item) as item for item in profile.vicinityOptions">
                 </select>
             </label>
-            <label class="item item-input item-floating-label">
-                <span class="input-label">Email Address</span>
-                <input ng-model="profile.primaryEmail" type="email" placeholder="Email Address"/>
+            <label class="item item-input">
+                <span class="input-label">Email</span>
+                <input ng-model="profile.primaryEmail" type="email" placeholder="Email"/>
             </label>
             <label class="item item-input">
                 <ion-radio ng-model="profile.role" ng-value="'requester'">Request Visits</ion-radio><ion-radio ng-model="profile.role" ng-value="'visitor'">Visit Others</ion-radio>
