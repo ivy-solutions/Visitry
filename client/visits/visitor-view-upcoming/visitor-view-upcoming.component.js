@@ -35,7 +35,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    return Meteor.myFunctions.getRequester(visit);
+    return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {

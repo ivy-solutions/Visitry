@@ -35,12 +35,15 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    return Meteor.myFunctions.getRequester(visit);
+    return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
-    return requester.profile.picture ? requester.profile.picture : "";
+    if ( typeof(requester.profile.picture) === 'undefined' )
+      return "";
+    else
+      return requester.profile.picture;
   };
 
   this.getDistanceToVisitLocation = function ( visit ) {

@@ -28,6 +28,8 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   };
 
   this.subscribe('visits');
+  this.subscribe('users');
+
   var selectedTime;
 
   this.submit = function (visit) {
@@ -64,7 +66,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   }
 
   this.getRequester = function (visit) {
-    return Meteor.myFunctions.getRequester(visit)
+    return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getSelectedTime = function() {

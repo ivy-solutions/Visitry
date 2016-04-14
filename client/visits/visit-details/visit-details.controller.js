@@ -5,14 +5,11 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
-  this.helpers({
-    visit: () => {
-      console.log("id:" + $stateParams.visitId);
-      return Visits.findOne({_id: $stateParams.visitId});
-    }
-  });
+  this.visit
 
-  this.subscribe('visits');
+  this.subscribe('visits', function() {
+    this.visit = Visits.findOne({_id: $stateParams.visitId});
+  });
   this.subscribe('users');
 
   ////////
@@ -21,18 +18,22 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.getRequester = function () {
-    return Meteor.myFunctions.getRequester(this.visit)
+    return Meteor.users.findOne({_id: this.visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
-    var requester = this.getRequester(visit);
-    return requester.profile.picture ? requester.profile.picture : "";
+    var requester = this.getRequester();
+    if ( typeof(requester.profile.picture) === 'undefined' ) {
+        return "";
+    } else {
+      return requester.profile.picture;
+    }
   };
 
 
   this.requesterInterests = () => {
-    let requester = this.getRequester();
-    console.log( "requester:" + requester);
+    var requester = this.getRequester();
+    console.log( "requester:" + requester.requesterId );
     if (requester.profile && requester.profile.interests)
       return requester.profile.interests;
     return '';

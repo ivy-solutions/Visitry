@@ -13,19 +13,5 @@ Meteor.myFunctions = {
       }
     });
     return dateSortedVisits;
-  },
-
-  //FIXME: This function seems like it shouldn't be used anymore since we are storing things with requesterId
-  getRequester: function (visit) {
-    if (!visit)
-      return 'No such visit';
-    var requester;
-    if ( visit.requesterId ) {
-      requester = Meteor.users.findOne({_id: visit.requesterId});
-    }
-    if (!requester)
-      return 'No such user for ' + visit.requesterId;
-
-    return requester;
   }
 };
