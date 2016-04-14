@@ -9,7 +9,6 @@ let modulesToLoad = [
   'ngMaterial',
   'ionic-ratings',
   'ionic-timepicker',
-  'ion-profile-picture',
   'angularMoment',
   'ngMessages'
 ];

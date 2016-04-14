@@ -5,7 +5,6 @@
     "angular-google-places-autocomplete": "~0.2.7",
     "ion-google-place": "~0.0.1",
     "ionic-timepicker": "~0.4.0",
-    "ion-profile-picture": "*",
     "angular-messages": "^1.5.3"
   },
   "resolutions": {
