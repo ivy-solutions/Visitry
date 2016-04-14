@@ -20,7 +20,7 @@ angular.module('visitry').filter('firstNameLastInitial', function () {
       }
     }
     else {
-      return user;
+      return user.username;
     }
   }
 });
