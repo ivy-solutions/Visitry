@@ -36,9 +36,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      if (this.isLocationValid() ) {
        console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
 
-       Meteor.call('updateEmail', this.primaryEmail, (err) => {
-         if (err) return handleError(err);
-       });
+       //Meteor.call('updateEmail', this.primaryEmail, (err) => {
+       //  if (err) return handleError(err);
+       //});
 
        console.log("update location: " + this.location.name);
        var newLocation = {
@@ -78,8 +78,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.updatePicture = () => {
-    console.log( "update picture for " + user.username);
-    MeteorCameraUI.getPicture({ width: 60, height: 60 }, function (err, data) {
+    console.log( "update picture for " + this.currentUser.username);
+    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:50 }, function (err, data) {
       if (err && err.error == 'cancel') {
         return;
       }

@@ -1,4 +1,4 @@
-.ion-profile-picture{
+.profile-picture{
   border-radius: 50%;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -12,8 +12,22 @@
   background-position: center center;
   background-size: auto 100%;
 }
+.profile-picture.has-picture {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  background-color: #F8F8F8;
+  text-align: center;
+  color: #ccc;
+  background-position: center center;
+  background-size: auto 100%;
+  .item-avatar > img:first-child {
+    max-width: 200px;
+    max-height: 200px;
+  }
+}
 
-.ion-profile-picture.no-picture:before{
+.profile-picture.no-picture:before{
   content: "\f118";
   font-family: "Ionicons";
   font-size: 3rem;
@@ -21,9 +35,6 @@
   text-align: center;
 }
 
-.ion-profile-picture input[type=file]{
-  display: none;
-}
 .profile .username {
   text-align: center;
   font-weight: bold;
