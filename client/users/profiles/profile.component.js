@@ -18,21 +18,21 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.picture;
   this.currentUser;
 
-  var submitPressed = false;
-
   this.subscribe('users', function () {
     this.currentUser = Meteor.user();
-    this.username = this.currentUser ? this.currentUser.username : '';
-    this.firstName = this.currentUser && this.currentUser.userData ? this.currentUser.userData.firstName : '';
-    this.lastName = this.currentUser && this.currentUser.userData ? this.currentUser.userData.lastName : '';
-    this.primaryEmail = this.currentUser && this.currentUser.emails ? this.currentUser.emails[0].address : '';
-    this.vicinity = this.currentUser && this.currentUser.userData ? this.currentUser.userData.vicinity : 2;
-    this.picture = this.currentUser && this.currentUser.userData.picture ? this.currentUser.userData.picture : '';
+    if ( this.currentUser ) {
+      this.username = this.currentUser.username;
+      this.firstName = this.currentUser.userData ? this.currentUser.userData.firstName : '';
+      this.lastName = this.currentUser.userData ? this.currentUser.userData.lastName : '';
+      this.primaryEmail = this.currentUser.emails ? this.currentUser.emails[0].address : '';
+      this.vicinity = this.currentUser.userData ? this.currentUser.userData.vicinity : 2;
+      this.picture =  this.currentUser.userData.picture ? this.currentUser.userData.picture : '';
+      this.location = this.currentUser.userData.location;
+    }
   });
 
   /////////
    this.submitUpdate = () => {
-     submitPressed=true;
      if (this.isLocationValid() ) {
        console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
 
@@ -60,12 +60,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      }
   };
 
-  this.isLocationValid = ()=> {
-    if ( submitPressed ) {
-      return this.location.name && this.location.details.geometry;
-    }
-    return true;
-  };
 
   this.disableTap = function () {
     container = document.getElementsByClassName('pac-container');
