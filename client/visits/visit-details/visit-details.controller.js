@@ -46,10 +46,11 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
         // strip out street numbers
         var parts = visit.location.name.split(',');
         var numParts = parts.length;
+        console.log ( "parts : " + numParts + " 1: " + parts[0] + " 2: " + parts[1]);
         if ( numParts >=2 ) {
-          var inexactAddress = parts[0].match(/\D+/);
+          var inexactAddress = parts[0].replace(/^\d+/,'');
           for (i = 1; i < parts.length-2; i++) {
-            inexactAddress += "," + parts[i].match(/\D+/);
+            inexactAddress += "," + parts[i].replace(/^d+/,'');
           }
           return inexactAddress;
         }
