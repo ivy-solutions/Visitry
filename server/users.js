@@ -1,7 +1,10 @@
 Meteor.publish("users", function () {
-  return Meteor.users.find({}, {fields: {username: 1, emails: 1, profile: 1}});
+  //TODO will have a filter on affiliation with agencies of the current user eventually
+  return Meteor.users.find({}, {fields: {username: 1, emails: 1, userData:1}});
 });
-Meteor.publish("users-names", function({userIds}) {
+
+
+Meteor.publish("users-data", function({userIds}) {
   new SimpleSchema({
     userIds: {type: [String]}
   }).validate({userIds});
@@ -13,7 +16,7 @@ Meteor.publish("users-names", function({userIds}) {
   //return the name fields
   //TODO best practices advise against using profile field
   const options = {
-    fields: { username: 1, profile: 1}
+    fields: { username: 1, location: 1, vicinity:1}
   };
   return Meteor.users.find({selector, options} )
 });
@@ -30,7 +33,7 @@ Meteor.methods({
     check(firstName, String);
     check(lastName, String);
 
-    return Meteor.users.update(this.userId, {$set: {'profile.firstName': firstName, 'profile.lastName': lastName}});
+    return Meteor.users.update(this.userId, {$set: {'userData.firstName': firstName, 'userData.lastName': lastName}});
   },
   updateEmail(email)
   {
@@ -58,7 +61,7 @@ Meteor.methods({
       longitude: loc.longitude
     };
 
-    return Meteor.users.update(this.userId, {$set: {'location': location, 'vicinity': vicinity}} );
+    return Meteor.users.update(this.userId, {$set: {'userData.location': location, 'userData.vicinity': vicinity}} );
 
     },
   updatePicture(data) {
@@ -69,6 +72,15 @@ Meteor.methods({
 
  //   check(data, String);
 
-    return Meteor.users.update(this.userId, { $set: { 'profile.picture': data } });
+    return Meteor.users.update(this.userId, { $set: { 'userData.picture': data } });
   }
+});
+
+Accounts.onCreateUser(function(options, user) {
+  if ( options.userData)
+    user.userData = options.userData;
+  else {
+    user.userData = {firstname: "No", lastName: "Name"}
+  }
+  return user;
 });

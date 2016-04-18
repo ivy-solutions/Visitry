@@ -8,18 +8,19 @@ angular.module('visitry').filter('firstNameLastInitial', function () {
       return 'No User';
     }
 
-    if (user.profile && (user.profile.firstName || user.profile.lastName) ) {
-      if (user.profile.firstName && user.profile.lastName) {
-        return user.profile.firstName + ' ' + user.profile.lastName[0] + '.';
+    if (user.userData && (user.userData.firstName || user.userData.lastName) ) {
+      if (user.userData.firstName && user.userData.lastName) {
+        return user.userData.firstName + ' ' + user.userData.lastName[0] + '.';
       } else {
-        if (user.profile.firstName) {
-          return user.profile.firstName;
+        if (user.userData.firstName) {
+          return user.userData.firstName;
         } else {
-          return user.profile.lastName;
+          return user.userData.lastName;
         }
       }
     }
     else {
+      console.log ( "Using username, " + user.username + " for " + user._id);
       return user.username;
     }
   }

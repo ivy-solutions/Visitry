@@ -18,23 +18,23 @@ Meteor.startup(function ()  {
   if (Meteor.users.find().count() === 0) {
     Accounts.createUser({
       username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99',
-      profile: {firstName: 'Sarah', lastName: 'Coletti'}
+      userData: {firstName: 'Sarah', lastName: 'Coletti'}
     });
     Accounts.createUser({
       username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
-      profile: {firstName: 'Vivian', lastName: 'Visitor'}
+      userData: {firstName: 'Vivian', lastName: 'Visitor', interests: ['Studying clarinet', 'Reads fiction', 'New to area']}
     });
     Accounts.createUser({
       username: 'requester1', email: 'rq1@gmail.com', password: 'Visitry99',
-      profile: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
+      userData: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
     });
     Accounts.createUser({
       username: 'requester2', email: 'rq2@gmail.com', password: 'Visitry99',
-      profile: {firstName: 'Rita', lastName: 'Smith', interests:['Hiking', 'Grandchildren']}
+      userData: {firstName: 'Rita', lastName: 'Smith', interests:['Hiking', '6 grandchildren']}
     });
     Accounts.createUser({
       username: 'requester3', email: 'rq3@gmail.com', password: 'Visitry99',
-      profile: {firstName: 'Ron', lastName: 'Wang', interests:['Has 4 cats', 'Sings in church choir']}
+      userData: {firstName: 'Ron', lastName: 'Wang', interests:['Has 4 cats', 'Sings in church choir']}
     });
   }
 
@@ -50,8 +50,7 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "createdAt":new Date(2016,2,21,13,0,0,0),
         "visitorId": sarahc._id,
-        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "requestedDate": new Date(2016,3,1,13,0,0,0),
+        "requestedDate": new Date(2016,5,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
           "name":"Boston",
@@ -63,8 +62,7 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "visitorId": vivian._id,
         "createdAt":new Date(2016,2,21,13,0,0,0),
-        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "requestedDate": new Date(2016,3,15,16,0,0,0),
+        "requestedDate": new Date(2016,6,15,16,0,0,0),
         "notes": '3pm works best',
         "location": {
           "name":"Boston",
@@ -76,9 +74,8 @@ Meteor.startup(function ()  {
         "requesterId": requester1._id,
         "visitorId": vivian._id,
         "createdAt":new Date(2016,3,15,13,0,0,0),
-        "visitorImg": 'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
-        "requestedDate": new Date(2016,3,21,9,0,0,0),
-        "visitTime": new Date(2016, 3, 21, 13, 30, 0, 0),
+        "requestedDate": new Date(2016,5,21,9,0,0,0),
+        "visitTime": new Date(2016, 5, 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
           "name":"Boston",
@@ -89,7 +86,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "createdAt":new Date(2016,1,21,13,0,0,0),
-        "requestedDate": new Date(2016,1,29,9,0,0,0),
+        "requestedDate": new Date(2016,5,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
           "name":"Boston",
@@ -100,7 +97,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester1._id,
         "createdAt":new Date(2016,3,13,13,0,0,0),
-        "requestedDate": new Date(2016,3,15,13,0,0,0),
+        "requestedDate": new Date(2016,5,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
           "name":"Boston",
@@ -112,7 +109,6 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "visitorId": sarahc._id,
         "createdAt":new Date(2016,0,1,9,0,0,0),
-        "visitorImg":'https://cdn3.iconfinder.com/data/icons/rcons-user-action/32/boy-512.png',
         "requestedDate": new Date(2016,0,1,13,0,0,0),
         "notes": 'This already happened',
         "location": {
@@ -124,7 +120,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "createdAt":new Date(2016,3,10,13,0,0,0),
-        "requestedDate": new Date(2016,3,17,9,0,0,0),
+        "requestedDate": new Date(2016,5,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
           "name":"Boston",

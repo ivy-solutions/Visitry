@@ -23,11 +23,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.subscribe('users', function () {
     this.currentUser = Meteor.user();
     this.username = this.currentUser ? this.currentUser.username : '';
-    this.firstName = this.currentUser && this.currentUser.profile ? this.currentUser.profile.firstName : '';
-    this.lastName = this.currentUser && this.currentUser.profile ? this.currentUser.profile.lastName : '';
+    this.firstName = this.currentUser && this.currentUser.userData ? this.currentUser.userData.firstName : '';
+    this.lastName = this.currentUser && this.currentUser.userData ? this.currentUser.userData.lastName : '';
     this.primaryEmail = this.currentUser && this.currentUser.emails ? this.currentUser.emails[0].address : '';
-    this.vicinity = this.currentUser ? this.currentUser.vicinity : 2;
-    this.picture = this.currentUser && this.currentUser.profile.picture ? this.currentUser.profile.picture : '';
+    this.vicinity = this.currentUser && this.currentUser.userData ? this.currentUser.userData.vicinity : 2;
+    this.picture = this.currentUser && this.currentUser.userData.picture ? this.currentUser.userData.picture : '';
   });
 
   /////////
@@ -101,7 +101,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   function handleError(err) {
-    $log.error('profile save error ', err);
+    $log.error('userData save error ', err);
 
     $ionicPopup.alert({
       title: err.reason || 'Save failed',

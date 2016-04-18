@@ -21,10 +21,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
       };
       var visits = Visits.find(selector, {sort: this.getReactively('listSort')} );
       return Meteor.myFunctions.dateSortArray(visits);
-    },
-     users: () => { //I don't understand why I need this for getRequester to work
-       return Meteor.users.find({});
-     }
+    }
   });
 
   this.subscribe('visits');
@@ -35,19 +32,25 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
+    if ( typeof(visit) == 'undefined' ) {
+      return null;
+    }
     return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
-    var requester = this.getRequester(visit);
-    if ( typeof(requester.profile.picture) === 'undefined' )
+    if ( typeof(visit) == 'undefined' ) {
+      return null;
+    }
+    var requester = Meteor.users.findOne({_id: visit.requesterId});
+    if ( typeof(requester.userData.picture) === 'undefined' )
       return "";
     else
-      return requester.profile.picture;
+      return requester.userData.picture;
   };
 
   this.getDistanceToVisitLocation = function ( visit ) {
-    //if user does not have alocation, then make the result 0
+    //if user does not have a location, then make the result 0
     var toLocation = visit.location;
     var fromLocation = this.currentUser && this.currentUser.location ? this.currentUser.location : toLocation;
     var EarthRadiusInMiles = 3956.0

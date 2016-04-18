@@ -66,15 +66,18 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   }
 
   this.getRequester = function (visit) {
+    if ( typeof(visit) == 'undefined' ) {
+        return null;
+    }
+    console.log( " getting requester from visit: " + visit );
     return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getSelectedTime = function() {
     if (selectedTime) {
-      var today = new Date()
-      var dateAsLocal = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
+      var today = new Date();
+      return new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
         selectedTime.getUTCHours(), selectedTime.getUTCMinutes(), 0, 0);
-      return dateAsLocal;
     } else {
       return "";
     }

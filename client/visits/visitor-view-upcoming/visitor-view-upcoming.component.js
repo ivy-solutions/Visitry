@@ -40,7 +40,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
-    return requester.profile.picture ? requester.profile.picture : "";
+    return requester.userData.picture ? requester.userData.picture : "";
   };
 
   this.visitDetails = function (id) {

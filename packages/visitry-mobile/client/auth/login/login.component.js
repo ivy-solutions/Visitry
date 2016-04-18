@@ -8,7 +8,6 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     username: '',
     password: ''
   };
-  this.profile
 
   this.login = () => {
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {

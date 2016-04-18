@@ -19,8 +19,9 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
     }
   });
 
-  this.getUserFirstName = (userId)=> {
-    return Meteor.users.findOne(userId).profile.firstName;
+  this.getVisitor = (visitor)=> {
+    var user = Meteor.users.findOne(visitor.visitorId);
+    return user;
   };
 
   this.showRequestVisitModal = function () {

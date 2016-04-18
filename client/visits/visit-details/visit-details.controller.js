@@ -18,24 +18,31 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.getRequester = function () {
+    if ( typeof(this.visit) == 'undefined' ) {
+      return null;
+    }
     return Meteor.users.findOne({_id: this.visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester();
-    if ( typeof(requester.profile.picture) === 'undefined' ) {
+    if (requester) {
+      if (typeof(requester.userData.picture) === 'undefined') {
         return "";
-    } else {
-      return requester.profile.picture;
+      } else {
+        return requester.userData.picture;
+      }
     }
   };
 
 
   this.requesterInterests = () => {
     var requester = this.getRequester();
-    console.log( "requester:" + requester.requesterId );
-    if (requester.profile && requester.profile.interests)
-      return requester.profile.interests;
+    if (requester) {
+      console.log("requester:" + requester.requesterId);
+      if (requester.userData && requester.userData.interests)
+        return requester.userData.interests;
+    }
     return '';
   };
 
