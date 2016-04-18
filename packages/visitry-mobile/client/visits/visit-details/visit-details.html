@@ -13,7 +13,7 @@
             </div>
          </ion-item>
           <ion-item>
-              Near: {{visitDetails.approximateLocation()}}
+              Near: {{visitDetails.visit.location | approximateLocation}}
           </ion-item>
           <ion-item>
               <ion-list>{{visitDetails.getRequester(visit)| firstNameLastInitial}}'s Interests

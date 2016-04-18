@@ -11,7 +11,7 @@
                     <div class="visitInfo">
                         <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
                             <h2>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h2>
-                            <h2>{{visit.location.name | streetAddressAndTown}}</h2>
+                            <h2>{{visit.location | approximateLocation}}</h2>
                             <p style="white-space: nowrap">{{visit.notes}}</p>
                         </a>
                     </div>
