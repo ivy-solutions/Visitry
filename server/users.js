@@ -80,7 +80,7 @@ Accounts.onCreateUser(function(options, user) {
   if ( options.userData)
     user.userData = options.userData;
   else {
-    user.userData = {firstname: "No", lastName: "Name"}
+    user.userData = {firstname: "", lastName: ""}
   }
   return user;
 });
