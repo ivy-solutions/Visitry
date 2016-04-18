@@ -4,9 +4,7 @@
         <div class="username">{{profile.firstName}} {{profile.lastName}}</div>
         <div ng-if="!profile.picture">
              <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
-                <a>
-                     <img ng-src="{{profile.picture}}"/>Add Picture
-                </a>
+                      <img ng-src="{{profile.picture}}"/>Add Picture
              </div>
         </div>
         <div ng-if="profile.picture">
