@@ -66,7 +66,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   }
 
   this.getRequester = function (visit) {
-    if ( typeof(visit) == 'undefined' ) {
+    if ( typeof(visit) === 'undefined' ) {
         return null;
     }
     console.log( " getting requester from visit: " + visit );

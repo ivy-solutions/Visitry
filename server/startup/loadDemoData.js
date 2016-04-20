@@ -18,23 +18,23 @@ Meteor.startup(function ()  {
   if (Meteor.users.find().count() === 0) {
     Accounts.createUser({
       username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Sarah', lastName: 'Coletti'}
+      userData: {firstName: 'Sarah', lastName: 'Coletti', role:"visitor"}
     });
     Accounts.createUser({
       username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
-      userData: {firstName: 'Vivian', lastName: 'Visitor', interests: ['Studying clarinet', 'Reads fiction', 'New to area']}
+      userData: {firstName: 'Vivian', lastName: 'Visitor', role: "visitor", interests: ['Studying clarinet', 'Reads fiction', 'New to area']}
     });
     Accounts.createUser({
       username: 'requester1', email: 'rq1@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Raoul', lastName: 'Robbins', interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
+      userData: {firstName: 'Raoul', lastName: 'Robbins', role: "requester", interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
     });
     Accounts.createUser({
-      username: 'requester2', email: 'rq2@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Rita', lastName: 'Smith', interests:['Hiking', '6 grandchildren']}
+      username: 'requester2', email: 'rq2@gmail.com', password: 'Visitry99', role: "requester",
+      userData: {firstName: 'Rita', lastName: 'Smith', role: "requester", interests:['Hiking', '6 grandchildren']}
     });
     Accounts.createUser({
       username: 'requester3', email: 'rq3@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Ron', lastName: 'Wang', interests:['Has 4 cats', 'Sings in church choir']}
+      userData: {firstName: 'Ron', lastName: 'Wang', role: "requester", interests:['Has 4 cats', 'Sings in church choir']}
     });
   }
 

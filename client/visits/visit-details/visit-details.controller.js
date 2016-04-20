@@ -18,7 +18,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.getRequester = function () {
-    if ( typeof(this.visit) == 'undefined' ) {
+    if ( typeof(this.visit) === 'undefined' ) {
       return null;
     }
     return Meteor.users.findOne({_id: this.visit.requesterId});

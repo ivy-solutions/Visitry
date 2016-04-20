@@ -14,7 +14,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
   this.vicinity;
   this.vicinityOptions = ['2 miles', '5 miles', '10 miles', '20 miles','50 miles'];
-  this.role = 'requester';
+  this.role;
   this.picture;
   this.currentUser;
 
@@ -25,40 +25,44 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       this.firstName = this.currentUser.userData ? this.currentUser.userData.firstName : '';
       this.lastName = this.currentUser.userData ? this.currentUser.userData.lastName : '';
       this.primaryEmail = this.currentUser.emails ? this.currentUser.emails[0].address : '';
-      this.vicinity = this.currentUser.userData ? this.currentUser.userData.vicinity : 2;
+      this.vicinity = this.currentUser.userData ? this.currentUser.userData.vicinity : '2 miles';
       this.picture =  this.currentUser.userData.picture ? this.currentUser.userData.picture : '';
       this.location = this.currentUser.userData.location;
+      this.role = this.currentUser.userData.role;
     }
   });
 
   /////////
    this.submitUpdate = () => {
-     if (this.isLocationValid() ) {
-       console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
+     console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
 
-       //Meteor.call('updateEmail', this.primaryEmail, (err) => {
-       //  if (err) return handleError(err);
-       //});
+     Meteor.call('updateName', this.firstName, this.lastName, this.role, (err) => {
+       if (err) return handleError(err);
+     });
 
-       console.log("update location: " + this.location.name);
-       var newLocation = {
-         name: this.location.name,
-         latitude: this.location.details.geometry.location.lat(),
-         longitude: this.location.details.geometry.location.lng()
-       }
-       var numMiles = this.vicinityOptions[this.vicinity].match(/\d+/);
-       console.log( "update vicinity : " + numMiles);
-       Meteor.call('updateLocation', newLocation, numMiles, (err) => {
-         if (err) return handleError(err);
-       });
+     //Meteor.call('updateEmail', this.primaryEmail, (err) => {
+     //  if (err) return handleError(err);
+     //});
 
-       if (this.role == "visitor") {
-         $state.go('browseRequests');
-       } else {
-         $state.go('pendingVisits');
-       }
+     console.log("update location: " + this.location.name);
+     var newLocation = {
+       name: this.location.name,
+       details: this.location.details,
+       latitude: this.location.details.geometry.location.lat(),
+       longitude: this.location.details.geometry.location.lng()
+     };
+
+     console.log( "update vicinity : "+ this.vicinity);
+     Meteor.call('updateLocation', newLocation, this.vicinity, (err) => {
+       if (err) return handleError(err);
+     });
+
+     if (this.role == "visitor") {
+       $state.go('browseRequests');
+     } else {
+       $state.go('pendingVisits');
      }
-  };
+};
 
 
   this.disableTap = function () {

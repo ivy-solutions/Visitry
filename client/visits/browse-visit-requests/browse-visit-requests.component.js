@@ -32,17 +32,14 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    if ( typeof(visit) == 'undefined' ) {
+    if ( typeof(visit) === 'undefined' ) {
       return null;
     }
     return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
-    if ( typeof(visit) == 'undefined' ) {
-      return null;
-    }
-    var requester = Meteor.users.findOne({_id: visit.requesterId});
+    var requester = this.getRequester(visit);
     if ( typeof(requester.userData.picture) === 'undefined' )
       return "";
     else

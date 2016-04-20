@@ -3,27 +3,8 @@ Meteor.publish("users", function () {
   return Meteor.users.find({}, {fields: {username: 1, emails: 1, userData:1}});
 });
 
-
-Meteor.publish("users-data", function({userIds}) {
-  new SimpleSchema({
-    userIds: {type: [String]}
-  }).validate({userIds});
-
-  //select only users with those ids
-  const selector = {
-    _id: {$in:userIds}
-  };
-  //return the name fields
-  //TODO best practices advise against using profile field
-  const options = {
-    fields: { username: 1, location: 1, vicinity:1}
-  };
-  return Meteor.users.find({selector, options} )
-});
-
-
 Meteor.methods({
-  updateName(firstName, lastName)
+  updateName(firstName, lastName, role)
   {
     if (!this.userId) {
       throw new Meteor.Error('not-logged-in',
@@ -32,8 +13,9 @@ Meteor.methods({
 
     check(firstName, String);
     check(lastName, String);
+    check(role, String);
 
-    return Meteor.users.update(this.userId, {$set: {'userData.firstName': firstName, 'userData.lastName': lastName}});
+    return Meteor.users.update(this.userId, {$set: {'userData.firstName': firstName, 'userData.lastName': lastName, 'userData.role': role}});
   },
   updateEmail(email)
   {
@@ -57,6 +39,7 @@ Meteor.methods({
 
     var location = {
       name: loc.name,
+      details: loc.details,
       latitude: loc.latitude,
       longitude: loc.longitude
     };
@@ -80,7 +63,7 @@ Accounts.onCreateUser(function(options, user) {
   if ( options.userData)
     user.userData = options.userData;
   else {
-    user.userData = {firstname: "", lastName: ""}
+    user.userData = {firstname: "", lastName: "", role:"visitor"}
   }
   return user;
 });
