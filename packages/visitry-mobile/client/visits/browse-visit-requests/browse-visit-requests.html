@@ -7,13 +7,13 @@
                 </div>
                 <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
                     <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}"/>
-                    <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
-                    <div class="visitInfo">
-                        <a ng-click="browseVisitRequests.visitDetails(visit._id)">
+                    <a ng-click="browseVisitRequests.visitDetails(visit._id)">
+                        <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
+                        <div class="visitInfo">
                             <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}} <span class="distance">{{browseVisitRequests.getDistanceToVisitLocation(visit) | number:1 }} miles</span></h2>
-                            <p>{{visit.notes | limitTo:100 }}{{visit.notes.length >100 ?'...':''}}</p>
-                        </a>
-                    </div>
+                            <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
+                        </div>
+                    </a>
                     <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
                  </ion-option-button>
                 </ion-item>

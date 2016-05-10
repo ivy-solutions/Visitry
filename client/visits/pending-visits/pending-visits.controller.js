@@ -33,7 +33,17 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.getTimeSinceRequested = function(date){
     var now = new Date();
     return moment(now).diff(moment(date),'days');
-  }
+  };
+  this.getVisitorImage = function(visit) {
+    if (visit.visitorId) {
+      var visitor = Meteor.users.findOne({_id: visit.visitorId});
+      if (typeof(visitor.userData.picture) !== 'undefined') {
+        return visitor.userData.picture;
+      }
+    }
+    return "";
+  };
+
 
   this.showCancelVisitConfirm = function (visit) {
     var confirmMessage = '';
