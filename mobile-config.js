@@ -4,12 +4,12 @@
 // This section sets up some basic app metadata,
 // the entire section is optional.
 App.info({
-  id: 'com.visitry',
+  id: 'com.ivy-solutions.visitry',
   name: 'Visitry',
   description: 'visitry',
   author: 'Ivy-Solutions',
   email: 'contact@example.com',
-  website: 'http://example.com'
+  website: 'http://visitry.org'
 });
 
 App.accessRule('*.google.com/*');
