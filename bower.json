@@ -1,13 +1,14 @@
 {
   "name": "visitry",
+  "version": "1.0.0",
   "dependencies": {
-    "ionic-ratings": "~0.2.0",
+    "ionic-ratings": "^0.2.0",
     "angular-google-places-autocomplete": "~0.2.7",
     "ion-google-place": "~0.0.1",
-    "ionic-timepicker": "~0.4.0",
     "angular-messages": "^1.5.3"
   },
   "resolutions": {
-    "angular": "^1.2.x"
-  }
+    "angular": "^1.2.27"
+  },
+  "private": true
 }

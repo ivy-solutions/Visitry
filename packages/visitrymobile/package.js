@@ -1,5 +1,5 @@
 Package.describe({
-  name: 'visitry-mobile',
+  name: 'visitrymobile',
   version: '0.0.1',
   // Brief, one-line summary of the package.
   summary: '',
@@ -16,6 +16,7 @@ Package.onUse(function(api) {
   api.use('driftyco:ionic');
   api.use('less');
   api.use('mquandalle:bower');
+  api.use('modules');
 
   api.addFiles([
     'client/lib/module.js',

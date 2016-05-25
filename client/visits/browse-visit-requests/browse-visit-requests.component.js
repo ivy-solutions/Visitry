@@ -88,7 +88,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   function getModalHtml() {
     if (Meteor.isCordova) {
-      return '/packages/visitry-mobile/client/visits/schedule-visit/schedule-visit-modal.html'
+      return '/packages/visitrymobile/client/visits/schedule-visit/schedule-visit-modal.html'
     }
     else {
       return '/packages/vistry-browser/client/visits/schedule-visit/schedule-visit-modal.html'

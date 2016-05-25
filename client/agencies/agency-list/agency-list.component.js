@@ -6,7 +6,7 @@ angular.module('visitry').directive('agencyList', function () {
     restrict: 'E',
     templateUrl: () => {
       if (Meteor.isCordova) {
-        return '/packages/visitry-mobile/client/agencies/agency-list/agency-list.html';
+        return '/packages/visitrymobile/client/agencies/agency-list/agency-list.html';
       } else {
         return '/packages/visitry-browser/client/agencies/agency-list/agency-list.html';
       }

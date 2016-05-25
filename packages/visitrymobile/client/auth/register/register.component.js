@@ -4,7 +4,7 @@
 angular.module("visitry.mobile").directive('register', function() {
   return {
     restrict: 'E',
-    templateUrl: '/packages/visitry-mobile/client/auth/register/register.html',
+    templateUrl: '/packages/visitrymobile/client/auth/register/register.html',
     controllerAs: 'register',
     controller: function ($scope, $reactive, $state, $ionicPopup ) {
       $reactive(this).attach($scope);

@@ -22,7 +22,7 @@ angular.module('visitry').service('RequestVisit', function ($rootScope, $ionicMo
 
 function getModalHtml() {
   if (Meteor.isCordova) {
-    return '/packages/visitry-mobile/client/visits/request-visit/request-visit-modal.html'
+    return '/packages/visitrymobile/client/visits/request-visit/request-visit-modal.html'
   }
   else {
     return '/packages/vistry-browser/client/visits/request-visit/request-visit-modal.html'

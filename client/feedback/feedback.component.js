@@ -3,7 +3,7 @@ angular.module('visitry').directive('feedback', function () {
     restrict: 'E',
     templateUrl: ()=> {
       if (Meteor.isCordova) {
-        return '/packages/visitry-mobile/client/feedback/feedback.html';
+        return '/packages/visitrymobile/client/feedback/feedback.html';
       } else {
         return '/packages/visitry-browser/client/feedback/feedback.html';
       }

@@ -14,7 +14,7 @@ angular.module('visitry')
         url: '/pendingVisits',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/pending-visits/pending-visits.html';
+            return '/packages/visitrymobile/client/visits/pending-visits/pending-visits.html';
           } else {
             return '/packages/visitry-browser/client/visits/pending-visits/pending-visits.html';
           }
@@ -40,7 +40,7 @@ angular.module('visitry')
         url: '/visitor/browseRequests',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/browse-visit-requests/browse-visit-requests.html';
+            return '/packages/visitrymobile/client/visits/browse-visit-requests/browse-visit-requests.html';
           } else {
             return '/packages/visitry-browser/client/visits/browse-visit-requests/browse-visit-requests.html';
           }
@@ -51,7 +51,7 @@ angular.module('visitry')
         url: '/visitor/upcoming',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/visitor-view-upcoming/visitor-view-upcoming.html';
+            return '/packages/visitrymobile/client/visits/visitor-view-upcoming/visitor-view-upcoming.html';
           } else {
             return '/packages/visitry-browser/client/visits/visitor-view-upcoming/visitor-view-upcoming.html';
           }
@@ -62,7 +62,7 @@ angular.module('visitry')
         url: '/visits/:visitId',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/visits/visit-details/visit-details.html';
+            return '/packages/visitrymobile/client/visits/visit-details/visit-details.html';
           } else {
             return '/packages/visitry-browser/client/visits/visit-details/visit-details.html';
           }
@@ -73,7 +73,7 @@ angular.module('visitry')
         url: '/login',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/auth/login/login.html';
+            return '/packages/visitrymobile/client/auth/login/login.html';
           } else {
             return '/packages/visitry-browser/client/auth/login/login.html';
           }
@@ -88,7 +88,7 @@ angular.module('visitry')
         url: '/profile',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitry-mobile/client/users/profile.html';
+            return '/packages/visitrymobile/client/users/profile.html';
           } else {
             return '/packages/visitry-browser/client/users/profile.html';
           }

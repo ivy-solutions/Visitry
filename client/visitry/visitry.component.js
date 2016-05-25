@@ -6,7 +6,7 @@ angular.module('visitry').directive('visitry', function () {
     restrict: 'E',
     templateUrl: () => {
       if (Meteor.isCordova) {
-        return '/packages/visitry-mobile/client/visitry/visitry.html';
+        return '/packages/visitrymobile/client/visitry/visitry.html';
       } else {
         return '/packages/visitry-browser/client/visitry/visitry.html';
       }
