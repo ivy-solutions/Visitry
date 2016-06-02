@@ -3,6 +3,7 @@
  */
 
 angular.module('visitry').filter('firstNameLastInitial', function () {
+
   return function (user) {
     if (!user) {
       return 'No User';

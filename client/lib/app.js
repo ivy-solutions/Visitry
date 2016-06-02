@@ -1,6 +1,7 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+
 let modulesToLoad = [
   'angular-meteor',
   'ui.router',
@@ -19,7 +20,7 @@ if (Meteor.isCordova) {
   modulesToLoad = modulesToLoad.concat(['visitry.browser']);
 }
 
-angular.module('visitry',modulesToLoad );
+export default angular.module('visitry',modulesToLoad );
 
 function onReady() {
   angular.bootstrap(document, ['visitry'], {
