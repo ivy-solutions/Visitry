@@ -1,0 +1,27 @@
+{
+  "name": "visitry",
+  "version": "1.0.0",
+  "description": "visitry connects visit requests and visitors",
+  "main": "mobile-config.js",
+  "scripts": {
+    "test": "meteor test --driver-package practicalmeteor:mocha --port 3100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivy-solutions/Visitry.git"
+  },
+  "keywords": [
+    "visit"
+  ],
+  "author": "Sarah Coletti",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ivy-solutions/Visitry/issues"
+  },
+  "homepage": "https://github.com/ivy-solutions/Visitry",
+  "private": true,
+  "dependencies": {
+    "ionic-timepicker": "^0.5.1",
+    "meteor-node-stubs": "^0.2.3"
+  }
+}
