@@ -36,7 +36,7 @@ angular.module('visitry').directive('feedback', function () {
           return v
         }
       });
-
+//TODO: create a directive that does this
       this.visitorRating = {
         badStars: [
           {
