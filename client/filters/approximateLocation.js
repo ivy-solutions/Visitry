@@ -13,7 +13,7 @@ angular.module('visitry').filter('approximateLocation', function () {
       for (var i = 1; i < parts.length-2; i++) {
         inexactAddress += "," + parts[i].replace(/^d+/,'');
       }
-      return inexactAddress;
+      return inexactAddress.trim();
     }
     else {
       // less than 2 parts - must just be town

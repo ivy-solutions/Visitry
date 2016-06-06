@@ -23,7 +23,7 @@ if (Meteor.isCordova) {
   modulesToLoad = modulesToLoad.concat(['visitry.browser']);
 }
 
-angular.module('visitry',modulesToLoad );
+export default angular.module('visitry',modulesToLoad );
 
 function onReady() {
   angular.bootstrap(document, ['visitry'], {

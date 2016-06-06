@@ -49,7 +49,11 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
-    var fromLocation = this.currentUser && this.currentUser.location ? this.currentUser.location : toLocation;
+    if ( toLocation === null || typeof(toLocation) === 'undefined')
+      return "No visit location";
+    if ( this.currentUser == null || this.currentUser.location == null )
+      return "0";
+    var fromLocation = this.currentUser.location;
     var EarthRadiusInMiles = 3956.0
     var EarthRadiusInKilometers = 6367.0
     var fromLatRads = degreesToRadians(42.331186);
@@ -57,7 +61,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     var toLatRads = degreesToRadians(toLocation.latitude);
     var toLongRads = degreesToRadians(toLocation.longitude);
     var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles
-    return (distance).toString();
+    var rounded = distance.toFixed(2);
+    return (rounded).toString();
   };
 
   function degreesToRadians(degrees) {

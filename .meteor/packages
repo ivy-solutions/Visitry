@@ -38,3 +38,8 @@ hybrid:asset-builder
 standard-minifier-css
 standard-minifier-js
 shynah:ionic-timepicker
+angular-templates
+angular:angular-mocks
+practicalmeteor:mocha
+pbastowski:angular-babel
+hwillson:stub-collections
