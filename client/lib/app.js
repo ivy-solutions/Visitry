@@ -1,8 +1,11 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import 'angular'
+import angularMeteor from 'angular-meteor'
+import ngMaterialIcons from 'angular-material-icons'
 let modulesToLoad = [
-  'angular-meteor',
+  angularMeteor,
   'ui.router',
   'accounts.ui',
   'angularUtils.directives.dirPagination',
@@ -10,7 +13,8 @@ let modulesToLoad = [
   //'ionic-ratings',
   'ionic-timepicker',
   'angularMoment',
-  'ngMessages'
+  'ngMessages',
+  ngMaterialIcons
 ];
 
 if (Meteor.isCordova) {
