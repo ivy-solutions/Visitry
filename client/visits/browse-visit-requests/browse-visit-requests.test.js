@@ -6,6 +6,7 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/browse-visit-requests/browse-visit-requests.component.js';
+import '/client/visits/request-visit/request-visit-modal.service';
 import StubCollections from 'meteor/hwillson:stub-collections';
 import Visits from '/model/visits.js'
 import myFunctions from '/client/lib/sharedFunctions.js'
