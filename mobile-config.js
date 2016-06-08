@@ -34,3 +34,5 @@ App.accessRule('*.gstatic.com/*');
 //  'requires-forward-secrecy': false,
 //});
 App.accessRule('data:*', { type: 'navigation' });
+
+App.setPreference("BackupWebStorage", "local");

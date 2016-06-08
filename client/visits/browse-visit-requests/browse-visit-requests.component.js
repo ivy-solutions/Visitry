@@ -12,14 +12,18 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     requestedDate: 1
   };
   this.currentUser;
+  this.visits;
 
   this.helpers({
      openVisits: () => {
-      let selector = {
-          'visitorId': {$exists: false},
-          'requestedDate': {$gt: new Date()}
-      };
-      var visits = Visits.find(selector, {sort: this.getReactively('listSort')} );
+       let userId = this.userId;
+       let selector = {
+         'visitorId': {$exists: false},
+         'requestedDate': {$gt: new Date()},
+         'requesterId': {$ne: userId}
+       };
+      visits = Visits.find(selector, {sort: this.getReactively('listSort'),
+        fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
       return Meteor.myFunctions.dateSortArray(visits);
     }
   });
@@ -39,8 +43,9 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   };
 
   this.getRequesterImage = function(visit) {
+    console.log( "requesterID: " + visit.requesterId);
     var requester = this.getRequester(visit);
-    if ( typeof(requester.userData.picture) === 'undefined' )
+    if ( requester === null || typeof(requester.userData.picture) === 'undefined' )
       return "";
     else
       return requester.userData.picture;
@@ -50,19 +55,21 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
     if ( toLocation === null || typeof(toLocation) === 'undefined')
-      return "No visit location";
-    if ( this.currentUser == null || this.currentUser.location == null )
-      return "0";
-    var fromLocation = this.currentUser.location;
+      return "";
+    //console.log( "Current User: " + JSON.stringify(this.currentUser) );
+    if ( this.currentUser === null || typeof(this.currentUser.userData) === 'undefined' ) {
+      console.log( "no current user location ");
+      return "";
+    }
     var EarthRadiusInMiles = 3956.0
     var EarthRadiusInKilometers = 6367.0
-    var fromLatRads = degreesToRadians(42.331186);
-    var fromLongRads = degreesToRadians(fromLocation.longitude);
+    var fromLatRads = degreesToRadians(this.currentUser.userData.location.latitude);
+    var fromLongRads = degreesToRadians(this.currentUser.userData.location.longitude);
     var toLatRads = degreesToRadians(toLocation.latitude);
     var toLongRads = degreesToRadians(toLocation.longitude);
     var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles
-    var rounded = distance.toFixed(2);
-    return (rounded).toString();
+    var rounded = distance.toFixed(1);
+    return (rounded).toString() + " miles";
   };
 
   function degreesToRadians(degrees) {

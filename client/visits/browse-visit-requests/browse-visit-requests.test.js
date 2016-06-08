@@ -53,38 +53,38 @@ describe ( 'BrowseVisitRequests', function() {
   describe( 'getDistanceToVisitLocation', function() {
     let visit = {
       "location": {
-        "name":"Boston",
-        "latitude": 42.3601,
-        "longitude": -71.0589
+        "name":"35 Bayview Ave., Monument Beach, MA",
+        "latitude": 41.717825,
+        "longitude": -70.6140227
       }
     };
     let user = {
-      "location": {
-        "name":"Boston",
-        "latitude": 42,
-        "longitude": -71
+      "userData": {
+        "location": {
+          "name": "80 Willow St., Acton, MA",
+          "latitude": 42.468846,
+          "longitude": -71.477358
+        }
       }
     };
 
 
-    it('when no user location, distance = 0', function () {
+    it('when no user location, return no string', function () {
       controller.currentUser = null;
-      chai.assert.equal(controller.getDistanceToVisitLocation(visit), "0");
+      chai.assert.equal(controller.getDistanceToVisitLocation(visit), "");
     });
 
-    it( 'when no visit location return "No visit location', function() {
+    it( 'when no visit location, return no string ', function() {
       controller.currentUser = user;
       let noLocation = {};
-      chai.assert.equal(controller.getDistanceToVisitLocation(noLocation), "No visit location");
+      chai.assert.equal(controller.getDistanceToVisitLocation(noLocation), "");
     });
 
-    it ('distance is positive number when there is both a visit and a user location', function() {
-      controller.currentUser = user
+    it ('distance is an accurate number when there is both a visit and a user location', function() {
+      controller.currentUser = user;
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');
-      var d = Number(distance);
-      chai.assert.isNumber(d);
-      chai.assert.isTrue( d > 0 );
+      chai.assert.equal( distance, "68.2 miles");
     });
   });
 

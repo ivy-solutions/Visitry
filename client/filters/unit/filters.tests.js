@@ -22,10 +22,10 @@ describe( 'Filters ', function () {
        $filter = _$filter_;
       }));
 
-    describe('return "No User" when there is no user passed', function () {
+    describe('return "" when there is no user passed', function () {
       it('returns string when no user', function() {
         var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(null), 'No User');
+        chai.assert.equal(firstNameLastInitial(null), '');
       });
     });
 

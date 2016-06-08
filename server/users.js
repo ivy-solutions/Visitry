@@ -1,6 +1,14 @@
 Meteor.publish("users", function () {
-  //TODO will have a filter on affiliation with agencies of the current user eventually
-  return Meteor.users.find({}, {fields: {username: 1, emails: 1, userData:1}});
+  if (this.userId) {
+    //TODO will have a filter on affiliation with agencies of the current user eventually
+    return Meteor.users.find({},
+      {fields: {username: 1, emails: 1,
+        'userData.location.name': 1, 'userData.location.longitude': 1,'userData.location.latitude': 1,
+        'userData.firstName':1, 'userData.lastName':1,
+        'userData.picture': 1, 'userData.interests': 1}});
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.methods({
