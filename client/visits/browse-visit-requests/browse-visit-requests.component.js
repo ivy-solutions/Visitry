@@ -53,14 +53,13 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   };
 
   this.getDistanceToVisitLocation = function ( visit ) {
-    this.currentUser = Meteor.user();
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
     if ( toLocation === null || typeof(toLocation) === 'undefined')
       return "";
     //console.log( "Current User: " + JSON.stringify(this.currentUser) );
     if ( this.currentUser === null || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
-      console.log( "no current user location ");
+      console.log( "no current user location. " + JSON.stringify(this.currentUser));
       return "";
     }
     var EarthRadiusInMiles = 3956.0
