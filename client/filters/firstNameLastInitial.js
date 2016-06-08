@@ -5,11 +5,14 @@
 angular.module('visitry').filter('firstNameLastInitial', function () {
 
   return function (user) {
-    if (!user) {
+    if (!user ) {
       return '';
     }
 
-    if (user.userData && (user.userData.firstName || user.userData.lastName) ) {
+    if ( typeof(user.userData) === 'undefined')
+      return user.username;
+
+    if ( user.userData.firstName || user.userData.lastName ) {
       if (user.userData.firstName && user.userData.lastName) {
         return user.userData.firstName + ' ' + user.userData.lastName[0] + '.';
       } else {

@@ -12,7 +12,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     requestedDate: 1
   };
   this.currentUser;
-  this.visits;
 
   this.helpers({
      openVisits: () => {
@@ -22,7 +21,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
          'requestedDate': {$gt: new Date()},
          'requesterId': {$ne: userId}
        };
-      visits = Visits.find(selector, {sort: this.getReactively('listSort'),
+      var visits = Visits.find(selector, {sort: this.getReactively('listSort'),
         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
       return Meteor.myFunctions.dateSortArray(visits);
     }
@@ -37,27 +36,30 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   this.getRequester = function (visit) {
     if ( typeof(visit) === 'undefined' ) {
+      console.log("No visit");
       return null;
     }
     return Meteor.users.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
+    this.currentUser = Meteor.user();
     console.log( "requesterID: " + visit.requesterId);
     var requester = this.getRequester(visit);
-    if ( requester === null || typeof(requester.userData.picture) === 'undefined' )
+    if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
       return "";
     else
       return requester.userData.picture;
   };
 
   this.getDistanceToVisitLocation = function ( visit ) {
+    this.currentUser = Meteor.user();
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
     if ( toLocation === null || typeof(toLocation) === 'undefined')
       return "";
     //console.log( "Current User: " + JSON.stringify(this.currentUser) );
-    if ( this.currentUser === null || typeof(this.currentUser.userData) === 'undefined' ) {
+    if ( this.currentUser === null || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
       console.log( "no current user location ");
       return "";
     }
