@@ -14,7 +14,7 @@
           <img ng-src="{{pendingVisits.getVisitorImage(visit)}}">
           <div layout="row">
             <h2 ng-if="!visit.visitorId">Requested <span
-                ng-if="!(pendingVisits.getTimeSinceRequested(visit.createdAt)===0)">{{visit.createdAt |amDifference : null : 'days' }} day </span><span
+                ng-if="!(pendingVisits.getTimeSinceRequested(visit.createdAt)===0)">{{visit.createdAt |amDifference : null : 'days' }} days </span><span
                 ng-if="pendingVisits.getTimeSinceRequested(visit.createdAt)===0">{{visit.createdAt |amDifference : null : 'hours' }} hours </span>ago
             </h2>
             <h2 ng-if="visit.visitorId">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }}</h2>

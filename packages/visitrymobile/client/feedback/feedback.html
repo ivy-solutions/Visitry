@@ -11,7 +11,10 @@
           Rate your visitor
         </div>
         <ion-item>
-          <ionic-ratings ratingsobj='feedback.visitorRating'></ionic-ratings>
+          <ng-md-icon ng-repeat="goodStar in feedback.visitorRating.goodStars" icon="star" size="64" style="fill:#FF5461"
+                      ng-click="feedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="64"
+                      style="fill:black" ng-click="feedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
         <textarea rows="3" ng-model="feedback.feedbackResponse.visitorComments" placeholder="Leave a Comment">
@@ -23,7 +26,10 @@
           Rate your visit
         </div>
         <ion-item>
-          <ionic-ratings ratingsobj='feedback.visitRating'></ionic-ratings>
+          <ng-md-icon ng-repeat="goodStar in feedback.visitRating.goodStars" icon="star" size="64" style="fill:#FF5461"
+                      ng-click="feedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="64"
+                      style="fill:black" ng-click="feedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
         <textarea rows="3" ng-model="feedback.feedbackResponse.visitComments" placeholder="Leave a Comment">

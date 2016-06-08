@@ -9,60 +9,95 @@ angular.module('visitry').directive('feedback', function () {
       }
     },
     controllerAs: 'feedback',
-    controller: function ($scope, $reactive,$state, $stateParams) {
+    controller: function ($scope, $reactive, $state, $stateParams) {
       $reactive(this).attach($scope);
       this.subscribe('visits');
       this.subscribe('users');
 
-
       var feedbackResponse = {
         visitorId: '',
-        requesterId:Meteor.userId(),
+        requesterId: Meteor.userId(),
         visitorRating: 0,
-        visitorComments:'',
-        visitRating:0,
-        visitComments:'',
+        visitorComments: '',
+        visitRating: 0,
+        visitComments: '',
         visitId: $stateParams.visitId
       };
 
       this.visitor = '';
 
       this.helpers({
-        visit: ()=>{
-          var v = Visits.findOne({_id:$stateParams.visitId});
-          if(v){
+        visit: ()=> {
+          var v = Visits.findOne({_id: $stateParams.visitId});
+          if (v) {
             feedbackResponse.visitorId = v.visitorId;
-            this.visitor = Meteor.users.findOne({_id:v.visitorId});
+            this.visitor = Meteor.users.findOne({_id: v.visitorId});
           }
           return v
         }
       });
-
+//TODO: create a directive that does this
       this.visitorRating = {
-        minRating: 1,
+        badStars: [
+          {
+            id: 1
+          },
+          {
+            id: 2
+          }, {
+            id: 3
+          }, {
+            id: 4
+          }, {
+            id: 5
+          }],
+        goodStars: [],
         iconOnColor: '#FF5461',
-        iconOffColor: 'rgb(0, 0, 0)',
-        callback: function (rating) {
-          feedbackResponse.visitorRating=rating;
+        size: '64',
+        selectStar: function (id) {
+          this.badStars = this.goodStars.concat(this.badStars);
+          this.goodStars = this.badStars.slice(0, id);
+          this.badStars = this.badStars.slice(id);
+          feedbackResponse.visitorRating=id;
         }
       };
 
       this.visitRating = {
-        minRating: 1,
+        badStars: [
+          {
+            id: 1
+          },
+          {
+            id: 2
+          }, {
+            id: 3
+          }, {
+            id: 4
+          }, {
+            id: 5
+          }],
+        goodStars: [],
         iconOnColor: '#FF5461',
-        iconOffColor: 'rgb(0, 0, 0)',
-        callback: function (rating) {
-          feedbackResponse.visitRating=rating;
+        size: '64',
+        selectStar: function (id) {
+          this.badStars = this.goodStars.concat(this.badStars);
+          this.goodStars = this.badStars.slice(0, id);
+          this.badStars = this.badStars.slice(id);
+          feedbackResponse.visitRating=id;
         }
-      };
-      this.submitFeedback = ()=>{
+      }
+      this.submitFeedback = ()=> {
         //TODO: data validation here, add the user data
+        console.log(feedbackResponse);
         var feedbackId = Feedback.insert(feedbackResponse);
-        Visits.update(feedbackResponse.visitId,{$set: {feedbackId: feedbackId}},{upsert:false,multi:false},function(err,updates){
-          if(err){
+        Visits.update(feedbackResponse.visitId, {$set: {feedbackId: feedbackId}}, {
+          upsert: false,
+          multi: false
+        }, function (err, updates) {
+          if (err) {
             console.log(err);
           }
-          else{
+          else {
             $state.go('pendingVisits')
           }
         })
