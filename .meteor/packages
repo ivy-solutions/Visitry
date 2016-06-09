@@ -43,3 +43,4 @@ angular:angular-mocks
 practicalmeteor:mocha
 pbastowski:angular-babel
 hwillson:stub-collections
+practicalmeteor:mocha-console-runner
