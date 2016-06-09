@@ -21,14 +21,22 @@ describe('Pending Visit Requests', function () {
   }));
 
   var controller;
-  var mockIonicPopup;
+  var spyOnConfirm;
   beforeEach(function () {
-    StubCollections.add([Visits]);
+     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'dateSortArray');
-    var object = {confirm:function(obj){}};
-    mockIonicPopup = sinon.spy(object,'confirm');
+
+    var promise = {then: function(){}, error: function(){} };
+    var mockIonicPopup = {
+      confirm: function(){
+        return promise;
+      }
+     };
+    spyOnConfirm = sinon.spy(mockIonicPopup, 'confirm');
     inject(function ($rootScope,$ionicPopup) {
-      controller = $controller('pendingVisitsCtrl', {$scope: $rootScope.$new(true), $ionicPopup: mockIonicPopup});
+       controller = $controller('pendingVisitsCtrl', {$scope: $rootScope.$new(true), $ionicPopup: mockIonicPopup
+      });
+
     });
   });
 
@@ -40,14 +48,14 @@ describe('Pending Visit Requests', function () {
   describe('list settings', function () {
     it('show delete icon', function () {
       chai.assert.equal(controller.showDelete, false);
-    })
+    });
     it('can swipe to delete', function () {
       chai.assert.equal(controller.canSwipe, true);
-    })
+    });
     it('list sorted descending by request day', function () {
       chai.assert.equal(controller.listSort.requestedDate, 1);
     })
-  })
+  });
 
   describe('date since requested', function () {
     it('when date = now, time since requested = 0', function () {
@@ -63,8 +71,7 @@ describe('Pending Visit Requests', function () {
   describe('cancel visit popup', function () {
     it('when the user cancels a visit the popup is displayed', function () {
       controller.showCancelVisitConfirm({visitor: '12341'});
-      $rootScope.$digest();
-      chai.assert.equal(mockIonicPopup.confirm.called, true)
+      chai.assert(spyOnConfirm.calledOnce)
     })
   })
 
