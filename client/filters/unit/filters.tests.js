@@ -140,10 +140,11 @@ describe( 'Filters ', function () {
     describe('return time of day depending on hour', function () {
       it('returns string indicating "Morning,Afternoon,Evening,Any time"', function() {
         var timeOfDay = $filter('timeOfDay');
-        var morning = new Date('Thu, 02 Jun 2016 09:00:00 GMT-0400 (EDT)');
-        var afternoon = new Date('Thu, 02 Jun 2016 13:00:00 GMT-0400 (EDT)');
-        var evening = new Date('Thu, 02 Jun 2016 16:00:00 GMT-0400 (EDT)');
-        var anytime = new Date('Thu, 02 Jun 2016 07:00:00 GMT-0400 (EDT)');
+        //new Date(Date.UTC(year, month, day, hour, minute, second))
+        var morning = new Date(2106, 6, 13, 9, 0, 0);
+        var afternoon = new Date(2106, 6, 13, 13, 0, 0);
+        var evening = new Date(2106, 6, 13, 16, 0, 0);
+        var anytime = new Date((2106, 6, 13, 7, 0, 0));
         chai.assert.equal(timeOfDay(morning), 'Morning');
         chai.assert.equal(timeOfDay(afternoon), 'Afternoon');
         chai.assert.equal(timeOfDay(evening), 'Evening');
