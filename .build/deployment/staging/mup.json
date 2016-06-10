@@ -7,7 +7,7 @@
       //"password": "password",
       // or pem file (ssh based authentication)
       // WARNING: Keys protected by a passphrase are not supported
-      "pem": "~/VISITRY.pem",
+      "pem": "~/.ssh/id_staging-server",
       // Also, for non-standard ssh port use this
       //"sshOptions": { "port" : 49154 },
       // server specific environment variables
