@@ -4,3 +4,10 @@ dependencies:
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
     - npm install -g spacejam
+  pre:
+    - npm install -g mupx # install meteor-up for deployment
+deployment:
+  staging:
+    branch: master
+    commands:
+      - cd Visitry/.build/deployment/staging && mupx deploy
