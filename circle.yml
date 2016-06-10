@@ -10,4 +10,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - cd Visitry/.build/deployment/staging && mupx deploy
+      - cd $HOME/Visitry/.build/deployment/staging && mupx deploy
