@@ -5,6 +5,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   $reactive(this).attach($scope);
 
     $scope.hideModal = function () {
+      selectedTime = null;
       $scope.modalCtrl.hide();
     };
     $scope.removeModal = function () {
@@ -33,37 +34,48 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   var selectedTime;
 
   this.submit = function (visit) {
-    if (selectedTime) {
+    var time = this.getSelectedTime();
+    if (time instanceof Date) {
       console.log( "requestedDate UTC:" + visit.requestedDate.toUTCString() + "locale: " + visit.requestedDate.toLocaleString());
       var date = visit.requestedDate;
       var visitDateTime = new Date( date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
-      console.log ("setting visit time to " + visitDateTime );
-      if ( visitDateTime > new Date()) {
+       if ( visitDateTime > tomorrowFirstThing() ) {
+        console.log( "updateVisit");
         Visits.update(visit._id, {
           $set: {
             visitorId: Meteor.userId(),
             visitTime: visitDateTime
           }
         });
-        hideScheduleVisitModal();
+        this.hideScheduleVisitModal();
         $state.go('upcoming');
       } else {
-        handleError( "Schedule Time must be in future.")
+        return this.handleError( "Schedule Time must be in future.")
       }
     } else {
-      handleError("Press schedule button to schedule visit. ")
+      return this.handleError("Press schedule button to schedule visit.")
     }
 
   };
 
+  function tomorrowFirstThing() {
+    var tomorrowFirstThing = new Date();
+    tomorrowFirstThing.setTime(tomorrowFirstThing.getTime() +  ( 24 * 60 * 60 * 1000));
+    tomorrowFirstThing.setHours(0);
+    tomorrowFirstThing.setMinutes(0);
+    tomorrowFirstThing.setSeconds(0);
+    tomorrowFirstThing.setMilliseconds(0);
+    return tomorrowFirstThing
+  }
+
   this.cancel = function () {
-    hideScheduleVisitModal();
+    this.hideScheduleVisitModal();
   };
 
-  function hideScheduleVisitModal() {
+  this.hideScheduleVisitModal = function()  {
     $scope.hideModal();
-  }
+  };
 
   this.getRequester = function (visit) {
     if ( typeof(visit) === 'undefined' ) {
@@ -76,23 +88,30 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   this.getSelectedTime = function() {
     if (selectedTime) {
       var today = new Date();
-      return new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
+      var scheduledTime = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
         selectedTime.getUTCHours(), selectedTime.getUTCMinutes(), 0, 0);
+      console.log( "getSelectedTime()" + scheduledTime )
+      return scheduledTime;
     } else {
+      console.log( "getSelectedTime() - none")
       return "";
     }
   };
+
+  this.setSelectedTime = function( time ) {
+    selectedTime = time;
+  }
 
   function timePickerCallback(val) {
     if (typeof (val) === 'undefined') {
       console.log('Time not selected');
     } else {
       selectedTime = new Date(val * 1000);
-      console.log('The time is '+ selectedTime.getUTCHours()+ ':', selectedTime.getUTCMinutes()+ 'in UTC');
+      console.log('The time is '+ selectedTime.getUTCHours()+ ':' + selectedTime.getUTCMinutes()+ ' in UTC');
     }
   }
 
-  function handleError(message) {
+  this.handleError = function (message) {
     console.log('Error ', message);
 
     $ionicPopup.alert({
