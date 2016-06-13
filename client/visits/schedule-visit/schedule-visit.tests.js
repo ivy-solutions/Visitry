@@ -11,18 +11,6 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/schedule-visit/schedule-visit-modal.component';
 import StubCollections from 'meteor/hwillson:stub-collections';
 
-//const visits = new Mongo.Collection('visits');
-if (Meteor.isServer) {
-  Visits.remove({});
-  Visits.insert({});
-  Visits.update({});
-  Meteor.publish('visits', function allVisits() {
-    return visits.find();
-  });
-} else {
-  Meteor.subscribe('visits');
-}
-
 describe('Schedule Visit', function () {
 
   beforeEach(function () {
@@ -37,11 +25,10 @@ describe('Schedule Visit', function () {
   var controller;
   var spyOnAlert;
   var stateSpy;
-  var spyOnVisits;
 
   beforeEach(function () {
     StubCollections.add([Visits]);
-    StubCollections.stub(Visits);
+    StubCollections.stub();
 
     var mockIonicPopup = {
       alert: function(){}
