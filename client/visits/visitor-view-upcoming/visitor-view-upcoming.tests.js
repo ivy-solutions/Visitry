@@ -56,15 +56,7 @@ describe('View Upcoming Visits Visit', function () {
       controller.cancelVisit(scheduledVisit);
       chai.assert(spyOnConfirm.calledOnce);
     });
-    it('updates Visit', function () {
-      var scheduledVisit = { _id: 'fakeVisit', requesterId: 'requester', visitorId: 'visitor', visitTime: new Date()};
-      var updateStub = Visits, 'update');
-      var one = Visits.findOne('fakeVisit');
-
-      controller.cancelVisit(scheduledVisit);
-      console.log(one);
-    })
-  });
+   });
 
   describe('VisitDetails', function () {
     it('visit details, state goes to /visitDetails', function () {
