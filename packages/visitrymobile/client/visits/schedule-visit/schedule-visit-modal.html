@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="list list-inset">
-            <ionic-timepicker class="button" input-obj="timePickerObject">
+            <ionic-timepicker class="button" input-obj="timePickerObject" ng-click="scheduleVisit.initTimePicker(visit.requestedDate)">
                 <button class="button overflowShow icon ion-ios-clock" >
                 </button>
             </ionic-timepicker>
@@ -40,7 +40,7 @@
       </div>
       <div class="list list-inset">
         <label class="item item-input">
-          <textarea ng-model="requestVisit.visitRequest.notes" rows="3">
+          <textarea ng-model="scheduleVisit.chosenVisit.visitorNotes" rows="3">
           </textarea>
         </label>
       </div>

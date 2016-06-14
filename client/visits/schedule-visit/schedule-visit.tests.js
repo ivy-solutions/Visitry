@@ -90,6 +90,15 @@ describe('Schedule Visit', function () {
      var visitWithDate = {_id: 'visitWithDate', requestedDate: tomorrow};
      var tenThirty = new Date(Date.UTC(2016, 5, 1, 10, 30, 0, 0));
 
+     it ('submit with valid date, updates visitTime using requestedDate and selectedTime', function() {
+       var modalHideStub = sinon.stub(controller, 'hideScheduleVisitModal');
+       controller.setSelectedTime(tenThirty);
+       controller.submit(visitWithDate);
+       chai.assert.equal( controller.chosenVisit.visitTime.toString(),
+         new Date( tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(),
+         tenThirty.getUTCHours(),tenThirty.getUTCMinutes(),0,0).toString());
+     });
+
      it('submit with valid date, hides modal', function () {
        var modalHideStub = sinon.stub(controller, 'hideScheduleVisitModal');
 

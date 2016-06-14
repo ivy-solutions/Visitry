@@ -13,9 +13,8 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     };
 
 
-  $scope.timePickerObject = {
-    //TODO use requestedDate.getTime()
-    inputEpochTime: (new Date().getHours())* 60 *60,  //Optional - start time to display
+  var timePicker = {
+    inputEpochTime: 10* 60 *60,  //Optional - start time to display, 10am - but overriden by requestedDate
     step: 15,  //Optional - show 15 minute increments
     format: 12,  //Optional - 12 hour time
     titleLabel: 'Visit Time',  //Optional
@@ -27,9 +26,16 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       timePickerCallback(val);
     }
   };
+  $scope.timePickerObject = timePicker;
 
   this.subscribe('visits');
   this.subscribe('users');
+
+  this.chosenVisit = {
+    visitorId: Meteor.userId(),
+    visitTime: '',
+    visitorNotes: ''
+  };
 
   var selectedTime;
 
@@ -38,15 +44,12 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     if (time instanceof Date) {
       console.log( "requestedDate UTC:" + visit.requestedDate.toUTCString() + "locale: " + visit.requestedDate.toLocaleString());
       var date = visit.requestedDate;
-      var visitDateTime = new Date( date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+      var visitDateTime = new Date( date.getFullYear(), date.getMonth(), date.getDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
+      this.chosenVisit.visitTime = visitDateTime;
        if ( visitDateTime > tomorrowFirstThing() ) {
-        console.log( "updateVisit");
-        Visits.update(visit._id, {
-          $set: {
-            visitorId: Meteor.userId(),
-            visitTime: visitDateTime
-          }
+         Visits.update(visit._id, {
+          $set: this.chosenVisit
         });
         this.hideScheduleVisitModal();
         $state.go('upcoming');
@@ -90,17 +93,22 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       var today = new Date();
       var scheduledTime = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
         selectedTime.getUTCHours(), selectedTime.getUTCMinutes(), 0, 0);
-      console.log( "getSelectedTime()" + scheduledTime )
+      console.log( "getSelectedTime()" + scheduledTime );
       return scheduledTime;
     } else {
-      console.log( "getSelectedTime() - none")
+      console.log( "getSelectedTime() - none");
       return "";
     }
   };
 
   this.setSelectedTime = function( time ) {
     selectedTime = time;
-  }
+  };
+
+  this.initTimePicker = function(requestedDate) {
+    console.log( "requestedDate: " + requestedDate);
+    timePicker.inputEpochTime = (requestedDate.getHours())* 60 *60;
+  };
 
   function timePickerCallback(val) {
     if (typeof (val) === 'undefined') {
