@@ -43,7 +43,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   };
 
   this.getRequesterImage = function(visit) {
-    this.currentUser = Meteor.user();
     var requester = this.getRequester(visit);
     if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
       return "";

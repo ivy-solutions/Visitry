@@ -34,7 +34,8 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   this.chosenVisit = {
     visitorId: Meteor.userId(),
     visitTime: '',
-    visitorNotes: ''
+    visitorNotes: '',
+    scheduledAt: new Date()
   };
 
   var selectedTime;

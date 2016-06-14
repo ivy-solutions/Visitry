@@ -1,11 +1,14 @@
 /**
  * Created by sarahcoletti on 3/13/16.
  */
-angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location, $state) {
+angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location, $state,$ionicPopup,$ionicListDelegate, $filter) {
   $reactive(this).attach($scope);
 
+  this.subscribe('visits');
+  this.subscribe('users');
+
   this.showDelete = false;
-  this.canSwipe = false;
+  this.canSwipe = true;
   this.listSort = {
     visitTime: 1
   };
@@ -21,16 +24,10 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
       };
       var visits =  Visits.find(selector, {sort: this.getReactively('listSort')});
       var visitsByDate = Meteor.myFunctions.dateSortArray(visits);
-      console.log( visitsByDate[0]);
       return visitsByDate;
-    },
-    users: () => { //I don't understand why I need this for getRequester to work
-      return Meteor.users.find({});
     }
   });
 
-  this.subscribe('visits');
-  this.subscribe('users');
 
   ////////
 
@@ -40,17 +37,36 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
-    return requester.userData.picture ? requester.userData.picture : "";
+    if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
+      return "";
+    else
+      return requester.userData.picture ? requester.userData.picture : "";
   };
 
   this.visitDetails = function (id) {
-    console.log ('visitDetails of :' + id);
     $state.go( 'visitDetails', {visitId: id} );
   };
 
-  this.cancelVisit = function (visit) {
-    //TODO popup confirmation and then remove Visitor Id and visistTime
-  };
+   this.cancelVisit = function (visit) {
+    var confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getRequester(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, H:mm') + "?"
+    var confirmPopup = $ionicPopup.confirm({
+      template: confirmMessage,
+      cancelText: 'No',
+      okText: 'Yes'
+    });
+    confirmPopup.then((result)=> {
+      if (result) {
+        Visits.update(visit._id,
+          {$set: { cancelledAt: new Date()},
+            $unset: {visitorId: "", visitTime:""}
+          }
+        );
+      }
+      else{
+        $ionicListDelegate.closeOptionButtons();
+      }
+    })
+  }
 
 
 });

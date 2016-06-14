@@ -10,12 +10,13 @@
                     <div class="timeOfDay">{{visit.visitTime | date: "h:mm"}}</div>
                     <div class="visitInfo">
                         <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
-                            <h2>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h2>
-                            <h2>{{visit.location | approximateLocation}}</h2>
+                            <h2>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}
+                            <span class="distance">{{visit.location | approximateLocation}}</span></h2>
                             <p style="white-space: nowrap">{{visit.notes}}</p>
                         </a>
                     </div>
-                    <ion-option-button class="button" ng-click="visitorViewUpcoming.cancelVisit(visit)">
+                    <ion-option-button class="button-assertive" ng-click="visitorViewUpcoming.cancelVisit(visit)">
+                        Cancel Visit
                     </ion-option-button>
                 </ion-item>
             </div>
