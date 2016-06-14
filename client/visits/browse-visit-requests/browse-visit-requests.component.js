@@ -57,8 +57,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     var toLocation = visit.location;
     if ( toLocation === null || typeof(toLocation) === 'undefined')
       return "";
-    //console.log( "Current User: " + JSON.stringify(this.currentUser) );
-    if ( this.currentUser === null || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
+    console.log( "Current User: " + JSON.stringify(this.currentUser) );
+    if ( this.currentUser === null || typeof(this.currentUser.userData.location) == 'undefined' || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
       console.log( "no current user location. " + JSON.stringify(this.currentUser));
       return "";
     }
