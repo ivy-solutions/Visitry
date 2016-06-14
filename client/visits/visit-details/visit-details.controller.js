@@ -1,20 +1,25 @@
 /**
  * Created by sarahcoletti on 3/2/16.
  */
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $location, $filter) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $state, $filter) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
-  this.visit
+  this.visit;
 
   this.subscribe('visits', function() {
     this.visit = Visits.findOne({_id: $stateParams.visitId});
   });
+
   this.subscribe('users');
 
   ////////
-  this.close = () => {
-    $location.path('/visitor/browseRequests');
+
+  this.isVisitor = function() {
+    if (this.visit.visitorId && Meteor.userId() == this.visit.visitorId) {
+      return true;
+    }
+    return false;
   };
 
   this.getRequester = function () {
@@ -39,7 +44,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.requesterInterests = () => {
     var requester = this.getRequester();
     if (requester) {
-      console.log("requester:" + requester.requesterId);
       if (requester.userData && requester.userData.interests)
         return requester.userData.interests;
     }

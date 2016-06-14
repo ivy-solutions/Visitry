@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 3/13/16.
  */
-angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $location, $state,$ionicPopup,$ionicListDelegate, $filter) {
+angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $state,$ionicPopup,$ionicListDelegate, $filter) {
   $reactive(this).attach($scope);
 
   this.subscribe('visits');
