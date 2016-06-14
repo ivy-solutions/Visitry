@@ -96,7 +96,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       console.log( "getSelectedTime()" + scheduledTime );
       return scheduledTime;
     } else {
-      console.log( "getSelectedTime() - none");
       return "";
     }
   };

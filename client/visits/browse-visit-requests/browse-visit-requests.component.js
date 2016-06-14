@@ -15,7 +15,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   this.helpers({
      openVisits: () => {
-       let userId = this.userId;
+       let userId = Meteor.userId();
        let selector = {
          'visitorId': {$exists: false},
          'requestedDate': {$gt: new Date()},
@@ -44,7 +44,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   this.getRequesterImage = function(visit) {
     this.currentUser = Meteor.user();
-    console.log( "requesterID: " + visit.requesterId);
     var requester = this.getRequester(visit);
     if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
       return "";
@@ -57,8 +56,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
     var toLocation = visit.location;
     if ( toLocation === null || typeof(toLocation) === 'undefined')
       return "";
-    console.log( "Current User: " + JSON.stringify(this.currentUser) );
-    if ( this.currentUser === null || typeof(this.currentUser.userData.location) == 'undefined' || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
+    if ( this.currentUser === null || typeof(this.currentUser.userData.location) === 'undefined' || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
       console.log( "no current user location. " + JSON.stringify(this.currentUser));
       return "";
     }
