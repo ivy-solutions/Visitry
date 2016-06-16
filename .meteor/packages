@@ -41,6 +41,6 @@ shynah:ionic-timepicker
 angular-templates
 angular:angular-mocks
 practicalmeteor:mocha
-pbastowski:angular-babel
 hwillson:stub-collections
 practicalmeteor:mocha-console-runner
+pbastowski:angular-babel
