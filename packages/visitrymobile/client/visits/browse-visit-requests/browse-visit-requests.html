@@ -1,6 +1,9 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header">
-        <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
+         <div class="distance" ng-hide="!currentUser.userData.location">
+             Distance from: {{currentUser.userData.location.name | limitTo:20}}
+         </div>
+         <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
             <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
                 <div class="item item-divider">
                     {{visitsByDate.date|date: "EEE., MMMM d"}}
@@ -10,7 +13,8 @@
                     <a ng-click="browseVisitRequests.visitDetails(visit._id)">
                         <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
                         <div class="visitInfo">
-                            <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}} <span class="distance">{{browseVisitRequests.getDistanceToVisitLocation(visit) }}</span></h2>
+                            <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}
+                                <span class="distance">{{browseVisitRequests.getDistanceToVisitLocation(visit) }}</span></h2>
                             <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
                         </div>
                     </a>

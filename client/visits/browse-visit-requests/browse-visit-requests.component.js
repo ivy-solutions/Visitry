@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope, $reactive, $location, $state, $ionicModal) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
   $reactive(this).attach($scope);
 
   $scope.Math = window.Math;
@@ -11,7 +11,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
   this.listSort = {
     requestedDate: 1
   };
-  this.currentUser;
 
   this.helpers({
      openVisits: () => {
@@ -21,22 +20,22 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
          'requestedDate': {$gt: new Date()},
          'requesterId': {$ne: userId}
        };
-      var visits = Visits.find(selector, {sort: this.getReactively('listSort'),
+       var visits = Visits.find(selector, {sort: this.getReactively('listSort'),
         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
-      return Meteor.myFunctions.dateSortArray(visits);
-    }
+       return Meteor.myFunctions.dateSortArray(visits);
+     },
+     currentUser() {
+      return Meteor.user();
+      }
   });
 
   this.subscribe('visits');
-  this.subscribe('users', function() {
-    this.currentUser = Meteor.user();
-  });
-
+  this.subscribe('users');
   ////////
 
   this.getRequester = function (visit) {
-    if ( typeof(visit) === 'undefined' ) {
-      console.log("No visit");
+    if ( visit == 'undefined' ) {
+      console.log("No visit.");
       return null;
     }
     return Meteor.users.findOne({_id: visit.requesterId});
@@ -44,25 +43,32 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
-    if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
+    if ( requester == undefined || requester.userData == undefined || requester.userData.picture == undefined )
       return "";
     else
       return requester.userData.picture;
   };
 
+  var extractCurrentUserLocation = function() {
+    var user = $scope.currentUser;
+    console.log('extracting current location ' + JSON.stringify(user) );
+    return user && user.userData && user.userData.location;
+  };
+
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
-    if ( toLocation === null || typeof(toLocation) === 'undefined')
+    if ( toLocation == null )
       return "";
-    if ( this.currentUser === null || typeof(this.currentUser.userData.location) === 'undefined' || typeof(this.currentUser.userData.location.latitude) === 'undefined' ) {
-      console.log( "no current user location. " + JSON.stringify(this.currentUser));
+    var userLocation = extractCurrentUserLocation();
+    if ( !userLocation ) {
+      console.log( "no current user location. VisitId:" + visit._id + "userId: " + $scope.currentUser._id );
       return "";
     }
-    var EarthRadiusInMiles = 3956.0
-    var EarthRadiusInKilometers = 6367.0
-    var fromLatRads = degreesToRadians(this.currentUser.userData.location.latitude);
-    var fromLongRads = degreesToRadians(this.currentUser.userData.location.longitude);
+    var EarthRadiusInMiles = 3956.0;
+    var EarthRadiusInKilometers = 6367.0;
+    var fromLatRads = degreesToRadians(userLocation.latitude);
+    var fromLongRads = degreesToRadians(userLocation.longitude);
     var toLatRads = degreesToRadians(toLocation.latitude);
     var toLongRads = degreesToRadians(toLocation.longitude);
     var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles
@@ -72,11 +78,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ($scope
 
   function degreesToRadians(degrees) {
     return (degrees * Math.PI) /180;
-  };
-
-  this.viewUpcomingVisits = function () {
-    $location.path("/visitor/upcoming");
-  };
+  }
 
   this.visitDetails = function (id) {
     $state.go( 'visitDetails', {visitId: id} );

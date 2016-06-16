@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 3/2/16.
  */
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $state, $filter) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
@@ -23,7 +23,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.getRequester = function () {
-    if ( typeof(this.visit) === 'undefined' ) {
+    if ( this.visit == undefined ) {
       return null;
     }
     return Meteor.users.findOne({_id: this.visit.requesterId});
@@ -32,7 +32,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester();
     if (requester) {
-      if (typeof(requester.userData.picture) === 'undefined') {
+      if (requester.userData.picture == undefined) {
         return "";
       } else {
         return requester.userData.picture;
