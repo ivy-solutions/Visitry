@@ -23,7 +23,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
         'visitTime': {$gt: startOfToday}
       };
       var visits =  Visits.find(selector, {sort: this.getReactively('listSort')});
-      var visitsByDate = Meteor.myFunctions.dateSortArray(visits);
+      var visitsByDate = Meteor.myFunctions.groupVisitsByRequestedDate(visits);
       return visitsByDate;
     }
   });

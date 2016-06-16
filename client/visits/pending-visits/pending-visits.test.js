@@ -24,7 +24,7 @@ describe('Pending Visit Requests', function () {
   var spyOnConfirm;
   beforeEach(function () {
      StubCollections.add([Visits]);
-    sinon.stub(Meteor.myFunctions, 'dateSortArray');
+    sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
 
     var promise = {then: function(){}, error: function(){} };
     var mockIonicPopup = {
@@ -42,7 +42,7 @@ describe('Pending Visit Requests', function () {
 
   afterEach(function () {
     StubCollections.restore();
-    Meteor.myFunctions.dateSortArray.restore();
+    Meteor.myFunctions.groupVisitsByRequestedDate.restore();
   });
 
   describe('list settings', function () {

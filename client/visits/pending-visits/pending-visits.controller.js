@@ -15,7 +15,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.helpers({
     pendingVisits: ()=> {
       var visits = Visits.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
-      return Meteor.myFunctions.dateSortArray(visits);
+      return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });
 

@@ -28,7 +28,7 @@ describe ( 'BrowseVisitRequests', function() {
   var scope;
   beforeEach(function() {
     StubCollections.add([Visits]);
-    sinon.stub(Meteor.myFunctions, 'dateSortArray');
+    sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
     inject( function ($rootScope) {
       scope = $rootScope.$new(true)
       controller = $controller('browseVisitRequestsCtrl', { $scope: scope });
@@ -37,7 +37,7 @@ describe ( 'BrowseVisitRequests', function() {
 
   afterEach(function() {
     StubCollections.restore();
-    Meteor.myFunctions.dateSortArray.restore();
+    Meteor.myFunctions.groupVisitsByRequestedDate.restore();
   });
 
 

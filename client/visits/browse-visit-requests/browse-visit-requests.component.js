@@ -22,7 +22,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
        };
        var visits = Visits.find(selector, {sort: this.getReactively('listSort'),
         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
-       return Meteor.myFunctions.dateSortArray(visits);
+       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
      },
      currentUser() {
       return Meteor.user();
