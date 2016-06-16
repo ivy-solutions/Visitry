@@ -62,7 +62,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       return "";
     var userLocation = extractCurrentUserLocation();
     if ( !userLocation ) {
-      console.log( "no current user location. VisitId:" + visit._id + "userId: " + $scope.currentUser._id );
+      console.log( "no current user location." );
       return "";
     }
     var EarthRadiusInMiles = 3956.0;

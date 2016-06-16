@@ -25,11 +25,13 @@ describe ( 'BrowseVisitRequests', function() {
   }));
 
   var controller;
+  var scope;
   beforeEach(function() {
     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'dateSortArray');
     inject( function ($rootScope) {
-      controller = $controller('browseVisitRequestsCtrl', { $scope: $rootScope.$new(true) });
+      scope = $rootScope.$new(true)
+      controller = $controller('browseVisitRequestsCtrl', { $scope: scope });
     });
   });
 
@@ -71,18 +73,18 @@ describe ( 'BrowseVisitRequests', function() {
 
 
     it('when no user location, return no string', function () {
-      controller.currentUser = null;
+      scope.currentUser = null;
       chai.assert.equal(controller.getDistanceToVisitLocation(visit), "");
     });
 
     it( 'when no visit location, return no string ', function() {
-      controller.currentUser = user;
+      scope.currentUser = user;
       let noLocation = {};
       chai.assert.equal(controller.getDistanceToVisitLocation(noLocation), "");
     });
 
     it ('distance is an accurate number when there is both a visit and a user location', function() {
-      controller.currentUser = user;
+      scope.currentUser = user;
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');
       chai.assert.equal( distance, "68.2 miles");
