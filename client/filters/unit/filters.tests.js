@@ -22,68 +22,58 @@ describe( 'Filters ', function () {
        $filter = _$filter_;
       }));
 
-    describe('return "" when there is no user passed', function () {
-      it('returns string when no user', function() {
-        var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(null), '');
-      });
+    it('return "" when there is no user passed', function() {
+      var firstNameLastInitial = $filter('firstNameLastInitial');
+      chai.assert.equal(firstNameLastInitial(null), '');
     });
 
-    describe('when user has first name but no last name', function () {
-      it('returns first name', function() {
-        let user = {
-          userData : {
-            firstName: "Prince",
-            lastName: ""
-          }
-        };
-        var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(user), 'Prince');
-      });
+    it('when user has first name but no last name, returns first name', function() {
+      let user = {
+        userData : {
+          firstName: "Prince",
+          lastName: ""
+        }
+      };
+      var firstNameLastInitial = $filter('firstNameLastInitial');
+      chai.assert.equal(firstNameLastInitial(user), 'Prince');
     });
 
-    describe('when user has last name but no first name', function () {
-      it('returns last name', function() {
-        let user = {
-          userData : {
-            firstName: "",
-            lastName: "Pedroia"
-          }
-        };
-        var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(user), 'Pedroia');
-      });
+    it('when user has last name but no first name, returns last name', function() {
+      let user = {
+        userData : {
+          firstName: "",
+          lastName: "Pedroia"
+        }
+      };
+      var firstNameLastInitial = $filter('firstNameLastInitial');
+      chai.assert.equal(firstNameLastInitial(user), 'Pedroia');
     });
 
-    describe('when user has both first and last name', function () {
-      it('returns first l.', function() {
-        let user = {
-          userData : {
-            firstName: "Martin",
-            lastName: "O'Malley"
-          }
-        };
-        var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(user), 'Martin O.');
-      });
+    it('when user has both first and last name, returns first l.', function() {
+      let user = {
+        userData : {
+          firstName: "Martin",
+          lastName: "O'Malley"
+        }
+      };
+      var firstNameLastInitial = $filter('firstNameLastInitial');
+      chai.assert.equal(firstNameLastInitial(user), 'Martin O.');
     });
 
-    describe('when user has neither first or last name', function () {
-      it('returns username', function() {
-        let user = {
-          username: 'nameless'
-        };
-        let user2 = {
-          username: 'anonymous',
-          userData : {
-            firstName: "",
-            lastName: ""
-          }
-        };
-        var firstNameLastInitial = $filter('firstNameLastInitial');
-        chai.assert.equal(firstNameLastInitial(user), 'nameless');
-        chai.assert.equal(firstNameLastInitial(user2), 'anonymous');
-      });
+    it('when user has neither first or last name, returns username', function() {
+      let user = {
+        username: 'nameless'
+      };
+      let user2 = {
+        username: 'anonymous',
+        userData : {
+          firstName: "",
+          lastName: ""
+        }
+      };
+      var firstNameLastInitial = $filter('firstNameLastInitial');
+      chai.assert.equal(firstNameLastInitial(user), 'nameless');
+      chai.assert.equal(firstNameLastInitial(user2), 'anonymous');
     });
   });
 
@@ -93,34 +83,28 @@ describe( 'Filters ', function () {
       $filter = _$filter_;
     }));
 
-    describe('return "No Location" when there is no location passed', function () {
-      it('returns string when no location', function () {
-        var approximateLocation = $filter('approximateLocation');
-        chai.assert.equal(approximateLocation(null), 'No Location');
-      });
+    it('return "No Location" when there is no location passed', function () {
+      var approximateLocation = $filter('approximateLocation');
+      chai.assert.equal(approximateLocation(null), 'No Location');
     });
 
-    describe('returns street and town', function () {
-      it('extracts street and town without street number', function () {
-        let fullAddresses = [
-          {name: "100 Pennsylvania Avenue, Washington, D.C., United States"},
-          {name: "12 E 49th St, New York, NY, United States"},
-          {name: "Museum of Fine Arts, Boston, Huntington Avenue, Boston, MA"},
-          {name: "Massachusetts General Hospital, Fruit Street, Boston, MA"}];
-        var approximateLocation = $filter('approximateLocation');
-        chai.assert.equal(approximateLocation(fullAddresses[0]), 'Pennsylvania Avenue, Washington');
-        chai.assert.equal(approximateLocation(fullAddresses[1]), 'E 49th St, New York');
-        chai.assert.equal(approximateLocation(fullAddresses[2]), 'Museum of Fine Arts, Boston, Huntington Avenue');
-        chai.assert.equal(approximateLocation(fullAddresses[3]), 'Massachusetts General Hospital, Fruit Street');
-      });
+    it('extracts street and town without street number', function () {
+      let fullAddresses = [
+        {name: "100 Pennsylvania Avenue, Washington, D.C., United States"},
+        {name: "12 E 49th St, New York, NY, United States"},
+        {name: "Museum of Fine Arts, Boston, Huntington Avenue, Boston, MA"},
+        {name: "Massachusetts General Hospital, Fruit Street, Boston, MA"}];
+      var approximateLocation = $filter('approximateLocation');
+      chai.assert.equal(approximateLocation(fullAddresses[0]), 'Pennsylvania Avenue, Washington');
+      chai.assert.equal(approximateLocation(fullAddresses[1]), 'E 49th St, New York');
+      chai.assert.equal(approximateLocation(fullAddresses[2]), 'Museum of Fine Arts, Boston, Huntington Avenue');
+      chai.assert.equal(approximateLocation(fullAddresses[3]), 'Massachusetts General Hospital, Fruit Street');
     });
 
-    describe('returns town when street not specified', function () {
-      it('returns town', function () {
-        let partialAddress = {name: "Boston, MA"};
-        var approximateLocation = $filter('approximateLocation');
-        chai.assert.equal(approximateLocation(partialAddress), 'Boston');
-      });
+    it('returns town when street not specified', function () {
+      let partialAddress = {name: "Boston, MA"};
+      var approximateLocation = $filter('approximateLocation');
+      chai.assert.equal(approximateLocation(partialAddress), 'Boston');
     });
   });
 
@@ -130,26 +114,22 @@ describe( 'Filters ', function () {
       $filter = _$filter_;
     }));
 
-    describe('return "No Time Specified" when there is no time passed', function () {
-      it('returns string when no time passed', function() {
-        var timeOfDay = $filter('timeOfDay');
-        chai.assert.equal(timeOfDay(null), 'No Time Specified');
-      });
+    it('return "No Time Specified" when there is no time passed', function() {
+      var timeOfDay = $filter('timeOfDay');
+      chai.assert.equal(timeOfDay(null), 'No Time Specified');
     });
 
-    describe('return time of day depending on hour', function () {
-      it('returns string indicating "Morning,Afternoon,Evening,Any time"', function() {
-        var timeOfDay = $filter('timeOfDay');
-        //new Date(Date.UTC(year, month, day, hour, minute, second))
-        var morning = new Date(2106, 6, 13, 9, 0, 0);
-        var afternoon = new Date(2106, 6, 13, 13, 0, 0);
-        var evening = new Date(2106, 6, 13, 16, 0, 0);
-        var anytime = new Date((2106, 6, 13, 7, 0, 0));
-        chai.assert.equal(timeOfDay(morning), 'Morning');
-        chai.assert.equal(timeOfDay(afternoon), 'Afternoon');
-        chai.assert.equal(timeOfDay(evening), 'Evening');
-        chai.assert.equal(timeOfDay(anytime), 'Any time');
-      });
+    it('returns string indicating "Morning,Afternoon,Evening,Any time", depending on hour', function() {
+      var timeOfDay = $filter('timeOfDay');
+      //new Date(Date.UTC(year, month, day, hour, minute, second))
+      var morning = new Date(2106, 6, 13, 9, 0, 0);
+      var afternoon = new Date(2106, 6, 13, 13, 0, 0);
+      var evening = new Date(2106, 6, 13, 16, 0, 0);
+      var anytime = new Date((2106, 6, 13, 7, 0, 0));
+      chai.assert.equal(timeOfDay(morning), 'Morning');
+      chai.assert.equal(timeOfDay(afternoon), 'Afternoon');
+      chai.assert.equal(timeOfDay(evening), 'Evening');
+      chai.assert.equal(timeOfDay(anytime), 'Any time');
     });
 
   });
