@@ -20,11 +20,6 @@ angular.module('visitry').directive('visitry', function () {
         return Meteor.userId() !== null;
       };
 
-      $scope.currentUser = () => {
-        console.log( "current User" + Meteor.userId());
-        return Meteor.user();
-      };
-
       $scope.logout = () => {
         console.log( "logout")
         Accounts.logout();

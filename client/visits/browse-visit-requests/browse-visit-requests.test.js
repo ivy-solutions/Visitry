@@ -73,18 +73,16 @@ describe ( 'BrowseVisitRequests', function() {
 
 
     it('when no user location, return no string', function () {
-      scope.currentUser = null;
       chai.assert.equal(controller.getDistanceToVisitLocation(visit), "");
     });
 
     it( 'when no visit location, return no string ', function() {
-      scope.currentUser = user;
       let noLocation = {};
       chai.assert.equal(controller.getDistanceToVisitLocation(noLocation), "");
     });
 
     it ('distance is an accurate number when there is both a visit and a user location', function() {
-      scope.currentUser = user;
+      sinon.stub(Meteor, 'user', function () {return user});
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');
       chai.assert.equal( distance, "68.2 miles");

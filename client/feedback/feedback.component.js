@@ -12,7 +12,7 @@ angular.module('visitry').directive('feedback', function () {
     controller: function ($scope, $reactive, $state, $stateParams) {
       $reactive(this).attach($scope);
       this.subscribe('visits');
-      this.subscribe('users');
+      this.subscribe('userdata');
 
       var feedbackResponse = {
         visitorId: '',

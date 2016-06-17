@@ -11,12 +11,12 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     this.visit = Visits.findOne({_id: $stateParams.visitId});
   });
 
-  this.subscribe('users');
+  this.subscribe('userdata');
 
   ////////
 
   this.isVisitor = function() {
-    if (this.visit.visitorId && Meteor.userId() == this.visit.visitorId) {
+    if (this.visit && this.visit.visitorId && (Meteor.userId() == this.visit.visitorId)) {
       return true;
     }
     return false;

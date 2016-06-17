@@ -29,7 +29,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   $scope.timePickerObject = timePicker;
 
   this.subscribe('visits');
-  this.subscribe('users');
+  this.subscribe('userdata');
 
   this.chosenVisit = {
     visitorId: Meteor.userId(),

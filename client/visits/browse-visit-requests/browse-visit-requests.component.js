@@ -12,6 +12,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
+  this.visits;
+
   this.helpers({
      openVisits: () => {
        let userId = Meteor.userId();
@@ -20,17 +22,18 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
          'requestedDate': {$gt: new Date()},
          'requesterId': {$ne: userId}
        };
-       var visits = Visits.find(selector, {sort: this.getReactively('listSort'),
+       this.visits = Visits.find(selector, {sort: this.getReactively('listSort'),
         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
-       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
+       return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
      },
-     currentUser() {
-      return Meteor.user();
-      }
+    currentUser: () => {
+      return Meteor.users.find({_id: Meteor.userId()})
+    }
   });
 
   this.subscribe('visits');
-  this.subscribe('users');
+  this.subscribe('userdata');
+
   ////////
 
   this.getRequester = function (visit) {
@@ -50,9 +53,10 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   };
 
   var extractCurrentUserLocation = function() {
-    var user = $scope.currentUser;
-    console.log('extracting current location ' + JSON.stringify(user) );
-    return user && user.userData && user.userData.location;
+    var user = Meteor.user();
+    var currentUserLocation = user && user.userData && user.userData.location;
+    console.log('location ' + JSON.stringify(currentUserLocation));
+    return currentUserLocation;
   };
 
   this.getDistanceToVisitLocation = function ( visit ) {

@@ -1,4 +1,4 @@
-Meteor.publish("users", function () {
+Meteor.publish("userdata", function () {
   if (this.userId) {
     //TODO will have a filter on affiliation with agencies of the current user eventually
     return Meteor.users.find({},
