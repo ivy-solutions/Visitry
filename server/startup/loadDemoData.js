@@ -45,12 +45,14 @@ Meteor.startup(function ()  {
     var requester2 = Meteor.users.findOne({username:'requester2'});
     var requester3 = Meteor.users.findOne({username:'requester3'});
 
+    var futureMonth = 6;
+    var pastMonth = 4;
     var visits = [
       {
         "requesterId":requester1._id,
         "createdAt":new Date(2016,2,21,13,0,0,0),
         "visitorId": sarahc._id,
-        "requestedDate": new Date(2016,5,1,13,0,0,0),
+        "requestedDate": new Date(2016,futureMonth,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
           "name":"Boston",
@@ -62,7 +64,7 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "visitorId": vivian._id,
         "createdAt":new Date(2016,2,21,13,0,0,0),
-        "requestedDate": new Date(2016,6,15,16,0,0,0),
+        "requestedDate": new Date(2016,futureMonth,15,16,0,0,0),
         "notes": '3pm works best',
         "location": {
           "name":"Boston",
@@ -74,8 +76,8 @@ Meteor.startup(function ()  {
         "requesterId": requester1._id,
         "visitorId": vivian._id,
         "createdAt":new Date(2016,3,15,13,0,0,0),
-        "requestedDate": new Date(2016,5,21,9,0,0,0),
-        "visitTime": new Date(2016, 5, 21, 13, 30, 0, 0),
+        "requestedDate": new Date(2016,pastMonth,21,9,0,0,0),
+        "visitTime": new Date(2016, pastMonth, 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
           "name":"Boston",
@@ -86,7 +88,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "createdAt":new Date(2016,1,21,13,0,0,0),
-        "requestedDate": new Date(2016,5,29,9,0,0,0),
+        "requestedDate": new Date(2016,futureMonth,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
           "name":"Boston",
@@ -97,7 +99,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester1._id,
         "createdAt":new Date(2016,3,13,13,0,0,0),
-        "requestedDate": new Date(2016,5,15,13,0,0,0),
+        "requestedDate": new Date(2016,futureMonth,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
           "name":"Boston",
@@ -109,7 +111,7 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "visitorId": sarahc._id,
         "createdAt":new Date(2016,0,1,9,0,0,0),
-        "requestedDate": new Date(2016,0,1,13,0,0,0),
+        "requestedDate": new Date(2016,pastMonth,1,13,0,0,0),
         "notes": 'This already happened',
         "location": {
           "name":"Boston",
@@ -120,7 +122,7 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "createdAt":new Date(2016,3,10,13,0,0,0),
-        "requestedDate": new Date(2016,5,17,9,0,0,0),
+        "requestedDate": new Date(2016,futureMonth,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
           "name":"Boston",
@@ -130,7 +132,9 @@ Meteor.startup(function ()  {
       }
     ];
     for ( i = 0; i < visits.length; i++ ) {
-      Visits.insert( visits[i]);
+      var visit = visits[i];
+      check(visit,Visits.schema);
+      Visits.insert( visit);
     }
   }
 

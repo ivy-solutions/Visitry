@@ -17,6 +17,7 @@ Visits.allow({
 });
 
 LocationSchema = new SimpleSchema({
+  name: { type: String },
   longitude: {
     type: Number,
     decimal : true,
@@ -32,15 +33,28 @@ LocationSchema = new SimpleSchema({
 });
 
 Visits.schema = new SimpleSchema({
-    requesterId: {type: String, optional:true},  //TODO optional for now, can't get seed data to work when I use id
-    requesterUsername: {type: String, optional:true},  //TODO not needed in the long run - here, to get seed data to work
+    requesterId: {type: String, regEx: SimpleSchema.RegEx.Id},
     location: {type: LocationSchema },
     requestedDate: {type: Date},
+    //TODO requiring a future requestedDate interferes with our demo seed data, eventually we can do this check
+    //requestedDate: {type: Date,
+    //  custom: function() {
+    //    var today = new Date(); //must be after today
+    //    if(today > this.value) {
+    //      return 'minDate';  //Error string
+    //    } else {
+    //      return true;
+    //    }
+    //  }
+    //},
     notes: {type: String, optional:true},
-    visitorId: { type: String, optional:true},  //filled in when visit booked
+    createdAt: {type:Date},
+    visitorId: { type: String, regEx: SimpleSchema.RegEx.Id, optional:true},  //filled in when visit booked
     visitTime: {type: Date, optional:true },
-    feedbackId: {type: String, optional: true}  //filled in after visit
+    scheduledAt: { type: Date, optional: true},
+    visitorNotes: {type:String, optional:true},
+    feedbackId: {type: String, regEx: SimpleSchema.RegEx.Id, optional: true}  //filled in after visit
 });
 
-//Visits.attachSchema(Visits.schema); //TODO we aren't quite ready to adhere to the schema
+Visits.attachSchema(Visits.schema);
 
