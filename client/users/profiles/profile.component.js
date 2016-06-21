@@ -4,39 +4,21 @@
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
 
-  this.username;
-  this.firstName;
-  this.lastName;
-  this.primaryEmail;
-  this.location = {
-      name: '',
-      details: {}
-  };
-  this.vicinity;
-  this.vicinityOptions = ['2 miles', '5 miles', '10 miles', '20 miles','50 miles'];
-  this.role;
-  this.picture;
-  this.currentUser;
-
-  this.subscribe('users', function () {
-    this.currentUser = Meteor.user();
-    if ( this.currentUser ) {
-      this.username = this.currentUser.username;
-      this.firstName = this.currentUser.userData ? this.currentUser.userData.firstName : '';
-      this.lastName = this.currentUser.userData ? this.currentUser.userData.lastName : '';
-      this.primaryEmail = this.currentUser.emails ? this.currentUser.emails[0].address : '';
-      this.vicinity = this.currentUser.userData ? this.currentUser.userData.vicinity : '2 miles';
-      this.picture =  this.currentUser.userData.picture ? this.currentUser.userData.picture : '';
-      this.location = this.currentUser.userData.location;
-      this.role = this.currentUser.userData.role;
+   this.helpers({
+    currentUser: () => {
+      return Meteor.user();
     }
   });
 
+  this.subscribe('userProfile');
+
   /////////
    this.submitUpdate = () => {
-     console.log("update name: " + this.firstName + " " + this.lastName + " updateEmail: " + this.primaryEmail + " as " + this.role);
+     var user = this.currentUser;
 
-     Meteor.call('updateName', this.firstName, this.lastName, this.role, (err) => {
+     console.log("update name: " + JSON.stringify(user));
+
+     Meteor.call('updateName', user.userData.firstName, user.userData.lastName, user.userData.role, (err) => {
        if (err) return handleError(err);
      });
 
@@ -44,16 +26,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      //  if (err) return handleError(err);
      //});
 
-     console.log("update location: " + this.location.name);
+     console.log("update location: " + JSON.stringify(user.userData.location));
      var newLocation = {
-       name: this.location.name,
-       details: this.location.details,
-       latitude: this.location.details.geometry.location.lat(),
-       longitude: this.location.details.geometry.location.lng()
+       name: user.userData.location.name,
+       details: user.userData.location.details,
+       latitude: user.userData.location.details.geometry.location.lat,
+       longitude: user.userData.location.details.geometry.location.lng
      };
-
-     console.log( "update vicinity : "+ this.vicinity);
-     Meteor.call('updateLocation', newLocation, this.vicinity, (err) => {
+     //
+     //console.log( "update vicinity : "+ this.vicinity);
+     Meteor.call('updateLocation', newLocation, user.userData.vicinity, (err) => {
        if (err) return handleError(err);
      });
 

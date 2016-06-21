@@ -1,16 +1,16 @@
-<ion-view title="{{profile.username}}">
+<ion-view title="{{profile.currentUser.username}}">
 
     <ion-content class="profile">
-        <div class="username">{{profile.firstName}} {{profile.lastName}}</div>
-        <div ng-if="!profile.picture">
+        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
+        <div ng-if="!profile.currentUser.userData.picture">
              <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
-                      <img ng-src="{{profile.picture}}"/>Add Picture
+                      <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
              </div>
         </div>
-        <div ng-if="profile.picture">
+        <div ng-if="profile.currentUser.userData.picture">
             <div class="profile-picture has-picture" ng-click="profile.updatePicture()">
                 <div class="item-avatar">
-                    <img ng-src="{{profile.picture}}"/>
+                    <img ng-src="{{profile.currentUser.userData.picture}}"/>
                 </div>
             </div>
         </div>
@@ -18,20 +18,25 @@
             <label class="item item-input">
                  <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
-                       ng-model="profile.location.name"
-                       details="profile.location.details" ng-focus="profile.disableTap()"/>
+                       ng-model="profile.currentUser.userData.location.name"
+                       details="profile.currentUser.userData.location.details" ng-focus="profile.disableTap()"/>
              </label>
             <label class="item item-input item-select">
                 <span class="input-label">Show visits within:</span>
-                <select ng-model="profile.vicinity" ng-options="profile.vicinityOptions.indexOf(item) as item for item in profile.vicinityOptions">
+                <select ng-model="profile.currentUser.userData.vicinity">
+                    <option value="2">2 miles</option>
+                    <option value="5">5 miles</option>
+                    <option value="10">10 miles</option>
+                    <option value="20">20 miles</option>
+                    <option value="50">50 miles</option>
                 </select>
             </label>
             <label class="item item-input">
                 <span class="input-label">Email</span>
-                <input ng-model="profile.primaryEmail" type="email" placeholder="Email"/>
+                <input ng-model="profile.currentUser.emails[0].address" type="email" placeholder="Email"/>
             </label>
             <label class="item item-input">
-                <ion-radio ng-model="profile.role" ng-value="'requester'">Request Visits</ion-radio><ion-radio ng-model="profile.role" ng-value="'visitor'">Visit Others</ion-radio>
+                <ion-radio ng-model="profile.currentUser.userData.role" ng-value="'requester'">Request Visits</ion-radio><ion-radio ng-model="profile.currentUser.userData.role" ng-value="'visitor'">Visit Others</ion-radio>
             </label>
         </div>
          <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
