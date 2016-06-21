@@ -11,6 +11,15 @@ Meteor.publish("userdata", function () {
   }
 });
 
+Meteor.publish("userProfile", function () {
+  if (this.userId) {
+    return Meteor.users.find({_id:this.userId},
+      {fields: {username: 1, emails: 1, primaryEmail: 1, 'userData': 1}});
+  } else {
+    this.ready();
+  }
+});
+
 Meteor.methods({
   updateName(firstName, lastName, role)
   {

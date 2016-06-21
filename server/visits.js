@@ -15,11 +15,11 @@ Meteor.methods({
     const visit = Visits.findOne(visitId);
 
     if (!visit) {
-      throw new Meteor.Error('request not found');
+      throw new Meteor.Error('not-found', 'Visit request not found.');
     }
 
     if (this.userId !== visit.requesterId) {
-      throw new Meteor.Error('not authorized');
+      throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
 
     //TODO - we want to communicate and deactivate visit requests that have already been booked.
@@ -35,11 +35,11 @@ Meteor.methods({
     const visit = Visits.findOne(visitId);
 
     if (!visit) {
-      throw new Meteor.Error('visit not found');
+      throw new Meteor.Error('not-found');
     }
 
     if ( this.userId !== visit.visitorId) {
-      throw new Meteor.Error('not authorized');
+      throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
 
     //TODO communicate with requester
@@ -55,7 +55,7 @@ Meteor.methods({
     const visit = Visits.findOne(visitId);
 
     if (!visit) {
-      throw new Meteor.Error('visit not found');
+      throw new Meteor.Error('not-found');
     }
     //TODO communicate with requester
 
@@ -67,7 +67,7 @@ Meteor.methods({
 
     const visit = Visits.findOne(visitId);
     if (!visit) {
-      throw new Meteor.Error('visit not found');
+      throw new Meteor.Error('not-found');
     }
 
     Visits.update(visit._id, {$set: {feedbackId: feedbackId}});

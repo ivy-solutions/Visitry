@@ -37,9 +37,10 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.getVisitorImage = function(visit) {
     if (visit.visitorId) {
       var visitor = Meteor.users.findOne({_id: visit.visitorId});
-      if (typeof(visitor.userData.picture) !== 'undefined') {
-        return visitor.userData.picture;
+      if ( visitor == undefined || visitor.userData == undefined || visitor.userData.picture == undefined ) {
+        return "";
       }
+      return visitor.userData.picture;
     }
     return "";
   };
@@ -60,12 +61,23 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
     });
     confirmPopup.then((result)=> {
       if (result) {
-        Meteor.call('visits.rescindRequest',visit._id);
+        Meteor.call('visits.rescindRequest',visit._id, (err) => {
+          if (err) return handleError(err);
+        });
       }
       else{
         $ionicListDelegate.closeOptionButtons();
       }
     })
-  }
+  };
 
+  function handleError(err) {
+    $log.error('visits.rescindRequest error ', err);
+
+    $ionicPopup.alert({
+      title: err.reason || 'Cancel failed',
+      template: 'Please try again',
+      okType: 'button-positive button-clear'
+    });
+  }
 });

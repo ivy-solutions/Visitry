@@ -56,7 +56,9 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
     });
     confirmPopup.then((result)=> {
       if (result) {
-        Meteor.call('visits.cancelScheduled',visit._id);
+        Meteor.call('visits.cancelScheduled',visit._id, (err) => {
+          if (err) return handleError(err);
+        });
       }
       else{
         $ionicListDelegate.closeOptionButtons();
@@ -64,5 +66,13 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
     })
   }
 
+  function handleError(err) {
+    $log.error('visits.cancelScheduled error ', err);
 
+    $ionicPopup.alert({
+      title: err.reason || 'Cancel failed',
+      template: 'Please try again',
+      okType: 'button-positive button-clear'
+    });
+  }
 });

@@ -40,7 +40,7 @@ if (Meteor.isServer) {
         try {
           rescindHandler.apply(invocation, [requestId]);
         } catch (ex) {
-          assert.equal(ex.error, 'not authorized')
+          assert.equal(ex.error, 'not-authorized')
         }
       });
 
@@ -89,7 +89,7 @@ if (Meteor.isServer) {
         try {
           cancelScheduledHandler.apply(invocation, [visitId]);
         } catch (ex) {
-          assert.equal(ex.error, 'not authorized')
+          assert.equal(ex.error, 'not-authorized')
         }
       });
 
