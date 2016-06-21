@@ -31,12 +31,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   this.subscribe('visits');
   this.subscribe('userdata');
 
-  this.chosenVisit = {
-    visitorId: Meteor.userId(),
-    visitTime: '',
-    visitorNotes: '',
-    scheduledAt: new Date()
-  };
+  this.visitorNotes = "";
 
   var selectedTime;
 
@@ -47,13 +42,10 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       var date = visit.requestedDate;
       var visitDateTime = new Date( date.getFullYear(), date.getMonth(), date.getDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
-      this.chosenVisit.visitTime = visitDateTime;
        if ( visitDateTime > tomorrowFirstThing() ) {
-         Visits.update(visit._id, {
-          $set: this.chosenVisit
-        });
-        this.hideScheduleVisitModal();
-        $state.go('upcoming');
+         Meteor.call('visits.scheduleVisit', visit._id, visitDateTime, this.visitorNotes);
+         this.hideScheduleVisitModal();
+         $state.go('upcoming');
       } else {
         return this.handleError( "Schedule Time must be in future.")
       }

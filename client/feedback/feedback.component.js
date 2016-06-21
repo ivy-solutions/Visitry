@@ -90,10 +90,7 @@ angular.module('visitry').directive('feedback', function () {
         //TODO: data validation here, add the user data
         console.log(feedbackResponse);
         var feedbackId = Feedback.insert(feedbackResponse);
-        Visits.update(feedbackResponse.visitId, {$set: {feedbackId: feedbackId}}, {
-          upsert: false,
-          multi: false
-        }, function (err, updates) {
+        Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId , function (err, updates) {
           if (err) {
             console.log(err);
           }

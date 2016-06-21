@@ -13,34 +13,46 @@ tracker                 # Meteor's client-side reactive programming library
 
 es5-shim                # ECMAScript 5 compatibility for older browsers.
 
+# angular
 angular
 angularui:angular-ui-router
-accounts-password
-check
-less
 angular:angular-material
-dotansimha:accounts-ui-angular
 angularui:angular-ui-bootstrap
-tmeasday:publish-counts
+pbastowski:angular-babel
 angularutils:pagination
-visitry-browser
-visitrymobile
-cfs:gridfs
-mquandalle:bower
-aldeed:simple-schema
-aldeed:collection2
-jeremy:geocomplete
+angular:angular-messages
+angular-templates
+
+# ui widget related
 ogamedia:timer
 okland:camera-ui
 jasonaibrahim:angular-moment
-angular:angular-messages
+jeremy:geocomplete
+shynah:ionic-timepicker
+
+# accounts
+accounts-password
+dotansimha:accounts-ui-angular
+
+# data
+check
+less
+tmeasday:publish-counts
+aldeed:simple-schema
+aldeed:collection2
+
+# packaging and build related
+visitry-browser         # visitry package
+visitrymobile           # visitry package
+mquandalle:bower
 hybrid:asset-builder
 standard-minifier-css
 standard-minifier-js
-shynah:ionic-timepicker
-angular-templates
+
+# testing
 angular:angular-mocks
 practicalmeteor:mocha
 hwillson:stub-collections
 practicalmeteor:mocha-console-runner
-pbastowski:angular-babel
+dburles:factory
+practicalmeteor:faker

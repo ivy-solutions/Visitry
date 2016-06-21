@@ -53,7 +53,8 @@ Visits.schema = new SimpleSchema({
     visitTime: {type: Date, optional:true },
     scheduledAt: { type: Date, optional: true},
     visitorNotes: {type:String, optional:true},
-    feedbackId: {type: String, regEx: SimpleSchema.RegEx.Id, optional: true}  //filled in after visit
+    feedbackId: {type: String, regEx: SimpleSchema.RegEx.Id, optional: true},  //filled in after visit
+    inactive: {type: Boolean, optional:true}  //set if requester rescinds the request
 });
 
 Visits.attachSchema(Visits.schema);

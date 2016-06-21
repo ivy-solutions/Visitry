@@ -60,7 +60,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
     });
     confirmPopup.then((result)=> {
       if (result) {
-        Visits.remove(visit._id);
+        Meteor.call('visits.rescindRequest',visit._id);
       }
       else{
         $ionicListDelegate.closeOptionButtons();

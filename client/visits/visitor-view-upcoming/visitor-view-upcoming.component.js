@@ -56,11 +56,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
     });
     confirmPopup.then((result)=> {
       if (result) {
-        Visits.update(visit._id,
-          {$set: { cancelledAt: new Date()},
-            $unset: {visitorId: "", visitTime:""}
-          }
-        );
+        Meteor.call('visits.cancelScheduled',visit._id);
       }
       else{
         $ionicListDelegate.closeOptionButtons();
