@@ -12,7 +12,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
-  this.visits;
+  this.visits = null;
 
   this.helpers({
      openVisits: () => {
