@@ -52,8 +52,10 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       var newVisit = {
         location: {
           name: this.visitRequest.location.name,
-          latitude: this.visitRequest.location.details.geometry.location.lat(),
-          longitude: this.visitRequest.location.details.geometry.location.lng()
+          geo: {
+            type: "Point",
+            coordinates: [this.visitRequest.location.details.geometry.location.lng(), this.visitRequest.location.details.geometry.location.lat()]
+          }
         },
         requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
         notes: this.visitRequest.notes

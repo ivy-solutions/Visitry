@@ -27,9 +27,11 @@ if (Meteor.isServer) {
           createdAt: new Date(),
           requesterId: requesterId,
           location: {
-            "name": "Boston",
-            "latitude": 42.3601,
-            "longitude": -71.0589
+            name: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
           }
         });
       });
@@ -77,9 +79,11 @@ if (Meteor.isServer) {
           requesterId: requesterId,
           visitorId: userId,
           location: {
-            "name": "Boston",
-            "latitude": 42.3601,
-            "longitude": -71.0589
+            name: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
           }
         });
       });
@@ -118,10 +122,12 @@ if (Meteor.isServer) {
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
-           location: {
-            "name": "Boston",
-            "latitude": 42.3601,
-            "longitude": -71.0589
+          location: {
+            name: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
           }
         });
       });
@@ -157,9 +163,11 @@ if (Meteor.isServer) {
           createdAt: new Date(),
           requesterId: requesterId,
           location: {
-            "name": "Boston",
-            "latitude": 42.3601,
-            "longitude": -71.0589
+            name: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
           }
         });
       });
@@ -183,9 +191,11 @@ if (Meteor.isServer) {
         notes: 'test visit',
         requestedDate: tomorrow,
         location: {
-          "name": "Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+           name: "Boston",
+           geo: {
+             type: "Point",
+             coordinates: [-71.0589, 42.3601]
+           }
         }
       };
 

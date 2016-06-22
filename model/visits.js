@@ -16,19 +16,18 @@ Visits.allow({
   }
 });
 
+
+    // mongo 2dsphere
+SphereSchema = new SimpleSchema({
+  type: {type: String, allowedValues: ["Point"]},
+  coordinates: {type: [Number], min: -180, max: 180, minCount:2, maxCount:2, decimal:true }
+});
+
 LocationSchema = new SimpleSchema({
-  name: { type: String },
-  longitude: {
-    type: Number,
-    decimal : true,
-    min: -180,
-    max: 180
-  },
-  latitude: {
-    type: Number,
-    decimal: true,
-    min: -90,
-    max: 90
+  name: {type: String},
+  geo: {
+    type: SphereSchema,
+    index: '2dsphere'
   }
 });
 

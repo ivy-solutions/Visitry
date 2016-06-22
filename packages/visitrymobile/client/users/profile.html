@@ -1,7 +1,7 @@
 <ion-view title="{{profile.currentUser.username}}">
 
     <ion-content class="profile">
-        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <i class="icon ion-edit"></i></div>
+        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
         <div ng-if="!profile.currentUser.userData.picture">
              <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
                       <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture

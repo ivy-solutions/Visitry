@@ -14,6 +14,13 @@ Meteor.methods({
     visit.createdAt = new Date();
 
     check(visit,Visits.schema);
+    //valid longitude and latitude
+    var longitude = visit.location.geo.coordinates[0];
+    var latitude = visit.location.geo.coordinates[1];
+    if ( longitude < -180 || longitude > 180 || latitude < -90 | latitude > 90 ) {
+      throw new Meteor.Error('invalid-location', "Location coordinates are invalid.")
+    }
+
     Visits.insert(visit);
   },
   'visits.rescindRequest'(visitId) {

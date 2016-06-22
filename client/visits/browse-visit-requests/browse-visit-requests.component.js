@@ -65,16 +65,16 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     if ( toLocation == null )
       return "";
     var userLocation = extractCurrentUserLocation();
-    if ( !userLocation || userLocation.latitude==null || userLocation.longitude==null ) {
+    if ( !userLocation || userLocation.geo==null || userLocation.geo.coordinates[0]==null ) {
       console.log( "no current user location." );
       return "";
     }
     var EarthRadiusInMiles = 3956.0;
     var EarthRadiusInKilometers = 6367.0;
-    var fromLatRads = degreesToRadians(userLocation.latitude);
-    var fromLongRads = degreesToRadians(userLocation.longitude);
-    var toLatRads = degreesToRadians(toLocation.latitude);
-    var toLongRads = degreesToRadians(toLocation.longitude);
+    var fromLatRads = degreesToRadians(userLocation.geo.coordinates[1]);
+    var fromLongRads = degreesToRadians(userLocation.geo.coordinates[0]);
+    var toLatRads = degreesToRadians(toLocation.geo.coordinates[1]);
+    var toLongRads = degreesToRadians(toLocation.geo.coordinates[0]);
     var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles
     var rounded = distance.toFixed(1);
     return (rounded).toString() + " miles";

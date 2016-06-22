@@ -57,11 +57,15 @@ Meteor.methods({
     check(loc.name, String);
     check(loc.latitude, Number);
     check(loc.longitude, Number);
+    //valid longitude and latitude
+    if ( loc.longitude < -180 || loc.longitude > 180 || loc.latitude < -90 | loc.latitude > 90 ) {
+      throw new Meteor.Error('invalid-location', "Location coordinates are invalid.")
+    }
 
     var location = {
       name: loc.name,
-      latitude: loc.latitude,
-      longitude: loc.longitude
+      geo: { type : "Point",
+        coordinates: [loc.longitude,loc.latitude] }
     };
 
     return Meteor.users.update(this.userId, {$set: {'userData.location': location}} );

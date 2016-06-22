@@ -56,8 +56,9 @@ Meteor.startup(function ()  {
         "notes": '1pm works best',
         "location": {
           "name":"Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       },
       {
@@ -68,8 +69,9 @@ Meteor.startup(function ()  {
         "notes": '3pm works best',
         "location": {
           "name":"Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       },
       {
@@ -81,8 +83,9 @@ Meteor.startup(function ()  {
         "notes": '10pm works best',
         "location": {
           "name":"Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       },
       {
@@ -92,8 +95,9 @@ Meteor.startup(function ()  {
         "notes": 'pick me, please',
         "location": {
           "name":"Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       },
       {
@@ -102,9 +106,10 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,futureMonth,15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
-          "name":"Boston",
-          "latitude": 42,
-          "longitude": -71
+          "name":"Boston Public Garden",
+          "geo": { "type": "Point",
+            "coordinates": [-71.069459, 42.35621]
+          }
         }
       },
       {
@@ -115,8 +120,9 @@ Meteor.startup(function ()  {
         "notes": 'This already happened',
         "location": {
           "name":"Boston",
-          "latitude": 42.3601,
-          "longitude": -71.0589
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       },
       {
@@ -126,8 +132,9 @@ Meteor.startup(function ()  {
         "notes": 'I need to walk Bowser.',
         "location": {
           "name":"Boston",
-          "latitude": 42,
-          "longitude": -71
+          "geo": { "type": "Point",
+            "coordinates": [-71.0589, 42.3601]
+          }
         }
       }
     ];

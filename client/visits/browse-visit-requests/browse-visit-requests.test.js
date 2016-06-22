@@ -57,16 +57,18 @@ describe ( 'BrowseVisitRequests', function() {
     let visit = {
       "location": {
         "name":"35 Bayview Ave., Monument Beach, MA",
-        "latitude": 41.717825,
-        "longitude": -70.6140227
+        "geo": { "type": "Point",
+          "coordinates": [-70.6140227, 41.717825]
+        }
       }
     };
     let user = {
       "userData": {
         "location": {
           "name": "80 Willow St., Acton, MA",
-          "latitude": 42.468846,
-          "longitude": -71.477358
+          "geo": { "type": "Point",
+            "coordinates": [-71.477358, 42.468846]
+          }
         }
       }
     };
