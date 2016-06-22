@@ -39,12 +39,12 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
        if (err) return handleError(err);
      });
 
-     if (this.role == "visitor") {
+     if (user.userData.role == "visitor") {
        $state.go('browseRequests');
      } else {
        $state.go('pendingVisits');
      }
-};
+  };
 
 
   this.disableTap = function () {
