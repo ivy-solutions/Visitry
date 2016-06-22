@@ -13,6 +13,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.subscribe('userProfile');
 
   /////////
+  this.isLocationValid = ()=> {
+    return this.currentUser.userData.location && this.currentUser.userData.location.name && this.currentUser.userData.location.details;
+  };
+
    this.submitUpdate = () => {
      var user = this.currentUser;
 
@@ -22,22 +26,19 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
        if (err) return handleError(err);
      });
 
-     //Meteor.call('updateEmail', this.primaryEmail, (err) => {
-     //  if (err) return handleError(err);
-     //});
-
-     console.log("update location: " + JSON.stringify(user.userData.location));
-     var newLocation = {
-       name: user.userData.location.name,
-       details: user.userData.location.details,
-       latitude: user.userData.location.details.geometry.location.lat,
-       longitude: user.userData.location.details.geometry.location.lng
-     };
-     //
-     //console.log( "update vicinity : "+ this.vicinity);
-     Meteor.call('updateLocation', newLocation, user.userData.vicinity, (err) => {
-       if (err) return handleError(err);
-     });
+     if (this.isLocationValid()) {
+       console.log("update location: " + JSON.stringify(user.userData.location));
+       var newLocation = {
+         name: user.userData.location.name,
+         latitude: user.userData.location.details.geometry.location.lat(),
+         longitude: user.userData.location.details.geometry.location.lng()
+       };
+       //
+       //console.log( "update vicinity : "+ this.vicinity);
+       Meteor.call('updateLocation', newLocation, user.userData.vicinity, (err) => {
+         if (err) return handleError(err);
+       });
+     }
 
      if (user.userData.role == "visitor") {
        $state.go('browseRequests');
@@ -59,7 +60,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.updatePicture = () => {
     console.log( "update picture for " + this.currentUser.username);
-    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:50 }, function (err, data) {
+    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80 }, function (err, data) {
       if (err && err.error == 'cancel') {
         return;
       }

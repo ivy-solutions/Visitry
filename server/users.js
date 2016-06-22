@@ -40,11 +40,11 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update email.');
     }
+    check(email, String);
 
     if (email && Meteor.user().emails) {
       Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
     }
-    check(email, String);
 
     return Accounts.addEmail(Meteor.userId(), email );
   },
@@ -54,9 +54,12 @@ Meteor.methods({
         'Must be logged in to update location.');
     }
 
+    check(loc.name, String);
+    check(loc.latitude, Number);
+    check(loc.longitude, Number);
+
     var location = {
       name: loc.name,
-      details: loc.details,
       latitude: loc.latitude,
       longitude: loc.longitude
     };
@@ -80,7 +83,7 @@ Accounts.onCreateUser(function(options, user) {
   if ( options.userData)
     user.userData = options.userData;
   else {
-    user.userData = {firstname: "", lastName: "", role:"visitor"}
+    user.userData = {firstName: "", lastName: "", role:"visitor", vicinity: "10"}
   }
   return user;
 });

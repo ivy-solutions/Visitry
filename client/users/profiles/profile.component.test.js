@@ -57,7 +57,7 @@ describe ( 'Profile', function() {
         details: {
           geometry: {
             location: {
-              lat: "42", lng: "-71"
+              lat : function() { return 42} , lng: function() { return -71 }
             }
           }
         }
@@ -76,6 +76,18 @@ describe ( 'Profile', function() {
       controller.currentUser = user;
       controller.submitUpdate();
       chai.assert(Meteor.call.calledWith('updateLocation'),"updateLocation called");
+    });
+    it('does not update location, when none provided', function () {
+      user.userData.location = null;
+      controller.currentUser = user;
+      controller.submitUpdate();
+      chai.assert.isFalse(Meteor.call.calledWith('updateLocation'),"updateLocation not called");
+    });
+    it('does not update location, when location exists and is unedited', function () {
+      user.userData.location  = { name: "some place", latitude: 42, longitude:-71 };
+      controller.currentUser = user;
+      controller.submitUpdate();
+      chai.assert.isFalse(Meteor.call.calledWith('updateLocation'),"updateLocation not called");
     });
     it('visitor goes to browseRequests', function() {
       controller.currentUser = user;

@@ -31,11 +31,7 @@
                     <option value="50">50 miles</option>
                 </select>
             </label>
-            <label class="item item-input">
-                <span class="input-label">Email</span>
-                <input ng-model="profile.currentUser.emails[0].address" type="email" placeholder="Email"/>
-            </label>
-            <label class="item item-input">
+             <label class="item item-input">
                 <ion-radio ng-model="profile.currentUser.userData.role" ng-value="'requester'">Request Visits</ion-radio><ion-radio ng-model="profile.currentUser.userData.role" ng-value="'visitor'">Visit Others</ion-radio>
             </label>
         </div>

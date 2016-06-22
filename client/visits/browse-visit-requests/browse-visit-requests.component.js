@@ -65,7 +65,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     if ( toLocation == null )
       return "";
     var userLocation = extractCurrentUserLocation();
-    if ( !userLocation ) {
+    if ( !userLocation || userLocation.latitude==null || userLocation.longitude==null ) {
       console.log( "no current user location." );
       return "";
     }
