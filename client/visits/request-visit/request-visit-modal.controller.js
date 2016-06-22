@@ -50,8 +50,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     userSubmitted = true;
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
       var newVisit = {
-        requesterId: Meteor.userId(),
-        createdAt:new Date(),
         location: {
           name: this.visitRequest.location.name,
           latitude: this.visitRequest.location.details.geometry.location.lat(),
@@ -61,7 +59,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         notes: this.visitRequest.notes
       };
       console.log(newVisit);
-      Visits.insert(newVisit);
+      Meteor.call('visits.create',newVisit);
       hideRequestVisitModal();
     }
   };

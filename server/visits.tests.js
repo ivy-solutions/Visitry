@@ -171,7 +171,34 @@ if (Meteor.isServer) {
         var updatedVisit = Visits.findOne({_id:visitId});
         assert.equal(updatedVisit.feedbackId,feedbackId);
       });
+    });
 
+    describe('visits.createVisit method', () => {
+      const createVisitHandler = Meteor.server.method_handlers['visits.createVisit'];
+      const userId = Random.id();
+
+      let tomorrow = new Date();
+      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
+      let newVisit = {
+        notes: 'test visit',
+        requestedDate: tomorrow,
+        location: {
+          "name": "Boston",
+          "latitude": 42.3601,
+          "longitude": -71.0589
+        }
+      };
+
+      beforeEach(() => {
+        Visits.remove({});
+      });
+
+
+      it('create Visit success', () => {
+        const invocation = {userId: userId};
+        createVisitHandler.apply(invocation, [newVisit]);
+        assert.equal(Visits.find().count(),1);
+      });
     });
 
   });
