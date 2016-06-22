@@ -48,7 +48,7 @@ Meteor.methods({
 
     return Accounts.addEmail(Meteor.userId(), email );
   },
-  updateLocation(loc, vicinity) {
+  updateLocation(loc) {
     if (!this.userId) {
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update location.');
@@ -64,9 +64,20 @@ Meteor.methods({
       longitude: loc.longitude
     };
 
-    return Meteor.users.update(this.userId, {$set: {'userData.location': location, 'userData.vicinity': vicinity}} );
+    return Meteor.users.update(this.userId, {$set: {'userData.location': location}} );
 
     },
+  updateUserData(data) {
+    if (!this.userId) {
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update user data.');
+    }
+
+    check(data.role, String);
+    check(data.vicinity, String);
+
+    return Meteor.users.update(this.userId, {$set: {'userData.role': data.role, 'userData.vicinity': data.vicinity}} );
+  },
   updatePicture(data) {
     if (!this.userId) {
       throw new Meteor.Error('not-logged-in',

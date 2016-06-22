@@ -122,5 +122,36 @@ if (Meteor.isServer) {
       });
 
     });
+    describe('users.updateUserData method', () => {
+      const updateUserDataHandler = Meteor.server.method_handlers['updateUserData'];
+
+      it('succeeds when valid first and last name passed', () => {
+        const invocation = {userId: testUserId};
+        updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"20"}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.role, "visitor");
+        assert.equal(updatedUser.userData.vicinity, 20);
+      });
+
+      it('fails when user is not logged in', () => {
+        const invocation = {userId: null};
+        try {
+          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"20"}]);
+          fail("expected exception");
+        } catch (ex) {
+          assert.equal( ex.error, 'not-logged-in')
+        }
+      });
+      it('fails when invalid vicinity', () => {
+        const invocation = {userId: testUserId};
+        try {
+          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:null}]);
+          fail("expected exception");
+        } catch (err) {
+          assert.equal( err.errorType, 'Match.Error', err)
+        }
+      });
+
+    });
   });
 }

@@ -67,10 +67,10 @@ describe ( 'Profile', function() {
   };
 
   describe( 'submitUpdate', function() {
-    it('update Name', function () {
+    it('update UserData', function () {
       controller.currentUser = user;
       controller.submitUpdate();
-      chai.assert(Meteor.call.calledWith('updateName', 'first', 'last', 'visitor'),"updateName called");
+      chai.assert(Meteor.call.calledWith('updateUserData'),"updateUserData called");
     });
     it('update location', function () {
       controller.currentUser = user;

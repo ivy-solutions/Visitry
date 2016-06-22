@@ -20,9 +20,13 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
    this.submitUpdate = () => {
      var user = this.currentUser;
 
-     console.log("update name: " + JSON.stringify(user));
+     console.log("update user: " + JSON.stringify(user));
+     var newUserData = {
+       role: user.userData.role,
+       vicinity: user.userData.vicinity
+     };
 
-     Meteor.call('updateName', user.userData.firstName, user.userData.lastName, user.userData.role, (err) => {
+     Meteor.call('updateUserData', newUserData, (err) => {
        if (err) return handleError(err);
      });
 
@@ -33,9 +37,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
          latitude: user.userData.location.details.geometry.location.lat(),
          longitude: user.userData.location.details.geometry.location.lng()
        };
-       //
-       //console.log( "update vicinity : "+ this.vicinity);
-       Meteor.call('updateLocation', newLocation, user.userData.vicinity, (err) => {
+
+        Meteor.call('updateLocation', newLocation, (err) => {
          if (err) return handleError(err);
        });
      }
