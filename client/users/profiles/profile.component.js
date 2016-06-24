@@ -12,9 +12,12 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.subscribe('userProfile');
 
+  this.locationName = "";
+  this.locationDetails = "";
+
   /////////
   this.isLocationValid = ()=> {
-    return this.currentUser.userData.location && this.currentUser.userData.location.name && this.currentUser.userData.location.details;
+    return this.locationDetails;
   };
 
    this.submitUpdate = () => {
@@ -31,11 +34,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      });
 
      if (this.isLocationValid()) {
-       console.log("update location: " + JSON.stringify(user.userData.location));
+       console.log("update location: " + user.userData.location.name + " " + JSON.stringify(this.locationDetails));
        var newLocation = {
          name: user.userData.location.name,
-         latitude: user.userData.location.details.geometry.location.lat(),
-         longitude: user.userData.location.details.geometry.location.lng()
+         latitude: this.locationDetails.geometry.location.lat(),
+         longitude: this.locationDetails.geometry.location.lng()
        };
 
         Meteor.call('updateLocation', newLocation, (err) => {

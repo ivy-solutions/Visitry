@@ -13,17 +13,52 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   };
 
   this.visits = null;
+  this.vicinity = 56;
+  this.distanceFromLocation = null;
+  this.openVisitCount;
+
+  this.autorun(()=> {
+    console.log( "autoRun");
+    var user = Meteor.users.findOne({_id: Meteor.userId()}, {'userData.vicinity': 1, 'userData.location': 1});
+    if ( user && user.userData && user.userData.location) {
+      console.log( "autoRun update")
+      this.vicinity = user.userData.vicinity;
+      this.distanceFromLocation = user.userData.location.geo;
+    }
+  });
 
   this.helpers({
      openVisits: () => {
        let userId = Meteor.userId();
-       let selector = {
-         'visitorId': {$exists: false},
-         'requestedDate': {$gt: new Date()},
-         'requesterId': {$ne: userId}
-       };
+       let selector;
+       var today = new Date();
+       today.setHours(0,0,0,0);
+       if ( this.distanceFromLocation ) {
+         console.log("this.distanceFromLocation " + JSON.stringify(this.distanceFromLocation) + " vicinity: " + this.vicinity );
+         selector = {
+           'visitorId': {$exists: false},
+           "location.geo": {
+             $near: {
+               $geometry: this.getReactively('distanceFromLocation'),
+               $maxDistance: this.getReactively('vicinity') * 1609
+             }
+           },
+           requestedDate: {$gt: today},
+           'requesterId': {$ne: userId},
+           inactive: {$exists: false}
+         }
+       } else {
+         console.log("select with no location" );
+         selector = {
+           'visitorId': {$exists: false},
+           'requesterId': {$ne: userId},
+           requestedDate: {$gt: today},
+           inactive: {$exists: false}
+         }
+       }
        this.visits = Visits.find(selector, {sort: this.getReactively('listSort'),
         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
+       this.openVisitCount = this.visits.count();
        return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
      },
     currentUser: () => {
@@ -31,8 +66,26 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     }
   });
 
-  this.subscribe('visits');
-  this.subscribe('userdata');
+  this.subscribe('userdata', function() {}, {
+    onReady: function () {
+      var user = Meteor.users.findOne({_id: Meteor.userId()}, {'userData.vicinity': 1, 'userData.location': 1});
+      this.vicinity = user.userData.vicinity;
+      console.log( "userdata ready");
+      if ( user.userData.location) {
+        console.log( "has location");
+        this.distanceFromLocation = user.userData.location.geo;
+      }
+     }
+  });
+
+  this.subscribe('visits',
+    function() {
+      [ {fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}}]
+    }, {
+    onReady: function () {
+      console.log("visits ready.");
+    }
+  });
 
   ////////
 
@@ -52,27 +105,19 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       return requester.userData.picture;
   };
 
-  var extractCurrentUserLocation = function() {
-    var user = Meteor.user();
-    var currentUserLocation = user && user.userData && user.userData.location;
-    console.log('location ' + JSON.stringify(currentUserLocation));
-    return currentUserLocation;
-  };
-
   this.getDistanceToVisitLocation = function ( visit ) {
     //if user does not have a location, then make the result 0
     var toLocation = visit.location;
     if ( toLocation == null )
       return "";
-    var userLocation = extractCurrentUserLocation();
-    if ( !userLocation || userLocation.geo==null || userLocation.geo.coordinates[0]==null ) {
+    if (!this.distanceFromLocation) {
       console.log( "no current user location." );
       return "";
     }
     var EarthRadiusInMiles = 3956.0;
     var EarthRadiusInKilometers = 6367.0;
-    var fromLatRads = degreesToRadians(userLocation.geo.coordinates[1]);
-    var fromLongRads = degreesToRadians(userLocation.geo.coordinates[0]);
+    var fromLatRads = degreesToRadians(this.distanceFromLocation.coordinates[1]);
+    var fromLongRads = degreesToRadians(this.distanceFromLocation.coordinates[0]);
     var toLatRads = degreesToRadians(toLocation.geo.coordinates[1]);
     var toLongRads = degreesToRadians(toLocation.geo.coordinates[0]);
     var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles

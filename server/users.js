@@ -3,7 +3,7 @@ Meteor.publish("userdata", function () {
     //TODO will have a filter on affiliation with agencies of the current user eventually
     return Meteor.users.find({},
       {fields: {username: 1, emails: 1,
-        'userData.location.name': 1, 'userData.location.longitude': 1,'userData.location.latitude': 1,
+        'userData.location': 1, 'userData.vicinity': 1,
         'userData.firstName':1, 'userData.lastName':1,
         'userData.picture': 1, 'userData.interests': 1}});
   } else {

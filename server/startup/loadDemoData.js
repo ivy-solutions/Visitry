@@ -55,9 +55,9 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,futureMonth,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
-          "name":"Boston",
+          "name":"36 Charter Rd, Acton, MA 01720",
           "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
+            "coordinates": [-71.458239, 42.479591]
           }
         }
       },
@@ -68,9 +68,9 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,futureMonth,15,16,0,0,0),
         "notes": '3pm works best',
         "location": {
-          "name":"Boston",
+          "name":"Walden Pnd",
           "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
+            "coordinates": [-71.338848, 42.437465]
           }
         }
       },
@@ -94,9 +94,9 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,futureMonth,29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
-          "name":"Boston",
+          "name":"Belmont, MA",
           "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
+            "coordinates": [-71.176972, 42.396341]
           }
         }
       },
@@ -131,9 +131,9 @@ Meteor.startup(function ()  {
         "requestedDate": new Date(2016,futureMonth,17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
-          "name":"Boston",
+          "name":"Riverside, Cambridge, MA",
           "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
+            "coordinates": [-71.111397, 42.368699]
           }
         }
       }

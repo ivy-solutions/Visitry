@@ -1,8 +1,12 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header">
          <div class="distance" ng-hide="!currentUser.userData.location">
-             Distance from: {{currentUser.userData.location.name | limitTo:20}}
+             {{browseVisitRequests.openVisitCount}} requests within {{browseVisitRequests.vicinity }} miles of {{currentUser.userData.location.name | limitTo:20}}
          </div>
+         <div ng-hide="currentUser.userData.location">
+             {{browseVisitRequests.openVisitCount}} requests
+         </div>
+
          <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
             <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
                 <div class="item item-divider">
