@@ -48,10 +48,10 @@ angular.module('visitry')
         controller: 'browseVisitRequestsCtrl as browseVisitRequests',
         resolve: {
           available: function () {
-            const available = Meteor.subscribe('availableVisits');
+            const available = Meteor.subscribe('availableVisits', [Meteor.userId()]);
             Tracker.autorun(()=> {
               const visitsReady = available.ready();
-              console.log(`Available visits data is ${visitsReady ? 'ready' : 'not ready'}`)
+              console.log(`Available visits data is ${visitsReady ? 'ready' : 'not ready'}`);
             })
           }
         }
