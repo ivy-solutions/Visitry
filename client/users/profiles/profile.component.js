@@ -21,12 +21,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
    this.submitUpdate = () => {
-     var user = this.currentUser;
 
-     console.log("update user: " + JSON.stringify(user));
+     console.log("update user: " + JSON.stringify(this.currentUser));
      var newUserData = {
-       role: user.userData.role,
-       vicinity: user.userData.vicinity
+       role: this.currentUser.userData.role,
+       vicinity: this.currentUser.userData.vicinity
      };
 
      Meteor.call('updateUserData', newUserData, (err) => {
@@ -34,9 +33,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      });
 
      if (this.isLocationValid()) {
-       console.log("update location: " + user.userData.location.name + " " + JSON.stringify(this.locationDetails));
+       console.log("update location: " + this.currentUser.userData.location.name + " " + JSON.stringify(this.locationDetails));
        var newLocation = {
-         name: user.userData.location.name,
+         name: this.currentUser.userData.location.name,
          latitude: this.locationDetails.geometry.location.lat(),
          longitude: this.locationDetails.geometry.location.lng()
        };
@@ -46,7 +45,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
        });
      }
 
-     if (user.userData.role == "visitor") {
+     if (this.currentUser.userData.role == "visitor") {
        $state.go('browseRequests');
      } else {
        $state.go('pendingVisits');
