@@ -61,7 +61,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         notes: this.visitRequest.notes
       };
       console.log(newVisit);
-      Meteor.call('visits.create',newVisit);
+      Meteor.call('visits.createVisit',newVisit);
       hideRequestVisitModal();
     }
   };
