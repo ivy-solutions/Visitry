@@ -28,8 +28,6 @@ describe ( 'BrowseVisitRequests', function() {
   beforeEach(function() {
     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
-//    sinon.stub(Meteor.users, 'findOne');
-    //findOneStub.returns( { username: 'Harry', userData:{} });
     inject( function ($rootScope) {
       scope = $rootScope.$new(true)
       controller = $controller('browseVisitRequestsCtrl', { $scope: scope });
@@ -38,7 +36,6 @@ describe ( 'BrowseVisitRequests', function() {
 
   afterEach(function() {
     Meteor.myFunctions.groupVisitsByRequestedDate.restore();
-//    Meteor.users.findOne.restore();
     StubCollections.restore();
   });
 
@@ -77,10 +74,11 @@ describe ( 'BrowseVisitRequests', function() {
     });
 
     it ('distance is an accurate number when there is both a visit and a user location', function() {
+      controller.hasLocation = true;
       controller.fromLocation = {
         "type": "Point",
         "coordinates": [-71.477358, 42.468846]
-    };
+      };
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');
       chai.assert.equal( distance, "68.2 miles");

@@ -1,9 +1,9 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header">
-         <div class="distance" ng-hide="!browseVisitRequests.fromLocation">
+         <div class="distance" ng-hide="!browseVisitRequests.hasLocation">
              {{browseVisitRequests.openVisitCount}} requests within {{browseVisitRequests.vicinity }} miles of {{currentUser.userData.location.name | limitTo:20}}
          </div>
-         <div ng-hide="browseVisitRequests.fromLocation">
+         <div ng-hide="browseVisitRequests.hasLocation">
              {{browseVisitRequests.openVisitCount}} requests
          </div>
 
