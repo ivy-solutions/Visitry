@@ -15,7 +15,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.visits = null;
   this.vicinity = 3000; //default = 3000 miles
   this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston
-  this.openVisitCount = -1
+  this.openVisitCount = -1;
 
   this.subscribe('availableVisits');
   this.subscribe('userdata', function() {}, {
@@ -24,9 +24,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       console.log( "userdata ready");
       if ( user && user.userData && user.userData.location) {
         this.vicinity = user.userData.vicinity;
-        console.log( "has location");
+        console.log( "user has location");
         this.fromLocation = user.userData.location.geo;
-
       }
     }
   });
@@ -34,7 +33,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.autorun(()=> {
     var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData': 1}});
     if (user && user.userData && user.userData.location) {
-      console.log("autoRun update");
       this.vicinity = user.userData.vicinity;
       this.fromLocation = user.userData.location.geo;
     }
@@ -70,14 +68,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   });
 
    ////////
-
-  this.getAvailableVisitRequests = function(visits) {
-    console.log( JSON.stringify(visits))
-    //this.visits = this.openVisits;
-    //this.openVisitCount = this.visits.count();
-    return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
-  };
-
   this.getRequester = function (visit) {
     if ( visit == 'undefined' ) {
       console.log("No visit.");
