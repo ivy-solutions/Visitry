@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 Meteor.startup(function ()  {
+  Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
   if (Agencies.find().count() === 0 ) {
     var agencies = [
       {

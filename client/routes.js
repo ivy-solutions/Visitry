@@ -45,7 +45,16 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/visits/browse-visit-requests/browse-visit-requests.html';
           }
         },
-        controller: 'browseVisitRequestsCtrl as browseVisitRequests'
+        controller: 'browseVisitRequestsCtrl as browseVisitRequests',
+        resolve: {
+          available: function () {
+            const available = Meteor.subscribe('availableVisits');
+            Tracker.autorun(()=> {
+              const visitsReady = available.ready();
+              console.log(`Available visits data is ${visitsReady ? 'ready' : 'not ready'}`)
+            })
+          }
+        }
       })
       .state('upcoming', {
         url: '/visitor/upcoming',

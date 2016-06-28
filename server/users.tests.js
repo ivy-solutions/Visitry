@@ -84,8 +84,8 @@ if (Meteor.isServer) {
         updateLocationHandler.apply(invocation, [location, 10]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.location.name, location.name);
-        assert.equal(updatedUser.userData.location.latitude, location.latitude);
-        assert.equal(updatedUser.userData.location.longitude, location.longitude);
+        assert.equal(updatedUser.userData.location.geo.coordinates[1], location.latitude);
+        assert.equal(updatedUser.userData.location.geo.coordinates[0], location.longitude);
         assert.equal(updatedUser.userData.vicinity, 10);
       });
 

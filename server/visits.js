@@ -8,6 +8,31 @@ Meteor.publish("visits", function (options) {
   },options);
 });
 
+Meteor.publish("availableVisits", function () {
+  if (this.userId) {
+    const defaultVicinity = 3000;
+    const defaultLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston
+    var user = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.location': 1, 'userData.vicinity': 1}});
+    var vicinity = user.userData.vicinity ? user.userData.vicinity : defaultVicinity;
+    var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
+    //active unfilled future visit requests
+    return Visits.find({
+      visitorId: {$exists: false},
+      inactive: {$exists: false},
+      requestedDate: {$gt: new Date()},
+      'location.geo': {
+        $near: {
+          $geometry: fromLocation,
+          $maxDistance: vicinity * 1609
+        }
+      }
+    },{
+      fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}});
+  } else  {
+    this.ready();
+  }
+});
+
 Meteor.methods({
   'visits.createVisit'(visit) {
     visit.requesterId = this.userId;

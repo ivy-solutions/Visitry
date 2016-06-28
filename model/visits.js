@@ -35,17 +35,6 @@ Visits.schema = new SimpleSchema({
     requesterId: {type: String, regEx: SimpleSchema.RegEx.Id},
     location: {type: LocationSchema },
     requestedDate: {type: Date},
-    //TODO requiring a future requestedDate interferes with our demo seed data, eventually we can do this check
-    //requestedDate: {type: Date,
-    //  custom: function() {
-    //    var today = new Date(); //must be after today
-    //    if(today > this.value) {
-    //      return 'minDate';  //Error string
-    //    } else {
-    //      return true;
-    //    }
-    //  }
-    //},
     notes: {type: String, optional:true},
     createdAt: {type:Date},
     visitorId: { type: String, regEx: SimpleSchema.RegEx.Id, optional:true},  //filled in when visit booked

@@ -6,14 +6,11 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/browse-visit-requests/browse-visit-requests.component.js';
-import '/client/visits/request-visit/request-visit-modal.service';
 import StubCollections from 'meteor/hwillson:stub-collections';
 import Visits from '/model/visits.js'
 import myFunctions from '/client/lib/sharedFunctions.js'
 
 describe ( 'BrowseVisitRequests', function() {
-
-
 
   beforeEach(function() {
     angular.mock.module('visitry');
@@ -26,9 +23,13 @@ describe ( 'BrowseVisitRequests', function() {
 
   var controller;
   var scope;
+  var findOneStub;
+
   beforeEach(function() {
     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
+//    sinon.stub(Meteor.users, 'findOne');
+    //findOneStub.returns( { username: 'Harry', userData:{} });
     inject( function ($rootScope) {
       scope = $rootScope.$new(true)
       controller = $controller('browseVisitRequestsCtrl', { $scope: scope });
@@ -36,8 +37,9 @@ describe ( 'BrowseVisitRequests', function() {
   });
 
   afterEach(function() {
-    StubCollections.restore();
     Meteor.myFunctions.groupVisitsByRequestedDate.restore();
+//    Meteor.users.findOne.restore();
+    StubCollections.restore();
   });
 
 
@@ -62,19 +64,10 @@ describe ( 'BrowseVisitRequests', function() {
         }
       }
     };
-    let user = {
-      "userData": {
-        "location": {
-          "name": "80 Willow St., Acton, MA",
-          "geo": { "type": "Point",
-            "coordinates": [-71.477358, 42.468846]
-          }
-        }
-      }
-    };
 
 
     it('when no user location, return no string', function () {
+      controller.fromLocation = null;
       chai.assert.equal(controller.getDistanceToVisitLocation(visit), "");
     });
 
@@ -84,7 +77,10 @@ describe ( 'BrowseVisitRequests', function() {
     });
 
     it ('distance is an accurate number when there is both a visit and a user location', function() {
-      sinon.stub(Meteor, 'user', function () {return user});
+      controller.fromLocation = {
+        "type": "Point",
+        "coordinates": [-71.477358, 42.468846]
+    };
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');
       chai.assert.equal( distance, "68.2 miles");

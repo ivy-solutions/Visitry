@@ -74,6 +74,13 @@ describe ( 'Profile', function() {
     });
     it('update location', function () {
       controller.currentUser = user;
+      controller.locationDetails = {
+        geometry: {
+          location: {
+            lat : function() { return 42} , lng: function() { return -71 }
+          }
+        }
+      };
       controller.submitUpdate();
       chai.assert(Meteor.call.calledWith('updateLocation'),"updateLocation called");
     });
