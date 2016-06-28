@@ -141,7 +141,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       return '/packages/visitrymobile/client/visits/schedule-visit/schedule-visit-modal.html'
     }
     else {
-      return '/packages/vistry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
+      return '/packages/visitry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
     }
   }
 

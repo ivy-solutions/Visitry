@@ -27,6 +27,7 @@ Package.onUse(function(api) {
     'client/visitry/visitry.html',
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
+    'client/visits/schedule-visit/schedule-visit-modal.html',
     'client/styles/main.less'
   ], 'client')
 });
