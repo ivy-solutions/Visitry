@@ -24,8 +24,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       console.log( "userdata ready");
       if ( user && user.userData && user.userData.location) {
         this.vicinity = user.userData.vicinity;
-        console.log( "user has location");
         this.fromLocation = user.userData.location.geo;
+        console.log( "user has location: " + JSON.stringify(this.fromLocation) + " vicinity: " + this.vicinity );
       }
     }
   });
