@@ -3,18 +3,21 @@
  */
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
-import { assert,expect } from 'meteor/practicalmeteor:chai';
+import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 
 import '/model/visits.js';
 import '/server/visits.js';
 
 if (Meteor.isServer) {
   describe('Visits', () => {
+
+    const requesterId = Random.id();
+    const userId = Random.id();
+    const agencyId = Random.id();
+
     describe('visits.rescindRequest method', () => {
       const rescindHandler = Meteor.server.method_handlers['visits.rescindRequest'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let requestId;
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
@@ -23,6 +26,7 @@ if (Meteor.isServer) {
         Visits.remove({});
         requestId = Visits.insert({
           notes: 'test visit',
+          agencyId: agencyId,
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
@@ -41,6 +45,7 @@ if (Meteor.isServer) {
         const invocation = {userId: userId};
         try {
           rescindHandler.apply(invocation, [requestId]);
+          fail("expected not-authorized exception");
         } catch (ex) {
           assert.equal(ex.error, 'not-authorized')
         }
@@ -64,8 +69,6 @@ if (Meteor.isServer) {
     describe('visits.cancelScheduled method', () => {
       const cancelScheduledHandler = Meteor.server.method_handlers['visits.cancelScheduled'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let visitId;
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
@@ -74,6 +77,7 @@ if (Meteor.isServer) {
         Visits.remove({});
         visitId = Visits.insert({
           notes: 'test visit',
+          agencyId: agencyId,
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
@@ -92,6 +96,7 @@ if (Meteor.isServer) {
         const invocation = {userId: requesterId};
         try {
           cancelScheduledHandler.apply(invocation, [visitId]);
+          fail("expected not-authorized exception");
         } catch (ex) {
           assert.equal(ex.error, 'not-authorized')
         }
@@ -109,8 +114,6 @@ if (Meteor.isServer) {
     describe('visits.scheduleVisit method', () => {
       const scheduleVisitHandler = Meteor.server.method_handlers['visits.scheduleVisit'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let visitId;
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
@@ -121,6 +124,7 @@ if (Meteor.isServer) {
           notes: 'test visit',
           requestedDate: tomorrow,
           createdAt: new Date(),
+          agencyId: agencyId,
           requesterId: requesterId,
           location: {
             name: "Boston",
@@ -148,8 +152,6 @@ if (Meteor.isServer) {
     describe('visits.attachFeedback method', () => {
       const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachFeedback'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       const feedbackId = Random.id();
       let visitId;
       let tomorrow = new Date();
@@ -162,6 +164,7 @@ if (Meteor.isServer) {
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
+          agencyId: agencyId,
           location: {
             name: "Boston",
             geo: {
@@ -183,7 +186,6 @@ if (Meteor.isServer) {
 
     describe('visits.createVisit method', () => {
       const createVisitHandler = Meteor.server.method_handlers['visits.createVisit'];
-      const userId = Random.id();
 
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
@@ -199,10 +201,47 @@ if (Meteor.isServer) {
         }
       };
 
+      var findOneUserStub;
       beforeEach(() => {
+        findOneUserStub = sinon.stub(Meteor.users, 'findOne');
+        findOneUserStub.returns( {
+          username: 'Harry',
+          userData: {
+            agencyId: agencyId
+          }
+        });
+
         Visits.remove({});
       });
 
+      afterEach( function() {
+          Meteor.users.findOne.restore();
+      });
+
+      it('fails if no location in request', () => {
+        const invocation = {userId: userId};
+        let nowhereVisit = {
+          notes: 'test visit',
+          requestedDate: tomorrow
+        };
+        try {
+          createVisitHandler.apply(invocation, [nowhereVisit]);
+          fail( "expect error");
+        }catch( ex ) {
+          assert.match(ex.message, /Location is required/)
+        }
+      });
+
+      it('fails if requester does not have agencyId', () => {
+        const invocation = {userId: userId};
+        findOneUserStub.returns( { username: 'No Agency', userData:{}} );
+        try {
+          createVisitHandler.apply(invocation, [newVisit]);
+          fail("expected requires-agency exception");
+        } catch (ex) {
+          assert.equal(ex.error, 'requires-agency', ex)
+        }
+      });
 
       it('create Visit success', () => {
         const invocation = {userId: userId};

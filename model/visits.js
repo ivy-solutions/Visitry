@@ -24,7 +24,7 @@ SphereSchema = new SimpleSchema({
 });
 
 LocationSchema = new SimpleSchema({
-  name: {type: String},
+  name: {type: String, label: "address"},
   geo: {
     type: SphereSchema,
     index: '2dsphere'
@@ -33,6 +33,7 @@ LocationSchema = new SimpleSchema({
 
 Visits.schema = new SimpleSchema({
     requesterId: {type: String, regEx: SimpleSchema.RegEx.Id},
+    agencyId: {type: String, regEx: SimpleSchema.RegEx.Id},
     location: {type: LocationSchema },
     requestedDate: {type: Date},
     notes: {type: String, optional:true},

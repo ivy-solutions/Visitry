@@ -77,7 +77,6 @@ Meteor.methods({
         'Must be logged in to update user data.');
     }
 
-    console.log( data.role + ", " + data.vicinity)
     check(data.role, String);
     check(data.vicinity, String);
 

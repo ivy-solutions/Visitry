@@ -37,6 +37,11 @@ Meteor.methods({
   'visits.createVisit'(visit) {
     visit.requesterId = this.userId;
     visit.createdAt = new Date();
+    var requester = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyId': 1}});
+    if (!requester.userData.agencyId) {
+      throw new Meteor.Error( 'requires-agency', "User must be affiliated with an agency.")
+    }
+    visit.agencyId = requester.userData.agencyId;
 
     check(visit,Visits.schema);
     //valid longitude and latitude
