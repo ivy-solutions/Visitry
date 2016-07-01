@@ -9,18 +9,20 @@ import '/model/visits.js';
 import '/server/visits.js';
 
 if (Meteor.isServer) {
-  describe('Visits', () => {
 
-    const requesterId = Random.id();
-    const userId = Random.id();
-    const agencyId = Random.id();
+  let tomorrow = new Date();
+  tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
+  const requesterId = Random.id();
+  const userId = Random.id();
+  const agencyId = Random.id();
+
+
+  describe('Visits', () => {
 
     describe('visits.rescindRequest method', () => {
       const rescindHandler = Meteor.server.method_handlers['visits.rescindRequest'];
 
       let requestId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -70,8 +72,6 @@ if (Meteor.isServer) {
       const cancelScheduledHandler = Meteor.server.method_handlers['visits.cancelScheduled'];
 
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -115,8 +115,6 @@ if (Meteor.isServer) {
       const scheduleVisitHandler = Meteor.server.method_handlers['visits.scheduleVisit'];
 
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -154,8 +152,6 @@ if (Meteor.isServer) {
 
       const feedbackId = Random.id();
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -248,6 +244,127 @@ if (Meteor.isServer) {
         createVisitHandler.apply(invocation, [newVisit]);
         assert.equal(Visits.find().count(),1);
       });
+    });
+
+  });
+
+  describe( 'availableVisits Publish', () => {
+    const publication = Meteor.server.publish_handlers["availableVisits"];
+
+    var findOneUserStub;
+    var agency2Id = Random.id();
+    let yesterday = new Date();
+    yesterday.setTime(tomorrow.getTime() - ( 24 * 60 * 60 * 1000));
+
+    beforeEach(() => {
+      findOneUserStub = sinon.stub(Meteor.users, 'findOne');
+      findOneUserStub.returns({
+        _id: userId,
+        username: 'Harriet',
+        userData: {
+          agencyId: agency2Id
+        }
+      });
+
+      Visits.remove({});
+      Visits.insert({
+        notes: 'test visit agency1',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        agencyId: agencyId,
+        location: {
+          name: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      });
+      Visits.insert({
+        notes: 'past visit agency1',
+        requestedDate: yesterday,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        agencyId: agencyId,
+        location: {
+          name: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      });
+      Visits.insert({
+        notes: 'scheduled visit agency1',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        visitorId: userId,
+        agencyId: agencyId,
+        location: {
+          name: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      });
+      Visits.insert({
+        notes: 'test visit agency2',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        agencyId: agency2Id,
+        location: {
+          name: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      });
+    });
+
+    afterEach( function() {
+      Meteor.users.findOne.restore();
+    });
+
+    it('returns needed fields [notes, requesterId, requestedDate, location]', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.isString(visit.notes, "notes");
+      assert.isString(visit.requesterId, "requesterId");
+      assert.instanceOf(visit.requestedDate, Date, "requestedDate");
+      assert.isString(visit.location.name,"location.name");
+    });
+
+    it('user of agency2 should see only agency2 visits', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes,'test visit agency2', JSON.stringify(visit));
+    });
+
+    it('agency1 user should see only future unscheduled visits of agency1', () => {
+      findOneUserStub.returns( { username: 'Agency1user', userData:{ agencyId: agencyId, vicinity: 20}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes,'test visit agency1', JSON.stringify(visit));
+
     });
 
   });

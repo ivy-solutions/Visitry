@@ -10,11 +10,11 @@ Meteor.publish("visits", function (options) {
   },options);
 });
 
-Meteor.publish("availableVisits", function ( userId ) {
-  if (userId) {
+Meteor.publish("availableVisits", function ( ) {
+  if (this.userId) {
     const defaultVicinity = 3000;
     const defaultLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston
-    var user = Meteor.users.findOne( {_id: userId.toString() }, {fields: {'userData.agencyId': 1,'userData.location': 1, 'userData.vicinity': 1}});
+    var user = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyId': 1,'userData.location': 1, 'userData.vicinity': 1}});
     var vicinity = user.userData.vicinity ? user.userData.vicinity : defaultVicinity;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
     //active unfilled future visit requests

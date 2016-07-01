@@ -50,7 +50,7 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            const available = Meteor.subscribe('availableVisits', [Meteor.userId()], {
+            const available = Meteor.subscribe('availableVisits', {
               onReady: deferred.resolve,
               onStop: deferred.reject
             });
