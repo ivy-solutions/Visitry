@@ -355,16 +355,13 @@ if (Meteor.isServer) {
       assert.equal(visit.notes,'test visit agency2', JSON.stringify(visit));
     });
 
-    it('agency1 user should see only future unscheduled visits of agency1', () => {
-      findOneUserStub.returns( { username: 'Agency1user', userData:{ agencyId: agencyId, vicinity: 20}} );
+    it('user associated with no agency should see no visits', () => {
+      findOneUserStub.returns( { username: 'UnaffiliatedUser', userData:{}} );
       const invocation = {userId: userId};
 
       const cursors = publication.apply(invocation);
       const visitCursor = cursors[0];
-      assert.equal(visitCursor.count(), 1);
-      var visit = visitCursor.fetch()[0];
-      assert.equal(visit.notes,'test visit agency1', JSON.stringify(visit));
-
+      assert.equal(visitCursor.count(), 0);
     });
 
   });
