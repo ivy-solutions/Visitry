@@ -6,12 +6,21 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.visitId = $stateParams.visitId;
   this.visit;
+  this.requester
 
-  this.subscribe('visits', function() {
-    this.visit = Visits.findOne({_id: $stateParams.visitId});
+  this.helpers({
+    theVisit:() => {
+      console.log("theVisit: " + $stateParams.visitId);
+      var visit = Visits.findOne({_id: $stateParams.visitId});
+      console.log( "visit:" + visit);
+      if ( visit ) {
+        console.log( "visit:" + JSON.stringify(visit));
+        this.visit = visit;
+        this.requester = Meteor.users.findOne({_id: visit.requesterId});
+      }
+      return visit;
+    }
   });
-
-  this.subscribe('userdata');
 
   ////////
 
@@ -25,6 +34,9 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.getRequester = function () {
     if ( this.visit == undefined ) {
       return null;
+    }
+    if ( this.requester ) {
+      return this.requester;
     }
     return Meteor.users.findOne({_id: this.visit.requesterId});
   };

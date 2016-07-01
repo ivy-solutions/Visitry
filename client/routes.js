@@ -47,13 +47,16 @@ angular.module('visitry')
         },
         controller: 'browseVisitRequestsCtrl as browseVisitRequests',
         resolve: {
-          available: function () {
-            const available = Meteor.subscribe('availableVisits', [Meteor.userId()]);
-            Tracker.autorun(()=> {
-              const visitsReady = available.ready();
-              console.log(`Available visits data is ${visitsReady ? 'ready' : 'not ready'}`);
-            })
-          }
+          available: ['$q', ($q) => {
+            var deferred = $q.defer();
+
+            const available = Meteor.subscribe('availableVisits', [Meteor.userId()], {
+              onReady: deferred.resolve,
+              onStop: deferred.reject
+            });
+
+            return deferred.promise;
+          }]
         }
       })
       .state('upcoming', {

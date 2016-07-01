@@ -1,7 +1,7 @@
 Meteor.publish("userdata", function () {
   if (this.userId) {
-    //TODO will have a filter on affiliation with agencies of the current user eventually
-    return Meteor.users.find({},
+    var user = Meteor.users.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
+    return Meteor.users.find({agencyId: user.userData.agencyId },
       {fields: {username: 1, emails: 1,
         'userData.location': 1, 'userData.vicinity': 1,
         'userData.firstName':1, 'userData.lastName':1,
