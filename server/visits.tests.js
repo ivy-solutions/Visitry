@@ -248,7 +248,7 @@ if (Meteor.isServer) {
 
   });
 
-  describe( 'availableVisits Publish', () => {
+  describe( 'availableVisits Publication', () => {
     const publication = Meteor.server.publish_handlers["availableVisits"];
 
     var findOneUserStub;
@@ -362,6 +362,17 @@ if (Meteor.isServer) {
       const cursors = publication.apply(invocation);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 0);
+    });
+
+    it('agency1 user sees only future unscheduled visits', () => {
+      findOneUserStub.returns( { username: 'agency1user', userData:{agencyId: agencyId}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
     });
 
   });
