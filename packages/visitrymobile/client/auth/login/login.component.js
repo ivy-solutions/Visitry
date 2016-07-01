@@ -15,8 +15,10 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         return handleError(err)
       }
       else {
-        console.log('Login success ' + this.credentials.username);
-        $state.go('browseRequests');
+        console.log('Login success ' + this.credentials.username + " id: " + Meteor.userId());
+        var user = Meteor.user();
+        var goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        $state.go(goto);
       }
     });
   };
