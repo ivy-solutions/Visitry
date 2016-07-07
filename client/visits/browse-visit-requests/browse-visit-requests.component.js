@@ -12,10 +12,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
-  this.vicinity = function() {
-    var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
-    return user ? user.userData.vicinity : 3000;
-  };
+  this.vicinity = 3000;
 
   this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
 
@@ -27,6 +24,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
+      this.vicinity = user.userData.vicinity
     } else {
       this.vicinity = 3200;
       this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
@@ -39,24 +37,23 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       today.setHours(0,0,0,0);
 
       var userId = Meteor.userId();
-      var vicinity, fromLocation;
       var user = Meteor.users.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
       if (user && user.userData && user.userData.location) {
-        vicinity = user.userData.vicinity;
-        fromLocation = user.userData.location.geo;
+        this.vicinity = user.userData.vicinity;
+        this.fromLocation = user.userData.location.geo;
         this.hasLocation = true;
       }else {
-        vicinity = 3000;
-        fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
+        this.vicinity = 3000;
+        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
         this.hasLocation = false;
       }
-      console.log( "open Visits: " + vicinity  + " " + JSON.stringify(fromLocation));
+      console.log( "open Visits: " + this.vicinity  + " " + JSON.stringify(this.fromLocation));
       var visits = Visits.find({
          visitorId: {$exists: false},
          "location.geo": {
            $near: {
-             $geometry: fromLocation,
-             $maxDistance: vicinity * 1609
+             $geometry: this.fromLocation,
+             $maxDistance: this.vicinity * 1609
            }
          },
          requestedDate: {$gt: today},
@@ -114,6 +111,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   }
 
   this.visitDetails = function (id) {
+    console.log( "view details: " + id );
     $state.go( 'visitDetails', {visitId: id} );
   };
 

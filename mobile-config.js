@@ -6,9 +6,9 @@
 App.info({
   id: 'com.ivysolutions.Visitry',
   name: 'Visitry',
-  description: 'visitry',
+  description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
-  email: 'contact@example.com',
+  email: 'admin@visitry.org',
   website: 'http://visitry.org'
 });
 
