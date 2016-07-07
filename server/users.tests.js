@@ -4,6 +4,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
+import StubCollections from 'meteor/hwillson:stub-collections';
+import Agencies from '/model/agencies.js'
 
 import '/server/users.js';
 
@@ -12,6 +14,7 @@ if (Meteor.isServer) {
 
     var testUserId;
     beforeEach(() => {
+      StubCollections.add([Agencies]);
       var user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
         testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99'});
@@ -21,6 +24,7 @@ if (Meteor.isServer) {
     });
     afterEach(() => {
       Meteor.users.remove(testUserId);
+      StubCollections.restore();
     });
 
     describe('users.updateName method', () => {

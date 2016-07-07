@@ -100,10 +100,12 @@ Accounts.onCreateUser(function(options, user) {
   else {
     user.userData = {firstName: "", lastName: "", role:"visitor", vicinity: "10"}
   }
-  //TODO include agency in input
+  //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
     var agency = Agencies.findOne({name:'IVY Agency'});
-    user.userData.agencyId = agency._id;
+    if ( agency ) {
+      user.userData.agencyId = agency._id;
+    }
   }
   return user;
 });

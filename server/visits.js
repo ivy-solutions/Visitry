@@ -3,8 +3,9 @@ Meteor.publish("visits", function (options) {
   var today = new Date();
   today.setHours(0,0,0,0);
   // active future visit requests, or past requests for which feedback is needed
+  var agency = user && user.userData && user.userData.agencyId ? user.userData.agencyId : null;
   return Visits.find({
-    agencyId: { $eq: user.userData.agencyId},
+    agencyId: { $eq: agency},
     inactive: { $exists : false},
     $or: [ {feedbackId: null }, {requestedDate: {$gt: today }} ]
   },options);
