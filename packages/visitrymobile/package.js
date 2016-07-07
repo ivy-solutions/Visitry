@@ -20,6 +20,7 @@ Package.onUse(function(api) {
 
   api.addFiles([
     'client/lib/module.js',
+    'client/agencies/list/agency-list.html',
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',
     'client/auth/register/register.component.js',

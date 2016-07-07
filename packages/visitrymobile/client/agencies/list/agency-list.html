@@ -1,0 +1,15 @@
+<ion-view title="Agencies" hide-back-button=true>
+    <ion-content>
+        <div>
+            <p>You are not registered with an volunteer visiting agency. Select an agency below.</p>
+        </div>
+        <ion-list>
+            <ion-item ng-repeat="agency in agencies.agencies">
+                <img ng-src="{{agency.logo}}"/>
+                <h2>{{agency.name}}</h2>
+                <p>{{agency.description}}</p>
+                <h3>{{agency.website}}</h3>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -107,10 +107,21 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
-    .state('feedback',{
-      url:'/feedback/:visitId',
-      template:'<feedback></feedback>'
-    });
+      .state('feedback',{
+        url:'/feedback/:visitId',
+        template:'<feedback></feedback>'
+      })
+      .state('agencyList', {
+        url: '/agencies',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/agencies/list/agency-list.html';
+          } else {
+            return '/packages/visitry-browser/client/agencies/list/agency-list.html';
+          }
+        },
+        controller: 'listAgenciesCtrl as agencies'
+      });
 
     $urlRouterProvider.otherwise("/login");
   })

@@ -9,6 +9,8 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     password: ''
   };
 
+  this.subscribe('userProfile');
+
   this.login = () => {
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
@@ -17,7 +19,12 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       else {
         console.log('Login success ' + this.credentials.username + " id: " + Meteor.userId());
         var user = Meteor.user();
-        var goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        var goto;
+        if (!hasValidAgency()) {
+          goto = 'agencyList'
+        } else {
+          goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        }
         $state.go(goto);
       }
     });
@@ -25,6 +32,12 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
   this.createAccount = () => {
       $state.go('register');
   };
+
+  function hasValidAgency() {
+    var user = Meteor.user();
+    //TODO should check the activeUntil fields of the agency to make sure it is still active
+    return user.userData && user.userData.agencyId;
+  }
 
   function handleError(err) {
       console.log('Authentication error ', err);
