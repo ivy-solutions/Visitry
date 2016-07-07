@@ -4,7 +4,7 @@
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
   $reactive(this).attach($scope);
   this.subscribe('visits');
-  this.subscribe('users');
+  this.subscribe('userdata');
 
   this.showDelete = false;
   this.canSwipe = true;
