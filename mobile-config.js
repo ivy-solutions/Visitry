@@ -14,10 +14,10 @@ App.info({
 
 App.icons({
   // iOS
-  'iphone_2x': 'resources/icons/ios/icon-60@2x.png',
-  'iphone_3x': 'resources/icons/ios/icon-60@3x.png',
-  'ipad': 'resources/icons/ios/icon-72.png',
-  'ipad_2x': 'resources/icons/ios/icon-72@2x.png',
+  'iphone_2x': 'resources/icons/ios/Icon-60@2x.png',
+  'iphone_3x': 'resources/icons/ios/Icon-60@3x.png',
+  'ipad': 'resources/icons/ios/Icon-72.png',
+  'ipad_2x': 'resources/icons/ios/Icon-72@2x.png',
 
   // Android
   'android_hdpi': 'resources/icons/android/drawable-hdpi/ic_launcher.png',
