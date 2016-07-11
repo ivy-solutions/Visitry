@@ -15,6 +15,9 @@ if (Meteor.isServer) {
   const requesterId = Random.id();
   const userId = Random.id();
   const agencyId = Random.id();
+  var agency2Id = Random.id();
+  let yesterday = new Date();
+  yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
 
 
   describe('Visits', () => {
@@ -252,9 +255,7 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["availableVisits"];
 
     var findOneUserStub;
-    var agency2Id = Random.id();
-    let yesterday = new Date();
-    yesterday.setTime(tomorrow.getTime() - ( 24 * 60 * 60 * 1000));
+
 
     beforeEach(() => {
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
@@ -267,63 +268,7 @@ if (Meteor.isServer) {
       });
 
       Visits.remove({});
-      Visits.insert({
-        notes: 'test visit agency1',
-        requestedDate: tomorrow,
-        createdAt: new Date(),
-        requesterId: requesterId,
-        agencyId: agencyId,
-        location: {
-          name: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      });
-      Visits.insert({
-        notes: 'past visit agency1',
-        requestedDate: yesterday,
-        createdAt: new Date(),
-        requesterId: requesterId,
-        agencyId: agencyId,
-        location: {
-          name: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      });
-      Visits.insert({
-        notes: 'scheduled visit agency1',
-        requestedDate: tomorrow,
-        createdAt: new Date(),
-        requesterId: requesterId,
-        visitorId: userId,
-        agencyId: agencyId,
-        location: {
-          name: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      });
-      Visits.insert({
-        notes: 'test visit agency2',
-        requestedDate: tomorrow,
-        createdAt: new Date(),
-        requesterId: requesterId,
-        agencyId: agency2Id,
-        location: {
-          name: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      });
+      insertTestVisits();
     });
 
     afterEach( function() {
@@ -376,4 +321,109 @@ if (Meteor.isServer) {
     });
 
   });
+
+  describe( 'userRequests Publication', () => {
+    const publication = Meteor.server.publish_handlers["userRequests"];
+
+    beforeEach(() => {
+      Visits.remove({});
+      insertTestVisits();
+    });
+
+    afterEach(function () {
+    });
+
+    it('user with no visit requests', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 0);
+    });
+    it('user sees his own visit requests - future or with no feedback', () => {
+      const invocation = {userId: requesterId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 4);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
+    });
+  });
+
+  function insertTestVisits() {
+    Visits.insert({
+      notes: 'test visit agency1',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agencyId,
+      location: {
+        name: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+    Visits.insert({
+      notes: 'past visit agency1',
+      requestedDate: yesterday,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agencyId,
+      location: {
+        name: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+      Visits.insert({
+        notes: 'past visit agency1 with feedback',
+        requestedDate: yesterday,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        agencyId: agencyId,
+        location: {
+          name: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        },
+        feedbackId: Random.id()
+      });
+    Visits.insert({
+      notes: 'scheduled visit agency1',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      visitorId: userId,
+      agencyId: agencyId,
+      location: {
+        name: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+    Visits.insert({
+      notes: 'test visit agency2',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agency2Id,
+      location: {
+        name: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+  }
+
 }

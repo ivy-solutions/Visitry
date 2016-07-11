@@ -12,9 +12,12 @@ Meteor.publish("visits", function (options) {
 });
 
 Meteor.publish("userRequests", function (options) {
+  var today = new Date();
+  today.setHours(0,0,0,0);
   var userRequests =  Visits.find({
     requesterId: { $eq: this.userId},
-    inactive: { $exists : false}
+    inactive: { $exists : false},
+    $or: [ {feedbackId: null }, {requestedDate: {$gt: today }} ]
   },options);
   var visitorIds = userRequests.map(function(visitRequest) {return visitRequest.visitorId} );
   return [userRequests,
