@@ -107,16 +107,26 @@ Meteor.startup(function ()  {
     var requester2 = Meteor.users.findOne({username:'requester2'});
     var requester3 = Meteor.users.findOne({username:'requester3'});
 
-    var futureMonth = 6;
-    var pastMonth = 4;
+    var now = new Date();
+    var futureMonth, pastMonth;
+    if (now.getMonth() == 11) {
+      futureMonth = new Date(now.getFullYear() + 1, 0, 1);
+    } else {
+      futureMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    };
+    if (now.getMonth() == 0) {
+      pastMonth = new Date(now.getFullYear() - 1, 0, 1);
+    } else {
+      pastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    };
     var visits = [
       {
         "requesterId":requester1._id,
         "agencyId": agency._id,
-        "createdAt":new Date(),
+        "createdAt":pastMonth,
         "visitorId": vivian._id,
-        "requestedDate": new Date(2016,futureMonth,1,13,0,0,0),
-        "visitTime": new Date(2016,futureMonth,1,13,0,0,0),
+        "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),1,13,0,0,0),
+        "visitTime": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
           "name":"36 Charter Rd, Acton, MA 01720",
@@ -130,8 +140,8 @@ Meteor.startup(function ()  {
         "agencyId": agency._id,
         "visitorId": vivian._id,
         "createdAt":new Date(),
-        "requestedDate": new Date(2016,futureMonth,15,16,0,0,0),
-        "visitTime": new Date(2016,futureMonth,15,15,15,0,0),
+        "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,16,0,0,0),
+        "visitTime": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,15,15,0,0),
         "notes": '3pm works best',
         "location": {
           "name":"Walden Pnd",
@@ -144,9 +154,9 @@ Meteor.startup(function ()  {
         "requesterId": requester1._id,
         "agencyId": agency._id,
         "visitorId": vivian._id,
-        "createdAt":new Date(),
-        "requestedDate": new Date(2016,pastMonth,21,9,0,0,0),
-        "visitTime": new Date(2016, pastMonth, 21, 13, 30, 0, 0),
+        "createdAt":pastMonth,
+        "requestedDate": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),21,9,0,0,0),
+        "visitTime": new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 21, 13, 30, 0, 0),
         "notes": '10pm works best',
         "location": {
           "name":"Boston",
@@ -158,8 +168,8 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "agencyId": agency._id,
-        "createdAt":new Date(),
-        "requestedDate": new Date(2016,futureMonth,29,9,0,0,0),
+        "createdAt":new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 21, 13, 30, 0, 0),
+        "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),29,9,0,0,0),
         "notes": 'pick me, please',
         "location": {
           "name":"Belmont, MA",
@@ -172,7 +182,7 @@ Meteor.startup(function ()  {
         "requesterId": requester1._id,
         "agencyId": agency._id,
         "createdAt":new Date(),
-        "requestedDate": new Date(2016,futureMonth,15,13,0,0,0),
+        "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,13,0,0,0),
         "notes": 'Shall we go for coffee?',
         "location": {
           "name":"Boston Public Garden",
@@ -185,7 +195,7 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "agencyId": agency._id,
         "visitorId": vivian._id,
-        "createdAt":new Date(),
+        "createdAt":pastMonth,
         "requestedDate": new Date(2016,pastMonth,1,13,0,0,0),
         "visitTime": new Date(2016,pastMonth,1,13,0,0,0),
         "notes": 'This already happened',
@@ -199,8 +209,8 @@ Meteor.startup(function ()  {
       {
         "requesterId": requester2._id,
         "agencyId": agency._id,
-        "createdAt":new Date(),
-        "requestedDate": new Date(2016,futureMonth,17,9,0,0,0),
+        "createdAt":new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 22, 13, 30, 0, 0),
+        "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),17,9,0,0,0),
         "notes": 'I need to walk Bowser.',
         "location": {
           "name":"Riverside, Cambridge, MA",
