@@ -59,14 +59,24 @@ describe('Pending Visit Requests', function () {
   });
 
   describe('date since requested', function () {
-    it('when date = now, time since requested = 0', function () {
-      chai.assert.equal(controller.getTimeSinceRequested(new Date()), 0);
+    it('when requested date = now, time since requested = 0', function () {
+      chai.assert.equal(controller.getTimeSinceRequested(new Date()), 'a few seconds ago');
     });
-    it('when date = 5 days from now, time since requested = 5', function () {
+    it('when requested date = 5 days ago, time since requested = 5', function () {
       var date = new Date();
       date.setDate(date.getDate() - 5);
-      chai.assert.equal(controller.getTimeSinceRequested(date), 5)
-    })
+      chai.assert.equal(controller.getTimeSinceRequested(date), '5 days ago')
+    });
+    it('when date = 2 hours ago, time since requested = 2 hours', function () {
+      var date = new Date();
+      date.setTime(date.getTime() - ( 2 * 60 * 60 * 1000));
+      chai.assert.equal(controller.getTimeSinceRequested(date), '2 hours ago')
+    });
+    it('when date = 15 minutes ago, time since requested = 15 minutes', function () {
+      var date = new Date();
+      date.setTime(date.getTime() - ( 15 * 60 * 1000));
+      chai.assert.equal(controller.getTimeSinceRequested(date), '15 minutes ago')
+    });
   });
 
   describe('cancel visit popup', function () {

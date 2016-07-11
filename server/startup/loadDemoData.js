@@ -114,8 +114,9 @@ Meteor.startup(function ()  {
         "requesterId":requester1._id,
         "agencyId": agency._id,
         "createdAt":new Date(),
-        "visitorId": sarahc._id,
+        "visitorId": vivian._id,
         "requestedDate": new Date(2016,futureMonth,1,13,0,0,0),
+        "visitTime": new Date(2016,futureMonth,1,13,0,0,0),
         "notes": '1pm works best',
         "location": {
           "name":"36 Charter Rd, Acton, MA 01720",
@@ -130,6 +131,7 @@ Meteor.startup(function ()  {
         "visitorId": vivian._id,
         "createdAt":new Date(),
         "requestedDate": new Date(2016,futureMonth,15,16,0,0,0),
+        "visitTime": new Date(2016,futureMonth,15,15,15,0,0),
         "notes": '3pm works best',
         "location": {
           "name":"Walden Pnd",
@@ -182,9 +184,10 @@ Meteor.startup(function ()  {
       {
         "requesterId":requester1._id,
         "agencyId": agency._id,
-        "visitorId": sarahc._id,
+        "visitorId": vivian._id,
         "createdAt":new Date(),
         "requestedDate": new Date(2016,pastMonth,1,13,0,0,0),
+        "visitTime": new Date(2016,pastMonth,1,13,0,0,0),
         "notes": 'This already happened',
         "location": {
           "name":"Boston",

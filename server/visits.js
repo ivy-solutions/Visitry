@@ -11,6 +11,16 @@ Meteor.publish("visits", function (options) {
   },options);
 });
 
+Meteor.publish("userRequests", function (options) {
+  var userRequests =  Visits.find({
+    requesterId: { $eq: this.userId},
+    inactive: { $exists : false}
+  },options);
+  var visitorIds = userRequests.map(function(visitRequest) {return visitRequest.visitorId} );
+  return [userRequests,
+    Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}}) ];
+});
+
 Meteor.publish("availableVisits", function ( ) {
   if (this.userId) {
     const defaultVicinity = 3000;

@@ -53,7 +53,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   };
 
    this.cancelVisit = function (visit) {
-    var confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getRequester(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, H:mm') + "?"
+    var confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getRequester(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, h:mm') + "?"
     var confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,
       cancelText: 'No',

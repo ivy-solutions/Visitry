@@ -22,7 +22,7 @@ angular.module('visitry')
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve:{
           feedback:function($location){
-            const visits = Meteor.subscribe('visits');
+            const visits = Meteor.subscribe('userRequests');
             Tracker.autorun(()=>{
               const isReady = visits.ready();
               var visitNeedingFeedback = Visits.findOne({feedbackId:null,requesterId:Meteor.userId(),requestedDate:{$lt:new Date()}});

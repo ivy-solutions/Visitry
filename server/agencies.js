@@ -13,6 +13,7 @@ Meteor.publish("allAgencies", function (options) {
 Meteor.publish("userAgency", function (options) {
   if ( this.userId ) {
     var user = Meteor.users.findOne( {_id: this.userId() }, {fields: {'userData.agencyId': 1}});
+    options.reactive = false; //no need to be reactive
     return Agencies.find({
       _id: { $gt : user.agencyId }
     },options);
