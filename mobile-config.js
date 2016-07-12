@@ -1,8 +1,6 @@
 /**
  * Created by n0235626 on 3/9/16.
  */
-// This section sets up some basic app metadata,
-// the entire section is optional.
 App.info({
   id: 'com.ivysolutions.Visitry',
   name: 'Visitry',
