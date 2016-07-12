@@ -20,7 +20,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.openVisitCount = -1;
 
   this.autorun( function() {
-    console.log( "browse-visit-requests autorun hasLocation:" + this.hasLocation);
     var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
@@ -92,7 +91,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     if ( toLocation == null )
       return "";
     if (!this.hasLocation) {
-      console.log( "no current user location." );
       return "";
     }
     var EarthRadiusInMiles = 3956.0;
