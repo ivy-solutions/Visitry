@@ -63,7 +63,7 @@ Meteor.startup(function ()  {
         firstName: 'Vivian',
         lastName: 'Visitor',
         role: "visitor",
-        agencyId: agency._id,
+        agencyIds: [agency._id],
         interests: ['Studying clarinet', 'Reads fiction', 'New to area']
       }
     });
@@ -73,7 +73,7 @@ Meteor.startup(function ()  {
         firstName: 'Raoul',
         lastName: 'Robbins',
         role: "requester",
-        agencyId: agency._id,
+        agencyIds: [agency._id],
         interests: ['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']
       }
     });
@@ -84,7 +84,7 @@ Meteor.startup(function ()  {
         lastName: 'Smith',
         role: "requester",
         interests: ['Hiking', '6 grandchildren'],
-        agencyId: agency._id
+        agencyIds: [agency._id]
       }
     });
     Accounts.createUser({
@@ -93,15 +93,16 @@ Meteor.startup(function ()  {
         firstName: 'Ron',
         lastName: 'Wang',
         role: "requester",
-        agencyId: agency._id,
+        agencyIds: [agency._id],
         interests: ['Has 4 cats', 'Sings in church choir']
       }
     });
+    var sarahc = Meteor.users.findOne({username:'Sarahc'});
+    sarahc.userData.agencyIds = Agencies.find({},{fields:{_id:1}} );
   }
 
   if(Visits.find().count() ===0){
     var agency = Agencies.findOne({name:'IVY Agency'});
-    var sarahc = Meteor.users.findOne({username:'Sarahc'});
     var vivian = Meteor.users.findOne({username:'Vivian'});
     var requester1 = Meteor.users.findOne({username:'requester1'});
     var requester2 = Meteor.users.findOne({username:'requester2'});

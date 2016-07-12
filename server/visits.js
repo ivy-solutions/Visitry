@@ -1,11 +1,11 @@
 Meteor.publish("visits", function (options) {
-  var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyId': 1}});
+  var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
   var today = new Date();
   today.setHours(0,0,0,0);
   // active future visit requests, or past requests for which feedback is needed
-  var agency = user && user.userData && user.userData.agencyId ? user.userData.agencyId : null;
+  var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : null;
   return Visits.find({
-    agencyId: { $eq: agency},
+    agencyId: { $in: agencies},
     inactive: { $exists : false},
     $or: [ {feedbackId: null }, {requestedDate: {$gt: today }} ]
   },options);
@@ -28,12 +28,13 @@ Meteor.publish("availableVisits", function ( ) {
   if (this.userId) {
     const defaultVicinity = 3000;
     const defaultLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston
-    var user = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyId': 1,'userData.location': 1, 'userData.vicinity': 1}});
+    var user = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyIds': 1,'userData.location': 1, 'userData.vicinity': 1}});
     var vicinity = user.userData.vicinity ? user.userData.vicinity : defaultVicinity;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
+    var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
     //active unfilled future visit requests
     var availableRequests = Visits.find({
-      agencyId: { $eq: user.userData.agencyId},
+      agencyId: { $in: userAgencies},
       visitorId: {$exists: false},
       inactive: {$exists: false},
       requestedDate: {$gt: new Date()},
@@ -59,11 +60,11 @@ Meteor.methods({
   'visits.createVisit'(visit) {
     visit.requesterId = this.userId;
     visit.createdAt = new Date();
-    var requester = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyId': 1}});
-    if (!requester.userData.agencyId) {
+    var requester = Meteor.users.findOne( {_id: this.userId }, {fields: {'userData.agencyIds': 1}});
+    if (!requester.userData.agencyIds || requester.userData.agencyIds.length==0) {
       throw new Meteor.Error( 'requires-agency', "User must be affiliated with an agency.")
     }
-    visit.agencyId = requester.userData.agencyId;
+    visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
 
     check(visit,Visits.schema);
     //valid longitude and latitude

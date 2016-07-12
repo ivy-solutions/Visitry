@@ -206,7 +206,7 @@ if (Meteor.isServer) {
         findOneUserStub.returns( {
           username: 'Harry',
           userData: {
-            agencyId: agencyId
+            agencyIds: [agencyId]
           }
         });
 
@@ -263,7 +263,7 @@ if (Meteor.isServer) {
         _id: userId,
         username: 'Harriet',
         userData: {
-          agencyId: agency2Id
+          agencyIds: [agency2Id]
         }
       });
 
@@ -310,7 +310,7 @@ if (Meteor.isServer) {
     });
 
     it('agency1 user sees only future unscheduled visits', () => {
-      findOneUserStub.returns( { username: 'agency1user', userData:{agencyId: agencyId}} );
+      findOneUserStub.returns( { username: 'agency1user', userData:{agencyIds: [agencyId]}} );
       const invocation = {userId: userId};
 
       const cursors = publication.apply(invocation);
@@ -319,6 +319,53 @@ if (Meteor.isServer) {
       var visit = visitCursor.fetch()[0];
       assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
     });
+    it('user associated with multiple agencies should see visits from all', () => {
+      findOneUserStub.returns( { username: 'MultiAgency', userData:{ agencyIds: [agencyId,agency2Id]}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 2);
+      const notesFromVisits = visitCursor.map( function(visit) { return visit.notes; });
+      assert.sameMembers(notesFromVisits, ['test visit agency1', 'test visit agency2']);
+    });
+    it('user from Acton sees no visits if vicinity is set to 10 miles', () => {
+      findOneUserStub.returns( { username: 'Actonian',
+        userData:{
+          agencyIds: [agencyId],
+          vicinity:10,
+          location: {
+            name: "Acton",
+            geo: {
+              type: "Point",
+              coordinates: [-71.432612, 42.485008]
+            }
+          }}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 0);
+    });
+    it('user from Acton sees 1 visit if vicinity is set to 50 miles', () => {
+      findOneUserStub.returns( { username: 'Actonian',
+        userData:{
+          agencyIds: [agencyId],
+          vicinity:50,
+          location: {
+            name: "Acton",
+            geo: {
+              type: "Point",
+              coordinates: [-71.432612, 42.485008]
+            }
+          }}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+    });
+
 
   });
 

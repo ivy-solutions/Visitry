@@ -104,7 +104,7 @@ Accounts.onCreateUser(function(options, user) {
   if (!user.userData.agencyId) {  // use default, if no agency selected
     var agency = Agencies.findOne({name:'IVY Agency'});
     if ( agency ) {
-      user.userData.agencyId = agency._id;
+      user.userData.agencyIds = [agency._id];
     }
   }
   return user;
