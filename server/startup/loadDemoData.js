@@ -11,10 +11,10 @@ Meteor.startup(function ()  {
       userData: {firstName: 'Sarah', lastName: 'Coletti', role: "visitor"}
     });
 
+    var sarahc = Meteor.users.findOne({username: 'Sarahc'});
     //create the agencies
     if (Agencies.find().count() === 0) {
-      var sarahc = Meteor.users.findOne({username: 'Sarahc'});
-      var agencies = [
+       var agencies = [
         {
           name: "IVY Agency",
           description: "IVY Agency provides friendly visitor services to local area.",
@@ -97,8 +97,10 @@ Meteor.startup(function ()  {
         interests: ['Has 4 cats', 'Sings in church choir']
       }
     });
-    var sarahc = Meteor.users.findOne({username:'Sarahc'});
-    sarahc.userData.agencyIds = Agencies.find({},{fields:{_id:1}} );
+    //set one user to access all agencies
+    let allAgencies = Agencies.find();
+    let allAgencyIds = allAgencies.map( function(agency) { return agency._id});
+    Meteor.users.update(sarahc._id, {$set: {'userData.agencyIds': allAgencyIds}});
   }
 
   if(Visits.find().count() ===0){
@@ -197,8 +199,8 @@ Meteor.startup(function ()  {
         "agencyId": agency._id,
         "visitorId": vivian._id,
         "createdAt":pastMonth,
-        "requestedDate": new Date(2016,pastMonth,1,13,0,0,0),
-        "visitTime": new Date(2016,pastMonth,1,13,0,0,0),
+        "requestedDate": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),2,13,0,0,0),
+        "visitTime": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),2,13,0,0,0),
         "notes": 'This already happened',
         "location": {
           "name":"Boston",
