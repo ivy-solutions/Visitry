@@ -63,6 +63,9 @@ http@1.1.7
 hwillson:stub-collections@1.0.1
 hybrid:asset-builder@0.2.1
 id-map@1.0.8
+jagi:astronomy@2.1.0
+jagi:astronomy-softremove-behavior@2.0.3
+jagi:astronomy-timestamp-behavior@2.0.0
 jasonaibrahim:angular-moment@0.10.2
 jeremy:geocomplete@1.7.0
 jquery@1.11.9

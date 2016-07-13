@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 Meteor.startup(function ()  {
+  Agencies._ensureIndex({"address.geo.coordinates": '2dsphere'})
   Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
 
   if (Meteor.users.find().count() === 0) {
@@ -64,7 +65,15 @@ Meteor.startup(function ()  {
         lastName: 'Visitor',
         role: "visitor",
         agencyIds: [agency._id],
-        interests: ['Studying clarinet', 'Reads fiction', 'New to area']
+        interests: ['Studying clarinet', 'Reads fiction', 'New to area'],
+        location: {
+          name: "25 First St., Cambridge, MA",
+          geo: {
+            type: "Point",
+            coordinates: [-71.078006,42.369707 ]
+          }
+        },
+        vicinity: 10
       }
     });
     Accounts.createUser({

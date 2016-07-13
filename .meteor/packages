@@ -56,3 +56,6 @@ hwillson:stub-collections
 practicalmeteor:mocha-console-runner
 dburles:factory
 practicalmeteor:faker
+jagi:astronomy
+jagi:astronomy-timestamp-behavior
+jagi:astronomy-softremove-behavior

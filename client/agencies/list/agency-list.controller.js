@@ -14,7 +14,7 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
 
   this.helpers({
     agencies: () => {
-      return Agencies.find({}, {sort: this.getReactively('sort')});
+      return Agency.find({}, {sort: this.getReactively('sort')});
     }
   });
 

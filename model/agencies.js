@@ -1,7 +1,9 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-Agencies = new Mongo.Collection("agencies")
+import { Class } from 'meteor/jagi:astronomy';
+
+Agencies = new Mongo.Collection("agencies");
 
 //TODO check role
 Agencies.allow({
@@ -16,34 +18,78 @@ Agencies.allow({
   }
 });
 
-// mongo 2dsphere
-SphereSchema = new SimpleSchema({
-  type: {type: String, allowedValues: ["Point"]},
-  coordinates: {type: [Number], min: -180, max: 180, minCount:2, maxCount:2, decimal:true }
-});
-
-AddressSchema = new SimpleSchema({
-  address: {type: String},
-  geo: {
-    type: SphereSchema,
-    index: '2dsphere'
+const GeoLocation = Class.create({
+  name: 'GeoLocation',
+  fields: {
+    type: {
+      type: String, default: "Point",
+      validator: [{
+        type: 'equal', resolveParam() {
+          return 'Point'
+        }
+      }]
+    },
+    coordinates: {
+      type: [Number],
+      validator: [
+        {type: 'length', param: 2},
+        {
+          type: 'every', param: [
+          {type: 'gt', param: -180},
+          {type: 'lt', param: 180}
+        ]
+        }
+      ]
+    }
   }
 });
 
-Agencies.schema = new SimpleSchema({
-  name: {type:String },
-  description: {type: String, optional:true},
-  website: {type: SimpleSchema.RegEx.Url, optional:true},
-  location: {type: AddressSchema },
-  activeUntil: {type: Date, optional:true},
-  administratorId: {type: String, regEx: SimpleSchema.RegEx.Id},
-  contactEmail: {type: SimpleSchema.RegEx.Email},
-  contactPhone: {type: String },
-  logos: {type: [String], optional:true},
-  createdAt: {type:Date}
+const Address = Class.create({
+  name: 'Address',
+  fields: {
+    address: {type: String},
+    geo: {type: GeoLocation}
+  }
 });
 
-Agencies.attachSchema(Agencies.schema);
+Agency = Class.create({
+  name: 'Agency',
+  collection: Agencies,
+  fields: {
+    name: { type: String,
+      validators: [{ type: 'minLength', param: 3}]},
+    description: { type: String, optional: true},
+    website: { type: String, optional: true,
+      validators: [{
+        type: 'regexp',
+        param: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/ ,
+        message: '"website" should be a valid URL'}] },  //URL validator
+    location: { type: Address },  // Note: 2dsphere index is added in startup
+    activeUntil: {type: Date, optional: true },
+    administratorId: { type: Mongo.ObjectID },
+    contactEmail: { type: String,
+      validators: [{type: 'email'}]},
+    contactPhone: { type: String },
+    logos: {type: [String], optional: true },
+    createdAt: {type:Date, immutable: true},
+    updatedAt: {type:Date},
+    removedAt: {type: Date, optional: true}
+  },
+  behaviors: {
+    timestamp: {
+      hasCreatedField: true,
+      createdFieldName: 'createdAt',
+      hasUpdatedField: true,
+      updatedFieldName: 'updatedAt'
+    },
+    softremove: {
+      removedFieldName: 'removed',
+      hasRemovedAtField: true,
+      removedAtFieldName: 'removedAt'
+    }
+  }
+});
+
 
 
 
