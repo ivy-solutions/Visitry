@@ -1,3 +1,5 @@
+import { Visit } from '/model/visits.js'
+
 angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
   $reactive(this).attach($scope);
 
