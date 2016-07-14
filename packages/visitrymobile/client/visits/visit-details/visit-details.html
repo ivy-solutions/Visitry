@@ -17,7 +17,7 @@
             </div>
          </ion-item>
           <ion-item>
-              {{visitDetails.isVisitor() ? "Location: " + visitDetails.visit.location.name :  "Near:" + (visitDetails.visit.location | approximateLocation)}}
+              {{visitDetails.isVisitor() ? "Location: " + visitDetails.visit.location.address :  "Near:" + (visitDetails.visit.location | approximateLocation)}}
           </ion-item>
           <ion-item>
               <ion-list>{{visitDetails.requester | firstNameLastInitial}}'s Interests

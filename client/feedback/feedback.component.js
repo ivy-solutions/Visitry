@@ -1,3 +1,5 @@
+import { Visit } from '/model/visits'
+
 angular.module('visitry').directive('feedback', function () {
   return {
     restrict: 'E',
@@ -28,7 +30,7 @@ angular.module('visitry').directive('feedback', function () {
 
       this.helpers({
         visit: ()=> {
-          var v = Visits.findOne({_id: $stateParams.visitId});
+          var v = Visit.findOne({_id: $stateParams.visitId});
           if (v) {
             feedbackResponse.visitorId = v.visitorId;
             this.visitor = Meteor.users.findOne({_id: v.visitorId});

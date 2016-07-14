@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
+import {Visit } from '/model/visits'
+
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
   $reactive(this).attach($scope);
 
@@ -47,7 +49,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
         this.hasLocation = false;
       }
       console.log( "open Visits: " + this.vicinity  + " " + JSON.stringify(this.fromLocation));
-      var visits = Visits.find({
+      var visits = Visit.find({
          visitorId: {$exists: false},
          "location.geo": {
            $near: {

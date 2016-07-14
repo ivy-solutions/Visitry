@@ -1,4 +1,4 @@
-<ion-view view-title="Requested Visits">
+<ion-view view-title="Requested Visits" hide-back-button=true>
   <ion-nav-buttons side="secondary" class="show">
     <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
     </button>
@@ -19,7 +19,7 @@
             <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span></h4>
             <h2 ng-if="visit.visitorId">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} <span class="timeOfDay">{{visit.visitTime | date:'h:mm'}}</span></h2>
             <span flex></span>
-            <h4>{{visit.location.name | limitTo:10}}<span ng-if="visit.location.name.length > 10">...</span></h4>
+            <h4>{{visit.location.address | limitTo:10}}<span ng-if="visit.location.address.length > 10">...</span></h4>
           </div>
           <p>{{visit.notes}}</p>
           <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">

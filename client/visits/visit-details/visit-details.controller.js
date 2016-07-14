@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 3/2/16.
  */
+import { Visit } from '/model/visits'
+
 angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
 
@@ -11,7 +13,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.helpers({
     theVisit:() => {
       console.log("theVisit: " + $stateParams.visitId);
-      var visit = Visits.findOne({_id: $stateParams.visitId});
+      var visit = Visit.findOne({_id: $stateParams.visitId});
       console.log( "visit:" + visit);
       if ( visit ) {
         console.log( "visit:" + JSON.stringify(visit));

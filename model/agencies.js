@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import { Class } from 'meteor/jagi:astronomy';
+import { Address } from '/model/address';
 
 const Agencies = new Mongo.Collection("agencies");
 
@@ -15,40 +16,6 @@ Agencies.allow({
   },
   remove: function (userId, agency) {
     return userId;
-  }
-});
-
-const GeoLocation = Class.create({
-  name: 'GeoLocation',
-  fields: {
-    type: {
-      type: String, default: "Point",
-      validator: [{
-        type: 'equal', resolveParam() {
-          return 'Point'
-        }
-      }]
-    },
-    coordinates: {
-      type: [Number],
-      validator: [
-        {type: 'length', param: 2},
-        {
-          type: 'every', param: [
-          {type: 'gt', param: -180},
-          {type: 'lt', param: 180}
-        ]
-        }
-      ]
-    }
-  }
-});
-
-const Address = Class.create({
-  name: 'Address',
-  fields: {
-    address: {type: String},
-    geo: {type: GeoLocation}
   }
 });
 
@@ -73,7 +40,15 @@ const Agency = Class.create({
     logos: {type: [String], optional: true },
     createdAt: {type:Date, immutable: true},
     updatedAt: {type:Date},
+    removed: {type:Boolean, optional: true },
     removedAt: {type: Date, optional: true}
+  },
+  indexes: {
+    geolocation: {
+      fields: {
+        'location.geo': '2dsphere'
+      }
+    }
   },
   behaviors: {
     timestamp: {

@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 
-import '/model/visits.js';
+import { Visit,Visits } from '/model/visits'
 import '/server/visits.js';
 
 if (Meteor.isServer) {
@@ -128,7 +128,7 @@ if (Meteor.isServer) {
           agencyId: agencyId,
           requesterId: requesterId,
           location: {
-            name: "Boston",
+            address: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
@@ -165,7 +165,7 @@ if (Meteor.isServer) {
           requesterId: requesterId,
           agencyId: agencyId,
           location: {
-            name: "Boston",
+            address: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
@@ -188,17 +188,17 @@ if (Meteor.isServer) {
 
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
-      let newVisit = {
+      let newVisit =  new Visit ({
         notes: 'test visit',
         requestedDate: tomorrow,
         location: {
-           name: "Boston",
+           address: "Boston",
            geo: {
              type: "Point",
              coordinates: [-71.0589, 42.3601]
            }
         }
-      };
+      });
 
       var findOneUserStub;
       beforeEach(() => {
@@ -219,15 +219,15 @@ if (Meteor.isServer) {
 
       it('fails if no location in request', () => {
         const invocation = {userId: userId};
-        let nowhereVisit = {
+        let nowhereVisit = new Visit ({
           notes: 'test visit',
           requestedDate: tomorrow
-        };
+        });
         try {
           createVisitHandler.apply(invocation, [nowhereVisit]);
           fail( "expect error");
         }catch( ex ) {
-          assert.match(ex.message, /Location is required/)
+          assert.match(ex.message, /"location" is required/)
         }
       });
 
@@ -253,6 +253,7 @@ if (Meteor.isServer) {
 
   describe( 'availableVisits Publication', () => {
     const publication = Meteor.server.publish_handlers["availableVisits"];
+    Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
 
     var findOneUserStub;
 
@@ -286,7 +287,7 @@ if (Meteor.isServer) {
       assert.isString(visit.notes, "notes");
       assert.isString(visit.requesterId, "requesterId");
       assert.instanceOf(visit.requestedDate, Date, "requestedDate");
-      assert.isString(visit.location.name,"location.name");
+      assert.isString(visit.location.address,"location.address");
     });
 
     it('user of agency2 should see only agency2 visits', () => {
@@ -335,7 +336,7 @@ if (Meteor.isServer) {
           agencyIds: [agencyId],
           vicinity:10,
           location: {
-            name: "Acton",
+            address: "Acton",
             geo: {
               type: "Point",
               coordinates: [-71.432612, 42.485008]
@@ -353,7 +354,7 @@ if (Meteor.isServer) {
           agencyIds: [agencyId],
           vicinity:50,
           location: {
-            name: "Acton",
+            address: "Acton",
             geo: {
               type: "Point",
               coordinates: [-71.432612, 42.485008]
@@ -406,7 +407,7 @@ if (Meteor.isServer) {
       requesterId: requesterId,
       agencyId: agencyId,
       location: {
-        name: "Boston",
+        address: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -420,7 +421,7 @@ if (Meteor.isServer) {
       requesterId: requesterId,
       agencyId: agencyId,
       location: {
-        name: "Boston",
+        address: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -434,7 +435,7 @@ if (Meteor.isServer) {
         requesterId: requesterId,
         agencyId: agencyId,
         location: {
-          name: "Boston",
+          address: "Boston",
           geo: {
             type: "Point",
             coordinates: [-71.0589, 42.3601]
@@ -450,7 +451,7 @@ if (Meteor.isServer) {
       visitorId: userId,
       agencyId: agencyId,
       location: {
-        name: "Boston",
+        address: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -464,7 +465,7 @@ if (Meteor.isServer) {
       requesterId: requesterId,
       agencyId: agency2Id,
       location: {
-        name: "Boston",
+        address: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]

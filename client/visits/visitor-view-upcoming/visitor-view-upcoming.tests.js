@@ -6,7 +6,6 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/visitor-view-upcoming/visitor-view-upcoming.component';
-import StubCollections from 'meteor/hwillson:stub-collections';
 
 describe('View Upcoming Visits Visit', function () {
 
@@ -24,9 +23,6 @@ describe('View Upcoming Visits Visit', function () {
   var stateSpy;
 
   beforeEach(function () {
-    StubCollections.add([Visits]);
-    StubCollections.stub();
-
     var fakeConfirmPopup = {then: function(){return true}, error: function(){} };
     var mockIonicPopup = {
       confirm: function(){
@@ -46,7 +42,6 @@ describe('View Upcoming Visits Visit', function () {
   });
 
   afterEach(function () {
-    StubCollections.restore();
     spyOnConfirm.reset(true);
   });
 

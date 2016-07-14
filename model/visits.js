@@ -1,8 +1,10 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-Visits = new Mongo.Collection("visits");
+import { Class } from 'meteor/jagi:astronomy';
+import { Address } from '/model/address';
 
+const Visits = new Mongo.Collection("visits");
 
 Visits.allow({
   insert: function (userId, visit) {
@@ -16,35 +18,47 @@ Visits.allow({
   }
 });
 
-
-    // mongo 2dsphere
-SphereSchema = new SimpleSchema({
-  type: {type: String, allowedValues: ["Point"]},
-  coordinates: {type: [Number], min: -180, max: 180, minCount:2, maxCount:2, decimal:true }
-});
-
-LocationSchema = new SimpleSchema({
-  name: {type: String, label: "address"},
-  geo: {
-    type: SphereSchema,
-    index: '2dsphere'
+const Visit = Class.create({
+  name: 'Visit',
+  collection: Visits,
+  fields: {
+    requesterId: {type: String, immutable: true },
+    agencyId: {type: String},
+    location: {type: Address},
+    requestedDate: {type: Date},
+    notes: {type: String, optional: true},
+    visitorId: {type: String, optional: true},
+    visitTime: {type: Date, optional: true},
+    scheduledAt: {type: Date, optional: true},
+    visitorNotes: {type: String, optional: true},
+    feedbackId: {type: String, optional: true},
+    createdAt: {type: Date, immutable: true},
+    updatedAt: {type: Date},
+    inactive: {type: Boolean, optional: true},
+    removedAt: {type: Date, optional : true},
+    cancelledAt: {type: Date, optional: true}
+  },
+  indexes: {
+    geolocation: {
+      fields: {
+        'location.geo': '2dsphere'
+      }
+    }
+  },
+  behaviors: {
+    timestamp: {
+      hasCreatedField: true,
+      createdFieldName: 'createdAt',
+      hasUpdatedField: true,
+      updatedFieldName: 'updatedAt'
+    },
+    softremove: {
+      removedFieldName: 'inactive',
+      hasRemovedAtField: true,
+      removedAtFieldName: 'removedAt'
+    }
   }
 });
 
-Visits.schema = new SimpleSchema({
-    requesterId: {type: String, regEx: SimpleSchema.RegEx.Id},
-    agencyId: {type: String, regEx: SimpleSchema.RegEx.Id},
-    location: {type: LocationSchema },
-    requestedDate: {type: Date},
-    notes: {type: String, optional:true},
-    createdAt: {type:Date},
-    visitorId: { type: String, regEx: SimpleSchema.RegEx.Id, optional:true},  //filled in when visit booked
-    visitTime: {type: Date, optional:true },
-    scheduledAt: { type: Date, optional: true},
-    visitorNotes: {type:String, optional:true},
-    feedbackId: {type: String, regEx: SimpleSchema.RegEx.Id, optional: true},  //filled in after visit
-    inactive: {type: Boolean, optional:true}  //set if requester rescinds the request
-});
-
-Visits.attachSchema(Visits.schema);
-
+export { Visit };
+export { Visits };

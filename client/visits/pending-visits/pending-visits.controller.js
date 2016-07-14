@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
+import { Visit } from '/model/visits'
+
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
   $reactive(this).attach($scope);
 
@@ -13,7 +15,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
 
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visits.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
+      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
       this.numRequests = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }

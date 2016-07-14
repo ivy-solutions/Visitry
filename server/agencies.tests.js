@@ -11,10 +11,13 @@ if (Meteor.isServer) {
   describe('Agencies', () => {
 
     describe( 'validation', () => {
-      var invalidAgency = new Agency();
-      invalidAgency.name = "a" ; //too short
-      invalidAgency.website = "noDots"; //bad format
-      invalidAgency.contactEmail = "noAtSign";// bad format
+      var invalidAgency;
+      beforeEach(function () {
+        invalidAgency = new Agency();
+        invalidAgency.name = "a"; //too short
+        invalidAgency.website = "noDots"; //bad format
+        invalidAgency.contactEmail = "noAtSign";// bad format
+      });
 
       it( 'fails if name is too short', () => {
         invalidAgency.validate( {fields: ['name']}, function( err, id) {

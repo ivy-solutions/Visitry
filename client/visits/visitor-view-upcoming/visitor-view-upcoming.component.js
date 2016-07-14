@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 3/13/16.
  */
+import { Visit } from '/model/visits'
+
 angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $state,$ionicPopup,$ionicListDelegate, $filter) {
   $reactive(this).attach($scope);
 
@@ -22,7 +24,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
         'visitTime': {$exists: true},
         'visitTime': {$gt: startOfToday}
       };
-      var visits =  Visits.find(selector, {sort: this.getReactively('listSort')});
+      var visits =  Visit.find(selector, {sort: this.getReactively('listSort')});
       var visitsByDate = Meteor.myFunctions.groupVisitsByRequestedDate(visits);
       return visitsByDate;
     }

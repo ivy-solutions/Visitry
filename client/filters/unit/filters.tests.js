@@ -90,10 +90,10 @@ describe( 'Filters ', function () {
 
     it('extracts street and town without street number', function () {
       let fullAddresses = [
-        {name: "100 Pennsylvania Avenue, Washington, D.C., United States"},
-        {name: "12 E 49th St, New York, NY, United States"},
-        {name: "Museum of Fine Arts, Boston, Huntington Avenue, Boston, MA"},
-        {name: "Massachusetts General Hospital, Fruit Street, Boston, MA"}];
+        {address: "100 Pennsylvania Avenue, Washington, D.C., United States"},
+        {address: "12 E 49th St, New York, NY, United States"},
+        {address: "Museum of Fine Arts, Boston, Huntington Avenue, Boston, MA"},
+        {address: "Massachusetts General Hospital, Fruit Street, Boston, MA"}];
       var approximateLocation = $filter('approximateLocation');
       chai.assert.equal(approximateLocation(fullAddresses[0]), 'Pennsylvania Avenue, Washington');
       chai.assert.equal(approximateLocation(fullAddresses[1]), 'E 49th St, New York');
@@ -102,7 +102,7 @@ describe( 'Filters ', function () {
     });
 
     it('returns town when street not specified', function () {
-      let partialAddress = {name: "Boston, MA"};
+      let partialAddress = {address: "Boston, MA"};
       var approximateLocation = $filter('approximateLocation');
       chai.assert.equal(approximateLocation(partialAddress), 'Boston');
     });

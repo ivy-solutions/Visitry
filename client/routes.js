@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import {Visits } from '/model/visits'
+
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
     $locationProvider.html5Mode(true);

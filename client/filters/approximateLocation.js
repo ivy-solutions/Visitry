@@ -6,7 +6,7 @@ angular.module('visitry').filter('approximateLocation', function () {
     if ( !location )
       return "No Location";
 
-    var parts = location.name.split(',');
+    var parts = location.address.split(',');
     var numParts = parts.length;
     if ( numParts >=2 ) {
       var inexactAddress = parts[0].replace(/^\d+/,'');
@@ -17,7 +17,7 @@ angular.module('visitry').filter('approximateLocation', function () {
     }
     else {
       // less than 2 parts - must just be town
-      return location.name;
+      return location.address;
     }
   }
 });
