@@ -1,8 +1,10 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import {Agency, Agencies} from '/model/agencies'
+
 Meteor.startup(function ()  {
-  Agencies._ensureIndex({"address.geo.coordinates": '2dsphere'})
+  Agencies._ensureIndex({"address.geo.coordinates": '2dsphere'});
   Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
 
   if (Meteor.users.find().count() === 0) {
@@ -15,7 +17,7 @@ Meteor.startup(function ()  {
     var sarahc = Meteor.users.findOne({username: 'Sarahc'});
     //create the agencies
     if (Agencies.find().count() === 0) {
-       var agencies = [
+      var agency1 = new Agency(
         {
           name: "IVY Agency",
           description: "IVY Agency provides friendly visitor services to local area.",
@@ -32,8 +34,9 @@ Meteor.startup(function ()  {
           contactEmail: 'sarahcoletti12@gmail.com',
           contactPhone: '978-264-4171',
           createdAt:new Date()
-        },
-        {
+        });
+      agency1.save();
+      var agency2 = new Agency({
           name: "Test Pilot Senior Center",
           description: "For demo and test purposes",
           website: "http://ivy-solutions.org",
@@ -49,14 +52,11 @@ Meteor.startup(function ()  {
           contactEmail: 'sarahcoletti12@gmail.com',
           contactPhone: '978-264-4171',
           createdAt:new Date()
-        }
-      ];
-      for (var i = 0; i < agencies.length; i++) {
-        Agencies.insert(agencies[i]);
-      }
+        });
+      agency2.save();
     }
 
-    var agency = Agencies.findOne({name:'IVY Agency'});
+    var agency = Agency.findOne({name:'IVY Agency'});
     //create a few test users
     Accounts.createUser({
       username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
@@ -113,7 +113,7 @@ Meteor.startup(function ()  {
   }
 
   if(Visits.find().count() ===0){
-    var agency = Agencies.findOne({name:'IVY Agency'});
+    var agency = Agency.findOne({name:'IVY Agency'});
     var vivian = Meteor.users.findOne({username:'Vivian'});
     var requester1 = Meteor.users.findOne({username:'requester1'});
     var requester2 = Meteor.users.findOne({username:'requester2'});

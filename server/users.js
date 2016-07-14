@@ -1,3 +1,5 @@
+import { Agency } from '/model/agencies'
+
 Meteor.publish("userdata", function () {
   if (this.userId) {
     var user = Meteor.users.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
@@ -102,7 +104,7 @@ Accounts.onCreateUser(function(options, user) {
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
-    var agency = Agencies.findOne({name:'IVY Agency'});
+    var agency = Agency.findOne({name:'IVY Agency'});
     if ( agency ) {
       user.userData.agencyIds = [agency._id];
     }

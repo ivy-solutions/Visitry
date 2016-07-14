@@ -3,7 +3,7 @@
  */
 import { Class } from 'meteor/jagi:astronomy';
 
-Agencies = new Mongo.Collection("agencies");
+const Agencies = new Mongo.Collection("agencies");
 
 //TODO check role
 Agencies.allow({
@@ -52,7 +52,7 @@ const Address = Class.create({
   }
 });
 
-Agency = Class.create({
+const Agency = Class.create({
   name: 'Agency',
   collection: Agencies,
   fields: {
@@ -66,7 +66,7 @@ Agency = Class.create({
         message: '"website" should be a valid URL'}] },  //URL validator
     location: { type: Address },  // Note: 2dsphere index is added in startup
     activeUntil: {type: Date, optional: true },
-    administratorId: { type: Mongo.ObjectID },
+    administratorId: { type: String },  //default mongo id generation is a string (if we want ObjectId, we would have to say so when teh collection is created)
     contactEmail: { type: String,
       validators: [{type: 'email'}]},
     contactPhone: { type: String },
@@ -89,6 +89,9 @@ Agency = Class.create({
     }
   }
 });
+
+export {Agency};
+export {Agencies};
 
 
 

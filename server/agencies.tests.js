@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
 
-import '/model/agencies.js'
+import {Agencies, Agency} from '/model/agencies'
 
 
 if (Meteor.isServer) {
@@ -73,7 +73,7 @@ if (Meteor.isServer) {
           }
         };
         validAgency.activeUntil = new Date();
-        validAgency.administratorId = new Mongo.ObjectID();
+        validAgency.administratorId = "anID";
         validAgency.contactEmail = "someOne@agency.com";
         validAgency.contactPhone = '(800) 555-1212';
         //Note: we do save rather than validate here so the behaviors will be invoked and provide the createdAt fieldmeteo
