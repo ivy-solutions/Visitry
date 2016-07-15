@@ -188,17 +188,7 @@ if (Meteor.isServer) {
 
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
-      let newVisit =  new Visit ({
-        notes: 'test visit',
-        requestedDate: tomorrow,
-        location: {
-           address: "Boston",
-           geo: {
-             type: "Point",
-             coordinates: [-71.0589, 42.3601]
-           }
-        }
-      });
+      let newVisit;
 
       var findOneUserStub;
       beforeEach(() => {
@@ -211,6 +201,18 @@ if (Meteor.isServer) {
         });
 
         Visits.remove({});
+
+        newVisit =  new Visit ({
+          notes: 'test visit',
+          requestedDate: tomorrow,
+          location: {
+            address: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
+          }
+        });
       });
 
       afterEach( function() {

@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/18/16.
  */
 import { Visit } from '/model/visits'
+import { User } from '/model/users'
 
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
   $reactive(this).attach($scope);
@@ -22,7 +23,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   });
 
   this.getVisitor = function (visit) {
-    return Meteor.users.findOne({_id: visit.visitorId});
+    return User.findOne({_id: visit.visitorId});
   };
 
   this.showRequestVisitModal = function () {

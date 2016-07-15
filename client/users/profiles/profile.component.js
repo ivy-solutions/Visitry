@@ -13,7 +13,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.subscribe('userProfile');
 
   this.locationName = "";
-  this.locationDetails = "";
+  this.locationDetails;
 
   /////////
   this.isLocationValid = ()=> {
@@ -33,9 +33,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      });
 
      if (this.isLocationValid()) {
-       console.log("update location: " + this.currentUser.userData.location.name + " " + JSON.stringify(this.locationDetails));
+       console.log("update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
        var newLocation = {
-         name: this.currentUser.userData.location.name,
+         name: this.currentUser.userData.location.address,
          latitude: this.locationDetails.geometry.location.lat(),
          longitude: this.locationDetails.geometry.location.lng()
        };
@@ -95,4 +95,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       okType: 'button-positive button-clear'
     });
   }
+}).directive('convertToNumber', function() {
+  return {
+    require: 'ngModel',
+    link: function (scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function (val) {
+        return parseInt(val, 10);
+      });
+      ngModel.$formatters.push(function (val) {
+        return '' + val;
+      });
+    }
+  };
 });

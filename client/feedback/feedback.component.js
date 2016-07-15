@@ -1,4 +1,5 @@
 import { Visit } from '/model/visits'
+import { User } from '/model/users'
 
 angular.module('visitry').directive('feedback', function () {
   return {
@@ -33,7 +34,7 @@ angular.module('visitry').directive('feedback', function () {
           var v = Visit.findOne({_id: $stateParams.visitId});
           if (v) {
             feedbackResponse.visitorId = v.visitorId;
-            this.visitor = Meteor.users.findOne({_id: v.visitorId});
+            this.visitor = User.findOne({_id: v.visitorId});
           }
           return v
         }

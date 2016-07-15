@@ -10,6 +10,7 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/list-visits/list-visits.js';
+import { User } from '/model/users'
 
 describe ( 'ListVisits', function() {
 
@@ -26,13 +27,13 @@ describe ( 'ListVisits', function() {
        inject( function ($rootScope, $componentController) {
         controller = $componentController('listVisits', {$scope: $rootScope.$new(true)})
         });
-      findOneStub = sinon.stub(Meteor.users, 'findOne');
+      findOneStub = sinon.stub(User, 'findOne');
       findOneStub.returns( { name: 'Harry' });
 
      });
 
     afterEach( function() {
-      Meteor.users.findOne.restore();
+      User.findOne.restore();
     });
 
     it('3 per page', function () {

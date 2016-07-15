@@ -66,7 +66,7 @@ Meteor.startup(function ()  {
         agencyIds: [agency._id],
         interests: ['Studying clarinet', 'Reads fiction', 'New to area'],
         location: {
-          name: "25 First St., Cambridge, MA",
+          address: "25 First St., Cambridge, MA",
           geo: {
             type: "Point",
             coordinates: [-71.078006,42.369707 ]

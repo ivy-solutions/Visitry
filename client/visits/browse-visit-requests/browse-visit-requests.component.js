@@ -1,7 +1,8 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
-import {Visit } from '/model/visits'
+import { Visit } from '/model/visits'
+import { User } from '/model/users'
 
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
   $reactive(this).attach($scope);
@@ -22,7 +23,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.openVisitCount = -1;
 
   this.autorun( function() {
-    var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
       this.vicinity = user.userData.vicinity
@@ -38,7 +39,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       today.setHours(0,0,0,0);
 
       var userId = Meteor.userId();
-      var user = Meteor.users.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+      var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
       if (user && user.userData && user.userData.location) {
         this.vicinity = user.userData.vicinity;
         this.fromLocation = user.userData.location.geo;
@@ -76,7 +77,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       console.log("No visit.");
       return null;
     }
-    return Meteor.users.findOne({_id: visit.requesterId});
+    return User.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {

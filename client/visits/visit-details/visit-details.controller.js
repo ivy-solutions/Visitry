@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 3/2/16.
  */
 import { Visit } from '/model/visits'
+import { User } from '/model/users'
 
 angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
@@ -18,7 +19,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       if ( visit ) {
         console.log( "visit:" + JSON.stringify(visit));
         this.visit = visit;
-        this.requester = Meteor.users.findOne({_id: visit.requesterId});
+        this.requester = User.findOne({_id: visit.requesterId});
       }
       return visit;
     }
