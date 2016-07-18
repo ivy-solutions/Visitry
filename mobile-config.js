@@ -2,9 +2,9 @@
  * Created by n0235626 on 3/9/16.
  */
 App.info({
-  id: 'com.ivysolutions.Visitry',
+  id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '0.0.4',
+  version: '0.0.5',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',
@@ -15,8 +15,8 @@ App.icons({
   // iOS
   'iphone_2x': 'resources/icons/ios/Icon-60@2x.png',  //120x120
   'iphone_3x': 'resources/icons/ios/Icon-60@3x.png',  //180x180
-  'ipad': 'resources/icons/ios/Icon-72.png',  //76x76
-  'ipad_2x': 'resources/icons/ios/Icon-72@2x.png',  //152x152
+  'ipad': 'resources/icons/ios/Icon-76.png',  //76x76
+  'ipad_2x': 'resources/icons/ios/Icon-76@2x.png',  //152x152
   'ipad_pro': '', //167x167
   'ios_settings': 'resources/icons/ios/Icon-Small.png', //29x29
   'ios_settings_2x': 'resources/icons/ios/Icon-Small@2x.png', //58x58
@@ -40,7 +40,7 @@ App.launchScreens({
   'iphone6p_landscape': 'resources/splash/ios/Default-1242@3x~iphone6s-landscape_2208x1242.png',  //2208x1242
 
   'ipad_portrait': 'resources/splash/ios/Default-Portrait~ipad_768x1024.png', //768x1024
-  'ipad_portrait_2x': 'resources/splash/ios/Default-Portrait@2x~ipad_1536x2008.png',  //1536x2048
+  'ipad_portrait_2x': 'resources/splash/ios/Default-Portrait@2x~ipad_1536x2048.png',  //1536x2048
   'ipad_landscape': 'resources/splash/ios/Default-Landscape~ipad_1024x768.png', //1024x768
   'ipad_landscape_2x': 'resources/splash/ios/Default-Landscape@2x~ipad_2048x1536.png',  //2048x1536
 
