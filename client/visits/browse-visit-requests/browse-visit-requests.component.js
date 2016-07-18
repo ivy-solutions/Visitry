@@ -1,6 +1,9 @@
 /**
  * Created by sarahcoletti on 2/24/16.
  */
+import { Visit } from '/model/visits'
+import { User } from '/model/users'
+
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
   $reactive(this).attach($scope);
 
@@ -12,70 +15,58 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
-  this.visits = null;
-  this.vicinity = 3000; //default = 3000 miles
-  this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston
-  this.hasLocation = false;
+  this.vicinity = 3000;
+
+  this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
+
+  this.hasLocation = this.vicinity < 3000;
   this.openVisitCount = -1;
 
-  this.subscribe('availableVisits',function() {[Meteor.userId()]});
-  this.subscribe('userdata', function() {}, {
-    onReady: function () {
-      var user = Meteor.users.findOne({_id: Meteor.userId()},  {fields: {'userData.location': 1,'userData.vicinity': 1}});
-      console.log( "userdata ready");
-      if ( user && user.userData && user.userData.location) {
-        this.vicinity = user.userData.vicinity;
-        this.fromLocation = user.userData.location.geo;
-        this.hasLocation = true;
-        console.log( "user has location: " + JSON.stringify(this.fromLocation) + " vicinity: " + this.vicinity );
-      }else {
-        this.vicinity = 3000;
-        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
-        this.hasLocation= false;
-      }
-    }
-  });
-
   this.autorun( function() {
-    console.log( "autorun " );
-    var user = Meteor.users.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
-    if (user && user.userData && user.userData.location) {
-      this.vicinity = user.userData.vicinity;
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+    if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
-      this.hasLocation = true;
-    }else {
-      this.vicinity = 3000;
-      this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
-      this.hasLocation = false;
+      this.vicinity = user.userData.vicinity
+    } else {
+      this.vicinity = 3200;
+      this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
     }
   });
 
   this.helpers({
     openVisits: () => {
-      let userId = Meteor.userId();
-      let selector;
       var today = new Date();
       today.setHours(0,0,0,0);
-      console.log("this.fromLocation " + JSON.stringify(this.fromLocation) + " vicinity: " + this.vicinity );
-      selector = {
-        'visitorId': {$exists: false},
-        "location.geo": {
-          $near: {
-            $geometry: this.getReactively('fromLocation'),
-            $maxDistance: this.getReactively('vicinity') * 1609
-          }
-        },
-        requestedDate: {$gt: today},
-        'requesterId': {$ne: userId},
-        inactive: {$exists: false}
-      };
-      this.visits = Visits.find(selector, {sort: this.getReactively('listSort'),
-        fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}} );
-      this.openVisitCount = this.visits.count();
-      return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
-    },
-    currentUser: () => {
-      return Meteor.users.find({_id: Meteor.userId()}, {fields: {'userData': 1}});
+
+      var userId = Meteor.userId();
+      var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+      if (user && user.userData && user.userData.location) {
+        this.vicinity = user.userData.vicinity;
+        this.fromLocation = user.userData.location.geo;
+        this.hasLocation = true;
+      }else {
+        this.vicinity = 3000;
+        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
+        this.hasLocation = false;
+      }
+      console.log( "open Visits: " + this.vicinity  + " " + JSON.stringify(this.fromLocation));
+      var visits = Visit.find({
+         visitorId: {$exists: false},
+         "location.geo": {
+           $near: {
+             $geometry: this.fromLocation,
+             $maxDistance: this.vicinity * 1609
+           }
+         },
+         requestedDate: {$gt: today},
+         'requesterId': {$ne: userId},
+         inactive: {$exists: false}
+       }, {
+         sort: this.getReactively('listSort'),
+         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}
+       });
+      this.openVisitCount = visits.count();
+      return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });
 
@@ -86,7 +77,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       console.log("No visit.");
       return null;
     }
-    return Meteor.users.findOne({_id: visit.requesterId});
+    return User.findOne({_id: visit.requesterId});
   };
 
   this.getRequesterImage = function(visit) {
@@ -103,7 +94,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     if ( toLocation == null )
       return "";
     if (!this.hasLocation) {
-      console.log( "no current user location." );
       return "";
     }
     var EarthRadiusInMiles = 3956.0;
@@ -122,6 +112,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   }
 
   this.visitDetails = function (id) {
+    console.log( "view details: " + id );
     $state.go( 'visitDetails', {visitId: id} );
   };
 

@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import {Visits } from '/model/visits'
+
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
@@ -22,7 +24,7 @@ angular.module('visitry')
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve:{
           feedback:function($location){
-            const visits = Meteor.subscribe('visits');
+            const visits = Meteor.subscribe('userRequests');
             Tracker.autorun(()=>{
               const isReady = visits.ready();
               var visitNeedingFeedback = Visits.findOne({feedbackId:null,requesterId:Meteor.userId(),requestedDate:{$lt:new Date()}});
@@ -47,13 +49,16 @@ angular.module('visitry')
         },
         controller: 'browseVisitRequestsCtrl as browseVisitRequests',
         resolve: {
-          available: function () {
-            const available = Meteor.subscribe('availableVisits', [Meteor.userId()]);
-            Tracker.autorun(()=> {
-              const visitsReady = available.ready();
-              console.log(`Available visits data is ${visitsReady ? 'ready' : 'not ready'}`);
-            })
-          }
+          available: ['$q', ($q) => {
+            var deferred = $q.defer();
+
+            const available = Meteor.subscribe('availableVisits', {
+              onReady: deferred.resolve,
+              onStop: deferred.reject
+            });
+
+            return deferred.promise;
+          }]
         }
       })
       .state('upcoming', {
@@ -104,10 +109,21 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
-    .state('feedback',{
-      url:'/feedback/:visitId',
-      template:'<feedback></feedback>'
-    });
+      .state('feedback',{
+        url:'/feedback/:visitId',
+        template:'<feedback></feedback>'
+      })
+      .state('agencyList', {
+        url: '/agencies',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/agencies/list/agency-list.html';
+          } else {
+            return '/packages/visitry-browser/client/agencies/list/agency-list.html';
+          }
+        },
+        controller: 'listAgenciesCtrl as agencies'
+      });
 
     $urlRouterProvider.otherwise("/login");
   })

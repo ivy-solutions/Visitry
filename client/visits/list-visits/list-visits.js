@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
+import { User } from '/model/users'
+
 angular.module('visitry').directive('listVisits', function () {
   return {
     restrict: 'E',
@@ -41,7 +43,7 @@ angular.module('visitry').directive('listVisits', function () {
       };
 
       this.getUserById = (userId) => {
-        return Meteor.users.findOne(userId);
+        return User.findOne(userId);
       };
 
     }

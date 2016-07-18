@@ -1,151 +1,248 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-Meteor.startup(function ()  {
-  Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
-  if (Agencies.find().count() === 0 ) {
-    var agencies = [
-      {
-        name: "IVY Agency",
-        description: "IVY Agency provides friendly visitor services to local area."
-      }
-    ];
+import {Agency, Agencies} from '/model/agencies'
+import {Visit, Visits } from '/model/visits'
 
-    for ( var i = 1; i < agencies.length; i++ ) {
-      Agencies.insert( agencies[i]);
-    }
-  }
+Meteor.startup(function ()  {
 
   if (Meteor.users.find().count() === 0) {
+    //create one admin user
     Accounts.createUser({
       username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Sarah', lastName: 'Coletti', role:"visitor"}
+      userData: {firstName: 'Sarah', lastName: 'Coletti', role: "visitor"}
     });
+
+    var sarahc = Meteor.users.findOne({username: 'Sarahc'});
+    //create the agencies
+    if (Agencies.find().count() === 0) {
+      var agency1 = new Agency(
+        {
+          name: "IVY Agency",
+          description: "IVY Agency provides friendly visitor services to local area.",
+          website: "http://visitry.org",
+          location: {
+            address: "80 Willow Street, Acton, MA 01720",
+            geo: {
+              "type": "Point",
+              "coordinates": [-71.477358, 42.468846]
+            }
+          },
+          activeUntil: new Date(2020, 11, 31, 0, 0, 0, 0),
+          administratorId: sarahc._id,
+          contactEmail: 'sarahcoletti12@gmail.com',
+          contactPhone: '978-264-4171',
+          createdAt:new Date()
+        });
+      agency1.save();
+      var agency2 = new Agency({
+          name: "Test Pilot Senior Center",
+          description: "For demo and test purposes",
+          website: "http://ivy-solutions.org",
+          location: {
+            address: "Boston",
+            geo: {
+              "type": "Point",
+              "coordinates": [-71.0589, 42.3601]
+            }
+          },
+          activeUntil: new Date(2020, 11, 31, 0, 0, 0, 0),
+          administratorId: sarahc._id,
+          contactEmail: 'sarahcoletti12@gmail.com',
+          contactPhone: '978-264-4171',
+          createdAt:new Date()
+        });
+      agency2.save();
+    }
+
+    var agency = Agency.findOne({name:'IVY Agency'});
+    //create a few test users
     Accounts.createUser({
       username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
-      userData: {firstName: 'Vivian', lastName: 'Visitor', role: "visitor", interests: ['Studying clarinet', 'Reads fiction', 'New to area']}
+      userData: {
+        firstName: 'Vivian',
+        lastName: 'Visitor',
+        role: "visitor",
+        agencyIds: [agency._id],
+        interests: ['Studying clarinet', 'Reads fiction', 'New to area'],
+        location: {
+          address: "25 First St., Cambridge, MA",
+          geo: {
+            type: "Point",
+            coordinates: [-71.078006,42.369707 ]
+          }
+        },
+        vicinity: 10
+      }
     });
     Accounts.createUser({
       username: 'requester1', email: 'rq1@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Raoul', lastName: 'Robbins', role: "requester", interests:['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']}
+      userData: {
+        firstName: 'Raoul',
+        lastName: 'Robbins',
+        role: "requester",
+        agencyIds: [agency._id],
+        interests: ['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']
+      }
     });
     Accounts.createUser({
       username: 'requester2', email: 'rq2@gmail.com', password: 'Visitry99', role: "requester",
-      userData: {firstName: 'Rita', lastName: 'Smith', role: "requester", interests:['Hiking', '6 grandchildren']}
+      userData: {
+        firstName: 'Rita',
+        lastName: 'Smith',
+        role: "requester",
+        interests: ['Hiking', '6 grandchildren'],
+        agencyIds: [agency._id]
+      }
     });
     Accounts.createUser({
       username: 'requester3', email: 'rq3@gmail.com', password: 'Visitry99',
-      userData: {firstName: 'Ron', lastName: 'Wang', role: "requester", interests:['Has 4 cats', 'Sings in church choir']}
+      userData: {
+        firstName: 'Ron',
+        lastName: 'Wang',
+        role: "requester",
+        agencyIds: [agency._id],
+        interests: ['Has 4 cats', 'Sings in church choir']
+      }
     });
+    //set one user to access all agencies
+    let allAgencies = Agencies.find();
+    let allAgencyIds = allAgencies.map( function(agency) { return agency._id});
+    Meteor.users.update(sarahc._id, {$set: {'userData.agencyIds': allAgencyIds}});
   }
 
   if(Visits.find().count() ===0){
-    var sarahc = Meteor.users.findOne({username:'Sarahc'});
+    var agency = Agency.findOne({name:'IVY Agency'});
     var vivian = Meteor.users.findOne({username:'Vivian'});
     var requester1 = Meteor.users.findOne({username:'requester1'});
     var requester2 = Meteor.users.findOne({username:'requester2'});
     var requester3 = Meteor.users.findOne({username:'requester3'});
 
-    var futureMonth = 6;
-    var pastMonth = 4;
-    var visits = [
-      {
-        "requesterId":requester1._id,
-        "createdAt":new Date(2016,2,21,13,0,0,0),
-        "visitorId": sarahc._id,
-        "requestedDate": new Date(2016,futureMonth,1,13,0,0,0),
-        "notes": '1pm works best',
-        "location": {
-          "name":"36 Charter Rd, Acton, MA 01720",
-          "geo": { "type": "Point",
-            "coordinates": [-71.458239, 42.479591]
-          }
-        }
-      },
-      {
-        "requesterId":requester1._id,
-        "visitorId": vivian._id,
-        "createdAt":new Date(2016,2,21,13,0,0,0),
-        "requestedDate": new Date(2016,futureMonth,15,16,0,0,0),
-        "notes": '3pm works best',
-        "location": {
-          "name":"Walden Pnd",
-          "geo": { "type": "Point",
-            "coordinates": [-71.338848, 42.437465]
-          }
-        }
-      },
-      {
-        "requesterId": requester1._id,
-        "visitorId": vivian._id,
-        "createdAt":new Date(2016,3,15,13,0,0,0),
-        "requestedDate": new Date(2016,pastMonth,21,9,0,0,0),
-        "visitTime": new Date(2016, pastMonth, 21, 13, 30, 0, 0),
-        "notes": '10pm works best',
-        "location": {
-          "name":"Boston",
-          "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
-          }
-        }
-      },
-      {
-        "requesterId": requester2._id,
-        "createdAt":new Date(2016,1,21,13,0,0,0),
-        "requestedDate": new Date(2016,futureMonth,29,9,0,0,0),
-        "notes": 'pick me, please',
-        "location": {
-          "name":"Belmont, MA",
-          "geo": { "type": "Point",
-            "coordinates": [-71.176972, 42.396341]
-          }
-        }
-      },
-      {
-        "requesterId": requester1._id,
-        "createdAt":new Date(2016,3,13,13,0,0,0),
-        "requestedDate": new Date(2016,futureMonth,15,13,0,0,0),
-        "notes": 'Shall we go for coffee?',
-        "location": {
-          "name":"Boston Public Garden",
-          "geo": { "type": "Point",
-            "coordinates": [-71.069459, 42.35621]
-          }
-        }
-      },
-      {
-        "requesterId":requester1._id,
-        "visitorId": sarahc._id,
-        "createdAt":new Date(2016,0,1,9,0,0,0),
-        "requestedDate": new Date(2016,pastMonth,1,13,0,0,0),
-        "notes": 'This already happened',
-        "location": {
-          "name":"Boston",
-          "geo": { "type": "Point",
-            "coordinates": [-71.0589, 42.3601]
-          }
-        }
-      },
-      {
-        "requesterId": requester2._id,
-        "createdAt":new Date(2016,3,10,13,0,0,0),
-        "requestedDate": new Date(2016,futureMonth,17,9,0,0,0),
-        "notes": 'I need to walk Bowser.',
-        "location": {
-          "name":"Riverside, Cambridge, MA",
-          "geo": { "type": "Point",
-            "coordinates": [-71.111397, 42.368699]
-          }
+    var now = new Date();
+    var futureMonth, pastMonth;
+    if (now.getMonth() == 11) {
+      futureMonth = new Date(now.getFullYear() + 1, 0, 1);
+    } else {
+      futureMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    }
+    if (now.getMonth() == 0) {
+      pastMonth = new Date(now.getFullYear() - 1, 0, 1);
+    } else {
+      pastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    }
+    var futureSuburbanVisitRequest = new Visit({
+      "requesterId":requester1._id,
+      "agencyId": agency._id,
+      "createdAt":pastMonth,
+      "visitorId": vivian._id,
+      "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),1,13,0,0,0),
+      "visitTime": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),1,13,0,0,0),
+      "notes": '1pm works best',
+      "location": {
+        "address":"36 Charter Rd, Acton, MA 01720",
+        "geo": { "type": "Point",
+          "coordinates": [-71.458239, 42.479591]
         }
       }
-    ];
-    for ( i = 0; i < visits.length; i++ ) {
-      var visit = visits[i];
-      check(visit,Visits.schema);
-      Visits.insert( visit);
-    }
+    });
+    futureSuburbanVisitRequest.save();
+
+    var futureScheduledVisit = new Visit ({
+      "requesterId":requester1._id,
+      "agencyId": agency._id,
+      "visitorId": vivian._id,
+      "createdAt":new Date(),
+      "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,16,0,0,0),
+      "visitTime": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,15,15,0,0),
+      "notes": '3pm works best',
+      "location": {
+        "address": "Walden Pnd",
+        "geo": {
+          "type": "Point",
+          "coordinates": [-71.338848, 42.437465]
+        }
+      }
+    });
+    futureScheduledVisit.save();
+
+    var pastVisitNoFeedback = new Visit({
+      "requesterId": requester1._id,
+      "agencyId": agency._id,
+      "visitorId": vivian._id,
+      "createdAt":pastMonth,
+      "requestedDate": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),21,9,0,0,0),
+      "visitTime": new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 21, 13, 30, 0, 0),
+      "notes": '10pm works best',
+      "location": {
+        "address":"Boston",
+        "geo": { "type": "Point",
+          "coordinates": [-71.0589, 42.3601]
+        }
+      }
+    });
+    pastVisitNoFeedback.save();
+
+    var futureMidDistanceRequest = new Visit({
+      "requesterId": requester2._id,
+      "agencyId": agency._id,
+      "createdAt":new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 21, 13, 30, 0, 0),
+      "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),29,9,0,0,0),
+      "notes": 'pick me, please',
+      "location": {
+        "address":"Belmont, MA",
+        "geo": { "type": "Point",
+          "coordinates": [-71.176972, 42.396341]
+        }
+      }
+    });
+    futureMidDistanceRequest.save();
+
+    var futureLocalRequest = new Visit({
+      "requesterId": requester1._id,
+      "agencyId": agency._id,
+      "createdAt":new Date(),
+      "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),15,13,0,0,0),
+      "notes": 'Shall we go for coffee?',
+      "location": {
+        "address":"Boston Public Garden",
+        "geo": { "type": "Point",
+          "coordinates": [-71.069459, 42.35621]
+        }
+      }
+    });
+    futureLocalRequest.save();
+
+    var pastVisitNoFeedback2 = new Visit({
+      "requesterId":requester1._id,
+      "agencyId": agency._id,
+      "visitorId": vivian._id,
+      "createdAt":pastMonth,
+      "requestedDate": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),2,13,0,0,0),
+      "visitTime": new Date(pastMonth.getFullYear(),pastMonth.getMonth(),2,13,0,0,0),
+      "notes": 'This already happened',
+      "location": {
+        "address":"Boston",
+        "geo": { "type": "Point",
+          "coordinates": [-71.0589, 42.3601]
+        }
+      }
+    });
+    pastVisitNoFeedback2.save();
+
+    var futureNearbyRequest = new Visit({
+      "requesterId": requester2._id,
+      "agencyId": agency._id,
+      "createdAt":new Date(pastMonth.getFullYear(),pastMonth.getMonth(), 22, 13, 30, 0, 0),
+      "requestedDate": new Date(futureMonth.getFullYear(),futureMonth.getMonth(),17,9,0,0,0),
+      "notes": 'I need to walk Bowser.',
+      "location": {
+        "address":"Riverside, Cambridge, MA",
+        "geo": { "type": "Point",
+          "coordinates": [-71.111397, 42.368699]
+        }
+      }
+    });
+    futureNearbyRequest.save();
   }
-
-
 
 });

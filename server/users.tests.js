@@ -5,6 +5,8 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
 
+import { User } from '/model/users';
+
 import '/server/users.js';
 
 if (Meteor.isServer) {
@@ -29,7 +31,7 @@ if (Meteor.isServer) {
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
         updateNameHandler.apply(invocation, ["firstName", "lastName", "visitor"]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        var updatedUser = User.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.firstName, "firstName");
         assert.equal(updatedUser.userData.lastName, "lastName");
         assert.equal(updatedUser.userData.role, "visitor");
@@ -45,34 +47,27 @@ if (Meteor.isServer) {
         }
       });
 
-      it('fails when no firstName passed', () => {
-        const invocation = {userId: testUserId};
-        try {
-          updateNameHandler.apply(invocation, [, "lastName", "visitor"]);
-          fail("expected exception");
-        } catch (err) {
-          assert.equal( err.errorType, 'Match.Error', err)
-        }
-      });
-      it('fails when no lastName passed', () => {
-        const invocation = {userId: testUserId};
-        try {
-          updateNameHandler.apply(invocation, ["First", null, "visitor"]);
-          fail("expected exception");
-        } catch (err) {
-          assert.equal( err.errorType, 'Match.Error', err)
-        }
-      });
       it('fails when no role passed', () => {
         const invocation = {userId: testUserId};
         try {
           updateNameHandler.apply(invocation, ["First", "Last"]);
           fail("expected exception");
         } catch (err) {
-          assert.equal( err.errorType, 'Match.Error', err)
+          assert.equal( err.error , 'validation-error', err.error);
+          assert.equal( err.reason , '"userData.role" is required', err)
         }
       });
 
+      it('fails when invalid role passed', () => {
+        const invocation = {userId: testUserId};
+        try {
+          updateNameHandler.apply(invocation, ["First", "Last", "bottle-washer"]);
+          fail("expected exception");
+        } catch (err) {
+          assert.equal( err.error , 'validation-error', err.error);
+          assert.equal( err.reason , 'role should be either "visitor" or "requester"', err)
+        }
+      });
     });
 
     describe('users.updateLocation method', () => {
@@ -81,12 +76,11 @@ if (Meteor.isServer) {
       const location = { name: "some place", latitude: 42.12345, longitude: -71.23}
       it('succeeds when valid location passed', () => {
         const invocation = {userId: testUserId};
-        updateLocationHandler.apply(invocation, [location, 10]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.location.name, location.name);
+        updateLocationHandler.apply(invocation, [location]);
+        var updatedUser = User.findOne(testUserId);
+        assert.equal(updatedUser.userData.location.address, location.name);
         assert.equal(updatedUser.userData.location.geo.coordinates[1], location.latitude);
         assert.equal(updatedUser.userData.location.geo.coordinates[0], location.longitude);
-        assert.equal(updatedUser.userData.vicinity, 10);
       });
 
       it('fails when user is not logged in', () => {
@@ -127,7 +121,7 @@ if (Meteor.isServer) {
 
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"20"}]);
+        updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:20}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.role, "visitor");
         assert.equal(updatedUser.userData.vicinity, 20);
@@ -136,7 +130,7 @@ if (Meteor.isServer) {
       it('fails when user is not logged in', () => {
         const invocation = {userId: null};
         try {
-          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"20"}]);
+          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:20}]);
           fail("expected exception");
         } catch (ex) {
           assert.equal( ex.error, 'not-logged-in')
@@ -145,10 +139,21 @@ if (Meteor.isServer) {
       it('fails when invalid vicinity', () => {
         const invocation = {userId: testUserId};
         try {
-          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:null}]);
+          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"NaN"}]);
           fail("expected exception");
         } catch (err) {
-          assert.equal( err.errorType, 'Match.Error', err)
+          assert.equal( err.error , 'validation-error', err.error);
+          assert.equal( err.reason , '"userData.vicinity" has to be a number', err.reason)
+        }
+      });
+      it('fails when vicinity=0', () => {
+        const invocation = {userId: testUserId};
+        try {
+          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:0}]);
+          fail("expected exception");
+        } catch (err) {
+          assert.equal( err.error , 'validation-error', err.error);
+          assert.equal( err.reason , '"userData.vicinity" has to be greater than 0', err.reason)
         }
       });
 

@@ -3,26 +3,35 @@
  */
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
-import { assert,expect } from 'meteor/practicalmeteor:chai';
+import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 
-import '/model/visits.js';
+import { Visit,Visits } from '/model/visits'
 import '/server/visits.js';
 
 if (Meteor.isServer) {
+
+  let tomorrow = new Date();
+  tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
+  const requesterId = Random.id();
+  const userId = Random.id();
+  const agencyId = Random.id();
+  var agency2Id = Random.id();
+  let yesterday = new Date();
+  yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
+
+
   describe('Visits', () => {
+
     describe('visits.rescindRequest method', () => {
       const rescindHandler = Meteor.server.method_handlers['visits.rescindRequest'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let requestId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
         requestId = Visits.insert({
           notes: 'test visit',
+          agencyId: agencyId,
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
@@ -41,6 +50,7 @@ if (Meteor.isServer) {
         const invocation = {userId: userId};
         try {
           rescindHandler.apply(invocation, [requestId]);
+          fail("expected not-authorized exception");
         } catch (ex) {
           assert.equal(ex.error, 'not-authorized')
         }
@@ -64,16 +74,13 @@ if (Meteor.isServer) {
     describe('visits.cancelScheduled method', () => {
       const cancelScheduledHandler = Meteor.server.method_handlers['visits.cancelScheduled'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
         visitId = Visits.insert({
           notes: 'test visit',
+          agencyId: agencyId,
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
@@ -92,6 +99,7 @@ if (Meteor.isServer) {
         const invocation = {userId: requesterId};
         try {
           cancelScheduledHandler.apply(invocation, [visitId]);
+          fail("expected not-authorized exception");
         } catch (ex) {
           assert.equal(ex.error, 'not-authorized')
         }
@@ -109,11 +117,7 @@ if (Meteor.isServer) {
     describe('visits.scheduleVisit method', () => {
       const scheduleVisitHandler = Meteor.server.method_handlers['visits.scheduleVisit'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -121,9 +125,10 @@ if (Meteor.isServer) {
           notes: 'test visit',
           requestedDate: tomorrow,
           createdAt: new Date(),
+          agencyId: agencyId,
           requesterId: requesterId,
           location: {
-            name: "Boston",
+            address: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
@@ -148,12 +153,8 @@ if (Meteor.isServer) {
     describe('visits.attachFeedback method', () => {
       const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachFeedback'];
 
-      const requesterId = Random.id();
-      const userId = Random.id();
       const feedbackId = Random.id();
       let visitId;
-      let tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
 
       beforeEach(() => {
         Visits.remove({});
@@ -162,8 +163,9 @@ if (Meteor.isServer) {
           requestedDate: tomorrow,
           createdAt: new Date(),
           requesterId: requesterId,
+          agencyId: agencyId,
           location: {
-            name: "Boston",
+            address: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
@@ -183,26 +185,64 @@ if (Meteor.isServer) {
 
     describe('visits.createVisit method', () => {
       const createVisitHandler = Meteor.server.method_handlers['visits.createVisit'];
-      const userId = Random.id();
 
       let tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
-      let newVisit = {
-        notes: 'test visit',
-        requestedDate: tomorrow,
-        location: {
-           name: "Boston",
-           geo: {
-             type: "Point",
-             coordinates: [-71.0589, 42.3601]
-           }
-        }
-      };
+      let newVisit;
 
+      var findOneUserStub;
       beforeEach(() => {
+        findOneUserStub = sinon.stub(Meteor.users, 'findOne');
+        findOneUserStub.returns( {
+          username: 'Harry',
+          userData: {
+            agencyIds: [agencyId]
+          }
+        });
+
         Visits.remove({});
+
+        newVisit =  new Visit ({
+          notes: 'test visit',
+          requestedDate: tomorrow,
+          location: {
+            address: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
+          }
+        });
       });
 
+      afterEach( function() {
+          Meteor.users.findOne.restore();
+      });
+
+      it('fails if no location in request', () => {
+        const invocation = {userId: userId};
+        let nowhereVisit = new Visit ({
+          notes: 'test visit',
+          requestedDate: tomorrow
+        });
+        try {
+          createVisitHandler.apply(invocation, [nowhereVisit]);
+          fail( "expect error");
+        }catch( ex ) {
+          assert.match(ex.message, /"location" is required/)
+        }
+      });
+
+      it('fails if requester does not have agencyId', () => {
+        const invocation = {userId: userId};
+        findOneUserStub.returns( { username: 'No Agency', userData:{}} );
+        try {
+          createVisitHandler.apply(invocation, [newVisit]);
+          fail("expected requires-agency exception");
+        } catch (ex) {
+          assert.equal(ex.error, 'requires-agency', ex)
+        }
+      });
 
       it('create Visit success', () => {
         const invocation = {userId: userId};
@@ -212,4 +252,228 @@ if (Meteor.isServer) {
     });
 
   });
+
+  describe( 'availableVisits Publication', () => {
+    const publication = Meteor.server.publish_handlers["availableVisits"];
+    Visits._ensureIndex({ "location.geo.coordinates": '2dsphere'});
+
+    var findOneUserStub;
+
+
+    beforeEach(() => {
+      findOneUserStub = sinon.stub(Meteor.users, 'findOne');
+      findOneUserStub.returns({
+        _id: userId,
+        username: 'Harriet',
+        userData: {
+          agencyIds: [agency2Id]
+        }
+      });
+
+      Visits.remove({});
+      insertTestVisits();
+    });
+
+    afterEach( function() {
+      Meteor.users.findOne.restore();
+    });
+
+    it('returns needed fields [notes, requesterId, requestedDate, location]', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.isString(visit.notes, "notes");
+      assert.isString(visit.requesterId, "requesterId");
+      assert.instanceOf(visit.requestedDate, Date, "requestedDate");
+      assert.isString(visit.location.address,"location.address");
+    });
+
+    it('user of agency2 should see only agency2 visits', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes,'test visit agency2', JSON.stringify(visit));
+    });
+
+    it('user associated with no agency should see no visits', () => {
+      findOneUserStub.returns( { username: 'UnaffiliatedUser', userData:{}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 0);
+    });
+
+    it('agency1 user sees only future unscheduled visits', () => {
+      findOneUserStub.returns( { username: 'agency1user', userData:{agencyIds: [agencyId]}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
+    });
+    it('user associated with multiple agencies should see visits from all', () => {
+      findOneUserStub.returns( { username: 'MultiAgency', userData:{ agencyIds: [agencyId,agency2Id]}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 2);
+      const notesFromVisits = visitCursor.map( function(visit) { return visit.notes; });
+      assert.sameMembers(notesFromVisits, ['test visit agency1', 'test visit agency2']);
+    });
+    it('user from Acton sees no visits if vicinity is set to 10 miles', () => {
+      findOneUserStub.returns( { username: 'Actonian',
+        userData:{
+          agencyIds: [agencyId],
+          vicinity:10,
+          location: {
+            address: "Acton",
+            geo: {
+              type: "Point",
+              coordinates: [-71.432612, 42.485008]
+            }
+          }}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 0);
+    });
+    it('user from Acton sees 1 visit if vicinity is set to 50 miles', () => {
+      findOneUserStub.returns( { username: 'Actonian',
+        userData:{
+          agencyIds: [agencyId],
+          vicinity:50,
+          location: {
+            address: "Acton",
+            geo: {
+              type: "Point",
+              coordinates: [-71.432612, 42.485008]
+            }
+          }}} );
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+    });
+
+
+  });
+
+  describe( 'userRequests Publication', () => {
+    const publication = Meteor.server.publish_handlers["userRequests"];
+
+    beforeEach(() => {
+      Visits.remove({});
+      insertTestVisits();
+    });
+
+    afterEach(function () {
+    });
+
+    it('user with no visit requests', () => {
+      const invocation = {userId: userId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 0);
+    });
+    it('user sees his own visit requests - future or with no feedback', () => {
+      const invocation = {userId: requesterId};
+
+      const cursors = publication.apply(invocation);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 4);
+      var visit = visitCursor.fetch()[0];
+      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
+    });
+  });
+
+  function insertTestVisits() {
+    Visits.insert({
+      notes: 'test visit agency1',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agencyId,
+      location: {
+        address: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+    Visits.insert({
+      notes: 'past visit agency1',
+      requestedDate: yesterday,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agencyId,
+      location: {
+        address: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+      Visits.insert({
+        notes: 'past visit agency1 with feedback',
+        requestedDate: yesterday,
+        createdAt: new Date(),
+        requesterId: requesterId,
+        agencyId: agencyId,
+        location: {
+          address: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        },
+        feedbackId: Random.id()
+      });
+    Visits.insert({
+      notes: 'scheduled visit agency1',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      visitorId: userId,
+      agencyId: agencyId,
+      location: {
+        address: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+    Visits.insert({
+      notes: 'test visit agency2',
+      requestedDate: tomorrow,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agency2Id,
+      location: {
+        address: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      }
+    });
+  }
+
 }

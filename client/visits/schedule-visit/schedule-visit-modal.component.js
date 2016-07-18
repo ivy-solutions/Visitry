@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 3/25/16.
  */
+import { User } from '/model/users'
+
 angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup) {
   $reactive(this).attach($scope);
 
@@ -80,7 +82,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
         return null;
     }
     console.log( " getting requester from visit: " + visit );
-    return Meteor.users.findOne({_id: visit.requesterId});
+    return User.findOne({_id: visit.requesterId});
   };
 
   this.getSelectedTime = function() {

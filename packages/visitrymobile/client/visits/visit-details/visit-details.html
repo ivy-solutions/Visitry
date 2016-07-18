@@ -12,15 +12,15 @@
                 </span>
             </h2>
              <div class="visitInfo">
-                <h2>{{visitDetails.getRequester(visit) | firstNameLastInitial}}</h2>
+                <h2>{{visitDetails.requester | firstNameLastInitial}}</h2>
                 <p>{{visitDetails.visit.notes}}</p>
             </div>
          </ion-item>
           <ion-item>
-              {{visitDetails.isVisitor() ? "Location: " + visitDetails.visit.location.name :  "Near:" + (visitDetails.visit.location | approximateLocation)}}
+              {{visitDetails.isVisitor() ? "Location: " + visitDetails.visit.location.address :  "Near:" + (visitDetails.visit.location | approximateLocation)}}
           </ion-item>
           <ion-item>
-              <ion-list>{{visitDetails.getRequester(visit)| firstNameLastInitial}}'s Interests
+              <ion-list>{{visitDetails.requester | firstNameLastInitial}}'s Interests
                   <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>

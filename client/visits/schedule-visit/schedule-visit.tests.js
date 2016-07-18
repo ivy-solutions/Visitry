@@ -10,7 +10,6 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/schedule-visit/schedule-visit-modal.component';
-import StubCollections from 'meteor/hwillson:stub-collections';
 
 describe('Schedule Visit', function () {
 
@@ -29,9 +28,6 @@ describe('Schedule Visit', function () {
   var meteorStub;
 
   beforeEach(function () {
-    StubCollections.add([Visits]);
-    StubCollections.stub();
-
     var mockIonicPopup = {
       alert: function(){}
     };
@@ -49,7 +45,6 @@ describe('Schedule Visit', function () {
    });
 
   afterEach(function () {
-    StubCollections.restore();
     spyOnAlert.reset(true);
     meteorStub.restore();
   });

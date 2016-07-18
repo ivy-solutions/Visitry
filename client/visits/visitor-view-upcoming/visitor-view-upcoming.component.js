@@ -1,11 +1,14 @@
 /**
  * Created by sarahcoletti on 3/13/16.
  */
+import { Visit } from '/model/visits'
+import { User } from '/model/users'
+
 angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $state,$ionicPopup,$ionicListDelegate, $filter) {
   $reactive(this).attach($scope);
 
   this.subscribe('visits');
-  this.subscribe('users');
+  this.subscribe('userdata');
 
   this.showDelete = false;
   this.canSwipe = true;
@@ -22,7 +25,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
         'visitTime': {$exists: true},
         'visitTime': {$gt: startOfToday}
       };
-      var visits =  Visits.find(selector, {sort: this.getReactively('listSort')});
+      var visits =  Visit.find(selector, {sort: this.getReactively('listSort')});
       var visitsByDate = Meteor.myFunctions.groupVisitsByRequestedDate(visits);
       return visitsByDate;
     }
@@ -32,15 +35,20 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   ////////
 
   this.getRequester = function (visit) {
-    return Meteor.users.findOne({_id: visit.requesterId});
+    if ( visit == 'undefined' ) {
+      console.log("No visit.");
+      return null;
+    }
+    return User.findOne({_id: visit.requesterId});
   };
+
 
   this.getRequesterImage = function(visit) {
     var requester = this.getRequester(visit);
-    if ( requester === null || typeof(requester.userData) === 'undefined' || typeof(requester.userData.picture) === 'undefined' )
+    if ( requester == undefined || requester.userData == undefined || requester.userData.picture == undefined )
       return "";
     else
-      return requester.userData.picture ? requester.userData.picture : "";
+      return requester.userData.picture;
   };
 
   this.visitDetails = function (id) {
@@ -48,7 +56,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   };
 
    this.cancelVisit = function (visit) {
-    var confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getRequester(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, H:mm') + "?"
+    var confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getRequester(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, h:mm') + "?"
     var confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,
       cancelText: 'No',

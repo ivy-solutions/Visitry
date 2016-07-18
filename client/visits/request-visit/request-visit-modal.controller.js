@@ -1,3 +1,5 @@
+import { Visit } from '/model/visits.js'
+
 angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
   $reactive(this).attach($scope);
 
@@ -49,9 +51,9 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.submit = function () {
     userSubmitted = true;
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
-      var newVisit = {
+      var newVisit = new Visit({
         location: {
-          name: this.visitRequest.location.name,
+          address: this.visitRequest.location.name,
           geo: {
             type: "Point",
             coordinates: [this.visitRequest.location.details.geometry.location.lng(), this.visitRequest.location.details.geometry.location.lat()]
@@ -59,7 +61,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         },
         requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
         notes: this.visitRequest.notes
-      };
+      });
       console.log(newVisit);
       Meteor.call('visits.createVisit',newVisit);
       hideRequestVisitModal();

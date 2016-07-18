@@ -1,27 +1,29 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
+import { Visit } from '/model/visits'
+import { User } from '/model/users'
+
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
   $reactive(this).attach($scope);
-  this.subscribe('visits');
-  this.subscribe('users');
 
   this.showDelete = false;
   this.canSwipe = true;
   this.listSort = {
     requestedDate: 1
   };
+  this.numRequests = 0;
 
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visits.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
+      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
+      this.numRequests = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });
 
-  this.getVisitor = (visitor)=> {
-    var user = Meteor.users.findOne(visitor.visitorId);
-    return user;
+  this.getVisitor = function (visit) {
+    return User.findOne({_id: visit.visitorId});
   };
 
   this.showRequestVisitModal = function () {
@@ -30,13 +32,13 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.hideRequestVisitModal = function () {
     RequestVisit.hideModal();
   };
-  this.getTimeSinceRequested = function(date){
-    var now = new Date();
-    return moment(now).diff(moment(date),'days');
+  this.getTimeSinceRequested = function(requestedTime){
+    return moment(requestedTime).fromNow();
   };
   this.getVisitorImage = function(visit) {
     if (visit.visitorId) {
-      var visitor = Meteor.users.findOne({_id: visit.visitorId});
+      var visitor = this.getVisitor(visit);
+      console.log( "getVisitorImage: " + visit.visitorId + " " + JSON.stringify(visitor));
       if ( visitor == undefined || visitor.userData == undefined || visitor.userData.picture == undefined ) {
         return "";
       }
@@ -49,10 +51,10 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.showCancelVisitConfirm = function (visit) {
     var confirmMessage = '';
     if (visit.visitorId) {
-      confirmMessage = "Do you want to cancel your visit with " + this.getUserFirstName(visit.visitorId) + "?"
+      confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(this.getVisitor(visit)) + " on " + $filter('date')(new Date(visit.visitTime),'MMMM d, h:mm') + "?"
     }
     else {
-      confirmMessage = "Do you want to cancel your visit request on " + $filter('date')(new Date(visit.requestedDate));
+      confirmMessage = "Do you want to cancel your visit request for " + $filter('date')(new Date(visit.requestedDate)) + " ?";
     }
     var confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,
