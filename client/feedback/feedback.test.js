@@ -1,7 +1,6 @@
 /**
  * Created by n0235626 on 7/1/16.
  */
-import 'angular-mocks';
 import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
