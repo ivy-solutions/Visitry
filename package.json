@@ -22,9 +22,10 @@
   "homepage": "https://github.com/ivy-solutions/Visitry",
   "private": true,
   "dependencies": {
-    "angular": "^1.5.6",
-    "angular-material-icons": "^0.7.0",
+    "angular": "^1.5.7",
+    "angular-material-icons": "^0.7.1",
     "angular-meteor": "^1.3.11",
+    "angular-mocks": "^1.5.7",
     "ionic-timepicker": "^0.5.1",
     "meteor-node-stubs": "^0.2.3"
   },
