@@ -6,7 +6,6 @@ dependencies:
     - npm install -g spacejam
   pre:
     - npm install -g mupx # install meteor-up for deployment
-    - meteor npm install
 deployment:
   staging:
     branch: master
