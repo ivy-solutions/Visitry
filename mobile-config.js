@@ -17,7 +17,7 @@ App.icons({
   'iphone_3x': 'resources/icons/ios/Icon-60@3x.png',  //180x180
   'ipad': 'resources/icons/ios/Icon-76.png',  //76x76
   'ipad_2x': 'resources/icons/ios/Icon-76@2x.png',  //152x152
-  'ipad_pro': '', //167x167
+  'ipad_pro': 'resources/icons/ios/Icon-167.png', //167x167
   'ios_settings': 'resources/icons/ios/Icon-Small.png', //29x29
   'ios_settings_2x': 'resources/icons/ios/Icon-Small@2x.png', //58x58
   'ios_settings_3x': 'resources/icons/ios/Icon-Small@3x.png', //87x87
