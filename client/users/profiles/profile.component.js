@@ -1,10 +1,10 @@
 /**
  * Created by sarahcoletti on 2/23/16.
  */
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
+angular.module("visitry").controller('profileCtrl', function ($scope, $reactive, $state, $ionicPopup, $log, $ionicLoading) {
   $reactive(this).attach($scope);
 
-   this.helpers({
+  this.helpers({
     currentUser: () => {
       return Meteor.user();
     }
@@ -20,36 +20,36 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     return this.locationDetails;
   };
 
-   this.submitUpdate = () => {
+  this.submitUpdate = () => {
 
-     console.log("update user: " + JSON.stringify(this.currentUser));
-     var newUserData = {
-       role: this.currentUser.userData.role,
-       vicinity: this.currentUser.userData.vicinity
-     };
+    console.log("update user: " + JSON.stringify(this.currentUser));
+    var newUserData = {
+      role: this.currentUser.userData.role,
+      vicinity: this.currentUser.userData.vicinity
+    };
 
-     Meteor.call('updateUserData', newUserData, (err) => {
-       if (err) return handleError(err);
-     });
+    Meteor.call('updateUserData', newUserData, (err) => {
+      if (err) return handleError(err);
+    });
 
-     if (this.isLocationValid()) {
-       console.log("update location: " + this.currentUser.userData.location.name + " " + JSON.stringify(this.locationDetails));
-       var newLocation = {
-         name: this.currentUser.userData.location.name,
-         latitude: this.locationDetails.geometry.location.lat(),
-         longitude: this.locationDetails.geometry.location.lng()
-       };
+    if (this.isLocationValid()) {
+      console.log("update location: " + this.currentUser.userData.location.name + " " + JSON.stringify(this.locationDetails));
+      var newLocation = {
+        name: this.currentUser.userData.location.name,
+        latitude: this.locationDetails.geometry.location.lat(),
+        longitude: this.locationDetails.geometry.location.lng()
+      };
 
-        Meteor.call('updateLocation', newLocation, (err) => {
-         if (err) return handleError(err);
-       });
-     }
+      Meteor.call('updateLocation', newLocation, (err) => {
+        if (err) return handleError(err);
+      });
+    }
 
-     if (this.currentUser.userData.role == "visitor") {
-       $state.go('browseRequests');
-     } else {
-       $state.go('pendingVisits');
-     }
+    if (this.currentUser.userData.role == "visitor") {
+      $state.go('browseRequests');
+    } else {
+      $state.go('pendingVisits');
+    }
   };
 
 
@@ -64,8 +64,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.updatePicture = () => {
-    console.log( "update picture for " + this.currentUser.username);
-    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80 }, function (err, data) {
+    console.log("update picture for " + this.currentUser.username);
+    MeteorCameraUI.getPicture({width: 160, height: 160, quality: 80}, function (err, data) {
       if (err && err.error == 'cancel') {
         return;
       }
