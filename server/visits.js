@@ -1,5 +1,6 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
+import { User } from '/model/users'
 
 Meteor.publish("visits", function (options) {
   var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
@@ -38,7 +39,7 @@ Meteor.publish("availableVisits", function ( ) {
     //active unfilled future visit requests
     var availableRequests = Visits.find({
       agencyId: { $in: userAgencies},
-      visitorId: {$exists: false},
+      visitorId: null,
       inactive: {$exists: false},
       requestedDate: {$gt: new Date()},
       'location.geo': {
@@ -78,11 +79,20 @@ Meteor.methods({
     if (this.userId !== visit.requesterId) {
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
-    //TODO - we want to communicate and deactivate visit requests that have already been booked.
+    visit.softRemove();
+
     if (visit.visitorId) {
       //communicate with visitor
+      var msgTitle = "Visit request cancelled";
+      var user = User.findOne(this.userId);;
+      var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).format('MMMM d') + '.';
+
+      Meteor.call('userNotification',
+        msgText,
+        msgTitle,
+        visit.visitorId
+      )
     }
-    visit.softRemove();
   },
   'visits.cancelScheduled'(visitId) {
     const visit = Visit.findOne(visitId);
@@ -92,23 +102,50 @@ Meteor.methods({
     if ( this.userId !== visit.visitorId) {
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
-    //TODO communicate with requester
     visit.cancelledAt = new Date();
-    visit.visitorId = "";
+    visit.visitorId = null;
     visit.visitTime = null;
     visit.save( {fields: ['cancelledAt','visitorId','visitTime']});
+
+    var msgTitle = "Visit cancelled";
+    var user = User.findOne( this.userId);;
+    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(visit.visitTime).format('MMMM d, h:mm');
+    if ( visit.visitorNotes) {
+      msgText += " with the following message: " + visit.visitorNotes;
+    }
+    msgText += ".";
+
+    Meteor.call('userNotification',
+      msgText,
+      msgTitle,
+      visit.requesterId
+    );
   },
   'visits.scheduleVisit'(visitId, time, notes) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
       throw new Meteor.Error('not-found');
     }
-    //TODO communicate with requester
+
     visit.visitorId = this.userId;
     visit.visitTime = time;
     visit.visitorNotes = notes;
     visit.scheduledAt = new Date();
     visit.save();
+
+    var msgTitle = "Visit scheduled";
+    var user = User.findOne( this.userId);
+    var msgText = user.fullName + " has scheduled a visit for " + moment(visit.visitTime).format('MMMM d, h:mm');
+    if ( visit.visitorNotes) {
+      msgText += " with the following message: " + visit.visitorNotes;
+    }
+    msgText += ".";
+
+    Meteor.call('userNotification',
+      msgText,
+      msgTitle,
+      visit.requesterId
+    );
   },
   'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);

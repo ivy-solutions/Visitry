@@ -28,7 +28,13 @@ const User = Class.create({
   fields: {
     username: {type: String },
     createdAt: { type: Date },
-    userData: { type: UserData, optional:true }
+    userData: { type: UserData, optional:true },
+    fullName: {
+      type: String,
+      resolve(doc) {
+        return doc.userData.firstName + ' ' + doc.userData.lastName;
+      }
+    }
   }
 });
 

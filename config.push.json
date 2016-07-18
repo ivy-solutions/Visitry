@@ -1,0 +1,16 @@
+{
+  "apn-dev": {
+    "passphrase": "Visitry99",
+    "key": "ios/apn-dev/SCVisitryDevKey.pem",
+    "cert": "ios/apn-dev/VisitryPush.pem"
+  },
+  "gcm": {
+    "apiKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "projectNumber": 1
+  },
+  "badge": true,
+  "production": false,
+  "sound":true,
+  "alert":true,
+  "vibrate:":true
+}

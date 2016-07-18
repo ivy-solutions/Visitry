@@ -51,7 +51,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       }
       console.log( "open Visits: " + this.vicinity  + " " + JSON.stringify(this.fromLocation));
       var visits = Visit.find({
-         visitorId: {$exists: false},
+         visitorId: null,
          "location.geo": {
            $near: {
              $geometry: this.fromLocation,
