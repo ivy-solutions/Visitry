@@ -84,7 +84,7 @@ Meteor.methods({
     if (visit.visitorId) {
       //communicate with visitor
       var msgTitle = "Visit request cancelled";
-      var user = User.findOne(this.userId);;
+      var user = User.findOne(this.userId);
       var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).format('MMMM d') + '.';
 
       Meteor.call('userNotification',

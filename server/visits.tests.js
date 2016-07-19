@@ -4,8 +4,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
+import { sinon } from 'meteor/practicalmeteor:sinon';
 
 import { Visit,Visits } from '/model/visits'
+import { User } from '/model/users'
 import '/server/visits.js';
 
 if (Meteor.isServer) {
@@ -21,6 +23,21 @@ if (Meteor.isServer) {
 
 
   describe('Visits', () => {
+
+    var findUserStub;
+    var meteorStub;
+
+    beforeEach(() => {
+      findUserStub = sinon.stub(User, 'findOne');
+      findUserStub.returns({username: 'Thelma', fullname: "Thelma Smith"});
+
+      meteorStub = sinon.stub(Meteor, 'call');
+    });
+    afterEach( function() {
+      User.findOne.restore();
+      meteorStub.restore();
+    });
+
 
     describe('visits.rescindRequest method', () => {
       const rescindHandler = Meteor.server.method_handlers['visits.rescindRequest'];
@@ -43,7 +60,10 @@ if (Meteor.isServer) {
             }
           }
         });
+
       });
+
+
 
       it('can not deactivate requests of another requester', () => {
         // Set up a fake method invocation that looks like what the method expects
@@ -60,6 +80,7 @@ if (Meteor.isServer) {
         const invocation = {userId: requesterId};
         rescindHandler.apply(invocation, [requestId]);
         assert.equal(Visits.find({inactive:null}).count(), 0);
+        assert.equal(Visits.find({inactive:true}).count(), 1);
       });
 
       it('remove visit request once visit is booked, updates visit as inactive instead', () => {
@@ -67,6 +88,14 @@ if (Meteor.isServer) {
         const invocation = {userId: requesterId};
         rescindHandler.apply(invocation, [requestId]);
         assert.equal(Visits.find({inactive:null}).count(), 0);
+        assert.equal(Visits.find({inactive:true}).count(), 1);
+      });
+
+      it ('sends a notification if the visit had been scheduled', () => {
+        Visits.update(requestId, {$set: {visitorId: userId}});
+        const invocation = {userId: requesterId};
+        rescindHandler.apply(invocation, [requestId]);
+        assert(Meteor.call.calledWith('userNotification'),"userNotification called");
       });
 
     });
@@ -112,6 +141,12 @@ if (Meteor.isServer) {
         assert.equal(Visits.find({}).count(), 1);
       });
 
+      it ('sends a notification if the visit had been scheduled', () => {
+        const invocation = {userId: userId};
+        cancelScheduledHandler.apply(invocation, [visitId]);
+        assert(Meteor.call.calledWith('userNotification'),"userNotification called");
+      });
+
     });
 
     describe('visits.scheduleVisit method', () => {
@@ -146,6 +181,12 @@ if (Meteor.isServer) {
         assert.equal(updatedVisit.visitorNotes,"message");
         assert.instanceOf(updatedVisit.visitTime,Date, 'visitTime');
         assert.instanceOf(updatedVisit.scheduledAt,Date, 'scheduledAt');
+      });
+
+      it ('sends a notification to requester', () => {
+        const invocation = {userId: userId};
+        scheduleVisitHandler.apply(invocation, [visitId, new Date(), "message"]);
+        assert(Meteor.call.calledWith('userNotification'),"userNotification called");
       });
 
     });
