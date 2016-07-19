@@ -5,8 +5,8 @@
     "cert": "ios/apn-dev/VisitryPush.pem"
   },
   "gcm": {
-    "apiKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "projectNumber": 1
+    "apiKey": "AIzaSyCBf3yJEp6ZiUE4CKllsLkwsneI3_K1BzY",
+    "projectNumber": 822210685703
   },
   "badge": true,
   "production": false,
