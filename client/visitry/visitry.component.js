@@ -13,14 +13,23 @@ angular.module('visitry').directive('visitry', function () {
     },
     controllerAs: 'visitry',
     controller: function( $scope, $reactive ) {
- //     $reactive(this).attach($scope);
+      $reactive(this).attach($scope);
+/*      this.subscribe('user');
 
-      $scope.isLoggedIn = () => {
+      this.helpers({
+        userRole: ()=> {
+          var role = User.findOne({_id:Meteor.userId()},{fields: {'userData.role':1}});
+          return role;
+        }
+      });*/
+
+      //this.badgeNumber =1;
+      this.isLoggedIn = () => {
         console.log('userid:' + Meteor.userId());
         return Meteor.userId() !== null;
       };
 
-      $scope.logout = () => {
+      this.logout = () => {
         console.log( "logout")
         Accounts.logout();
       };
