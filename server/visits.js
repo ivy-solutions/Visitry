@@ -105,7 +105,8 @@ Meteor.methods({
     visit.cancelledAt = new Date();
     visit.visitorId = null;
     visit.visitTime = null;
-    visit.save( {fields: ['cancelledAt','visitorId','visitTime']});
+    visit.visitorNotes = null;
+    visit.save( {fields: ['cancelledAt','visitorId','visitTime','visitorNotes']});
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne( this.userId);
