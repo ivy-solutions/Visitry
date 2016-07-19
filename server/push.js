@@ -34,7 +34,8 @@ Meteor.methods({
       text: text,
       badge: badge,
       payload: {
-        title: title
+        title: title,
+        text:text
       },
       query: {
         userId: userId //this will send to a specific Meteor.user()._id

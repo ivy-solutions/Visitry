@@ -85,7 +85,7 @@ Meteor.methods({
       //communicate with visitor
       var msgTitle = "Visit request cancelled";
       var user = User.findOne(this.userId);
-      var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).format('MMMM d') + '.';
+      var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).format('MMM d') + '.';
 
       Meteor.call('userNotification',
         msgText,
@@ -108,12 +108,8 @@ Meteor.methods({
     visit.save( {fields: ['cancelledAt','visitorId','visitTime']});
 
     var msgTitle = "Visit cancelled";
-    var user = User.findOne( this.userId);;
-    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(visit.visitTime).format('MMMM d, h:mm');
-    if ( visit.visitorNotes) {
-      msgText += " with the following message: " + visit.visitorNotes;
-    }
-    msgText += ".";
+    var user = User.findOne( this.userId);
+    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(visit.visitTime).format('MMM. d, h:mm') +".";
 
     Meteor.call('userNotification',
       msgText,
@@ -135,9 +131,9 @@ Meteor.methods({
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne( this.userId);
-    var msgText = user.fullName + " has scheduled a visit for " + moment(visit.visitTime).format('MMMM d, h:mm');
+    var msgText = user.fullName + " scheduled a visit for " + moment(visit.visitTime).format('MMM. d, h:mm');
     if ( visit.visitorNotes) {
-      msgText += " with the following message: " + visit.visitorNotes;
+      msgText += ', saying, "' + visit.visitorNotes + '"';
     }
     msgText += ".";
 
