@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 7/18/16.
  */
-Push.debug=true;
+Push.debug=false;
 
 Push.allow({
   send: function(userId, notification) {

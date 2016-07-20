@@ -9,7 +9,6 @@ import '/client/visits/pending-visits/pending-visits.controller';
 import '/client/visits/request-visit/request-visit-modal.service'
 import StubCollections from 'meteor/hwillson:stub-collections';
 import Visits from '/model/visits.js'
-import myFunctions from '/client/lib/sharedFunctions.js'
 
 describe('Pending Visit Requests', function () {
   beforeEach(function () {
