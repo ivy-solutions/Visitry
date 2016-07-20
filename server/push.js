@@ -41,12 +41,5 @@ Meteor.methods({
         userId: userId //this will send to a specific Meteor.user()._id
       }
     });
-  },
-  removeHistory: function() {
-    NotificationHistory.remove({}, function(error) {
-      if (!error) {
-        console.log("All history removed");
-      }
-    });
-  },
+  }
 });
