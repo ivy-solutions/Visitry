@@ -58,10 +58,10 @@ App.accessRule("*");
 App.accessRule('*.google.com/*');
 App.accessRule('*.googleapis.com/*');
 App.accessRule('*.gstatic.com/*');
-//App.accessRule('http://52.87.157.113', {
-//  'minimum-tls-version': 'TLSv1.0',
-//  'requires-forward-secrecy': false,
-//});
+App.accessRule('http://54.234.50.226', {
+ 'minimum-tls-version': 'TLSv1.0',
+ 'requires-forward-secrecy': false,
+});
 App.accessRule('data:*', { type: 'navigation' });
 
 App.setPreference("BackupWebStorage", "local");

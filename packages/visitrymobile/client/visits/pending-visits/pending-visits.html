@@ -21,7 +21,8 @@
             <span flex></span>
             <h4>{{visit.location.address | limitTo:10}}<span ng-if="visit.location.address.length > 10">...</span></h4>
           </div>
-          <p>{{visit.notes}}</p>
+            <p>{{visit.notes}}</p>
+            <h4 ng-if="visit.visitorNotes">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} : {{visit.visitorNotes}}</h4>
           <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
             Cancel Visit
           </ion-option-button>

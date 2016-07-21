@@ -1,4 +1,5 @@
 import { Visit } from '/model/visits.js'
+import { User } from '/model/users.js'
 
 angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
   $reactive(this).attach($scope);
@@ -13,25 +14,38 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     notes: ''
   };
 
-  var userSubmitted = false;
+  this.userSubmitted = false;
+  var currentUser;
+
+  this.helpers({
+    userLocation: ()=> {
+      currentUser = User.findOne(Meteor.userId());
+      console.log("currentUser" + JSON.stringify(currentUser));
+      if (currentUser.userData && currentUser.userData.location) {
+        this.visitRequest.location.name = currentUser.userData.location.address;
+      }
+      return currentUser;
+    }
+  });
 
   this.isLocationValid = ()=> {
-    if (userSubmitted) {
-      return this.visitRequest.location.name && this.visitRequest.location.details.geometry;
+    if ( this.userSubmitted ) {
+      return this.visitRequest.location.name.length > 0 && (
+        this.visitRequest.location.details != null || currentUser.userData.location != null )
     } else {
       return true;
     }
   };
   this.isDateValid = ()=> {
-    if (userSubmitted) {
-      return this.visitRequest.date && this.visitRequest.date > new Date();
+    if (this.userSubmitted) {
+      return (this.visitRequest.date && this.visitRequest.date > new Date()) ? true : false;
     } else {
       return true;
     }
   };
   this.isTimeValid = ()=> {
-    if (userSubmitted) {
-      return this.visitRequest.time;
+    if (this.userSubmitted) {
+      return this.visitRequest.time > 0 ? true: false;
     } else {
       return true;
     }
@@ -49,19 +63,24 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 
 
   this.submit = function () {
-    userSubmitted = true;
+    this.userSubmitted = true;
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
       var newVisit = new Visit({
-        location: {
+        requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
+        notes: this.visitRequest.notes
+      });
+      //location from selection or from user default
+      if ( this.visitRequest.location.details.geometry ) {
+        newVisit.location = {
           address: this.visitRequest.location.name,
           geo: {
             type: "Point",
             coordinates: [this.visitRequest.location.details.geometry.location.lng(), this.visitRequest.location.details.geometry.location.lat()]
           }
-        },
-        requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
-        notes: this.visitRequest.notes
-      });
+        }
+      } else {
+        newVisit.location = currentUser.userData.location;
+      }
       console.log(newVisit);
       Meteor.call('visits.createVisit',newVisit);
       hideRequestVisitModal();

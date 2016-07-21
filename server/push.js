@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 7/18/16.
  */
-Push.debug=true;
+Push.debug=false;
 
 Push.allow({
   send: function(userId, notification) {
@@ -34,18 +34,12 @@ Meteor.methods({
       text: text,
       badge: badge,
       payload: {
-        title: title
+        title: title,
+        text:text
       },
       query: {
         userId: userId //this will send to a specific Meteor.user()._id
       }
     });
-  },
-  removeHistory: function() {
-    NotificationHistory.remove({}, function(error) {
-      if (!error) {
-        console.log("All history removed");
-      }
-    });
-  },
+  }
 });

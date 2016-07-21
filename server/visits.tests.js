@@ -53,7 +53,7 @@ if (Meteor.isServer) {
           createdAt: new Date(),
           requesterId: requesterId,
           location: {
-            name: "Boston",
+            address: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
