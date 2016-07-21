@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import {Visits } from '/model/visits'
+import {User} from '/model/users'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
@@ -13,7 +14,7 @@ angular.module('visitry')
         template: '<list-visits></list-visits>'
       })
       .state('pendingVisits', {
-        url: '/pendingVisits',
+        url: '/requester/pendingVisits',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/visits/pending-visits/pending-visits.html';
@@ -22,16 +23,20 @@ angular.module('visitry')
           }
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
-        resolve:{
-          feedback:function($location){
+        resolve: {
+          feedback: function ($location) {
             const visits = Meteor.subscribe('userRequests');
-            Tracker.autorun(()=>{
+            Tracker.autorun(()=> {
               const isReady = visits.ready();
-              var visitNeedingFeedback = Visits.findOne({feedbackId:null,requesterId:Meteor.userId(),requestedDate:{$lt:new Date()}});
-              if(isReady && visitNeedingFeedback){
+              var visitNeedingFeedback = Visits.findOne({
+                feedbackId: null,
+                requesterId: Meteor.userId(),
+                requestedDate: {$lt: new Date()}
+              });
+              if (isReady && visitNeedingFeedback) {
                 console.log("Yes lets go to feedbacks");
-                $location.url('/feedback/'+ visitNeedingFeedback._id);
-              }else{
+                $location.url('/feedback/' + visitNeedingFeedback._id);
+              } else {
                 console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
               }
             })
@@ -92,7 +97,29 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/auth/login/login.html';
           }
         },
-        controller: 'loginCtrl as login'
+        controller: 'loginCtrl as login',
+        resolve: {
+          loggedIn: function ($location) {
+            console.log(Meteor.userId());
+            if (Meteor.userId()) {
+              console.log('There was a user id');
+              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+              switch (user.userData.role) {
+                case 'visitor':
+                  console.log('visitor');
+                  $location.url('/visitor/browseRequests');
+                  break;
+                case 'requester':
+                  console.log('requester');
+                  $location.url('/requester/pendingVisits');
+                  break;
+                default:
+                  console.log('invalid role');
+                  break;
+              }
+            }
+          }
+        }
       })
       .state('register', {
         url: '/register',
@@ -109,9 +136,9 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
-      .state('feedback',{
-        url:'/feedback/:visitId',
-        template:'<feedback></feedback>'
+      .state('feedback', {
+        url: '/feedback/:visitId',
+        template: '<feedback></feedback>'
       })
       .state('agencyList', {
         url: '/agencies',
@@ -129,8 +156,9 @@ angular.module('visitry')
   })
   .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-      if (error === 'AUTH_REQUIRED')
+      if (error === 'AUTH_REQUIRED'){
         $state.go('login');
+      }
     });
   });
 

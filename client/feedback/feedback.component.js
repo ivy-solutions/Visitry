@@ -88,7 +88,7 @@ angular.module('visitry').directive('feedback', function () {
           this.badStars = this.badStars.slice(id);
           feedbackResponse.visitRating=id;
         }
-      }
+      };
       this.submitFeedback = ()=> {
         //TODO: data validation here, add the user data
         console.log(feedbackResponse);

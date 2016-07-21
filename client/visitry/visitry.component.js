@@ -1,6 +1,8 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import { User } from '/model/users'
+
 angular.module('visitry').directive('visitry', function () {
   return {
     restrict: 'E',
@@ -12,26 +14,33 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function( $scope, $reactive ) {
+    controller: function ($scope, $reactive, $state) {
       $reactive(this).attach($scope);
-/*      this.subscribe('user');
 
       this.helpers({
-        userRole: ()=> {
-          var role = User.findOne({_id:Meteor.userId()},{fields: {'userData.role':1}});
-          return role;
+        isVisitor: ()=> {
+          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+          if (user) {
+            return user.userData.role === 'visitor';
+          } else {
+            return false;
+          }
         }
-      });*/
-
-      //this.badgeNumber =1;
+      });
+      this.badgeNumber = 1;
       this.isLoggedIn = () => {
         console.log('userid:' + Meteor.userId());
         return Meteor.userId() !== null;
       };
 
       this.logout = () => {
-        console.log( "logout")
-        Accounts.logout();
+        console.log("logout");
+        Accounts.logout(function(err){
+          if(err){
+            console.log(err);
+          }
+          $state.go('login');
+        });
       };
     }
   }

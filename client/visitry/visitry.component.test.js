@@ -10,30 +10,38 @@ import '/client/visitry/visitry.component';
 
 describe('Visitry', function () {
 
+  var controller;
+  var meteorUserIdStub;
+  var accountLoggoutSpy;
+
   beforeEach(function () {
     angular.mock.module('visitry');
   });
 
   beforeEach(inject(function ($rootScope,$componentController) {
     controller = $componentController('visitry',{$scope: $rootScope.$new(true)});
-    meteorIdStub = sinon.stub(Meteor, "userId");
+    meteorUserIdStub = sinon.stub(Meteor, "userId");
+    accountLoggoutSpy = sinon.spy(Accounts,"logout");
   }));
 
-  var controller;
-  var meteorIdStub;
-
   afterEach(function () {
-    meteorIdStub.restore();
+    meteorUserIdStub.restore();
   });
 
   describe('user login', function () {
     it('the user is logged in', function () {
-      meteorIdStub.returns('kallva239021015');
+      meteorUserIdStub.returns('kallva239021015');
       chai.assert.equal(controller.isLoggedIn(), true);
     });
     it('the user is not logged in', function () {
-      meteorIdStub.returns(null);
+      meteorUserIdStub.returns(null);
       chai.assert.equal(controller.isLoggedIn(), false);
     })
   });
+  describe('logout',function(){
+    it('the user is logged out',function(){
+      controller.logout();
+      chai.assert(accountLoggoutSpy.calledOnce);
+    })
+  })
 });
