@@ -26,6 +26,7 @@ describe('Visitry', function () {
 
   afterEach(function () {
     meteorUserIdStub.restore();
+    accountLoggoutSpy.restore();
   });
 
   describe('user login', function () {
