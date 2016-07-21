@@ -19,14 +19,14 @@ describe('Visitry', function () {
   });
 
   beforeEach(inject(function ($rootScope,$componentController) {
-    controller = $componentController('visitry',{$scope: $rootScope.$new(true)});
+    controller = $componentController('visitry',{$scope: $rootScope.$new(true),$state:{}});
     meteorUserIdStub = sinon.stub(Meteor, "userId");
     accountLoggoutSpy = sinon.spy(Accounts,"logout");
   }));
 
   afterEach(function () {
     meteorUserIdStub.restore();
-    Accounts.logout.restore();
+    accountLoggoutSpy.restore();
   });
 
   describe('user login', function () {
@@ -44,5 +44,5 @@ describe('Visitry', function () {
       controller.logout();
       chai.assert(accountLoggoutSpy.calledOnce);
     });
-  })
+  });
 });
