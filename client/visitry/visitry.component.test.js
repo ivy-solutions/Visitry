@@ -26,7 +26,7 @@ describe('Visitry', function () {
 
   afterEach(function () {
     meteorUserIdStub.restore();
-    accountLoggoutSpy.restore();
+    Accounts.logout.restore();
   });
 
   describe('user login', function () {
@@ -43,6 +43,6 @@ describe('Visitry', function () {
     it('the user is logged out',function(){
       controller.logout();
       chai.assert(accountLoggoutSpy.calledOnce);
-    })
+    });
   })
 });
