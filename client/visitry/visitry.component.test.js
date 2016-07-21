@@ -14,6 +14,7 @@ describe('Visitry', function () {
   var meteorUserIdStub;
   var accountLoggoutSpy;
   var transitionToStub;
+  var goStub
 
   beforeEach(function () {
     angular.mock.module('visitry');
@@ -24,6 +25,7 @@ describe('Visitry', function () {
     meteorUserIdStub = sinon.stub(Meteor, "userId");
     accountLoggoutSpy = sinon.spy(Accounts,"logout");
     transitionToStub = sinon.stub($state,'transitionTo');
+    goStub = sinon.stub($state,'go');
   }));
 
   afterEach(function () {
