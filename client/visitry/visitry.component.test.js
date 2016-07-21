@@ -13,20 +13,23 @@ describe('Visitry', function () {
   var controller;
   var meteorUserIdStub;
   var accountLoggoutSpy;
+  var transitionToStub;
 
   beforeEach(function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function ($rootScope,$componentController) {
-    controller = $componentController('visitry',{$scope: $rootScope.$new(true),$state:{}});
+  beforeEach(inject(function ($rootScope,$componentController,$state) {
+    controller = $componentController('visitry',{$scope: $rootScope.$new(true),$state:$state});
     meteorUserIdStub = sinon.stub(Meteor, "userId");
     accountLoggoutSpy = sinon.spy(Accounts,"logout");
+    transitionToStub = sinon.stub($state,'transitionTo');
   }));
 
   afterEach(function () {
     meteorUserIdStub.restore();
     accountLoggoutSpy.restore();
+    transitionToStub.restore();
   });
 
   describe('user login', function () {
