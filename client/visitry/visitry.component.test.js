@@ -7,31 +7,27 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visitry/visitry.component';
+import '/client/routes';
 
 describe('Visitry', function () {
 
   var controller;
   var meteorUserIdStub;
   var accountLoggoutSpy;
-  var transitionToStub;
-  var goStub
 
   beforeEach(function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function ($rootScope,$componentController,$state) {
-    controller = $componentController('visitry',{$scope: $rootScope.$new(true),$state:$state});
+  beforeEach(inject(function ($rootScope,$componentController) {
+    controller = $componentController('visitry',{$scope: $rootScope.$new(true)});
     meteorUserIdStub = sinon.stub(Meteor, "userId");
     accountLoggoutSpy = sinon.spy(Accounts,"logout");
-    transitionToStub = sinon.stub($state,'transitionTo');
-    goStub = sinon.stub($state,'go');
   }));
 
   afterEach(function () {
     meteorUserIdStub.restore();
     accountLoggoutSpy.restore();
-    transitionToStub.restore();
   });
 
   describe('user login', function () {
