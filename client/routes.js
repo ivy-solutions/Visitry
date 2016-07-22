@@ -100,7 +100,6 @@ angular.module('visitry')
         controller: 'loginCtrl as login',
         resolve: {
           loggedIn: function ($location) {
-            console.log(Meteor.userId());
             if (Meteor.userId()) {
               console.log('There was a user id');
               var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
