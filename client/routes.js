@@ -137,7 +137,7 @@ angular.module('visitry')
       })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
-        template: '<feedback></feedback>'
+        template: '<requester-feedback></requester-feedback>'
       })
       .state('agencyList', {
         url: '/agencies',

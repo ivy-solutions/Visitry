@@ -3,21 +3,21 @@
     <form>
       <ion-list>
         <ion-item class="item-avatar">
-          <img ng-src="{{feedback.visitor.userData.picture}}">
-          <h2>{{feedback.visitor.userData.firstName}}</h2>
-          <p>{{feedback.visit.requestedDate| date:mediumDate}}</p>
+          <img ng-src="{{requesterFeedback.visitor.userData.picture}}">
+          <h2>{{requesterFeedback.visitor.userData.firstName}}</h2>
+          <p>{{requesterFeedback.visit.requestedDate| date:mediumDate}}</p>
         </ion-item>
         <div class="item item-divider">
           Rate your visitor
         </div>
         <ion-item>
-          <ng-md-icon ng-repeat="goodStar in feedback.visitorRating.goodStars" icon="star" size="64" style="fill:#FF5461"
-                      ng-click="feedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
-          <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="64"
-                      style="fill:black" ng-click="feedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="goodStar in requesterFeedback.visitorRating.goodStars" icon="star" size="64" style="fill:#FF5461"
+                      ng-click="requesterFeedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="badStar in requesterFeedback.visitorRating.badStars" icon="star_border" size="64"
+                      style="fill:black" ng-click="requesterFeedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
-        <textarea rows="3" ng-model="feedback.visitorComments" placeholder="Leave a Comment">
+        <textarea rows="3" ng-model="requesterFeedback.visitorComments" placeholder="Leave a Comment">
             </textarea>
             </label>
           </div>
@@ -26,19 +26,19 @@
           Rate your visit
         </div>
         <ion-item>
-          <ng-md-icon ng-repeat="goodStar in feedback.visitRating.goodStars" icon="star" size="64" style="fill:#FF5461"
-                      ng-click="feedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
-          <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="64"
-                      style="fill:black" ng-click="feedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="goodStar in requesterFeedback.visitRating.goodStars" icon="star" size="64" style="fill:#FF5461"
+                      ng-click="requesterFeedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="badStar in requesterFeedback.visitRating.badStars" icon="star_border" size="64"
+                      style="fill:black" ng-click="requesterFeedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
-        <textarea rows="3" ng-model="feedback.visitComments" placeholder="Leave a Comment">
+        <textarea rows="3" ng-model="requesterFeedback.visitComments" placeholder="Leave a Comment">
             </textarea>
             </label>
           </div>
         </ion-item>
       </ion-list>
-      <button class="button button-block button-balanced" ng-click="feedback.submitFeedback()">
+      <button class="button button-block button-balanced" ng-click="requesterFeedback.submitFeedback()">
         Submit
       </button>
     </form>

@@ -2,23 +2,23 @@ import { Visit } from '/model/visits'
 import { User } from '/model/users'
 import {RequesterFeedbacks} from '/model/RequesterFeedback'
 
-angular.module('visitry').directive('feedback', function () {
+angular.module('visitry').directive('requesterFeedback', function () {
   return {
     restrict: 'E',
     templateUrl: ()=> {
       if (Meteor.isCordova) {
-        return '/packages/visitrymobile/client/feedback/feedback.html';
+        return '/packages/visitrymobile/client/feedback/requesterFeedback.html';
       } else {
-        return '/packages/visitry-browser/client/feedback/feedback.html';
+        return '/packages/visitry-browser/client/feedback/requesterFeedback.html';
       }
     },
-    controllerAs: 'feedback',
+    controllerAs: 'requesterFeedback',
     controller: function ($scope, $reactive, $state, $stateParams) {
       $reactive(this).attach($scope);
       this.subscribe('visits');
       this.subscribe('userdata');
-      this.visitorComments='';
-      this.visitComments='';
+      this.visitorComments = '';
+      this.visitComments = '';
 
       var feedbackResponse = {
         visitorId: '',
@@ -64,7 +64,7 @@ angular.module('visitry').directive('feedback', function () {
           this.badStars = this.goodStars.concat(this.badStars);
           this.goodStars = this.badStars.slice(0, id);
           this.badStars = this.badStars.slice(id);
-          feedbackResponse.visitorRating=id;
+          feedbackResponse.visitorRating = id;
         }
       };
 
@@ -89,16 +89,17 @@ angular.module('visitry').directive('feedback', function () {
           this.badStars = this.goodStars.concat(this.badStars);
           this.goodStars = this.badStars.slice(0, id);
           this.badStars = this.badStars.slice(id);
-          feedbackResponse.visitRating=id;
+          feedbackResponse.visitRating = id;
         }
       };
+
       this.submitFeedback = ()=> {
         //TODO: data validation here, add the user data
         console.log(feedbackResponse);
         feedbackResponse.visitorComments = this.visitorComments;
         feedbackResponse.visitComments = this.visitComments;
         var feedbackId = RequesterFeedbacks.insert(feedbackResponse);
-        Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId , function (err, updates) {
+        Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
           if (err) {
             console.log(err);
           }
