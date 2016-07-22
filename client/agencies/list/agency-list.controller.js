@@ -1,6 +1,9 @@
 /**
  * Created by sarahcoletti on 7/7/16.
  */
+
+import {Agencies} from '/model/agencies'
+
 angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive ) {
   $reactive(this).attach($scope);
 
@@ -14,7 +17,7 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
 
   this.helpers({
     agencies: () => {
-      return Agency.find({}, {sort: this.getReactively('sort')});
+      return Agencies.find({}, {sort: this.getReactively('sort')});
     }
   });
 
@@ -28,5 +31,4 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
       this.getReactively('searchText')
     ]
   });
-
 });

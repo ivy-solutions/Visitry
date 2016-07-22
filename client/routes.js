@@ -29,13 +29,13 @@ angular.module('visitry')
             Tracker.autorun(()=> {
               const isReady = visits.ready();
               var visitNeedingFeedback = Visits.findOne({
-                feedbackId: null,
+                requesterFeedbackId: null,
                 requesterId: Meteor.userId(),
                 requestedDate: {$lt: new Date()}
               });
               if (isReady && visitNeedingFeedback) {
                 console.log("Yes lets go to feedbacks");
-                $location.url('requester/feedback/' + visitNeedingFeedback._id);
+                $location.url('/requester/feedback/' + visitNeedingFeedback._id);
               } else {
                 console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
               }
@@ -136,7 +136,7 @@ angular.module('visitry')
         controller: 'profileCtrl as profile'
       })
       .state('requesterFeedback', {
-        url: 'requester/feedback/:visitId',
+        url: '/requester/feedback/:visitId',
         template: '<feedback></feedback>'
       })
       .state('agencyList', {

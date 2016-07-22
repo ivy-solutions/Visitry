@@ -1,5 +1,6 @@
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
+import {RequesterFeedbacks} from '/model/RequesterFeedback'
 
 angular.module('visitry').directive('feedback', function () {
   return {
@@ -16,6 +17,8 @@ angular.module('visitry').directive('feedback', function () {
       $reactive(this).attach($scope);
       this.subscribe('visits');
       this.subscribe('userdata');
+      this.visitorComments='';
+      this.visitComments='';
 
       var feedbackResponse = {
         visitorId: '',
@@ -92,7 +95,9 @@ angular.module('visitry').directive('feedback', function () {
       this.submitFeedback = ()=> {
         //TODO: data validation here, add the user data
         console.log(feedbackResponse);
-        var feedbackId = Feedback.insert(feedbackResponse);
+        feedbackResponse.visitorComments = this.visitorComments;
+        feedbackResponse.visitComments = this.visitComments;
+        var feedbackId = RequesterFeedbacks.insert(feedbackResponse);
         Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId , function (err, updates) {
           if (err) {
             console.log(err);
