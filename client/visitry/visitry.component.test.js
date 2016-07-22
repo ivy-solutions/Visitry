@@ -8,6 +8,7 @@ import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visitry/visitry.component';
 import '/client/routes';
+import '/packages/visitrymobile/client/auth/login/login.component'
 
 describe('Visitry', function () {
 
@@ -49,7 +50,7 @@ describe('Visitry', function () {
   describe('logout',function(){
     it('the user is logged out',function(){
       controller.logout();
-      chai.assert(accountLoggoutSpy.calledOnce);
+      chai.assert.equal(accountLoggoutSpy.calledOnce,true);
     });
   });
 });
