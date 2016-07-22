@@ -6,7 +6,7 @@ import {User} from '/model/users'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
-    $locationProvider.html5Mode({enabled:true,requireBase: false});
+    $locationProvider.html5Mode({enabled:true,requireBase: false}); //TODO: we may want to remove the requireBase attribute
 
     $stateProvider
       .state('visits', {
