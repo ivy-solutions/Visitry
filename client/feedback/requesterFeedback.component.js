@@ -94,7 +94,6 @@ angular.module('visitry').directive('requesterFeedback', function () {
       };
 
       this.submitFeedback = ()=> {
-        //TODO: data validation here, add the user data
         console.log(feedbackResponse);
         feedbackResponse.visitorComments = this.visitorComments;
         feedbackResponse.visitComments = this.visitComments;

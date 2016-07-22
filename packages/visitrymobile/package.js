@@ -42,7 +42,7 @@ Package.onUse(function(api) {
     'client/visits/schedule-visit/schedule-visit.import.less',
     'client/visits/browse-visit-requests/browse-visit-requests.import.less',
     'client/visits/request-visit/request-visit.import.less',
-    'client/feedback/feedback.html'
+    'client/feedback/requesterFeedback.html'
   ], 'client');
 });
 
