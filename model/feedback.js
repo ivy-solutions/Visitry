@@ -1,7 +1,7 @@
-Feedback = new Mongo.Collection("feedback");
+RequesterFeedback = new Mongo.Collection("requesterFeedback");
 
 !//TODO check role
-  Feedback.allow({
+  RequesterFeedback.allow({
     insert: function (userId, visit) {
       return true;
     },

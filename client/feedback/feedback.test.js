@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import '/client/feedback/feedback.component';
+import '/client/feedback/requesterFeedback.component.js';
 
 describe ('Client Feedback',function(){
   beforeEach(function(){

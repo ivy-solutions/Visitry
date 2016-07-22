@@ -144,12 +144,12 @@ Meteor.methods({
       visit.requesterId
     );
   },
-  'visits.attachFeedback'(visitId, feedbackId) {
+  'visits.attachRequesterFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
       throw new Meteor.Error('not-found');
     }
-    visit.feedbackId = feedbackId;
+    visit.requesterFeedbackId = feedbackId;
     visit.save();
   }
 });

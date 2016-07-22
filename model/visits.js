@@ -31,7 +31,7 @@ const Visit = Class.create({
     visitTime: {type: Date, optional: true},
     scheduledAt: {type: Date, optional: true},
     visitorNotes: {type: String, optional: true},
-    feedbackId: {type: String, optional: true},
+    requesterFeedbackId: {type: String, optional: true},
     createdAt: {type: Date, immutable: true},
     updatedAt: {type: Date},
     inactive: {type: Boolean, optional: true},

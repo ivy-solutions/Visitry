@@ -93,12 +93,12 @@ angular.module('visitry').directive('feedback', function () {
         //TODO: data validation here, add the user data
         console.log(feedbackResponse);
         var feedbackId = Feedback.insert(feedbackResponse);
-        Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId , function (err, updates) {
+        Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId , function (err, updates) {
           if (err) {
             console.log(err);
           }
           else {
-            $state.go('pendingVisits')
+            $state.go('pendingVisits');
           }
         })
       }

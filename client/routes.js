@@ -35,7 +35,7 @@ angular.module('visitry')
               });
               if (isReady && visitNeedingFeedback) {
                 console.log("Yes lets go to feedbacks");
-                $location.url('/feedback/' + visitNeedingFeedback._id);
+                $location.url('requester/feedback/' + visitNeedingFeedback._id);
               } else {
                 console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
               }
@@ -135,8 +135,8 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
-      .state('feedback', {
-        url: '/feedback/:visitId',
+      .state('requesterFeedback', {
+        url: 'requester/feedback/:visitId',
         template: '<feedback></feedback>'
       })
       .state('agencyList', {
