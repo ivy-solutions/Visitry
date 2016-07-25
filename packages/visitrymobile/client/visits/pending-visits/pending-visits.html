@@ -4,9 +4,9 @@
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-      <div class="numVisits" ng-hide="pendingVisits.numRequests>0">
-          No active requests. Press + to request a visit.
-      </div>
+    <div class="numVisits" ng-hide="pendingVisits.numRequests>0">
+      No active requests. Press + to request a visit.
+    </div>
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
       <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
         <div class="item item-divider">
@@ -16,13 +16,16 @@
                   on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
           <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}">
           <div layout="row">
-            <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span></h4>
-            <h2 ng-if="visit.visitorId">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} <span class="timeOfDay">{{visit.visitTime | date:'h:mm'}}</span></h2>
+            <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
+            </h4>
+            <h2 ng-if="visit.visitorId">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} <span
+                class="timeOfDay">{{visit.visitTime | date:'h:mm'}}</span></h2>
             <span flex></span>
             <h4>{{visit.location.address | limitTo:10}}<span ng-if="visit.location.address.length > 10">...</span></h4>
           </div>
-            <p>{{visit.notes}}</p>
-            <h4 ng-if="visit.visitorNotes">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} : {{visit.visitorNotes}}</h4>
+          <p>{{visit.notes}}</p>
+          <h4 ng-if="visit.visitorNotes">{{pendingVisits.getVisitor(visit) | firstNameLastInitial }} :
+            {{visit.visitorNotes}}</h4>
           <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
             Cancel Visit
           </ion-option-button>

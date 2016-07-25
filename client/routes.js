@@ -6,7 +6,7 @@ import {User} from '/model/users'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
-    $locationProvider.html5Mode({enabled:true,requireBase: false}); //TODO: we may want to remove the requireBase attribute
+    $locationProvider.html5Mode({enabled: true, requireBase: false}); //TODO: we may want to remove the requireBase attribute
 
     $stateProvider
       .state('visits', {
@@ -137,7 +137,22 @@ angular.module('visitry')
       })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
-        template: '<requester-feedback></requester-feedback>'
+        template: '<feedback></feedback>'
+      })
+      .state('visitorFeedbackList', {
+        url: '/visitor/feedback',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/feedback/visitor-feedback-list.html';
+          } else {
+            return '/packages/visitry-browser/client/feedback/visitor-feedback-list.html';
+          }
+        },
+        controller: 'visitorFeedbackList as feedbackList'
+      })
+      .state('visitorFeedback', {
+        url: '/visitor/feedback/:visitId',
+        template: '<feedback></feedback>'
       })
       .state('agencyList', {
         url: '/agencies',
@@ -155,7 +170,7 @@ angular.module('visitry')
   })
   .run(function ($rootScope, $state) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-      if (error === 'AUTH_REQUIRED'){
+      if (error === 'AUTH_REQUIRED') {
         $state.go('login');
       }
     });

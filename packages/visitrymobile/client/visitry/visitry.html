@@ -1,6 +1,6 @@
 <ion-side-menus enable-menu-with-back-views="true">
   <!-- Left menu -->
-  <ion-side-menu side="left" ng-show="visitry.isLoggedIn()">
+  <ion-side-menu side="left" ng-show="visitry.isLoggedIn">
     <ion-header-bar class="bar-dark">
     </ion-header-bar>
     <ion-content>
@@ -9,7 +9,7 @@
         <ion-item href="/profile" menu-close>Profile</ion-item>
         <ion-item href="/visitor/browseRequests" menu-close>As Visitor</ion-item>
         <ion-item href="/requester/pendingVisits" menu-close>As Requester</ion-item>
-        <ion-item href="/feedback" menu-close ng-if="visitry.isVisitor"><span class="badge badge-positive">{{ visitry.badgeNumber }}</span>Feedback
+        <ion-item href="/visitor/feedback" menu-close ng-if="visitry.isVisitor"><span class="badge badge-positive">{{visitry.feedbackOutstanding}}</span>Feedback
         </ion-item>
         <ion-item class="item" ng-click="visitry.logout()" menu-close>Sign out</ion-item>
       </ion-list>
@@ -22,7 +22,7 @@
       </ion-nav-back-button>
 
       <ion-nav-buttons side="left">
-        <button class="button button-icon button-clear ion-navicon" menu-toggle="left" ng-if="visitry.isLoggedIn()">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left" ng-if="visitry.isLoggedIn">
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>

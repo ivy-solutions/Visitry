@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import '/client/feedback/requesterFeedback.component.js';
+import '/client/feedback/feedback.component.js';
 
 describe('Client Feedback', function () {
   beforeEach(function () {
@@ -17,7 +17,7 @@ describe('Client Feedback', function () {
 
     beforeEach(function () {
       inject(function ($rootScope, $componentController) {
-        controller = $componentController('requesterFeedback', {$scope: $rootScope.$new(true)})
+        controller = $componentController('feedback', {$scope: $rootScope.$new(true)})
       });
     });
 

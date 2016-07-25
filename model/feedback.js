@@ -1,9 +1,9 @@
 import { Class } from 'meteor/jagi:astronomy';
 
-const RequesterFeedbacks = new Mongo.Collection("requesterFeedback");
+const Feedbacks = new Mongo.Collection("feedback");
 
 !//TODO check role
-  RequesterFeedbacks.allow({
+  Feedbacks.allow({
     insert: function (userId, visit) {
       return true;
     },
@@ -24,13 +24,15 @@ var starValueValidator = [{
     param: 5
   }];
 
-const RequesterFeedback = Class.create({
-  name: "RequesterFeedback",
-  collection: RequesterFeedbacks,
+const Feedback = Class.create({
+  name: "Feedback",
+  collection: Feedbacks,
   fields: {
     visitorId: {type: String, immutable: true},
+    requesterId: {type:String,immutable:true},
+    submitterId:{type:String,immutable:true},
     visitorRating: {type: Number, validators: starValueValidator},
-    visitorComments: {type: String,optional:true},
+    userComments: {type: String,optional:true},
     visitRating: {type: Number, validators: starValueValidator},
     visitComments: {type: String,optional:true},
     visitId: {type: String, immutable: true},
@@ -44,5 +46,5 @@ const RequesterFeedback = Class.create({
   }
 });
 
-export {RequesterFeedbacks}
-export {RequesterFeedback}
+export {Feedbacks}
+export {Feedback}

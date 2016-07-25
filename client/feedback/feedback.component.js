@@ -1,36 +1,40 @@
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
-import {RequesterFeedbacks} from '/model/RequesterFeedback'
+import {Feedbacks} from '/model/feedback'
 
-angular.module('visitry').directive('requesterFeedback', function () {
+angular.module('visitry').directive('feedback', function () {
   return {
     restrict: 'E',
     templateUrl: ()=> {
       if (Meteor.isCordova) {
-        return '/packages/visitrymobile/client/feedback/requesterFeedback.html';
+        return '/packages/visitrymobile/client/feedback/feedback.html';
       } else {
-        return '/packages/visitry-browser/client/feedback/requesterFeedback.html';
+        return '/packages/visitry-browser/client/feedback/feedback.html';
       }
     },
-    controllerAs: 'requesterFeedback',
+    controllerAs: 'feedback',
     controller: function ($scope, $reactive, $state, $stateParams) {
+      console.log($stateParams);
       $reactive(this).attach($scope);
       this.subscribe('visits');
       this.subscribe('userdata');
-      this.visitorComments = '';
+
+      this.userComments = '';
       this.visitComments = '';
 
       var feedbackResponse = {
         visitorId: '',
         requesterId: Meteor.userId(),
-        visitorRating: 0,
-        visitorComments: '',
+        submitterId: Meteor.userId(),
+        userRating: 0,
+        userComments: '',
         visitRating: 0,
         visitComments: '',
         visitId: $stateParams.visitId
       };
 
       this.visitor = '';
+      this.requester = '';
 
       this.helpers({
         visit: ()=> {
@@ -38,10 +42,20 @@ angular.module('visitry').directive('requesterFeedback', function () {
           if (v) {
             feedbackResponse.visitorId = v.visitorId;
             this.visitor = User.findOne({_id: v.visitorId});
+            this.requester = User.findOne({_id: v.requesterId});
           }
           return v
+        },
+        isVisitor: ()=> {
+          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+          if (user) {
+            return user.userData.role === 'visitor';
+          } else {
+            return false;
+          }
         }
       });
+
 //TODO: create a directive that does this
       this.visitorRating = {
         badStars: [
@@ -64,7 +78,7 @@ angular.module('visitry').directive('requesterFeedback', function () {
           this.badStars = this.goodStars.concat(this.badStars);
           this.goodStars = this.badStars.slice(0, id);
           this.badStars = this.badStars.slice(id);
-          feedbackResponse.visitorRating = id;
+          feedbackResponse.userRating = id;
         }
       };
 
@@ -94,18 +108,32 @@ angular.module('visitry').directive('requesterFeedback', function () {
       };
 
       this.submitFeedback = ()=> {
-        console.log(feedbackResponse);
-        feedbackResponse.visitorComments = this.visitorComments;
+        //TODO: Add form validation
+        feedbackResponse.userComments = this.userComments;
         feedbackResponse.visitComments = this.visitComments;
-        var feedbackId = RequesterFeedbacks.insert(feedbackResponse);
-        Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-          if (err) {
-            console.log(err);
-          }
-          else {
-            $state.go('pendingVisits');
-          }
-        })
+
+        var feedbackId = Feedbacks.insert(feedbackResponse);
+        var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+        console.log(user);
+        if (user.userData.role === 'requester') {
+          Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
+            if (err) {
+              console.log(err);
+            }
+            else {
+              $state.go('pendingVisits');
+            }
+          });
+        } else if (user.userData.role === 'visitor') {
+          Meteor.call('visits.attachVisitorFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
+            if (err) {
+              console.log(err);
+            }
+            else {
+              $state.go('visitorFeedbackList');
+            }
+          });
+        }
       }
     }
   }
