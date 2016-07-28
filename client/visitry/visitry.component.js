@@ -36,6 +36,7 @@ angular.module('visitry').directive('visitry', function () {
           return feedback.count();
         },
         isLoggedIn: ()=> {
+          console.log(Meteor.userId());
           return Meteor.userId() !== null;
         }
       });

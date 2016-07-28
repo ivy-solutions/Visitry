@@ -14,7 +14,6 @@ angular.module('visitry').directive('feedback', function () {
     },
     controllerAs: 'feedback',
     controller: function ($scope, $reactive, $state, $stateParams) {
-      console.log($stateParams);
       $reactive(this).attach($scope);
       this.subscribe('visits');
       this.subscribe('userdata');
@@ -114,7 +113,6 @@ angular.module('visitry').directive('feedback', function () {
 
         var feedbackId = Feedbacks.insert(feedbackResponse);
         var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-        console.log(user);
         if (user.userData.role === 'requester') {
           Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
             if (err) {
