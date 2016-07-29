@@ -32,7 +32,11 @@ const User = Class.create({
     fullName: {
       type: String,
       resolve(doc) {
-        return doc.userData.firstName + ' ' + doc.userData.lastName;
+        if (doc && doc.userData)
+          return doc.userData.firstName + ' ' + doc.userData.lastName;
+        else {
+          "no name"
+        }
       }
     }
   }

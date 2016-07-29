@@ -2,7 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import { User } from '/model/users'
-import {Visits} from '/model/visits'
+import { Visit } from '/model/visits'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -15,7 +15,7 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state, $timeout, $ionicHistory) {
+    controller: function ($scope, $reactive, $state, $ionicHistory) {
       $reactive(this).attach($scope);
 
       this.subscribe('userProfile');
@@ -23,15 +23,15 @@ angular.module('visitry').directive('visitry', function () {
       this.helpers({
         isVisitor: ()=> {
           if (Meteor.userId()) {
-            var user = User.findOne({_id: Meteor.userId()});
-            if ( user ) {
+            var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+            if (user && user.userData) {
               return user.userData.role === 'visitor';
             }
           }
           return false;
         },
         feedbackOutstanding: ()=> {
-          var feedback = Visits.find({
+          var feedback = Visit.find({
             visitorFeedbackId: null,
             visitorId: Meteor.userId(),
             requestedDate: {$lt: new Date()}
@@ -42,7 +42,7 @@ angular.module('visitry').directive('visitry', function () {
           console.log(Meteor.userId());
           return Meteor.userId() !== null;
         }
-    });
+      });
 
       this.logout = () => {
         console.log("logout");
@@ -51,7 +51,6 @@ angular.module('visitry').directive('visitry', function () {
             console.log(err);
           }
           $ionicHistory.clearHistory();
-          console.log('clearing history');
           $state.go('login');
         });
       };

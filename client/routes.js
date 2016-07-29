@@ -101,20 +101,26 @@ angular.module('visitry')
         resolve: {
           loggedIn: function ($location) {
             if (Meteor.userId()) {
-              console.log('There was a user id');
-              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData': 1}});
-              switch (user.userData.role) {
-                case 'visitor':
-                  console.log('visitor');
-                  $location.url('/visitor/browseRequests');
-                  break;
-                case 'requester':
-                  console.log('requester');
-                  $location.url('/requester/pendingVisits');
-                  break;
-                default:
-                  console.log('invalid role');
-                  break;
+              var profile = Meteor.subscribe('userProfile');
+              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+              if ( user ) {
+                console.log('There was a user id : ' + JSON.stringify(user));
+                switch (user.userData.role) {
+                  case 'visitor':
+                    console.log('visitor');
+                    $location.url('/visitor/browseRequests');
+                    break;
+                  case 'requester':
+                    console.log('requester');
+                    $location.url('/requester/pendingVisits');
+                    break;
+                  default:
+                    console.log('invalid role');
+                    break;
+                }
+              }
+              else {
+                console.log ("no user");
               }
             }
           }
