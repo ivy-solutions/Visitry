@@ -54,4 +54,5 @@ describe('Visitry', function () {
       chai.assert.equal(accountLoggoutSpy.calledOnce,true);
     });
   });
+  */
 });
