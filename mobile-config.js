@@ -58,6 +58,7 @@ App.accessRule("*");
 App.accessRule('*.google.com/*');
 App.accessRule('*.googleapis.com/*');
 App.accessRule('*.gstatic.com/*');
+//TODO Need domain name here instead of ip address and in mup.json
 App.accessRule('http://54.234.50.226', {
  'minimum-tls-version': 'TLSv1.0',
  'requires-forward-secrecy': false,

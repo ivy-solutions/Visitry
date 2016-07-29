@@ -2,6 +2,7 @@
   // Server authentication info
   "servers": [
     {
+      //TODO Need domain name here - same one as in mobile-config.js
       "host": "54.234.50.226",
       "username": "ubuntu",
       //"password": "password",
