@@ -46,11 +46,10 @@ describe('Visitry', function () {
       chai.assert.equal(controller.isLoggedIn(), false);
     })
   });
-  //TODO: can't seem to get this test to work
-/*  describe('logout',function(){
+  describe('logout',function(){
     it('the user is logged out',function(){
       controller.logout();
       chai.assert.equal(accountLoggoutSpy.calledOnce,true);
     });
-  });*/
+  });
 });

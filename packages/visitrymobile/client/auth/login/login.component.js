@@ -18,6 +18,8 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       }
       else {
         console.log('Login success ' + this.credentials.username + " id: " + Meteor.userId());
+        this.credentials.username = '';
+        this.credentials.password = '';
         var user = Meteor.user();
         var goto;
         if (!hasValidAgency()) {

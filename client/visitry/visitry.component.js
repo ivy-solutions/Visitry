@@ -14,17 +14,20 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state) {
+    controller: function ($scope, $reactive, $state, $timeout, $ionicHistory) {
       $reactive(this).attach($scope);
+
+      this.subscribe('userProfile');
 
       this.helpers({
         isVisitor: ()=> {
-          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-          if (user) {
-            return user.userData.role === 'visitor';
-          } else {
-            return false;
+          if (Meteor.userId()) {
+            var user = User.findOne({_id: Meteor.userId()});
+            if ( user ) {
+              return user.userData.role === 'visitor';
+            }
           }
+          return false;
         }
       });
       this.badgeNumber = 1;
@@ -39,6 +42,8 @@ angular.module('visitry').directive('visitry', function () {
           if(err){
             console.log(err);
           }
+          $ionicHistory.clearHistory();
+          console.log('clearing history');
           $state.go('login');
         });
       };
