@@ -1,0 +1,23 @@
+<ion-view view-title="Give Feedback" hide-back-button=true>
+  <ion-content class="has-header">
+    <div class="numVisits" ng-hide="feedbackList.numFeedback>0">
+      No recent visits to give feedback for. Please complete a visit then return here to give your feedback.
+    </div>
+    <ion-list show-delete="feedbackList.showDelete" can-swipe="feedbackList.canSwipe">
+      <div ng-repeat="visitsByDate in feedbackList.pendingFeedback">
+        <div class="item item-divider">
+          {{visitsByDate.date|date:"EEE. ,MMMM d"}}
+        </div>
+        <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar" ng-click="feedbackList.giveFeedback(visit._id)">
+          <img ng-if="false" ng-src="{{feedbackList.getRequesterImage(visit)}}">
+          <div layout="row">
+            <h2>{{feedbackList.getRequester(visit) | firstNameLastInitial }}</h2>
+            <span flex></span>
+            <h4>{{visit.location.address | limitTo:10}}<span ng-if="visit.location.address.length > 10">...</span></h4>
+          </div>
+          <p>{{visit.notes}}</p>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>

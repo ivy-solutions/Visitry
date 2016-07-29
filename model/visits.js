@@ -22,7 +22,7 @@ const Visit = Class.create({
   name: 'Visit',
   collection: Visits,
   fields: {
-    requesterId: {type: String, immutable: true },
+    requesterId: {type: String, immutable: true},
     agencyId: {type: String},
     location: {type: Address},
     requestedDate: {type: Date},
@@ -32,10 +32,11 @@ const Visit = Class.create({
     scheduledAt: {type: Date, optional: true},
     visitorNotes: {type: String, optional: true},
     requesterFeedbackId: {type: String, optional: true},
+    visitorFeedbackId: {type: String, optional: true},
     createdAt: {type: Date, immutable: true},
     updatedAt: {type: Date},
     inactive: {type: Boolean, optional: true},
-    removedAt: {type: Date, optional : true},
+    removedAt: {type: Date, optional: true},
     cancelledAt: {type: Date, optional: true}
   },
   indexes: {

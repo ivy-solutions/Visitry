@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import { User } from '/model/users'
+import {Visits} from '/model/visits'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -28,18 +29,25 @@ angular.module('visitry').directive('visitry', function () {
             }
           }
           return false;
+        },
+        feedbackOutstanding: ()=> {
+          var feedback = Visits.find({
+            visitorFeedbackId: null,
+            visitorId: Meteor.userId(),
+            requestedDate: {$lt: new Date()}
+          });
+          return feedback.count();
+        },
+        isLoggedIn: ()=> {
+          console.log(Meteor.userId());
+          return Meteor.userId() !== null;
         }
-      });
-      this.badgeNumber = 1;
-      this.isLoggedIn = () => {
-        console.log('userid:' + Meteor.userId());
-        return Meteor.userId() !== null;
-      };
+    });
 
       this.logout = () => {
         console.log("logout");
-        Accounts.logout(function(err){
-          if(err){
+        Accounts.logout(function (err) {
+          if (err) {
             console.log(err);
           }
           $ionicHistory.clearHistory();

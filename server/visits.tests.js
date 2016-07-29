@@ -180,7 +180,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('visits.attachFeedback method', () => {
+    describe('visits.attachRequesterFeedback method', () => {
       const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachRequesterFeedback'];
       const feedbackId = Random.id();
       let visitId;
@@ -209,6 +209,35 @@ if (Meteor.isServer) {
         var updatedVisit = Visits.findOne({_id: visitId});
         assert.equal(updatedVisit.requesterFeedbackId, feedbackId);
       });
+    });
+
+    describe('visits.attachVisitorFeedback method',()=>{
+      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachVisitorFeedback'];
+      const feedbackId = Random.id();
+      let visitId;
+      beforeEach(()=>{
+        Visits.remove({});
+        visitId = Visits.insert({
+          notes: 'test visit',
+          requestedDate: tomorrow,
+          createdAt: new Date(),
+          requesterId: requesterId,
+          agencyId: agencyId,
+          location: {
+            address: "Boston",
+            geo: {
+              type: "Point",
+              coordinates: [-71.0589, 42.3601]
+            }
+          }
+        })
+      });
+      it('attach visitor feedback success',()=>{
+        const invocation = {userId:userId};
+        attachFeedbackHandler.apply(invocation,[visitId,feedbackId]);
+        var updatedVisit = Visit.findOne({_id:visitId});
+        assert.equal(updatedVisit.visitorFeedbackId,feedbackId);
+      })
     });
 
     describe('visits.createVisit method', () => {
