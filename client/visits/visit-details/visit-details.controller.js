@@ -34,6 +34,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return false;
   };
 
+  this.isRequester = function() {
+    return this.visit && (Meteor.userId() == this.visit.requesterId)
+  };
+
   this.getRequester = function () {
     if ( this.visit == undefined ) {
       return null;
@@ -41,10 +45,21 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     if ( this.requester ) {
       return this.requester;
     }
+    conosle.log( "requester not found - why not?");
     return Meteor.users.findOne({_id: this.visit.requesterId});
   };
 
-  this.getRequesterImage = function(visit) {
+  this.getBuddy = function( ) {
+    if (this.isRequester() && this.visit.visitorId) {
+      //show visitor
+      return User.findOne({_id: this.visit.visitorId});
+    } else {
+      //show requester
+      return this.getRequester();
+    }
+  }
+
+  this.getRequesterImage = function() {
     var requester = this.getRequester();
     if (requester) {
       if (requester.userData.picture == undefined) {
@@ -54,16 +69,37 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       }
     }
   };
+  this.getVisitorImage = function() {
+    if ( this.visit.visitorId ) {
+      var visitor = User.findOne({_id: this.visit.visitorId});
+      if (visitor && visitor.userData) {
+        if (visitor.userData.picture) {
+          return visitor.userData.picture;
+        }
+      }
+    }
+    return "";
+  };
+
+  this.getBuddyImage = function() {
+    var buddy = this.getBuddy();
+    if (buddy) {
+      if (buddy.userData.picture == undefined) {
+        return "";
+      } else {
+        return buddy.userData.picture;
+      }
+    }
+  };
 
 
-  this.requesterInterests = () => {
-    var requester = this.getRequester();
-    if (requester) {
-      if (requester.userData && requester.userData.interests)
-        return requester.userData.interests;
+  this.buddyInterests = () => {
+    var buddy = this.getBuddy();
+    if (buddy) {
+      if (buddy.userData && buddy.userData.interests)
+        return buddy.userData.interests;
     }
     return '';
   };
-
 
 });

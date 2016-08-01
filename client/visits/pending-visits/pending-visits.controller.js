@@ -4,7 +4,7 @@
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
 
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter) {
+angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);
 
   this.showDelete = false;
@@ -71,6 +71,10 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
         $ionicListDelegate.closeOptionButtons();
       }
     })
+  };
+
+  this.visitDetails = function (id) {
+    $state.go( 'visitDetails', {visitId: id} );
   };
 
   function handleError(err) {

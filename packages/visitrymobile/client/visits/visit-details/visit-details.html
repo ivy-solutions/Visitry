@@ -5,27 +5,34 @@
   <ion-content>
       <ion-list>
         <ion-item class="item-avatar">
-            <img ng-src="{{visitDetails.getRequesterImage(visit)}}"/>
+            <img ng-src="{{visitDetails.getBuddyImage()}}"/>
             <h2>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}}
                 <span class="time">
-                    {{visitDetails.isVisitor() ? (visitDetails.visit.visitTime | date: "h:mm" ) : (visitDetails.visit.requestedDate | timeOfDay) }}
+                    {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) : (visitDetails.visit.requestedDate | timeOfDay) }}
                 </span>
             </h2>
-             <div class="visitInfo">
-                <h2>{{visitDetails.requester | firstNameLastInitial}}</h2>
-                <p>{{visitDetails.visit.notes}}</p>
+             <div>
+                <h2>{{visitDetails.getBuddy() | firstNameLastInitial}}</h2>
             </div>
          </ion-item>
           <ion-item>
-              {{visitDetails.isVisitor() ? "Location: " + visitDetails.visit.location.address :  "Near:" + (visitDetails.visit.location | approximateLocation)}}
+              {{visitDetails.visit.visitorId ? "Location: " + visitDetails.visit.location.address :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
           </ion-item>
           <ion-item>
-              <ion-list>{{visitDetails.requester | firstNameLastInitial}}'s Interests
-                  <ion-item ng-repeat="interest in visitDetails.requesterInterests()">{{interest}}</ion-item>
+              <ion-list>{{visitDetails.getBuddy() | firstNameLastInitial}}'s Interests
+                  <ion-item ng-repeat="interest in visitDetails.buddyInterests()">{{interest}}</ion-item>
               </ion-list>
           </ion-item>
-          <ion-item ng-show="{{visitDetails.isVisitor()}}">
-              Your Message: <p>{{visitDetails.visit.visitorNotes}}</p>
+          <ion-item>
+              <ion-list>Notes
+                  <ion-item class="item-avatar item-text-wrap" ng-show="visitDetails.visit.notes">
+                    <img ng-src="{{visitDetails.getRequesterImage()}}"/>
+                    <p>{{visitDetails.visit.notes}}</p></ion-item>
+                  <ion-item class="item-avatar item-text-wrap" ng-show="visitDetails.visit.visitorNotes">
+                      <img ng-src="{{visitDetails.getVisitorImage()}}"/>
+                      <p>{{visitDetails.visit.visitorNotes}}</p>
+                  </ion-item>
+              </ion-list>
            </ion-item>
 
       </ion-list>
