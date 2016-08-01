@@ -56,17 +56,14 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       //no visitor or user is the visitor, then we return the requester
       return this.getRequester();
     }
-  }
+  };
 
   this.getRequesterImage = function() {
     var requester = this.getRequester();
-    if (requester) {
-      if (requester.userData.picture == undefined) {
-        return "";
-      } else {
+    if (requester && requester.userData  && requester.userData.picture) {
         return requester.userData.picture;
-      }
     }
+    return "";
   };
   this.getVisitorImage = function() {
     if ( this.visit.visitorId ) {
