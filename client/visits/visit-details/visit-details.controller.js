@@ -45,16 +45,15 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     if ( this.requester ) {
       return this.requester;
     }
-    conosle.log( "requester not found - why not?");
-    return Meteor.users.findOne({_id: this.visit.requesterId});
+    return User.findOne({_id: this.visit.requesterId});
   };
 
   this.getBuddy = function( ) {
     if (this.isRequester() && this.visit.visitorId) {
-      //show visitor
+      //requester's buddy is the visitor
       return User.findOne({_id: this.visit.visitorId});
     } else {
-      //show requester
+      //no visitor or user is the visitor, then we return the requester
       return this.getRequester();
     }
   }
