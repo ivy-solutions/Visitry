@@ -9,16 +9,17 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.visitId = $stateParams.visitId;
   this.visit;
+  this.showBuddyInfo = false
   this.requester
 
   this.helpers({
     theVisit:() => {
-      console.log("theVisit: " + $stateParams.visitId);
       var visit = Visit.findOne({_id: $stateParams.visitId});
-      console.log( "visit:" + visit);
+      console.log( "visit:" + JSON.stringify(visit));
       if ( visit ) {
-        console.log( "visit:" + JSON.stringify(visit));
         this.visit = visit;
+        //show buddy info if the visit is scheduled, or if it is unscheduled and being viewed by a potential visitor
+        this.showBuddyInfo = this.visit.visitorId || this.visit.requesterId != Meteor.userId();
         this.requester = User.findOne({_id: visit.requesterId});
       }
       return visit;

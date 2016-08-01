@@ -38,7 +38,6 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.getVisitorImage = function(visit) {
     if (visit.visitorId) {
       var visitor = this.getVisitor(visit);
-      console.log( "getVisitorImage: " + visit.visitorId + " " + JSON.stringify(visitor));
       if ( visitor == undefined || visitor.userData == undefined || visitor.userData.picture == undefined ) {
         return "";
       }
