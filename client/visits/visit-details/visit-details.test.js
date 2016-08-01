@@ -125,4 +125,17 @@ describe('View Visit Details', function () {
     });
   });
 
+  describe( "buddyHasInterests", function () {
+    it( "buddy has no interests", function() {
+      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
+      chai.assert.isFalse(controller.buddyHasInterests());
+    });
+    it( "buddy has interests", function() {
+      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
+      findOneStub.returns( {userData: {firstName: "Viola", interests: ["day trading", "vintage aircraft", "romance novels"]}} );
+      chai.assert.isTrue(controller.buddyHasInterests());
+    });
+  });
+
+
 });

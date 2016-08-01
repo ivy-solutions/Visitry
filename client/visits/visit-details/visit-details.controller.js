@@ -89,6 +89,9 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     }
   };
 
+  this.buddyHasInterests = () => {
+    return typeof(this.buddyInterests())=== 'object';
+  };
 
   this.buddyInterests = () => {
     var buddy = this.getBuddy();

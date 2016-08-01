@@ -18,7 +18,7 @@
           <ion-item>
               {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? "Location: " + visitDetails.visit.location.address :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
           </ion-item>
-          <ion-item ng-show="visitDetails.showBuddyInfo">
+          <ion-item ng-show="visitDetails.showBuddyInfo && visitDetails.buddyHasInterests()">
               <ion-list>{{visitDetails.getBuddy() | firstNameLastInitial}}'s Interests
                   <ion-item ng-repeat="interest in visitDetails.buddyInterests()">{{interest}}</ion-item>
               </ion-list>
