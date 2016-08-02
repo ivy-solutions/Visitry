@@ -1,10 +1,7 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header has-tabs">
-         <div class="numVisits nearbyRequests" ng-hide="!browseVisitRequests.hasLocation">
-             {{browseVisitRequests.openVisitCount}} requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location.address | limitTo:12}}
-         </div>
-         <div class="numVisits" ng-hide="browseVisitRequests.hasLocation">
-             {{browseVisitRequests.openVisitCount}} requests
+         <div class="numVisits" ng-hide="browseVisitRequests.openVisitCount > 0">
+             No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location.address | limitTo:20}}
          </div>
          <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
             <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
