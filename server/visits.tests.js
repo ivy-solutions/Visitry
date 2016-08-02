@@ -381,12 +381,12 @@ if (Meteor.isServer) {
       assert.sameMembers(notesFromVisits, ['test visit agency1', 'test visit agency2']);
     });
 
-    it('user from Acton sees no visits if vicinity is set to 10 miles', () => {
+    it('user from Acton sees no visits if visitRange is set to 10 miles', () => {
       findOneUserStub.returns({
         username: 'Actonian',
         userData: {
           agencyIds: [agencyId],
-          vicinity: 10,
+          visitRange: 10,
           location: {
             address: "Acton",
             geo: {
@@ -403,12 +403,12 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 0);
     });
 
-    it('user from Acton sees 1 visit if vicinity is set to 50 miles', () => {
+    it('user from Acton sees 1 visit if visitRange is set to 50 miles', () => {
       findOneUserStub.returns({
         username: 'Actonian',
         userData: {
           agencyIds: [agencyId],
-          vicinity: 50,
+          visitRange: 50,
           location: {
             address: "Acton",
             geo: {

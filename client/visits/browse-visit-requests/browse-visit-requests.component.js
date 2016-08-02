@@ -15,47 +15,47 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
-  this.vicinity = 3000;
+  this.visitRange = 3000;
 
   this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
 
-  this.hasLocation = this.vicinity < 3000;
+  this.hasLocation = this.visitRange < 3000;
   this.openVisitCount = -1;
 
   this.autorun( function() {
     var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
-      this.vicinity = user.userData.vicinity
+      this.visitRange = user.userData.visitRange
     } else {
-      this.vicinity = 3200;
+      this.visitRange = 3200;
       this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
     }
   });
 
   this.helpers({
-    openVisits: () => {
+      openVisits: () => {
       var today = new Date();
       today.setHours(0,0,0,0);
 
       var userId = Meteor.userId();
       var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
       if (user && user.userData && user.userData.location) {
-        this.vicinity = user.userData.vicinity;
+        this.visitRange = user.userData.visitRange;
         this.fromLocation = user.userData.location.geo;
         this.hasLocation = true;
       }else {
-        this.vicinity = 3000;
+        this.visitRange = 3000;
         this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
         this.hasLocation = false;
       }
-      console.log( "open Visits: " + this.vicinity  + " " + JSON.stringify(this.fromLocation));
+      console.log( "open Visits: " + this.visitRange  + " " + JSON.stringify(this.fromLocation));
       var visits = Visit.find({
          visitorId: null,
          "location.geo": {
            $near: {
              $geometry: this.fromLocation,
-             $maxDistance: this.vicinity * 1609
+             $maxDistance: this.visitRange * 1609
            }
          },
          requestedDate: {$gt: today},

@@ -121,16 +121,16 @@ if (Meteor.isServer) {
 
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:20}]);
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.role, "visitor");
-        assert.equal(updatedUser.userData.vicinity, 20);
+        assert.equal(updatedUser.userData.visitRange, 20);
       });
 
       it('fails when user is not logged in', () => {
         const invocation = {userId: null};
         try {
-          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:20}]);
+          updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20}]);
           fail("expected exception");
         } catch (ex) {
           assert.equal( ex.error, 'not-logged-in')
@@ -139,21 +139,21 @@ if (Meteor.isServer) {
       it('fails when invalid vicinity', () => {
         const invocation = {userId: testUserId};
         try {
-          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:"NaN"}]);
+          updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:"NaN"}]);
           fail("expected exception");
         } catch (err) {
           assert.equal( err.error , 'validation-error', err.error);
-          assert.equal( err.reason , '"userData.vicinity" has to be a number', err.reason)
+          assert.equal( err.reason , '"userData.visitRange" has to be a number', err.reason)
         }
       });
-      it('fails when vicinity=0', () => {
+      it('fails when visitRange=0', () => {
         const invocation = {userId: testUserId};
         try {
-          updateUserDataHandler.apply(invocation, [{role:"visitor", vicinity:0}]);
+          updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:0}]);
           fail("expected exception");
         } catch (err) {
           assert.equal( err.error , 'validation-error', err.error);
-          assert.equal( err.reason , '"userData.vicinity" has to be greater than 0', err.reason)
+          assert.equal( err.reason , '"userData.visitRange" has to be greater than 0', err.reason)
         }
       });
 

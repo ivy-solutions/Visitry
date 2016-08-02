@@ -4,9 +4,14 @@
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
 
+  this.isVisitor = false;
+
    this.helpers({
     currentUser: () => {
-      return Meteor.user();
+      var user = Meteor.user();
+      this.isVisitor = user && user.userData && user.userData.role === 'visitor';
+      console.log( "currentUser isVisitor:" + this.isVisitor);
+      return user;
     }
   });
 
@@ -23,12 +28,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
    this.submitUpdate = () => {
 
      console.log("update user: " + JSON.stringify(this.currentUser));
-     var newUserData = {
-       role: this.currentUser.userData.role,
-       vicinity: this.currentUser.userData.vicinity
-     };
 
-     Meteor.call('updateUserData', newUserData, (err) => {
+     Meteor.call('updateUserData', this.currentUser.userData, (err) => {
        if (err) return handleError(err);
      });
 

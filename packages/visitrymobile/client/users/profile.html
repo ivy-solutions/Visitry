@@ -1,8 +1,7 @@
 <ion-view title="{{profile.currentUser.username}}">
 
     <ion-content class="profile">
-        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
-        <div ng-if="!profile.currentUser.userData.picture">
+         <div ng-if="!profile.currentUser.userData.picture">
              <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
                       <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
              </div>
@@ -14,16 +13,25 @@
                 </div>
             </div>
         </div>
-         <div class="list">
-            <label class="item item-input">
+        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
+        <div class="list">
+            <label class="item item-input" ng-show="{{profile.isVisitor}}">
                  <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
                        ng-model="profile.currentUser.userData.location.address"
-                       details="profile.locationDetails" ng-focus="profile.disableTap()"/>
+                       details="profile.locationDetails" ng-focus="profile.disableTap()"
+                       placeholder="Enter location from which you will usually come"/>
              </label>
-            <label class="item item-input item-select">
+            <label class="item item-input" ng-hide="{{profile.isVisitor}}">
+                <i class="icon ion-location placeholder-icon"></i>
+                <input type="text" id="locationInput" ng-google-places-autocomplete
+                       ng-model="profile.currentUser.userData.location.address"
+                       details="profile.locationDetails" ng-focus="profile.disableTap()"
+                       placeholder="Enter usual visit location"/>
+            </label>
+            <label class="item item-input item-select" ng-show="{{profile.isVisitor || profile.currentUser.userData.visitRange}}">
                 <span class="input-label">Show visits within:</span>
-                <select ng-model="profile.currentUser.userData.vicinity" convert-to-number>
+                <select ng-model="profile.currentUser.userData.visitRange" convert-to-number>
                     <option value="2">2 miles</option>
                     <option value="5">5 miles</option>
                     <option value="10">10 miles</option>
@@ -31,12 +39,14 @@
                     <option value="50">50 miles</option>
                 </select>
             </label>
-             <label class="item item-input">
-                <ion-radio ng-model='profile.currentUser.userData.role' value="requester">Request Visits</ion-radio><ion-radio ng-model='profile.currentUser.userData.role' value="visitor">Visit Others</ion-radio>
+            <label class="item item-input item-stacked-label">
+                <div class="input-label">About You</div>
+                <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
+                </textarea>
             </label>
         </div>
          <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
-            Submit
+            Update Profile
         </button>
     </ion-content>
 </ion-view>

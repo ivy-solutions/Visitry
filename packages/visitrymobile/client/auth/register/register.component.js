@@ -15,6 +15,7 @@ angular.module("visitry.mobile").directive('register', function() {
       };
       this.firstName = '';
       this.lastName = '';
+      this.role = 'requester';
 
       this.createAccount = (form) => {
         if(form.$valid) {
@@ -23,7 +24,7 @@ angular.module("visitry.mobile").directive('register', function() {
               return handleError(err);
             }
             else {
-              Meteor.call('updateName', this.firstName, this.lastName, 'visitor', (err) => {
+              Meteor.call('updateName', this.firstName, this.lastName, this.role, (err) => {
                 if (err) return handleError(err);
               });
               Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {

@@ -42,7 +42,7 @@ describe('Visitor Feedback List', function () {
               }
             }
           },
-          vicinity: "20"
+          visitRange: "20"
         }
       };
 

@@ -62,7 +62,7 @@ describe ( 'Profile', function() {
           }
         }
       },
-      vicinity: "20"
+      visitRange: "20"
     }
   };
 

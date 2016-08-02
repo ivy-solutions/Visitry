@@ -32,7 +32,7 @@ Meteor.publish("userRequests", function (options) {
 
 Meteor.publish("availableVisits", function () {
   if (this.userId) {
-    const defaultVicinity = 3000;
+    const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
     var user = Meteor.users.findOne({_id: this.userId}, {
       fields: {
@@ -41,7 +41,7 @@ Meteor.publish("availableVisits", function () {
         'userData.vicinity': 1
       }
     });
-    var vicinity = user.userData.vicinity ? user.userData.vicinity : defaultVicinity;
+    var visitRange = user.userData.visitRange ? user.userData.visitRange : defaultVisitRange;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
     var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
     //active unfilled future visit requests
@@ -53,7 +53,7 @@ Meteor.publish("availableVisits", function () {
       'location.geo': {
         $near: {
           $geometry: fromLocation,
-          $maxDistance: vicinity * 1609
+          $maxDistance: visitRange * 1609
         }
       }
     }, {

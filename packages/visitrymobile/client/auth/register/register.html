@@ -2,7 +2,7 @@
 
     <ion-content class="register padding">
         <ion-item class="card padding">
-            <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
+           <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
                 <div class="list">
                     <label class="item item-input">
                         <input ng-model="register.firstName" name="firstName" type="text" placeholder="First name" required />
@@ -32,8 +32,11 @@
                         <span flex></span>
                         <span class="error-message" ng-messages-include="error-list.html"></span>
                     </div>
-
-                 </div>
+                    <label class="item">
+                        <ion-radio ng-model='register.role' value="requester">Request Visits</ion-radio>
+                        <ion-radio ng-model='register.role' value="visitor">Visit Others</ion-radio>
+                    </label>
+                </div>
                 <div class="padding">
                     <button class="button button-block" >Submit</button>
                 </div>

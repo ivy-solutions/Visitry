@@ -72,7 +72,8 @@ Meteor.startup(function ()  {
             coordinates: [-71.078006,42.369707 ]
           }
         },
-        vicinity: 10
+        visitRange: 10,
+        about: "I am new to Boston having moved from Ohio. I am studying clarinet at Berklee. I enjoy reading fiction, taking walks, and learning about history."
       }
     });
     Accounts.createUser({
@@ -82,7 +83,8 @@ Meteor.startup(function ()  {
         lastName: 'Robbins',
         role: "requester",
         agencyIds: [agency._id],
-        interests: ['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids']
+        interests: ['WWII and Korean War veteran', 'Red Sox fan', 'grows orchids'],
+        about: "I watch baseball - Red Sox games. I grow orchids. I was a mechanic in the Army Air Corps and worked in the post office."
       }
     });
     Accounts.createUser({
@@ -92,7 +94,8 @@ Meteor.startup(function ()  {
         lastName: 'Smith',
         role: "requester",
         interests: ['Hiking', '6 grandchildren'],
-        agencyIds: [agency._id]
+        agencyIds: [agency._id],
+        about: "6 grandchildren - 4 girls and 2 boys. Born in Naples Italy. I enjoy walking and used to go hiking in the White Mountains."
       }
     });
     Accounts.createUser({
@@ -102,7 +105,8 @@ Meteor.startup(function ()  {
         lastName: 'Wang',
         role: "requester",
         agencyIds: [agency._id],
-        interests: ['Has 4 cats', 'Sings in church choir']
+        interests: ['Has 4 cats', 'Sings in church choir'],
+        about: "I sing in the choir. I have four cats."
       }
     });
     //set one user to access all agencies

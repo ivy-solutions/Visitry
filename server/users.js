@@ -8,7 +8,7 @@ Meteor.publish("userdata", function () {
       {fields: {username: 1, emails: 1,
         'userData.location': 1, 'userData.vicinity': 1,
         'userData.firstName':1, 'userData.lastName':1,
-        'userData.picture': 1, 'userData.interests': 1}});
+        'userData.picture': 1, 'userData.about': 1}});
   } else {
     this.ready();
   }
@@ -75,7 +75,8 @@ Meteor.methods({
     }
     var currentUser = User.findOne( this.userId );
     currentUser.userData.role = data.role;
-    currentUser.userData.vicinity = data.vicinity;
+    currentUser.userData.visitRange = data.visitRange;
+    currentUser.userData.about = data.about;
     currentUser.save();
   },
   updatePicture(data) {
