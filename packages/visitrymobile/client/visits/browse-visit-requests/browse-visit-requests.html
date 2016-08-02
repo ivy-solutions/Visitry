@@ -12,7 +12,7 @@
                     {{visitsByDate.date|date: "EEEE, MMMM d"}}
                 </div>
                 <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
-                    <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}"/>
+                    <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}" ng-click="browseVisitRequests.visitDetails(visit._id)"/>
                     <a ng-click="browseVisitRequests.visitDetails(visit._id)">
                         <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
                         <div class="visitInfo">
