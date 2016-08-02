@@ -10,7 +10,7 @@
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
       <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
         <div class="item item-divider">
-          {{dateVisits.date|date: "EEE., MMMM d"}}
+          {{dateVisits.date|date: "EEEE, MMMM d"}}
         </div>
         <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
                   on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">

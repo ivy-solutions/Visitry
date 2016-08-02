@@ -6,7 +6,7 @@
           <div ng-if="!feedback.isVisitor">
             <img ng-src="{{feedback.visitor.userData.picture}}">
             <h2>{{feedback.visitor.userData.firstName}}</h2>
-            <p>{{feedback.visit.requestedDate| date:mediumDate}}</p>
+            <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
           </div>
           <div ng-if="feedback.isVisitor">
             <img ng-src="{{feedback.requester.userData.picture}}">
