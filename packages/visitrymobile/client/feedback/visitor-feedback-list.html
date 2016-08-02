@@ -6,7 +6,7 @@
     <ion-list show-delete="feedbackList.showDelete" can-swipe="feedbackList.canSwipe">
       <div ng-repeat="visitsByDate in feedbackList.pendingFeedback">
         <div class="item item-divider">
-          {{visitsByDate.date|date:"EEE. ,MMMM d"}}
+          {{visitsByDate.date|date:"EEEE, MMMM d"}}
         </div>
         <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar" ng-click="feedbackList.giveFeedback(visit._id)">
           <img ng-if="false" ng-src="{{feedbackList.getRequesterImage(visit)}}">

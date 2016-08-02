@@ -2,18 +2,20 @@
   <ion-content class="has-header">
     <form>
       <ion-list>
-        <ion-item class="item-avatar">
           <div ng-if="!feedback.isVisitor">
-            <img ng-src="{{feedback.visitor.userData.picture}}">
-            <h2>{{feedback.visitor.userData.firstName}}</h2>
-            <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
+              <ion-item class="item-avatar">
+                <img ng-src="{{feedback.visitor.userData.picture}}">
+                <h2>{{feedback.visitor.userData.firstName}}</h2>
+                <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
+              </ion-item>
           </div>
           <div ng-if="feedback.isVisitor">
-            <img ng-src="{{feedback.requester.userData.picture}}">
-            <h2>{{feedback.requester.userData.firstName}}</h2>
-            <p>{{feedback.visit.requestedDate| date:mediumDate}}</p>
+              <ion-item class="item-avatar">
+                <img ng-src="{{feedback.requester.userData.picture}}">
+                <h2>{{feedback.requester.userData.firstName}}</h2>
+                <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
+              </ion-item>
           </div>
-        </ion-item>
         <div class="item item-divider">
           Rate your <span ng-if="!feedback.isVisitor">visitor</span><span ng-if="feedback.isVisitor">Senior</span>
         </div>
