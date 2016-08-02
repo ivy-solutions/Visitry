@@ -9,7 +9,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.visitId = $stateParams.visitId;
   this.visit;
-  this.showBuddyInfo = false
   this.requester
 
   this.helpers({
@@ -18,8 +17,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       console.log( "visit:" + JSON.stringify(visit));
       if ( visit ) {
         this.visit = visit;
-        //show buddy info if the visit is scheduled, or if it is unscheduled and being viewed by a potential visitor
-        this.showBuddyInfo = this.visit.visitorId || this.visit.requesterId != Meteor.userId();
         this.requester = User.findOne({_id: visit.requesterId});
       }
       return visit;
@@ -49,13 +46,9 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return User.findOne({_id: this.visit.requesterId});
   };
 
-  this.getBuddy = function( ) {
-    if (this.isRequester() && this.visit.visitorId) {
-      //requester's buddy is the visitor
+  this.getVisitor = function( ) {
+    if (this.visit.visitorId) {
       return User.findOne({_id: this.visit.visitorId});
-    } else {
-      //no visitor or user is the visitor, then we return the requester
-      return this.getRequester();
     }
   };
 
@@ -78,26 +71,14 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return "";
   };
 
-  this.getBuddyImage = function() {
-    var buddy = this.getBuddy();
-    if (buddy) {
-      if (buddy.userData.picture == undefined) {
-        return "";
-      } else {
-        return buddy.userData.picture;
-      }
-    }
+  this.hasUserInterests = (user) => {
+    return typeof(this.userInterests(user)) === 'object';
   };
 
-  this.buddyHasInterests = () => {
-    return typeof(this.buddyInterests())=== 'object';
-  };
-
-  this.buddyInterests = () => {
-    var buddy = this.getBuddy();
-    if (buddy) {
-      if (buddy.userData && buddy.userData.interests)
-        return buddy.userData.interests;
+  this.userInterests = (user) => {
+    if (user) {
+      if (user.userData && user.userData.interests)
+        return user.userData.interests;
     }
     return '';
   };

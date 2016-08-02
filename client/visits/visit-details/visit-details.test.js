@@ -22,9 +22,11 @@ describe('View Visit Details', function () {
 
   var controller;
   var findOneStub;
+  var userIdStub;
 
   beforeEach(function () {
     findOneStub = sinon.stub(User, 'findOne');
+    userIdStub = sinon.stub(Meteor, 'userId');
     inject(function ($rootScope, $state) {
       controller = $controller('visitDetailsCtrl', {
         $scope: $rootScope.$new(true),
@@ -37,65 +39,47 @@ describe('View Visit Details', function () {
 
   afterEach(function () {
     User.findOne.restore();
+    Meteor.userId.restore();
   });
 
   describe( "isVisitor", function () {
     it( "is true", function() {
-      controller.visit = {visitorId : Meteor.userId()};
-      chai.assert(controller.isVisitor);
+      userIdStub.returns( "someUserId")
+      controller.visit = {visitorId : "someUserId"};
+      chai.assert.isTrue(controller.isVisitor() );
     });
     it( "visitor is someone else", function() {
       controller.visit = {visitorId : 'someOtherUser'};
-      chai.assert(controller.isVisitor, false);
+      chai.assert.isFalse(controller.isVisitor());
     });
     it( "no visitor", function() {
       controller.visit = {};
-      chai.assert(controller.isVisitor, false);
+      chai.assert.isFalse(controller.isVisitor());
     });
   });
 
   describe( "isRequester", function () {
     it( "is true", function() {
       controller.visit = {requesterId : Meteor.userId()};
-      chai.assert(controller.isRequester);
+      chai.assert.isTrue(controller.isRequester());
     });
     it( "requester is someone else", function() {
       controller.visit = {requesterId : 'someOtherUser'};
-      chai.assert(controller.isRequester, false);
+      chai.assert.isFalse(controller.isRequester());
     });
   });
 
-  describe( "getBuddy", function () {
-    it( "if user is requester returns visitor", function() {
-      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
-      chai.assert.equal(controller.getBuddy().userData.firstName, 'Victoria');
+  describe( "hasUserInterests", function () {
+    it( "has interests true", function() {
+      var userWith = {userData: {firstName: "Alfonso", interests: ["mountain climbing", "writing symphonies", "studying Urdu"]}};
+       chai.assert(controller.hasUserInterests(userWith));
     });
-    it( "if visit has no visitor yet returns requester", function() {
-      controller.requester = { name: "Requester" };
-      controller.visit = {requesterId : Meteor.userId(), visitorId: null };
-      chai.assert.equal(controller.getBuddy().name, 'Requester');
-    });
-    it( "if user is visitor returns requester", function() {
-      controller.requester = { name: "Requester" };
-      controller.visit = {requesterId : "someone", visitorId: Meteor.userId() };
-      chai.assert.equal(controller.getBuddy().name, 'Requester');
+    it( "has no interests", function() {
+      var userWithout = {userData: {firstName: "Boring"}};
+      chai.assert.isFalse(controller.hasUserInterests(userWithout));
     });
   });
 
-  describe( "getBuddyImage", function () {
-    it( "if user is requester returns visitor", function() {
-      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
-      chai.assert.equal(controller.getBuddyImage(), "Victoria's picture");
-    });
-    it( "if visit has no visitor yet returns requester", function() {
-      controller.visit = {requesterId : Meteor.userId(), visitorId: null };
-      chai.assert.equal(controller.getBuddyImage(), "Requester's picture");
-    });
-    it( "if user is visitor returns requester", function() {
-      controller.visit = {requesterId : "someone", visitorId: Meteor.userId() };
-      chai.assert.equal(controller.getBuddyImage(), "Requester's picture");
-    });
-  });
 
   describe( "getRequesterImage", function () {
     it( "if requester has a picture", function() {
@@ -122,18 +106,6 @@ describe('View Visit Details', function () {
       controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
       findOneStub.returns( {userData: {firstName: "No face"}} );
       chai.assert.equal(controller.getVisitorImage(), "");
-    });
-  });
-
-  describe( "buddyHasInterests", function () {
-    it( "buddy has no interests", function() {
-      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
-      chai.assert.isFalse(controller.buddyHasInterests());
-    });
-    it( "buddy has interests", function() {
-      controller.visit = {requesterId : Meteor.userId(), visitorId: "visitor"};
-      findOneStub.returns( {userData: {firstName: "Viola", interests: ["day trading", "vintage aircraft", "romance novels"]}} );
-      chai.assert.isTrue(controller.buddyHasInterests());
     });
   });
 

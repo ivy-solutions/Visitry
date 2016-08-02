@@ -1,40 +1,36 @@
 /**
- * Created by sarahcoletti on 3/2/16.
- */
+* Created by sarahcoletti on 3/2/16.
+*/
 <ion-view view-title="Visit Request" ng-controller="visitDetailsCtrl as visitDetails">
-  <ion-content>
-      <ion-list>
-        <ion-item class="item-avatar">
-            <img ng-src="{{visitDetails.getBuddyImage()}}"/>
-            <h2>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}}
+    <ion-content>
+        <div class="item item-divider">{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</div>
+        <ion-item>
+            <h2>
                 <span class="time">
                     {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) : (visitDetails.visit.requestedDate | timeOfDay) }}
                 </span>
+                {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? visitDetails.visit.location.address :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
             </h2>
-             <div ng-show="visitDetails.showBuddyInfo">
-                <h2>{{visitDetails.getBuddy() | firstNameLastInitial}}</h2>
-            </div>
-         </ion-item>
-          <ion-item>
-              {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? "Location: " + visitDetails.visit.location.address :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
-          </ion-item>
-          <ion-item ng-show="visitDetails.showBuddyInfo && visitDetails.buddyHasInterests()">
-              <ion-list>{{visitDetails.getBuddy() | firstNameLastInitial}}'s Interests
-                  <ion-item ng-repeat="interest in visitDetails.buddyInterests()">{{interest}}</ion-item>
-              </ion-list>
-          </ion-item>
-          <ion-item>
-              <ion-list>Notes
-                  <ion-item class="item-avatar item-text-wrap" ng-show="visitDetails.visit.notes">
-                    <img ng-src="{{visitDetails.getRequesterImage()}}"/>
-                    <p>{{visitDetails.visit.notes}}</p></ion-item>
-                  <ion-item class="item-avatar item-text-wrap" ng-show="visitDetails.visit.visitorNotes">
-                      <img ng-src="{{visitDetails.getVisitorImage()}}"/>
-                      <p>{{visitDetails.visit.visitorNotes}}</p>
-                  </ion-item>
-              </ion-list>
-           </ion-item>
-
-      </ion-list>
-   </ion-content>
+        </ion-item>
+        <ion-list>
+            <ion-item class="item-avatar item-text-wrap">
+                <img ng-src="{{visitDetails.getRequesterImage()}}"/>
+                <h2>{{visitDetails.getRequester() | firstNameLastInitial}}</h2>
+                <p>{{visitDetails.visit.notes}}</p>
+            </ion-item>
+            <ion-item ng-show="!visitDetails.isRequester() && visitDetails.hasUserInterests(visitDetails.getRequester())" class="item-text-wrap">
+                About {{visitDetails.getRequester() | firstNameLastInitial}}:
+                <ion-item>{{visitDetails.userInterests(visitDetails.getRequester())}}</ion-item>
+            </ion-item>
+            <ion-item ng-show="visitDetails.visit.visitTime" class="item-avatar item-text-wrap">
+                <img ng-src="{{visitDetails.getVisitorImage()}}"/>
+                <h2>{{visitDetails.getVisitor() | firstNameLastInitial}}</h2>
+                <p>{{visitDetails.visit.visitorNotes}}</p>
+            </ion-item>
+            <ion-item ng-show="visitDetails.isRequester() && visitDetails.hasUserInterests(visitDetails.getVisitor())" class="item-text-wrap">
+                About {{visitDetails.getVisitor() | firstNameLastInitial}}:
+                <ion-item>{{visitDetails.userInterests(visitDetails.getVisitor())}}</ion-item>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>
