@@ -8,7 +8,7 @@
     </div>
     <h1 class="title">Schedule Visit</h1>
     <div class="buttons" side="secondary" ng-click="scheduleVisit.submit(visit)">
-      <button class="button button-clear button-balanced">Submit</button>
+      <button class="button button-clear button-balanced">Commit</button>
     </div>
     </ion-header-bar>
   <ion-content>
@@ -28,7 +28,7 @@
         </div>
         <div class="list list-inset">
             <ionic-timepicker class="button" input-obj="timePickerObject" ng-click="scheduleVisit.initTimePicker(visit.requestedDate)">
-                <button class="button overflowShow icon ion-ios-clock" >
+                <button class="button overflowShow" >Set Time
                 </button>
             </ionic-timepicker>
             <span class="scheduledTime">{{scheduleVisit.getSelectedTime() | date: "h:mm a"}}</span>
