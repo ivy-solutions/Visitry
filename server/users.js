@@ -6,7 +6,7 @@ Meteor.publish("userdata", function () {
     var user = User.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
     return User.find({agencyId: user.userData.agencyId },
       {fields: {username: 1, emails: 1,
-        'userData.location': 1, 'userData.vicinity': 1,
+        'userData.location': 1, 'userData.visitRange': 1,
         'userData.firstName':1, 'userData.lastName':1,
         'userData.picture': 1, 'userData.about': 1}});
   } else {

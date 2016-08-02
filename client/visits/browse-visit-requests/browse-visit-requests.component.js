@@ -23,7 +23,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.openVisitCount = -1;
 
   this.autorun( function() {
-    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
       this.visitRange = user.userData.visitRange
@@ -39,7 +39,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       today.setHours(0,0,0,0);
 
       var userId = Meteor.userId();
-      var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.vicinity': 1}});
+      var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.visitRange': 1}});
       if (user && user.userData && user.userData.location) {
         this.visitRange = user.userData.visitRange;
         this.fromLocation = user.userData.location.geo;

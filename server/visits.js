@@ -38,7 +38,7 @@ Meteor.publish("availableVisits", function () {
       fields: {
         'userData.agencyIds': 1,
         'userData.location': 1,
-        'userData.vicinity': 1
+        'userData.visitRange': 1
       }
     });
     var visitRange = user.userData.visitRange ? user.userData.visitRange : defaultVisitRange;

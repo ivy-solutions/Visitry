@@ -136,7 +136,7 @@ if (Meteor.isServer) {
           assert.equal( ex.error, 'not-logged-in')
         }
       });
-      it('fails when invalid vicinity', () => {
+      it('fails when invalid visitRange', () => {
         const invocation = {userId: testUserId};
         try {
           updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:"NaN"}]);
