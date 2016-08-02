@@ -14,7 +14,6 @@ const UserData = Class.create({
       ]
     },
     agencyIds: {type: [String], optional: true },  //user can initially be unassigned to an agency
-    interests: {type: [String], optional: true },
     about: {type: String, optional: true},
     location: {type: Address, optional:true},
     visitRange: {type: Number, optional:true, default: 10, validators: [{type:'gt', param: 0}]},  //area in miles within which to filter visit requests

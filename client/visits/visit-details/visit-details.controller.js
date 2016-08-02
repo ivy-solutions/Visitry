@@ -71,14 +71,13 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return "";
   };
 
-  this.hasUserInterests = (user) => {
-    return typeof(this.userInterests(user)) === 'object';
+  this.hasAboutInfo = (user) => {
+    return user && user.userData && user.userData.about;
   };
 
-  this.userInterests = (user) => {
-    if (user) {
-      if (user.userData && user.userData.interests)
-        return user.userData.interests;
+  this.userAboutInfo = (user) => {
+    if (user && user.userData && user.userData.about) {
+        return user.userData.about;
     }
     return '';
   };

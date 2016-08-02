@@ -69,14 +69,14 @@ describe('View Visit Details', function () {
     });
   });
 
-  describe( "hasUserInterests", function () {
+  describe( "hasAboutInfo", function () {
     it( "has interests true", function() {
       var userWith = {userData: {firstName: "Alfonso", interests: ["mountain climbing", "writing symphonies", "studying Urdu"]}};
-       chai.assert(controller.hasUserInterests(userWith));
+       chai.assert(controller.hasAboutInfo(userWith));
     });
     it( "has no interests", function() {
       var userWithout = {userData: {firstName: "Boring"}};
-      chai.assert.isFalse(controller.hasUserInterests(userWithout));
+      chai.assert.isFalse(controller.hasAboutInfo(userWithout));
     });
   });
 
