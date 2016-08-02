@@ -72,7 +72,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.hasAboutInfo = (user) => {
-    return user && user.userData && user.userData.about;
+    return user && user.userData && user.userData.about != null && user.userData.about.length > 0;
   };
 
   this.userAboutInfo = (user) => {

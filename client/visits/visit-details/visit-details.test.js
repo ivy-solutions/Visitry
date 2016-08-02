@@ -70,12 +70,16 @@ describe('View Visit Details', function () {
   });
 
   describe( "hasAboutInfo", function () {
-    it( "has interests true", function() {
-      var userWith = {userData: {firstName: "Alfonso", interests: ["mountain climbing", "writing symphonies", "studying Urdu"]}};
+    it( "user has about info", function() {
+      var userWith = {userData: {firstName: "Alfonso", about: "I enjoy mountain climbing, writing symphonies and studying Urdu."}};
        chai.assert(controller.hasAboutInfo(userWith));
     });
-    it( "has no interests", function() {
+    it( "has no about info", function() {
       var userWithout = {userData: {firstName: "Boring"}};
+      chai.assert.isFalse(controller.hasAboutInfo(userWithout));
+    });
+    it( "has empty about info", function() {
+      var userWithout = {userData: {firstName: "Empty", about:""}};
       chai.assert.isFalse(controller.hasAboutInfo(userWithout));
     });
   });

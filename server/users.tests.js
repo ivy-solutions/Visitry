@@ -121,10 +121,11 @@ if (Meteor.isServer) {
 
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20}]);
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens"}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.role, "visitor");
         assert.equal(updatedUser.userData.visitRange, 20);
+        assert.equal(updatedUser.userData.about, "I raise chickens");
       });
 
       it('fails when user is not logged in', () => {
