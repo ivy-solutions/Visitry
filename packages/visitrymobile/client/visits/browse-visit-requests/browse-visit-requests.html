@@ -1,7 +1,7 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header has-tabs">
          <div class="numVisits" ng-hide="browseVisitRequests.openVisitCount > 0">
-             No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location.address | limitTo:20}}
+             No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
          </div>
          <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
             <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
@@ -30,4 +30,7 @@
     </ion-tab>
     <ion-tab title="Scheduled" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="/visitor/upcoming">
     </ion-tab>
+    <ion-tab title="Feedback" badge="visitry.feedbackOutstanding" icon-on="ion-ios-star" badge-style="badge-assertive" icon-off="ion-ios-star-outline" href="/visitor/feedback">
+    </ion-tab>
 </ion-tabs>
+

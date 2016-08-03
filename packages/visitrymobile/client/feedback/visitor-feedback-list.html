@@ -1,7 +1,7 @@
 <ion-view view-title="Give Feedback" hide-back-button=true>
   <ion-content class="has-header">
     <div class="numVisits" ng-hide="feedbackList.numFeedback>0">
-      No recent visits to give feedback for. Please complete a visit then return here to give your feedback.
+      No recent visits to give feedback for.
     </div>
     <ion-list show-delete="feedbackList.showDelete" can-swipe="feedbackList.canSwipe">
       <div ng-repeat="visitsByDate in feedbackList.pendingFeedback">
@@ -21,3 +21,11 @@
     </ion-list>
   </ion-content>
 </ion-view>
+<ion-tabs class="tabs-balanced tabs-icon-top">
+    <ion-tab title="Choose" icon-on="ion-leaf" icon-off="ion-leaf" href="/visitor/browseRequests">
+    </ion-tab>
+    <ion-tab title="Scheduled" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="/visitor/upcoming">
+    </ion-tab>
+    <ion-tab title="Feedback" badge="visitry.feedbackOutstanding" icon-on="ion-ios-star" badge-style="badge-assertive" icon-off="ion-ios-star-outline" href="/visitor/feedback">
+    </ion-tab>
+</ion-tabs>
