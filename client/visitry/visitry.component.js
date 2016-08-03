@@ -46,7 +46,7 @@ angular.module('visitry').directive('visitry', function () {
 
       this.logout = () => {
         console.log("logout");
-        Accounts.logout(function (err) {
+        Meteor.logout(function (err) {
           if (err) {
             console.log(err);
           }
