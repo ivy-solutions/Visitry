@@ -31,7 +31,14 @@ angular.module("visitry.mobile").directive('register', function() {
                 if (err) {
                   return handleError(err)
                 }
-                $state.go('profile')
+                 $state.go('profile');
+
+                //reinitialize fields
+                this.firstName = '';
+                this.lastName =''
+                this.credentials.username = '';
+                this.credentials.password ='';
+                this.role = 'requester'
               });
             }
           })

@@ -33,10 +33,12 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
        if (err) return handleError(err);
      });
 
+     // location is optional
      if (this.isLocationValid()) {
        console.log("update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
        var newLocation = {
-         name: this.currentUser.userData.location.address,
+         name: this.locationDetails.name,
+         formattedAddress: this.locationDetails.formatted_address,
          latitude: this.locationDetails.geometry.location.lat(),
          longitude: this.locationDetails.geometry.location.lng()
        };

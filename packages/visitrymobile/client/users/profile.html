@@ -29,7 +29,7 @@
                        details="profile.locationDetails" ng-focus="profile.disableTap()"
                        placeholder="Enter usual visit location"/>
             </label>
-            <label class="item item-input item-select" ng-show="{{profile.isVisitor || profile.currentUser.userData.visitRange}}">
+            <label class="item item-input item-select">
                 <span class="input-label">Show visits within:</span>
                 <select ng-model="profile.currentUser.userData.visitRange" convert-to-number>
                     <option value="2">2 miles</option>

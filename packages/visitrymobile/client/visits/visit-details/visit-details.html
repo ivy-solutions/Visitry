@@ -9,7 +9,7 @@
                 <span class="time">
                     {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) : (visitDetails.visit.requestedDate | timeOfDay) }}
                 </span>
-                {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? visitDetails.visit.location.address :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
+                {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? (visitDetails.visit.location | streetAddress) :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
             </h2>
         </ion-item>
         <ion-list>

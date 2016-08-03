@@ -73,12 +73,13 @@ if (Meteor.isServer) {
     describe('users.updateLocation method', () => {
       const updateLocationHandler = Meteor.server.method_handlers['updateLocation'];
 
-      const location = { name: "some place", latitude: 42.12345, longitude: -71.23}
+      const location = { name: "some place, U.S.A", formattedAddress: "123 Main St., Acton, MA 01720", latitude: 42.12345, longitude: -71.23}
       it('succeeds when valid location passed', () => {
         const invocation = {userId: testUserId};
         updateLocationHandler.apply(invocation, [location]);
         var updatedUser = User.findOne(testUserId);
         assert.equal(updatedUser.userData.location.address, location.name);
+        assert.equal(updatedUser.userData.location.formattedAddress, location.formattedAddress);
         assert.equal(updatedUser.userData.location.geo.coordinates[1], location.latitude);
         assert.equal(updatedUser.userData.location.geo.coordinates[0], location.longitude);
       });

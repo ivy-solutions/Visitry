@@ -23,6 +23,7 @@ Meteor.startup(function ()  {
           website: "http://visitry.org",
           location: {
             address: "80 Willow Street, Acton, MA 01720",
+            formattedAddress: "80 Willow St, Acton, MA 01720",
             geo: {
               "type": "Point",
               "coordinates": [-71.477358, 42.468846]
@@ -41,6 +42,7 @@ Meteor.startup(function ()  {
           website: "http://ivy-solutions.org",
           location: {
             address: "Boston",
+            formattedAddress: "Boston",
             geo: {
               "type": "Point",
               "coordinates": [-71.0589, 42.3601]
@@ -66,6 +68,7 @@ Meteor.startup(function ()  {
         agencyIds: [agency._id],
         location: {
           address: "25 First St., Cambridge, MA",
+          formattedAddress: "25 First St., Cambridge, MA",
           geo: {
             type: "Point",
             coordinates: [-71.078006,42.369707 ]
@@ -143,6 +146,7 @@ Meteor.startup(function ()  {
       "notes": '1pm works best',
       "location": {
         "address":"36 Charter Rd, Acton, MA 01720",
+        "formattedAddress":"36 Charter Rd, Acton, MA 01720",
         "geo": { "type": "Point",
           "coordinates": [-71.458239, 42.479591]
         }
@@ -160,6 +164,7 @@ Meteor.startup(function ()  {
       "notes": '3pm works best',
       "location": {
         "address": "Walden Pnd",
+        "formattedAddress": "Walden Pnd",
         "geo": {
           "type": "Point",
           "coordinates": [-71.338848, 42.437465]
@@ -178,6 +183,7 @@ Meteor.startup(function ()  {
       "notes": '10pm works best',
       "location": {
         "address":"Boston",
+        "formattedAddress":"Boston",
         "geo": { "type": "Point",
           "coordinates": [-71.0589, 42.3601]
         }
@@ -193,6 +199,7 @@ Meteor.startup(function ()  {
       "notes": 'pick me, please',
       "location": {
         "address":"Belmont, MA",
+        "formattedAddress":"Belmont",
         "geo": { "type": "Point",
           "coordinates": [-71.176972, 42.396341]
         }
@@ -208,6 +215,7 @@ Meteor.startup(function ()  {
       "notes": 'Shall we go for coffee?',
       "location": {
         "address":"Boston Public Garden",
+        "formattedAddress": "Boston Public Garden",
         "geo": { "type": "Point",
           "coordinates": [-71.069459, 42.35621]
         }
@@ -225,6 +233,7 @@ Meteor.startup(function ()  {
       "notes": 'This already happened',
       "location": {
         "address":"Boston",
+        "formattedAddress":"Boston",
         "geo": { "type": "Point",
           "coordinates": [-71.0589, 42.3601]
         }
@@ -240,6 +249,7 @@ Meteor.startup(function ()  {
       "notes": 'I need to walk Bowser.',
       "location": {
         "address":"Riverside, Cambridge, MA",
+        "formattedAddress":"Riverside",
         "geo": { "type": "Point",
           "coordinates": [-71.111397, 42.368699]
         }

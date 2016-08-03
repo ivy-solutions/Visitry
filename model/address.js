@@ -28,7 +28,8 @@ const GeoLocation = Class.create({
 const Address = Class.create({
   name: 'address',
   fields: {
-    address: {type: String},
+    address: {type: String},  //google place details 'name'
+    formattedAddress: {type: String},
     geo: {type: GeoLocation}
   }
 });

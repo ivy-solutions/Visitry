@@ -70,6 +70,7 @@ if (Meteor.isServer) {
         validAgency.website = "http://www.goodwebsite.com";
         validAgency.location = {
           address: "80 Willow Street, Acton, MA 01720",
+          formattedAddress: "80 Willow St, Acton, MA 01720",
           geo: {
             "type": "Point",
             "coordinates": [-71.477358, 42.468846]

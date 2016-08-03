@@ -61,6 +61,7 @@ Meteor.methods({
     var currentUser = User.findOne( this.userId );
     currentUser.userData.location = {
       address: loc.name,
+      formattedAddress: loc.formattedAddress,
       geo: { 
         type: "Point",
         coordinates: [loc.longitude, loc.latitude]

@@ -20,6 +20,21 @@ if (Meteor.isServer) {
   var agency2Id = Random.id();
   let yesterday = new Date();
   yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
+  var testVisit = {
+    notes: 'test visit',
+    requestedDate: tomorrow,
+    createdAt: new Date(),
+    agencyId: agencyId,
+    requesterId: requesterId,
+    location: {
+      address: "Boston",
+      formattedAddress: "Boston",
+      geo: {
+        type: "Point",
+        coordinates: [-71.0589, 42.3601]
+      }
+    }
+  };
 
 
   describe('Visits', () => {
@@ -43,20 +58,7 @@ if (Meteor.isServer) {
 
       beforeEach(() => {
         Visits.remove({});
-        requestId = Visits.insert({
-          notes: 'test visit',
-          agencyId: agencyId,
-          requestedDate: tomorrow,
-          createdAt: new Date(),
-          requesterId: requesterId,
-          location: {
-            address: "Boston",
-            geo: {
-              type: "Point",
-              coordinates: [-71.0589, 42.3601]
-            }
-          }
-        });
+        requestId = Visits.insert(testVisit);
       });
 
       it('can not deactivate requests of another requester', () => {
@@ -99,21 +101,8 @@ if (Meteor.isServer) {
 
       beforeEach(() => {
         Visits.remove({});
-        visitId = Visits.insert({
-          notes: 'test visit',
-          agencyId: agencyId,
-          requestedDate: tomorrow,
-          createdAt: new Date(),
-          requesterId: requesterId,
-          visitorId: userId,
-          location: {
-            name: "Boston",
-            geo: {
-              type: "Point",
-              coordinates: [-71.0589, 42.3601]
-            }
-          }
-        });
+        testVisit.visitorId = userId;
+        visitId = Visits.insert(testVisit);
       });
 
       it('can not cancel visits of another visitor', () => {
@@ -146,20 +135,7 @@ if (Meteor.isServer) {
 
       beforeEach(() => {
         Visits.remove({});
-        visitId = Visits.insert({
-          notes: 'test visit',
-          requestedDate: tomorrow,
-          createdAt: new Date(),
-          agencyId: agencyId,
-          requesterId: requesterId,
-          location: {
-            address: "Boston",
-            geo: {
-              type: "Point",
-              coordinates: [-71.0589, 42.3601]
-            }
-          }
-        });
+        visitId = Visits.insert(testVisit);
       });
 
 
@@ -187,20 +163,7 @@ if (Meteor.isServer) {
 
       beforeEach(() => {
         Visits.remove({});
-        visitId = Visits.insert({
-          notes: 'test visit',
-          requestedDate: tomorrow,
-          createdAt: new Date(),
-          requesterId: requesterId,
-          agencyId: agencyId,
-          location: {
-            address: "Boston",
-            geo: {
-              type: "Point",
-              coordinates: [-71.0589, 42.3601]
-            }
-          }
-        });
+        visitId = Visits.insert(testVisit);
       });
 
       it('attach requester feedback success', () => {
@@ -217,20 +180,7 @@ if (Meteor.isServer) {
       let visitId;
       beforeEach(()=>{
         Visits.remove({});
-        visitId = Visits.insert({
-          notes: 'test visit',
-          requestedDate: tomorrow,
-          createdAt: new Date(),
-          requesterId: requesterId,
-          agencyId: agencyId,
-          location: {
-            address: "Boston",
-            geo: {
-              type: "Point",
-              coordinates: [-71.0589, 42.3601]
-            }
-          }
-        })
+        visitId = Visits.insert(testVisit)
       });
       it('attach visitor feedback success',()=>{
         const invocation = {userId:userId};
@@ -262,6 +212,7 @@ if (Meteor.isServer) {
           requestedDate: tomorrow,
           location: {
             address: "Boston",
+            formattedAddress: "Boston",
             geo: {
               type: "Point",
               coordinates: [-71.0589, 42.3601]
@@ -389,6 +340,7 @@ if (Meteor.isServer) {
           visitRange: 10,
           location: {
             address: "Acton",
+            formattedAddress: "Acton",
             geo: {
               type: "Point",
               coordinates: [-71.432612, 42.485008]
@@ -411,6 +363,7 @@ if (Meteor.isServer) {
           visitRange: 50,
           location: {
             address: "Acton",
+            formattedAddress: "Acton",
             geo: {
               type: "Point",
               coordinates: [-71.432612, 42.485008]
@@ -463,6 +416,7 @@ if (Meteor.isServer) {
       agencyId: agencyId,
       location: {
         address: "Boston",
+        formattedAddress: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -477,6 +431,7 @@ if (Meteor.isServer) {
       agencyId: agencyId,
       location: {
         address: "Boston",
+        formattedAddress: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -491,6 +446,7 @@ if (Meteor.isServer) {
       agencyId: agencyId,
       location: {
         address: "Boston",
+        formattedAddress: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -507,6 +463,7 @@ if (Meteor.isServer) {
       agencyId: agencyId,
       location: {
         address: "Boston",
+        formattedAddress: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]
@@ -521,6 +478,7 @@ if (Meteor.isServer) {
       agencyId: agency2Id,
       location: {
         address: "Boston",
+        formattedAddress: "Boston",
         geo: {
           type: "Point",
           coordinates: [-71.0589, 42.3601]

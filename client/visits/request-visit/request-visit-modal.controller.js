@@ -75,6 +75,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       if ( this.visitRequest.location.details.geometry ) {
         newVisit.location = {
           address: this.visitRequest.location.name,
+          formattedAddress: this.visitRequest.location.details.formatted_address,
           geo: {
             type: "Point",
             coordinates: [this.visitRequest.location.details.geometry.location.lng(), this.visitRequest.location.details.geometry.location.lat()]
@@ -84,7 +85,9 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         newVisit.location = currentUser.userData.location;
       }
       console.log(newVisit);
-      Meteor.call('visits.createVisit',newVisit);
+      Meteor.call('visits.createVisit',newVisit, (err) => {
+        if (err) return handleError(err);
+      });
       hideRequestVisitModal();
     }
   };
@@ -95,4 +98,15 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   function hideRequestVisitModal() {
     RequestVisit.hideModal();
   }
+
+  function handleError(err) {
+    console.log('account save error ', err);
+
+    $ionicPopup.alert({
+      title: err.reason || 'Request failed',
+      template: 'Please try again',
+      okType: 'button-positive button-clear'
+    });
+  }
+
 });
