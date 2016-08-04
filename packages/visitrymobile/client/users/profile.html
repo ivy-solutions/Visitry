@@ -15,14 +15,14 @@
         </div>
         <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
         <ion-list>
-            <label class="item item-input" ng-show="{{profile.isVisitor}}">
+            <label class="item item-input" ng-show="profile.isVisitor">
                  <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
                        ng-model="profile.currentUser.userData.location.address"
                        details="profile.locationDetails" ng-focus="profile.disableTap()"
                        placeholder="Enter location from which you will usually come"/>
              </label>
-            <label class="item item-input" ng-hide="{{profile.isVisitor}}">
+            <label class="item item-input" ng-hide="profile.isVisitor">
                 <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
                        ng-model="profile.currentUser.userData.location.address"
@@ -30,7 +30,7 @@
                        placeholder="Enter usual visit location"/>
             </label>
 
-            <label class="item">Show visits within {{profile.distance}} miles
+            <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
                 <div class="range range-positive">
                     1
                     <input type="range" name="volume" min="1" max="50" ng-model="profile.distance">
