@@ -9,8 +9,6 @@
         <ion-item href="/profile" menu-close>Profile</ion-item>
         <ion-item href="/visitor/browseRequests" menu-close>As Visitor</ion-item>
         <ion-item href="/requester/pendingVisits" menu-close>As Requester</ion-item>
-        <ion-item href="/visitor/feedback" menu-close ng-if="visitry.isVisitor"><span class="badge badge-positive">{{visitry.feedbackOutstanding}}</span>Feedback
-        </ion-item>
         <ion-item class="item" ng-click="visitry.logout()" menu-close>Sign out</ion-item>
       </ion-list>
     </ion-content>
