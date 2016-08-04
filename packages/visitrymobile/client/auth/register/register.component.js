@@ -27,6 +27,8 @@ angular.module("visitry.mobile").directive('register', function() {
               Meteor.call('updateName', this.firstName, this.lastName, this.role, (err) => {
                 if (err) return handleError(err);
               });
+              var avatarWithInitials = generateAvatar(this.firstName, this.lastName);
+              Meteor.call('updatePicture', avatarWithInitials);
               Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
                 if (err) {
                   return handleError(err)
@@ -64,6 +66,30 @@ angular.module("visitry.mobile").directive('register', function() {
         });
       }
 
+      function generateAvatar( firstName, lastName ) {
+        var initials = (firstName ? firstName[0]: "")  + (lastName ? lastName[0] : "");
+
+        var WIDTH = 256, HEIGHT = 256;
+
+        var canvas = document.createElement('canvas');
+        canvas.id = "avatar";
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = "#FF6F69";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        var _font_size = WIDTH / 2 ;
+        ctx.font = 100 +" "+ _font_size +"px sans-serif";
+
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#2F2933";
+        ctx.fillText(initials, WIDTH / 2, HEIGHT - (HEIGHT / 2) + ( _font_size / 3) + 5 );
+
+        var img = canvas.toDataURL("image/png" );
+        return img;
+      };
 
     }
   }

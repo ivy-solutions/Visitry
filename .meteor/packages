@@ -40,6 +40,9 @@ less
 tmeasday:publish-counts
 aldeed:simple-schema
 aldeed:collection2
+jagi:astronomy
+jagi:astronomy-timestamp-behavior
+jagi:astronomy-softremove-behavior
 
 # packaging and build related
 visitry-browser         # visitry package
@@ -56,8 +59,9 @@ hwillson:stub-collections
 practicalmeteor:mocha-console-runner
 dburles:factory
 practicalmeteor:faker
-jagi:astronomy
-jagi:astronomy-timestamp-behavior
-jagi:astronomy-softremove-behavior
-raix:push
 random
+
+# notifications
+raix:push
+
+#other
