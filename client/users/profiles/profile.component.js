@@ -10,6 +10,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     currentUser: () => {
       var user = Meteor.user();
       this.isVisitor = user && user.userData && user.userData.role === 'visitor';
+      this.distance = this.isVisitor && user.userData.visitRange ? user.userData.visitRange.toString() : "10";
       console.log( "currentUser isVisitor:" + this.isVisitor);
       return user;
     }
@@ -19,6 +20,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.locationName = "";
   this.locationDetails;
+  this.distance="0";
 
   /////////
   this.isLocationValid = ()=> {
@@ -29,6 +31,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
      console.log("update user: " + JSON.stringify(this.currentUser));
 
+     this.currentUser.userData.visitRange = parseInt(this.distance, 10);
      Meteor.call('updateUserData', this.currentUser.userData, (err) => {
        if (err) return handleError(err);
      });
@@ -98,16 +101,4 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       okType: 'button-positive button-clear'
     });
   }
-}).directive('convertToNumber', function() {
-  return {
-    require: 'ngModel',
-    link: function (scope, element, attrs, ngModel) {
-      ngModel.$parsers.push(function (val) {
-        return parseInt(val, 10);
-      });
-      ngModel.$formatters.push(function (val) {
-        return '' + val;
-      });
-    }
-  };
 });

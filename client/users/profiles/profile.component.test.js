@@ -69,6 +69,8 @@ describe ( 'Profile', function() {
   describe( 'submitUpdate', function() {
     it('update UserData', function () {
       controller.currentUser = user;
+      controller.distance = "17";
+      controller.isVisitor = true;
       controller.submitUpdate();
       chai.assert(Meteor.call.calledWith('updateUserData'),"updateUserData called");
     });

@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
-        <div class="list">
+        <ion-list>
             <label class="item item-input" ng-show="{{profile.isVisitor}}">
                  <i class="icon ion-location placeholder-icon"></i>
                 <input type="text" id="locationInput" ng-google-places-autocomplete
@@ -29,22 +29,20 @@
                        details="profile.locationDetails" ng-focus="profile.disableTap()"
                        placeholder="Enter usual visit location"/>
             </label>
-            <label class="item item-input item-select">
-                <span class="input-label">Show visits within:</span>
-                <select ng-model="profile.currentUser.userData.visitRange" convert-to-number>
-                    <option value="2">2 miles</option>
-                    <option value="5">5 miles</option>
-                    <option value="10">10 miles</option>
-                    <option value="20">20 miles</option>
-                    <option value="50">50 miles</option>
-                </select>
+
+            <label class="item">Show visits within {{profile.distance}} miles
+                <div class="range range-positive">
+                    1
+                    <input type="range" name="volume" min="1" max="50" ng-model="profile.distance">
+                    50
+                </div>
             </label>
             <label class="item item-input item-stacked-label">
                 <div class="input-label">About You</div>
                 <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
                 </textarea>
             </label>
-        </div>
+        </ion-list>
          <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
             Update Profile
         </button>
