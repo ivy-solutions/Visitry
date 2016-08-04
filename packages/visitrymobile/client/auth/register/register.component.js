@@ -69,6 +69,8 @@ angular.module("visitry.mobile").directive('register', function() {
       function generateAvatar( firstName, lastName ) {
         var initials = (firstName ? firstName[0]: "")  + (lastName ? lastName[0] : "");
 
+        const colors = ["#FFCE98","#FF6F69","#ff9999", "#99ccff", "#cc9966", "#ffffcc", "#cc6699", "#75a3a3" ];
+
         var WIDTH = 256, HEIGHT = 256;
 
         var canvas = document.createElement('canvas');
@@ -77,7 +79,9 @@ angular.module("visitry.mobile").directive('register', function() {
         canvas.height = HEIGHT;
 
         var ctx = canvas.getContext('2d');
-        ctx.fillStyle = "#FF6F69";
+        var colorIndex = new Date().getMilliseconds() % colors.length;
+        console.log( colorIndex );
+        ctx.fillStyle = colors[colorIndex];
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
         var _font_size = WIDTH / 2 ;

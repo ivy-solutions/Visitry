@@ -20,7 +20,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.locationName = "";
   this.locationDetails;
-  this.distance="0";
+  this.distance="1";
 
   /////////
   this.isLocationValid = ()=> {
