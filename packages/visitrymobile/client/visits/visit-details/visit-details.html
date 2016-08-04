@@ -4,13 +4,15 @@
 <ion-view view-title="Visit Request" ng-controller="visitDetailsCtrl as visitDetails">
     <ion-content>
         <div class="item item-divider">{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</div>
-        <ion-item>
+        <ion-item class="item-text-wrap">
             <h2>
-                <span class="time">
+                <div class="time">
                     {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) : (visitDetails.visit.requestedDate | timeOfDay) }}
-                </span>
-                {{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? (visitDetails.visit.location | streetAddress) :  "Near: " + (visitDetails.visit.location | approximateLocation)}}
+                </div>
             </h2>
+            <h3>
+                <p>{{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? (visitDetails.visit.location.address) :  "Near: " + (visitDetails.visit.location | approximateLocation)}}</p>
+            </h3>
         </ion-item>
         <ion-list>
             <ion-item class="item-avatar item-text-wrap">

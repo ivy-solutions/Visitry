@@ -30,10 +30,11 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 
   this.isLocationValid = ()=> {
     if ( this.userSubmitted ) {
+      //user has selected a location, or has a default location that matches what is on screen
       var hasSelectedLocation = this.visitRequest.location.details.geometry != null;
       var hasDefaultUserLocation = !(currentUser.userData.location == null);
       return this.visitRequest.location.name.length > 0 && (
-        hasSelectedLocation || hasDefaultUserLocation )
+        hasSelectedLocation || (hasDefaultUserLocation &&  this.visitRequest.location.name == currentUser.userData.location.address))
     } else {
       return true;
     }

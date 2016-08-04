@@ -7,6 +7,10 @@ angular.module('visitry').filter('streetAddress', function () {
       return "No Location";
 
     var parts = location.formattedAddress.split(',');
-    return parts[0] + ", " + parts[1]
+    var streetAddress = parts[0]
+    if (parts.length> 1) {
+      streetAddress += parts[1];
+    }
+    return streetAddress;
   }
 });
