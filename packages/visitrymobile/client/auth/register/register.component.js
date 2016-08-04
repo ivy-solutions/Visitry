@@ -31,18 +31,27 @@ angular.module("visitry.mobile").directive('register', function() {
                 if (err) {
                   return handleError(err)
                 }
-                 $state.go('profile');
+                this.resetForm(form);
+                $state.go('profile');
 
-                //reinitialize fields
-                this.firstName = '';
-                this.lastName =''
-                this.credentials.username = '';
-                this.credentials.password ='';
-                this.role = 'requester'
               });
             }
           })
         }
+      };
+
+      this.cancel = function (form) {
+        this.resetForm(form);
+        $state.go( 'login');
+      };
+
+      this.resetForm= function(form) {
+        form.$setUntouched();
+        form.$setPristine();
+        this.firstName = '';
+        this.lastName ='';
+        this.credentials.username = '';
+        this.credentials.password ='';
       };
 
       function handleError(err) {

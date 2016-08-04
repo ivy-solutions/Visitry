@@ -1,6 +1,5 @@
 <ion-view title="Register">
-
-    <ion-content class="register padding">
+    <ion-content class="has-header register padding">
         <ion-item class="card padding">
            <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
                 <div class="list">
@@ -37,9 +36,10 @@
                         <ion-radio ng-model='register.role' value="visitor">Visit Others</ion-radio>
                     </label>
                 </div>
-                <div class="padding">
+                <div class="padding item">
                     <button class="button button-block" >Submit</button>
-                </div>
+                    <button class="button button-block button-clear" type="button" ng-click="register.cancel(registrationForm)">Cancel</button>
+               </div>
             </form>
         </ion-item>
     </ion-content>
