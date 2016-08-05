@@ -18,7 +18,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.subscribe('userProfile');
 
-  this.locationName = "";
   this.locationDetails;
   this.distance="1";
 
@@ -49,7 +48,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         Meteor.call('updateLocation', newLocation, (err) => {
          if (err) return handleError(err);
        });
+     } else {
+       // if there is no geo location then the address is incomplete
+       // we do not want to stop the user, but don't want to keep partial unsaved info either
+       if (this.currentUser.userData.location.address && !this.currentUser.userData.geo ) {
+         this.currentUser.userData.location.address = "";
+       }
      }
+
+     //clear form
+     this.locationDetails = null;
 
      if (this.currentUser.userData.role == "visitor") {
        $state.go('browseRequests');
