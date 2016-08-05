@@ -80,7 +80,6 @@ angular.module("visitry.mobile").directive('register', function() {
 
         var ctx = canvas.getContext('2d');
         var colorIndex = new Date().getMilliseconds() % colors.length;
-        console.log( colorIndex );
         ctx.fillStyle = colors[colorIndex];
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
 

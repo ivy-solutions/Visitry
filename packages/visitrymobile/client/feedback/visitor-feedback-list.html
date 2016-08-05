@@ -9,7 +9,7 @@
           {{visitsByDate.date|date:"EEEE, MMMM d"}}
         </div>
         <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar" ng-click="feedbackList.giveFeedback(visit._id)">
-          <img ng-if="false" ng-src="{{feedbackList.getRequesterImage(visit)}}">
+          <img ng-src="{{feedbackList.getRequesterImage(visit)}}">
           <div layout="row">
             <h2>{{feedbackList.getRequester(visit) | firstNameLastInitial }}</h2>
             <span flex></span>

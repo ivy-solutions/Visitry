@@ -5,48 +5,60 @@
           <div ng-if="!feedback.isVisitor">
               <ion-item class="item-avatar">
                 <img ng-src="{{feedback.visitor.userData.picture}}">
-                <h2>{{feedback.visitor.userData.firstName}}</h2>
+                <h2>{{feedback.visitor.userData.firstName }}</h2>
                 <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
               </ion-item>
           </div>
           <div ng-if="feedback.isVisitor">
               <ion-item class="item-avatar">
                 <img ng-src="{{feedback.requester.userData.picture}}">
-                <h2>{{feedback.requester.userData.firstName}}</h2>
+                <h2>{{feedback.requester.userData.firstName }}</h2>
                 <p>{{feedback.visit.requestedDate| date:"EEEE, MMMM d"}}</p>
               </ion-item>
           </div>
         <div class="item item-divider">
-          Rate your <span ng-if="!feedback.isVisitor">visitor</span><span ng-if="feedback.isVisitor">Senior</span>
+          <span ng-if="!feedback.isVisitor">Rate your visitor, {{feedback.visitor.userData.firstName}}</span>
+          <span ng-if="feedback.isVisitor">Rate your host, {{feedback.requester.userData.firstName}}</span>
         </div>
         <ion-item>
-          <ng-md-icon ng-repeat="goodStar in feedback.visitorRating.goodStars" icon="star" size="64"
+          <ng-md-icon ng-repeat="goodStar in feedback.visitorRating.goodStars" icon="star" size="50"
                       style="fill:#FF5461"
                       ng-click="feedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
-          <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="64"
+          <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
-        <textarea rows="3" ng-model="feedback.userComments" placeholder="Leave a Comment">
+        <textarea rows="2" ng-model="feedback.userComments" placeholder="Leave a Comment">
             </textarea>
             </label>
           </div>
         </ion-item>
         <div class="item item-divider">
-          Rate your visit
+          Rate the overall visit
         </div>
         <ion-item>
-          <ng-md-icon ng-repeat="goodStar in feedback.visitRating.goodStars" icon="star" size="64" style="fill:#FF5461"
+          <ng-md-icon ng-repeat="goodStar in feedback.visitRating.goodStars" icon="star" size="50" style="fill:#FF5461"
                       ng-click="feedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
-          <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="64"
+          <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
           <div class="list list-inset">
             <label class="item item-input">
-        <textarea rows="3" ng-model="feedback.visitComments" placeholder="Leave a Comment">
+        <textarea rows="2" ng-model="feedback.visitComments" placeholder="Leave a Comment">
             </textarea>
             </label>
           </div>
         </ion-item>
+          <div class="item item-divider" ng-if="feedback.isVisitor">
+              Estimate the time spent visiting - {{feedback.timeSpent | hoursMinutes }}
+          </div>
+          <ion-item ng-if="feedback.isVisitor">
+                  <div class="range range-positive">
+                      0 min.
+                      <input type="range" name="volume" min="0" max="300" step="15" ng-model="feedback.timeSpent">
+                      5 hr.
+                  </div>
+              </label>
+          </ion-item>
       </ion-list>
       <button class="button button-block button-balanced" ng-click="feedback.submitFeedback()">
         Submit

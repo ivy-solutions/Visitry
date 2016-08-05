@@ -2,7 +2,6 @@ import { Class } from 'meteor/jagi:astronomy';
 
 const Feedbacks = new Mongo.Collection("feedback");
 
-!//TODO check role
   Feedbacks.allow({
     insert: function (userId, visit) {
       return true;
@@ -36,7 +35,8 @@ const Feedback = Class.create({
     visitRating: {type: Number, validators: starValueValidator},
     visitComments: {type: String,optional:true},
     visitId: {type: String, immutable: true},
-    createdAt: {type: Date, immutable: true}
+    createdAt: {type: Date, immutable: true},
+    timeSpent: {type: Number, optional: true }
   },
   behaviors: {
     timestamp: {

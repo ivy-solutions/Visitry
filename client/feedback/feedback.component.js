@@ -20,6 +20,7 @@ angular.module('visitry').directive('feedback', function () {
 
       this.userComments = '';
       this.visitComments = '';
+      this.timeSpent = 60;
 
       var feedbackResponse = {
         visitorId: '',
@@ -29,7 +30,8 @@ angular.module('visitry').directive('feedback', function () {
         userComments: '',
         visitRating: 0,
         visitComments: '',
-        visitId: $stateParams.visitId
+        visitId: $stateParams.visitId,
+        timeSpent: -1
       };
 
       this.visitor = '';
@@ -110,6 +112,7 @@ angular.module('visitry').directive('feedback', function () {
         //TODO: Add form validation
         feedbackResponse.userComments = this.userComments;
         feedbackResponse.visitComments = this.visitComments;
+        feedbackResponse.timeSpent = this.timeSpent;
 
         var feedbackId = Feedbacks.insert(feedbackResponse);
         var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
