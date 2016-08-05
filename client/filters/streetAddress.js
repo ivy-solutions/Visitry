@@ -9,7 +9,7 @@ angular.module('visitry').filter('streetAddress', function () {
     var parts = location.formattedAddress.split(',');
     var streetAddress = parts[0]
     if (parts.length> 1) {
-      streetAddress += parts[1];
+      streetAddress += "," + parts[1];
     }
     return streetAddress;
   }

@@ -7,6 +7,8 @@ import {chai} from 'meteor/practicalmeteor:chai';
 import { firstNameLastInitial } from '/client/filters/firstNameLastInitial'
 import { approximateLocation } from '/client/filters/approximateLocation'
 import { timeOfDay } from '/client/filters/timeOfDay'
+import { hoursMinutes } from '/client/filters/hoursMinutes'
+import { streetAddress } from '/client/filters/streetAddress'
 
 describe( 'Filters ', function () {
   var $filter;
@@ -108,6 +110,19 @@ describe( 'Filters ', function () {
     });
   });
 
+  describe( 'Filter: streetAddress', function() {
+
+    beforeEach( inject( function(_$filter_) {
+      $filter = _$filter_;
+    }));
+
+    it('return address', function() {
+      let location = {formattedAddress: "80 Willow St, Acton, MA 01720, USA"}
+      var streetAddress = $filter('streetAddress');
+      chai.assert.equal(streetAddress(location), '80 Willow St, Acton');
+    });
+  });
+
   describe( 'Filter: timeOfDay', function() {
 
     beforeEach( inject( function(_$filter_) {
@@ -134,4 +149,31 @@ describe( 'Filters ', function () {
 
   });
 
+  describe( 'Filter: hoursMinutes', function() {
+
+    beforeEach( inject( function(_$filter_) {
+      $filter = _$filter_;
+    }));
+
+    it('return 0 when there is no number of minutes passed', function() {
+      var hoursMinutes = $filter('hoursMinutes');
+      chai.assert.equal(hoursMinutes(null), '0');
+    });
+
+    it('when minutes is less than an hour', function() {
+      var hoursMinutes = $filter('hoursMinutes');
+      chai.assert.equal(hoursMinutes(13), '13 min.');
+    });
+
+    it('when minutes is more than an hour', function() {
+      var hoursMinutes = $filter('hoursMinutes');
+      chai.assert.equal(hoursMinutes(75), '1 hr. 15 min.');
+    });
+
+    it('when minutes is 0', function() {
+      var hoursMinutes = $filter('hoursMinutes');
+      chai.assert.equal(hoursMinutes(0), '0 min.');
+    });
+
+  });
 });

@@ -4,7 +4,7 @@
 
 angular.module('visitry').filter('hoursMinutes', function () {
   return function (numMinutes) {
-    if (!numMinutes) {
+    if (numMinutes==null) {
       return '0';
     }
 
