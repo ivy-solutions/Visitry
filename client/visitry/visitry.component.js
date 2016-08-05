@@ -18,7 +18,7 @@ angular.module('visitry').directive('visitry', function () {
     controller: function ($scope, $reactive, $state, $ionicHistory) {
       $reactive(this).attach($scope);
 
-      this.subscribe('userProfile');
+      var subscription = this.subscribe('userProfile');
 
       this.helpers({
         isVisitor: ()=> {
@@ -50,6 +50,7 @@ angular.module('visitry').directive('visitry', function () {
           if (err) {
             console.log(err);
           }
+          subscription.stop();
           $ionicHistory.clearHistory();
           $state.go('login');
         });
