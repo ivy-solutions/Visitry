@@ -11,7 +11,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       var user = Meteor.user();
       this.isVisitor = user && user.userData && user.userData.role === 'visitor';
       this.distance = this.isVisitor && user.userData.visitRange ? user.userData.visitRange.toString() : "10";
-      console.log( "currentUser isVisitor:" + this.isVisitor);
       return user;
     }
   });
@@ -23,46 +22,52 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   /////////
   this.isLocationValid = ()=> {
-    return this.locationDetails;
+    if ( Meteor.userId() !== null ) {
+      var userHasSelectedLocation = this.locationDetails != null && this.currentUser.userData.location.address != null && this.currentUser.userData.location.address.length > 0;
+      var hasClearAddress = !this.locationDetails &&
+        (!this.currentUser.userData.location || !this.currentUser.userData.location.address);
+      return userHasSelectedLocation || hasClearAddress;
+    }
+    return false;
   };
 
-   this.submitUpdate = () => {
+   this.submitUpdate = (form) => {
+     console.log("update location: " + JSON.stringify(this.locationDetails));
+     if(form.$valid && (this.isLocationValid() || (form.visitorLocation.$pristine==true && form.requesterLocation.$pristine==true) )) {
 
-     console.log("update user: " + JSON.stringify(this.currentUser));
+       console.log("update user: " + JSON.stringify(this.currentUser));
 
-     this.currentUser.userData.visitRange = parseInt(this.distance, 10);
-     Meteor.call('updateUserData', this.currentUser.userData, (err) => {
-       if (err) return handleError(err);
-     });
-
-     // location is optional
-     if (this.isLocationValid()) {
-       console.log("update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
-       var newLocation = {
-         name: this.currentUser.userData.location.address,
-         formattedAddress: this.locationDetails.formatted_address,
-         latitude: this.locationDetails.geometry.location.lat(),
-         longitude: this.locationDetails.geometry.location.lng()
-       };
-
-        Meteor.call('updateLocation', newLocation, (err) => {
+       this.currentUser.userData.visitRange = parseInt(this.distance, 10);
+       Meteor.call('updateUserData', this.currentUser.userData, (err) => {
          if (err) return handleError(err);
        });
-     } else {
-       // if there is no geo location then the address is incomplete
-       // we do not want to stop the user, but don't want to keep partial unsaved info either
-       if (this.currentUser.userData.location.address && !this.currentUser.userData.geo ) {
-         this.currentUser.userData.location.address = "";
+
+       if (form.visitorLocation.$pristine==false || form.requesterLocation.$pristine==false) { //if location has changed
+         // location is optional - can be blank or selected
+         var newLocation = null;
+         if (this.locationDetails) {
+           var newLocation = {
+             name: this.currentUser.userData.location.address,
+             formattedAddress: this.locationDetails.formatted_address,
+             latitude: this.locationDetails.geometry.location.lat(),
+             longitude: this.locationDetails.geometry.location.lng()
+           };
+         }
+
+         console.log("update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
+         Meteor.call('updateLocation', newLocation, (err) => {
+           if (err) return handleError(err);
+         });
        }
-     }
 
-     //clear form
-     this.locationDetails = null;
+       //clear form
+       this.resetForm(form);
 
-     if (this.currentUser.userData.role == "visitor") {
-       $state.go('browseRequests');
-     } else {
-       $state.go('pendingVisits');
+       if (this.currentUser.userData.role == "visitor") {
+         $state.go('browseRequests');
+       } else {
+         $state.go('pendingVisits');
+       }
      }
   };
 
@@ -73,8 +78,12 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     angular.element(container).attr('data-tap-disabled', 'true');
     // leave input field if google-address-entry is selected
     angular.element(container).on("click", function () {
-      document.getElementById('locationInput').blur();
+      document.getElementById('visitorLocation').blur();
     });
+    angular.element(container).on("click", function () {
+      document.getElementById('requesterLocation').blur();
+    });
+
   };
 
   this.updatePicture = () => {
@@ -109,4 +118,13 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       okType: 'button-positive button-clear'
     });
   }
+
+  this.resetForm= function(form) {
+    this.locationDetails = null;
+    this.distance=1;
+    this.isVisitor=false;
+    form.$setUntouched();
+    form.$setPristine();
+  };
+
 });

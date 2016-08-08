@@ -1,50 +1,59 @@
 <ion-view title="{{profile.currentUser.username}}" hide-back-button=true>
 
     <ion-content class="profile">
-         <div ng-if="!profile.currentUser.userData.picture">
-             <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
-                      <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
-             </div>
-        </div>
-        <div ng-if="profile.currentUser.userData.picture">
-            <div class="profile-picture has-picture" ng-click="profile.updatePicture()">
-                <div class="item-avatar">
-                    <img ng-src="{{profile.currentUser.userData.picture}}"/>
+        <form name="profileForm" novalidate="" ng-submit="profile.submitUpdate(profileForm)">
+             <div ng-if="!profile.currentUser.userData.picture">
+                 <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
+                          <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
+                 </div>
+            </div>
+            <div ng-if="profile.currentUser.userData.picture">
+                <div class="profile-picture has-picture" ng-click="profile.updatePicture()">
+                    <div class="item-avatar">
+                        <img ng-src="{{profile.currentUser.userData.picture}}"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
-        <ion-list>
-            <label class="item item-input" ng-show="profile.isVisitor">
-                 <i class="icon ion-location placeholder-icon"></i>
-                <input type="text" id="locationInput" ng-google-places-autocomplete
-                       ng-model="profile.currentUser.userData.location.address"
-                       details="profile.locationDetails" ng-focus="profile.disableTap()"
-                       placeholder="Enter location from which you will usually come"/>
-             </label>
-            <label class="item item-input" ng-hide="profile.isVisitor">
-                <i class="icon ion-location placeholder-icon"></i>
-                <input type="text" id="locationInput" ng-google-places-autocomplete
-                       ng-model="profile.currentUser.userData.location.address"
-                       details="profile.locationDetails" ng-focus="profile.disableTap()"
-                       placeholder="Enter usual visit location"/>
-            </label>
-
-            <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
-                <div class="range range-positive">
-                    1
-                    <input type="range" name="distance" min="1" max="50" ng-model="profile.distance">
-                    50
+            <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
+            <ion-list>
+                <label class="item item-input" ng-show="profile.isVisitor">
+                     <i class="icon ion-location placeholder-icon"></i>
+                    <input type="text" name="visitorLocation" id="visitorLocation" ng-google-places-autocomplete
+                           ng-model="profile.currentUser.userData.location.address"
+                           details="profile.locationDetails" ng-focus="profile.disableTap()"
+                           placeholder="Enter location from which you will usually come"/>
+                </label>
+                <div layout="row" ng-show="profile.isVisitor">
+                    <span flex></span>
+                    <span class="error-message" ng-hide="profileForm.visitorLocation.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
                 </div>
-            </label>
-            <label class="item item-input item-stacked-label">
-                <div class="input-label">About You</div>
-                <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
-                </textarea>
-            </label>
-        </ion-list>
-         <button class="button button-block button-clear" ng-click="profile.submitUpdate()">
-            Update Profile
-        </button>
+                <label class="item item-input" ng-hide="profile.isVisitor">
+                    <i class="icon ion-location placeholder-icon"></i>
+                    <input type="text" name="requesterLocation" id="requesterLocation" ng-google-places-autocomplete
+                           ng-model="profile.currentUser.userData.location.address"
+                           details="profile.locationDetails" ng-focus="profile.disableTap()"
+                           placeholder="Enter usual visit location"/>
+                </label>
+                <div layout="row" ng-hide="profile.isVisitor">
+                    <span flex></span>
+                    <span class="error-message" ng-hide="profileForm.requesterLocation.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
+                </div>
+                <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
+                    <div class="range range-positive">
+                        1
+                        <input type="range" name="distance" min="1" max="50" ng-model="profile.distance">
+                        50
+                    </div>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <div class="input-label">About You</div>
+                    <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
+                    </textarea>
+                </label>
+            </ion-list>
+             <button class="button button-block button-clear">
+                Update Profile
+            </button>
+        </form>
     </ion-content>
 </ion-view>
