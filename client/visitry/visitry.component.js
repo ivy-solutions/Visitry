@@ -19,7 +19,6 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
 
       var subscription = this.subscribe('userProfile');
-
       this.helpers({
         isVisitor: ()=> {
           if (Meteor.userId()) {
@@ -29,6 +28,9 @@ angular.module('visitry').directive('visitry', function () {
             }
           }
           return false;
+        },
+        userName: ()=> {
+          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
         },
         feedbackOutstanding: ()=> {
           var feedback = Visit.find({

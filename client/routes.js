@@ -104,7 +104,6 @@ angular.module('visitry')
               var profile = Meteor.subscribe('userProfile');
               var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
               if ( user ) {
-                console.log('There was a user id : ' + JSON.stringify(user));
                 switch (user.userData.role) {
                   case 'visitor':
                     console.log('visitor');
@@ -113,6 +112,10 @@ angular.module('visitry')
                   case 'requester':
                     console.log('requester');
                     $location.url('/requester/pendingVisits');
+                    break;
+                  case 'administrator':
+                    console.log('administrator');
+                    $location.url('/admin');
                     break;
                   default:
                     console.log('invalid role');
@@ -170,6 +173,61 @@ angular.module('visitry')
           }
         },
         controller: 'listAgenciesCtrl as agencies'
+      })
+      .state('adminHome',{
+        url:'/admin',
+          templateUrl: ()=>{
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/admin-home.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/admin-home.html';
+          }
+        },
+        controller: 'adminHomeCtrl as adminHome'
+      })
+      .state('adminManage',{
+        url:'/admin/manage',
+        templateUrl: ()=>{
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/manage/manage.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/manage/manage.html';
+          }
+        },
+        controller: 'adminManageCtrl as adminManage'
+      })
+      .state('adminAnalytics',{
+        url:'/admin/analytics',
+        templateUrl: ()=>{
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/analytics/analytics.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/analytics/analytics.html';
+          }
+        },
+        controller: 'adminAnalyticsCtrl as adminAnalytics'
+      })
+      .state('adminAdmin',{
+        url:'/admin/admin',
+        templateUrl: ()=>{
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/admin/admin.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/admin/admin.html';
+          }
+        },
+        controller: 'adminAdminCtrl as adminAdmin'
+      })
+      .state('adminHelp',{
+        url:'/admin/help',
+        templateUrl: ()=>{
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/help/help.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help.html';
+          }
+        },
+        controller: 'adminHelpCtrl as adminHelp'
       });
 
     $urlRouterProvider.otherwise("/login");
