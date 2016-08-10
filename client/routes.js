@@ -31,7 +31,7 @@ angular.module('visitry')
               var visitNeedingFeedback = Visits.findOne({
                 requesterFeedbackId: null,
                 requesterId: Meteor.userId(),
-                requestedDate: {$lt: new Date()}
+                visitTime: {$lt: new Date()}
               });
               if (isReady && visitNeedingFeedback) {
                 console.log("Yes lets go to feedbacks");

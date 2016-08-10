@@ -22,7 +22,7 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
       var visits = Visits.find({
         visitorFeedbackId: null,
         visitorId: Meteor.userId(),
-        requestedDate: {$lt: new Date()}
+        visitTime: {$lt: new Date()}
       }, {sort: this.getReactively('listSort')});
       this.numFeedback = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);

@@ -30,7 +30,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   };
   $scope.timePickerObject = timePicker;
 
-  this.subscribe('visits');
   this.subscribe('userdata');
 
   this.visitorNotes = "";

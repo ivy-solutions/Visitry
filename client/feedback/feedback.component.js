@@ -15,7 +15,6 @@ angular.module('visitry').directive('feedback', function () {
     controllerAs: 'feedback',
     controller: function ($scope, $reactive, $state, $stateParams) {
       $reactive(this).attach($scope);
-      this.subscribe('visits');
       this.subscribe('userdata');
 
       this.userComments = '';

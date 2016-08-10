@@ -11,17 +11,27 @@ Meteor.publish("visits", function (options) {
   return Visits.find({
     agencyId: {$in: agencies},
     inactive: {$exists: false},
-    $or: [{feedbackId: null}, {requestedDate: {$gt: today}}]
+    $or: [
+      {
+        visitTime: {$lt: new Date()},
+        $or: [{requesterId: this.userId, requesterFeedbackId: null},
+          {visitorId: this.userId, visitorFeedbackId: null}]
+      },
+      {requestedDate: {$gt: today}}]
   }, options);
 });
 
 Meteor.publish("userRequests", function (options) {
   var today = new Date();
   today.setHours(0, 0, 0, 0);
+  //active requests requested by me for a future date, or for a past date and needing my feedback
   var userRequests = Visits.find({
     requesterId: {$eq: this.userId},
     inactive: {$exists: false},
-    $or: [{feedbackId: null}, {requestedDate: {$gt: today}}]
+    $or: [
+      {visitTime: {$lt: new Date()},requesterFeedbackId: null},
+      {requestedDate: {$gt: today}}
+      ]
   }, options);
   var visitorIds = userRequests.map(function (visitRequest) {
     return visitRequest.visitorId
