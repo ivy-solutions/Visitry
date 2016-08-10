@@ -123,6 +123,7 @@ Meteor.methods({
     if (this.userId !== visit.visitorId) {
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
+    var scheduledDateTime = visit.visitTime;
     visit.cancelledAt = new Date();
     visit.visitorId = null;
     visit.visitTime = null;
@@ -131,7 +132,7 @@ Meteor.methods({
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(visit.visitTime).format('MMM. d, h:mm') + ".";
+    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(scheduledDateTime).format('MMM. d, h:mm') + ".";
 
     Meteor.call('userNotification',
       msgText,
