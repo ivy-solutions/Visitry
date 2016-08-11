@@ -46,7 +46,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
          // location is optional - can be blank or selected
          var newLocation = null;
          if (this.locationDetails) {
-           var newLocation = {
+           newLocation = {
              name: this.currentUser.userData.location.address,
              formattedAddress: this.locationDetails.formatted_address,
              latitude: this.locationDetails.geometry.location.lat(),
