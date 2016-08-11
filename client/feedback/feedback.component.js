@@ -1,6 +1,6 @@
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
-import {Feedbacks} from '/model/feedback'
+import {Feedback} from '/model/feedback'
 
 angular.module('visitry').directive('feedback', function () {
   return {
@@ -35,6 +35,7 @@ angular.module('visitry').directive('feedback', function () {
 
       this.visitor = '';
       this.requester = '';
+      this.userSubmitted = false;
 
       this.helpers({
         visit: ()=> {
@@ -107,34 +108,49 @@ angular.module('visitry').directive('feedback', function () {
         }
       };
 
-      this.submitFeedback = ()=> {
-        //TODO: Add form validation
-        feedbackResponse.userComments = this.userComments;
-        feedbackResponse.visitComments = this.visitComments;
-        feedbackResponse.timeSpent = this.timeSpent;
+      this.submitFeedback = (form)=> {
+        this.userSubmitted = true;
+        if(form.$valid) {
+          feedbackResponse.userComments = this.userComments;
+          feedbackResponse.visitComments = this.visitComments;
+          feedbackResponse.timeSpent = this.timeSpent;
 
-        var feedbackId = Feedbacks.insert(feedbackResponse);
-        var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-        if (user.userData.role === 'requester') {
-          Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-            if (err) {
-              console.log(err);
-            }
-            else {
-              $state.go('pendingVisits');
-            }
-          });
-        } else if (user.userData.role === 'visitor') {
-          Meteor.call('visits.attachVisitorFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-            if (err) {
-              console.log(err);
-            }
-            else {
-              $state.go('visitorFeedbackList');
-            }
-          });
+          var feedback = new Feedback(feedbackResponse);
+          feedback.save();
+          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+          if (user.userData.role === 'requester') {
+            Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedback._id, function (err, updates) {
+              if (err) {
+                console.log(err);
+              }
+              else {
+                $state.go('pendingVisits');
+              }
+            });
+          } else if (user.userData.role === 'visitor') {
+            Meteor.call('visits.attachVisitorFeedback', feedbackResponse.visitId, feedback._id, function (err, updates) {
+              if (err) {
+                console.log(err);
+              }
+              else {
+                $state.go('visitorFeedbackList');
+              }
+            });
+          }
+          this.resetForm(form);
         }
-      }
+      };
+
+      this.resetForm= function(form) {
+        this.userSubmitted = false;
+        this.visitorRating.goodStars = [];
+        this.visitRating.goodStars = [];
+        this.userComments ="";
+        this.visitComments="";
+        form.$setUntouched();
+        form.$setPristine();
+      };
+
     }
   }
 });

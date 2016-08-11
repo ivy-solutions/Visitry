@@ -1,6 +1,6 @@
 <ion-view view-title="Rate Your Visit">
   <ion-content class="has-header">
-    <form>
+    <form name="feedbackForm" novalidate="" ng-submit="feedback.submitFeedback(feedbackForm)">
       <ion-list>
           <div ng-if="!feedback.isVisitor">
               <ion-item class="item-avatar">
@@ -26,13 +26,17 @@
                       ng-click="feedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
           <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
-          <div class="list list-inset">
+           <div class="list list-inset">
             <label class="item item-input">
         <textarea rows="2" ng-model="feedback.userComments" placeholder="Leave a Comment">
             </textarea>
             </label>
           </div>
         </ion-item>
+          <div layout="row">
+              <span flex></span>
+              <span class="error-message" ng-show="feedback.visitorRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
+          </div>
         <div class="item item-divider">
           Rate the overall visit
         </div>
@@ -41,13 +45,17 @@
                       ng-click="feedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
           <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
-          <div class="list list-inset">
+            <div class="list list-inset">
             <label class="item item-input">
-        <textarea rows="2" ng-model="feedback.visitComments" placeholder="Leave a Comment">
-            </textarea>
+                <textarea rows="2" ng-model="feedback.visitComments" placeholder="Leave a Comment">
+                </textarea>
             </label>
           </div>
         </ion-item>
+          <div layout="row">
+              <span flex></span>
+              <span class="error-message" ng-show="feedback.visitRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
+          </div>
           <div class="item item-divider" ng-if="feedback.isVisitor">
               Estimate the time spent visiting - {{feedback.timeSpent | hoursMinutes }}
           </div>
@@ -60,7 +68,7 @@
               </label>
           </ion-item>
       </ion-list>
-      <button class="button button-block button-balanced" ng-click="feedback.submitFeedback()">
+      <button class="button button-block button-balanced">
         Submit
       </button>
     </form>

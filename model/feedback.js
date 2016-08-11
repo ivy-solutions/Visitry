@@ -30,7 +30,7 @@ const Feedback = Class.create({
     visitorId: {type: String, immutable: true},
     requesterId: {type:String,immutable:true},
     submitterId:{type:String,immutable:true},
-    visitorRating: {type: Number, validators: starValueValidator},
+    userRating: {type: Number, validators: starValueValidator},
     userComments: {type: String,optional:true},
     visitRating: {type: Number, validators: starValueValidator},
     visitComments: {type: String,optional:true},
