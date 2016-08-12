@@ -166,20 +166,18 @@ Meteor.methods({
       visit.requesterId
     );
   },
-  'visits.attachRequesterFeedback'(visitId, feedbackId) {
+  'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
       throw new Meteor.Error('not-found');
     }
-    visit.requesterFeedbackId = feedbackId;
-    visit.save();
-  },
-  'visits.attachVisitorFeedback'(visitId, feedbackId){
-    const visit = Visit.findOne(visitId);
-    if (!visit) {
-      throw new Meteor.Error('not-found');
+    // the visitor must submit his own feedback
+    // requester feedback may be submitted by a user acting on the requester's behalf
+    if ( visit.visitorId == this.userId) {
+      visit.visitorFeedbackId = feedbackId;
+    } else {
+      visit.requesterFeedbackId = feedbackId;
     }
-    visit.visitorFeedbackId = feedbackId;
     visit.save();
   }
 });

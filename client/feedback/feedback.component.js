@@ -23,7 +23,7 @@ angular.module('visitry').directive('feedback', function () {
 
       var feedbackResponse = {
         visitorId: '',
-        requesterId: Meteor.userId(),
+        requesterId: '',
         submitterId: Meteor.userId(),
         userRating: 0,
         userComments: '',
@@ -33,6 +33,7 @@ angular.module('visitry').directive('feedback', function () {
         timeSpent: -1
       };
 
+      this.isVisitor = false;
       this.visitor = '';
       this.requester = '';
       this.userSubmitted = false;
@@ -44,16 +45,11 @@ angular.module('visitry').directive('feedback', function () {
             feedbackResponse.visitorId = v.visitorId;
             this.visitor = User.findOne({_id: v.visitorId});
             this.requester = User.findOne({_id: v.requesterId});
+            //if the current user is not the visitor for the visit, it may be the requester or someone acting on the requester's behalf
+            this.isVisitor = this.visitor._id == Meteor.userId() ? true : false;
+            console.log( "is Visitor" + this.isVisitor)
           }
           return v
-        },
-        isVisitor: ()=> {
-          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-          if (user) {
-            return user.userData.role === 'visitor';
-          } else {
-            return false;
-          }
         }
       });
 
@@ -110,34 +106,40 @@ angular.module('visitry').directive('feedback', function () {
 
       this.submitFeedback = (form)=> {
         this.userSubmitted = true;
-        if(form.$valid) {
+        if (form.$valid) {
+          feedbackResponse.visitorId = this.visitor._id;
+          feedbackResponse.requesterId = this.requester._id;
           feedbackResponse.userComments = this.userComments;
           feedbackResponse.visitComments = this.visitComments;
-          feedbackResponse.timeSpent = this.timeSpent;
+          feedbackResponse.timeSpent = parseInt(this.timeSpent);
+
+          console.log("Feedback: " + JSON.stringify(feedbackResponse));
 
           var feedback = new Feedback(feedbackResponse);
-          feedback.save();
-          var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-          if (user.userData.role === 'requester') {
-            Meteor.call('visits.attachRequesterFeedback', feedbackResponse.visitId, feedback._id, function (err, updates) {
-              if (err) {
-                console.log(err);
-              }
-              else {
-                $state.go('pendingVisits');
-              }
-            });
-          } else if (user.userData.role === 'visitor') {
-            Meteor.call('visits.attachVisitorFeedback', feedbackResponse.visitId, feedback._id, function (err, updates) {
-              if (err) {
-                console.log(err);
-              }
-              else {
-                $state.go('visitorFeedbackList');
-              }
-            });
-          }
-          this.resetForm(form);
+          Meteor.call('feedback.createFeedback', feedbackResponse, function (err, returnValue) {
+            if (err) {
+              console.log( "submitFeedback error:", err);
+              throw(err);
+            }
+            else {
+              var feedbackId = returnValue;
+              Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
+                if (err) {
+                  console.log(err);
+                }
+                else {
+                  console.log( "is Visitor2" + this.isVisitor)
+                  if (this.isVisitor == true) {
+                    $state.go('visitorFeedbackList');
+                  }
+                  else {
+                    $state.go('pendingVisits');
+                  }
+                };
+              });
+              this.resetForm(form);
+            }
+          });
         }
       };
 
@@ -147,6 +149,7 @@ angular.module('visitry').directive('feedback', function () {
         this.visitRating.goodStars = [];
         this.userComments ="";
         this.visitComments="";
+        this.timeSpent=-1;
         form.$setUntouched();
         form.$setPristine();
       };

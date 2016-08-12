@@ -156,8 +156,8 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('visits.attachRequesterFeedback method', () => {
-      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachRequesterFeedback'];
+    describe('visits.attachFeedback method', () => {
+      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachFeedback'];
       const feedbackId = Random.id();
       let visitId;
 
@@ -167,27 +167,18 @@ if (Meteor.isServer) {
       });
 
       it('attach requester feedback success', () => {
-        const invocation = {userId: userId};
+        const invocation = {userId: requesterId};
         attachFeedbackHandler.apply(invocation, [visitId, feedbackId]);
         var updatedVisit = Visits.findOne({_id: visitId});
         assert.equal(updatedVisit.requesterFeedbackId, feedbackId);
-      });
-    });
-
-    describe('visits.attachVisitorFeedback method',()=>{
-      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachVisitorFeedback'];
-      const feedbackId = Random.id();
-      let visitId;
-      beforeEach(()=>{
-        Visits.remove({});
-        visitId = Visits.insert(testVisit)
       });
       it('attach visitor feedback success',()=>{
         const invocation = {userId:userId};
         attachFeedbackHandler.apply(invocation,[visitId,feedbackId]);
         var updatedVisit = Visit.findOne({_id:visitId});
         assert.equal(updatedVisit.visitorFeedbackId,feedbackId);
-      })
+      });
+
     });
 
     describe('visits.createVisit method', () => {

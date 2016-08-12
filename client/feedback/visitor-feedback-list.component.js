@@ -36,7 +36,6 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
   this.getRequesterImage = function(visit) {
     if (visit.requesterId) {
       var requester = this.getRequester(visit);
-      console.log( "getRequesterImage: " + visit.requesterId + " " + JSON.stringify(requester));
       if ( requester == undefined || requester.userData == undefined || requester.userData.picture == undefined ) {
         return "";
       }
