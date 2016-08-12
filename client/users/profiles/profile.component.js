@@ -89,7 +89,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.updatePicture = () => {
     console.log( "update picture for " + this.currentUser.username);
     MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80 }, function (err, data) {
-      if (err && err.error == 'cancel') {
+      if (err && (err.error == 'cancel' || err.reason == 'no image selected') ) {
         return;
       }
 
