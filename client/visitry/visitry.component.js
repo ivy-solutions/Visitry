@@ -15,7 +15,7 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state, $ionicHistory) {
+    controller: function ($scope, $reactive, $state) {
       $reactive(this).attach($scope);
 
       var subscription = this.subscribe('userProfile');
@@ -53,7 +53,7 @@ angular.module('visitry').directive('visitry', function () {
             console.log(err);
           }
           subscription.stop();
-          $ionicHistory.clearHistory();
+          //$ionicHistory.clearHistory();
           $state.go('login');
         });
       };

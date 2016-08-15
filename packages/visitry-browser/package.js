@@ -14,6 +14,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('angular');
   api.use('less');
+  api.use('angular:angular-material');
 
   api.addFiles([
     'client/lib/module.js',

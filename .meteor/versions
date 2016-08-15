@@ -15,10 +15,8 @@ angular:angular@1.5.3_1
 angular:angular-animate@1.5.3_1
 angular:angular-aria@1.5.3_1
 angular:angular-material@1.0.6
-angular:angular-messages@1.5.3_1
 angular:angular-mocks@1.5.3_1
 angular:angular-sanitize@1.5.3_1
-angularui:angular-ui-bootstrap@0.13.0
 angularui:angular-ui-router@0.2.15
 angularutils:pagination@0.9.1_2
 autoupdate@1.2.11
@@ -65,7 +63,6 @@ id-map@1.0.8
 jagi:astronomy@2.1.2
 jagi:astronomy-softremove-behavior@2.0.4
 jagi:astronomy-timestamp-behavior@2.0.0
-jasonaibrahim:angular-moment@0.10.2
 jeremy:geocomplete@1.7.0
 jquery@1.11.9
 lai:collection-extensions@0.2.1_1

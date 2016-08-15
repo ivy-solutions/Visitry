@@ -1,12 +1,104 @@
-<md-content>
-  <md-toolbar layout="row" layout-align="start center" layout-padding md-scroll-shrink flex>
-    <h2 class="md-title">Visitry</h2>
-    <div ng-show="visitry.isLoggedIn" class="md-padding">
-      <md-button ng-href="/admin/manage">Manage</md-button>
-      <md-button ng-href="/admin/analytics">Analytics</md-button>
-      <md-button ng-href="/admin/admin">Admin</md-button>
-      <md-button ng-href="/admin/help">Help</md-button>
-    </div>
+<md-content layout-fill layout="column">
+  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none">
+    <md-button ng-href="/admin"><h1 class="md-title">Visitry</h1></md-button>
+    <md-menu-bar ng-show="visitry.isLoggedIn">
+      <md-menu>
+        <button ng-click="$mdOpenMenu()">
+          Manage
+        </button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-href="/admin/manage">
+              Overview
+            </md-button>
+          </md-menu-item>
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item>
+            <md-button ng-href="/admin/manage/seniors">
+              Seniors
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-href="/admin/manage/visitors">
+              Visitors
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button ng-href="/admin/manage/visits">
+              Visits
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+      <md-menu>
+        <button ng-click="$mdOpenMenu()">
+          Analytics
+        </button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-href="/admin/analytics">
+              Overview
+            </md-button>
+          </md-menu-item>
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item>
+            <md-button>
+              Analytics 1
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button>
+              Analytics 2
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button>
+              Analytics 3
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+      <md-menu>
+        <button ng-click="$mdOpenMenu()">
+          Admin
+        </button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button>
+              Agency
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+      <md-menu>
+        <button ng-click="$mdOpenMenu()">
+          Help
+        </button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-href="/admin/help">
+              Overview
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button>
+              About
+            </md-button>
+          </md-menu-item>
+          <md-menu-divider></md-menu-divider>
+          <md-menu-item>
+            <md-button>
+              Support
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
+            <md-button>
+              Feedback
+            </md-button>
+          </md-menu-item>
+        </md-menu-content>
+      </md-menu>
+    </md-menu-bar>
     <span flex></span>
     <div class="navbar-right navbar-text">
       <md-button ng-href="/login" ng-show="!visitry.isLoggedIn">Login</md-button>
@@ -14,5 +106,5 @@
       <md-button ng-show="visitry.isLoggedIn" ng-click="visitry.logout()">Logout</md-button>
     </div>
   </md-toolbar>
-  <div ui-view flex-gt-sm layout-gt-sm="row"></div>
+  <div ui-view layout="row" flex></div>
 </md-content>

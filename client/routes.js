@@ -103,7 +103,7 @@ angular.module('visitry')
             if (Meteor.userId()) {
               var profile = Meteor.subscribe('userProfile');
               var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-              if ( user ) {
+              if (user) {
                 switch (user.userData.role) {
                   case 'visitor':
                     console.log('visitor');
@@ -123,7 +123,7 @@ angular.module('visitry')
                 }
               }
               else {
-                console.log ("no user");
+                console.log("no user");
               }
             }
           }
@@ -174,9 +174,9 @@ angular.module('visitry')
         },
         controller: 'listAgenciesCtrl as agencies'
       })
-      .state('adminHome',{
-        url:'/admin',
-          templateUrl: ()=>{
+      .state('adminHome', {
+        url: '/admin',
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/admin-home.html';
           } else {
@@ -185,9 +185,9 @@ angular.module('visitry')
         },
         controller: 'adminHomeCtrl as adminHome'
       })
-      .state('adminManage',{
-        url:'/admin/manage',
-        templateUrl: ()=>{
+      .state('adminManage', {
+        url: '/admin/manage',
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/manage/manage.html';
           } else {
@@ -196,9 +196,9 @@ angular.module('visitry')
         },
         controller: 'adminManageCtrl as adminManage'
       })
-      .state('adminAnalytics',{
-        url:'/admin/analytics',
-        templateUrl: ()=>{
+      .state('adminAnalytics', {
+        url: '/admin/analytics',
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/analytics/analytics.html';
           } else {
@@ -207,9 +207,9 @@ angular.module('visitry')
         },
         controller: 'adminAnalyticsCtrl as adminAnalytics'
       })
-      .state('adminAdmin',{
-        url:'/admin/admin',
-        templateUrl: ()=>{
+      .state('adminAdmin', {
+        url: '/admin/admin',
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/admin/admin.html';
           } else {
@@ -218,9 +218,9 @@ angular.module('visitry')
         },
         controller: 'adminAdminCtrl as adminAdmin'
       })
-      .state('adminHelp',{
-        url:'/admin/help',
-        templateUrl: ()=>{
+      .state('adminHelp', {
+        url: '/admin/help',
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/help/help.html';
           } else {

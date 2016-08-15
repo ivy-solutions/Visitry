@@ -65,7 +65,7 @@ if (Meteor.isServer) {
           fail("expected exception");
         } catch (err) {
           assert.equal( err.error , 'validation-error', err.error);
-          assert.equal( err.reason , 'role should be either "visitor" or "requester"', err)
+          assert.equal( err.reason , 'role should be either "visitor", "requester", or "administrator', err)
         }
       });
     });
