@@ -1,8 +1,10 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
 import { User } from '/model/users'
+import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
+  logger.info("publish visits to " + this.userId );
   var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
   var today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -22,6 +24,7 @@ Meteor.publish("visits", function (options) {
 });
 
 Meteor.publish("userRequests", function (options) {
+  logger.info("publish userRequests to " + this.userId );
   var today = new Date();
   today.setHours(0, 0, 0, 0);
   //active requests requested by me for a future date, or for a past date and needing my feedback
@@ -41,6 +44,7 @@ Meteor.publish("userRequests", function (options) {
 });
 
 Meteor.publish("availableVisits", function () {
+  logger.info("publish availableVisits to " + this.userId );
   if (this.userId) {
     const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
@@ -86,20 +90,25 @@ Meteor.methods({
     visit.requesterId = this.userId;
     var requester = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
     if (!requester.userData.agencyIds || requester.userData.agencyIds.length == 0) {
+      logger.warn("user without agency affiliation attempted to create visit request, userId: " + this.userId );
       throw new Meteor.Error('requires-agency', "User must be affiliated with an agency.")
     }
     visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
 
+    logger.info( "create visit for " + this.userId);
     visit.save();
   },
   'visits.rescindRequest'(visitId) {
     var visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.rescindRequest for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found', 'Visit request not found.');
     }
     if (this.userId !== visit.requesterId) {
+      logger.error( "visits.rescindRequest user is not requester. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
+    logger.info( "rescind visit request for " + this.userId);
     visit.softRemove();
 
     if (visit.visitorId) {
@@ -118,9 +127,11 @@ Meteor.methods({
   'visits.cancelScheduled'(visitId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.cancelScheduled for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found');
     }
     if (this.userId !== visit.visitorId) {
+      logger.error( "visits.cancelScheduled user is not visitor. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
     var scheduledDateTime = visit.visitTime;
@@ -128,6 +139,7 @@ Meteor.methods({
     visit.visitorId = null;
     visit.visitTime = null;
     visit.visitorNotes = null;
+    logger.info( "visits.cancelScheduled for " + this.userId);
     visit.save({fields: ['cancelledAt', 'visitorId', 'visitTime', 'visitorNotes']});
 
     var msgTitle = "Visit cancelled";
@@ -143,6 +155,7 @@ Meteor.methods({
   'visits.scheduleVisit'(visitId, time, notes) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.scheduleVisit for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found');
     }
 
@@ -150,6 +163,7 @@ Meteor.methods({
     visit.visitTime = time;
     visit.visitorNotes = notes;
     visit.scheduledAt = new Date();
+    logger.info( "visits.scheduleVisit for " + this.userId);
     visit.save();
 
     var msgTitle = "Visit scheduled";
@@ -169,6 +183,11 @@ Meteor.methods({
   'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.attachFeedback for visit not found. visitId: " + visitId + " userId: " + this.userId);
+      throw new Meteor.Error('not-found');
+    }
+    if (!feedbackId) {
+      logger.error( "visits.attachFeedback for feedback not found: feedbackId: " + feedbackId + "visitId:" + visitId + " userId:" + this.userId);
       throw new Meteor.Error('not-found');
     }
     // the visitor must submit his own feedback
@@ -178,6 +197,7 @@ Meteor.methods({
     } else {
       visit.requesterFeedbackId = feedbackId;
     }
+    logger.info( "visits.attachFeedback for " + this.userId);
     visit.save();
   }
 });

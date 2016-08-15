@@ -1,7 +1,9 @@
 import { Agency } from '/model/agencies'
 import { User } from '/model/users'
+import { logger } from '/server/logging'
 
 Meteor.publish("userdata", function () {
+  logger.info("publish userdata to " + this.userId );
   if (this.userId) {
     var user = User.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
     return User.find({agencyId: user.userData.agencyId },
@@ -15,6 +17,7 @@ Meteor.publish("userdata", function () {
 });
 
 Meteor.publish("userProfile", function () {
+  logger.info("publish userProfile to " + this.userId );
   if (this.userId) {
     return User.find({_id:this.userId},
       {fields: {username: 1, emails: 1, primaryEmail: 1, 'userData': 1}});
@@ -27,6 +30,7 @@ Meteor.methods({
   updateName(firstName, lastName, role)
   {
     if (!this.userId) {
+      logger.error( "updateName - user not logged in");
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update name.');
     }
@@ -35,16 +39,18 @@ Meteor.methods({
     currentUser.userData.lastName = lastName;
     currentUser.userData.role = role;
 
+    logger.info("updateName for userId: " + this.userId );
     currentUser.save();
   },
   //TODO not used
   updateEmail(email)
   {
     if (!this.userId) {
+      logger.error( "updateEmail - user not logged in");
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update email.');
     }
-    check(email, String);
+    logger.info("updateEmail for userId: " + this.userId );
 
     if (email && Meteor.user().emails) {
       Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
@@ -54,6 +60,7 @@ Meteor.methods({
   },
   updateLocation(loc) {
     if (!this.userId) {
+      logger.error( "updateLocation - user not logged in");
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update location.');
     }
@@ -71,10 +78,12 @@ Meteor.methods({
     } else {  //removing location
       currentUser.userData.location = null;
     }
+    logger.info("updateLocation for userId: " + this.userId );
     currentUser.save();
   },
   updateUserData(data) {
     if (!this.userId) {
+      logger.error( "updateUserData - user not logged in");
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user data.');
     }
@@ -82,15 +91,18 @@ Meteor.methods({
     currentUser.userData.role = data.role;
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
+    logger.info("updateUserData for userId: " + this.userId );
     currentUser.save();
   },
   updatePicture(data) {
     if (!this.userId) {
+      logger.error( "updatePicture - user not logged in");
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update picture.');
     }
     var currentUser = User.findOne( this.userId );
     currentUser.userData.picture = data;
+    logger.info("updatePicture for userId: " + this.userId );
     currentUser.save({fields: ['userData.picture'] });
   }
 });
@@ -103,10 +115,12 @@ Accounts.onCreateUser(function(options, user) {
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
+    logger.error( "user has no agency. userId: " + this.userId);
     var agency = Agency.findOne({name:'IVY Agency'});
     if ( agency ) {
       user.userData.agencyIds = [agency._id];
     }
   }
+  logger.info("onCreateUser for userId: " + this.userId );
   return user;
 });

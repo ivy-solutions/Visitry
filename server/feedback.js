@@ -1,4 +1,5 @@
 import { Feedback } from '/model/feedback'
+import { logger } from '/server/logging'
 
 //TODO - not used, if needed we would want to filter by agency
 Meteor.publish("feedback", function (options) {
