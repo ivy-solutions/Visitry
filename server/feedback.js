@@ -9,8 +9,13 @@ Meteor.publish("feedback", function (options) {
 Meteor.methods({
   'feedback.createFeedback'(feedback) {
     var newFeedback = new Feedback(feedback);
-    newFeedback.save()
-    return newFeedback._id;
+    // save does a validate()
+    newFeedback.save(function(err, id) {
+      if (err) {
+        throw err;
+      }
+    });
+    return newFeedback;
   }
 });
 

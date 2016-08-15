@@ -2,6 +2,7 @@ import { Visit } from '/model/visits'
 import { User } from '/model/users'
 import {Feedback} from '/model/feedback'
 
+
 angular.module('visitry').directive('feedback', function () {
   return {
     restrict: 'E',
@@ -13,7 +14,7 @@ angular.module('visitry').directive('feedback', function () {
       }
     },
     controllerAs: 'feedback',
-    controller: function ($scope, $reactive, $state, $stateParams) {
+    controller: function ($scope, $reactive, $state, $stateParams, $ionicPopup) {
       $reactive(this).attach($scope);
       this.subscribe('userdata');
 
@@ -115,31 +116,38 @@ angular.module('visitry').directive('feedback', function () {
 
           console.log("Feedback: " + JSON.stringify(feedbackResponse));
 
-          var feedback = new Feedback(feedbackResponse);
-          Meteor.call('feedback.createFeedback', feedbackResponse, function (err, returnValue) {
-            if (err) {
-              console.log( "submitFeedback error:", err);
-              throw(err);
-            }
-            else {
-              var feedbackId = returnValue;
-              Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-                if (err) {
-                  console.log(err);
-                }
-                else {
-                  console.log( "is Visitor2" + this.isVisitor)
-                  if (this.isVisitor == true) {
-                    $state.go('visitorFeedbackList');
+          try {
+            var feedback = new Feedback(feedbackResponse);
+            feedback.validate(function (err) {
+              if ( err )
+                throw err;
+            });
+            Meteor.call('feedback.createFeedback', feedbackResponse, function (err, returnValue) {
+              if (err) {
+                throw(err);
+              }
+              else {
+                var feedbackId = returnValue._id;
+                Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
+                  if (err) {
+                    throw(err);
                   }
                   else {
-                    $state.go('pendingVisits');
+                    if (this.isVisitor == true) {
+                      $state.go('visitorFeedbackList');
+                    }
+                    else {
+                      $state.go('pendingVisits');
+                    }
                   }
-                };
-              });
-              this.resetForm(form);
-            }
-          });
+                });
+              }
+            });
+            this.resetForm(form);
+          } catch (err) {
+            console.log("Submit feedback " + JSON.stringify(err));
+            this.handleError(err.reason)
+          }
         }
       };
 
@@ -154,6 +162,15 @@ angular.module('visitry').directive('feedback', function () {
         form.$setPristine();
       };
 
+      this.handleError = function (message) {
+        console.log('Error ', message);
+
+        $ionicPopup.alert({
+          title: message,
+          template: 'Please try again',
+          okType: 'button-positive button-clear'
+        });
+      }
     }
   }
 });

@@ -6,7 +6,6 @@ import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import { User } from '/model/users'
 import '/client/feedback/feedback.component';
 
 
@@ -66,34 +65,98 @@ describe('Client Feedback', function () {
       });
     });
 
-    describe('Submit feedback', function () {
+    describe('Submit feedback validation', function () {
+
+      var meteorCallStub;
       var meteorUserIdStub;
-      var meteorCallSpy;
+      var handleErrorStub;
+      var errorMsg;
 
       beforeEach(function () {
+        meteorCallStub = sinon.stub(Meteor, 'call');
+        meteorCallStub.withArgs('feedback.createFeedback').returns( {_id: Random.id()});
         meteorUserIdStub = sinon.stub(Meteor, 'userId');
         meteorUserIdStub.returns(Random.id());
-        meteorCallSpy = sinon.spy(Meteor, 'call');
 
         inject(function ($rootScope, $componentController, $stateParams) {
           $stateParams.visitId = Random.id();
           controller = $componentController('feedback', {$scope: $rootScope.$new(true)})
         });
+        handleErrorStub = sinon.stub(controller, 'handleError', function(msg) { errorMsg = msg; } );
       });
 
       afterEach(function () {
-        Meteor.userId.restore();
+        errorMsg = null;
         Meteor.call.restore();
+        Meteor.userId.restore();
       });
 
       var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };
-      it("submit feedback inserts an entry into the Feedback collection", function () {
+      it("submit handles validation error, no visitor", function () {
+        controller.submitFeedback(form);
+         chai.assert.equal(errorMsg, '"visitorId" is required');
+      });
+      it("submit handles validation error, no user rating", function () {
+        controller.visitor = {_id: Random.id()};
+        controller.requester = {_id: Random.id()};
+        controller.submitFeedback(form);
+        chai.assert.equal(errorMsg, '"userRating" has to be greater than or equal 1');
+      });
+      it("submit handles validation error, no visit rating", function () {
+        controller.visitor = {_id: Random.id()};
+        controller.requester = {_id: Random.id()};
+        controller.visitorRating.selectStar(1);
+        controller.submitFeedback(form);
+        chai.assert.equal(errorMsg, '"visitRating" has to be greater than or equal 1')
+      });
+      it("submit handles no validation error", function () {
+        controller.visitor = {_id: Random.id()};
+        controller.requester = {_id: Random.id()};
         controller.visitorRating.selectStar(1);
         controller.visitRating.selectStar(1);
         controller.submitFeedback(form);
-        chai.assert.isTrue(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
+        chai.assert.equal(errorMsg, null)
+      });
+    });
+
+    describe('Submit feedback', function () {
+
+      var meteorMock;
+      var meteorUserIdStub;
+      var handleErrorStub;
+      var stateSpy;
+      var errorMsg;
+
+      beforeEach(function () {
+        meteorMock = sinon.mock(Meteor);
+        meteorUserIdStub = sinon.stub(Meteor, 'userId');
+        meteorUserIdStub.returns(Random.id());
+
+        inject(function ($rootScope, $componentController, $stateParams, $state) {
+          $stateParams.visitId = Random.id();
+          controller = $componentController('feedback', {$scope: $rootScope.$new(true)})
+          stateSpy = sinon.stub($state, 'go');
+        });
+        handleErrorStub = sinon.stub(controller, 'handleError', function(msg) { errorMsg = msg; } );
+      });
+
+      afterEach(function () {
+        meteorMock.restore()
+        Meteor.userId.restore();
+      });
+
+      var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };
+      it("feedback.createFeedback called ", function () {
+        meteorMock.expects("call").withArgs('feedback.createFeedback').once();
+        controller.visitor = {_id: Random.id()};
+        controller.requester = {_id: Random.id()};
+        controller.visitorRating.selectStar(1);
+        controller.visitRating.selectStar(1);
+        controller.submitFeedback(form);
+         meteorMock.verify();
       });
 
     });
+
   })
 });
