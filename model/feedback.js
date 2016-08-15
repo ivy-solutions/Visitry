@@ -3,13 +3,13 @@ import { Class } from 'meteor/jagi:astronomy';
 const Feedbacks = new Mongo.Collection("feedback");
 
   Feedbacks.allow({
-    insert: function (userId, visit) {
+    insert: function (userId, feedback) {
       return true;
     },
-    update: function (userId, visit, fields, modifier) {
+    update: function (userId, feedback, fields, modifier) {
       return false;
     },
-    remove: function (userId, visit) {
+    remove: function (userId, feedback) {
       return false;
     }
   });
@@ -30,7 +30,7 @@ const Feedback = Class.create({
     visitorId: {type: String, immutable: true},
     requesterId: {type:String,immutable:true},
     submitterId:{type:String,immutable:true},
-    visitorRating: {type: Number, validators: starValueValidator},
+    userRating: {type: Number, validators: starValueValidator},
     userComments: {type: String,optional:true},
     visitRating: {type: Number, validators: starValueValidator},
     visitComments: {type: String,optional:true},

@@ -22,7 +22,7 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
       var visits = Visits.find({
         visitorFeedbackId: null,
         visitorId: Meteor.userId(),
-        requestedDate: {$lt: new Date()}
+        visitTime: {$lt: new Date()}
       }, {sort: this.getReactively('listSort')});
       this.numFeedback = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
@@ -36,7 +36,6 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
   this.getRequesterImage = function(visit) {
     if (visit.requesterId) {
       var requester = this.getRequester(visit);
-      console.log( "getRequesterImage: " + visit.requesterId + " " + JSON.stringify(requester));
       if ( requester == undefined || requester.userData == undefined || requester.userData.picture == undefined ) {
         return "";
       }

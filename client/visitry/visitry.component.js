@@ -36,7 +36,7 @@ angular.module('visitry').directive('visitry', function () {
           var feedback = Visit.find({
             visitorFeedbackId: null,
             visitorId: Meteor.userId(),
-            requestedDate: {$lt: new Date()}
+            visitTime: {$lt: new Date()}
           });
           return feedback.count();
         },

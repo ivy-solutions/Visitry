@@ -30,7 +30,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   };
   $scope.timePickerObject = timePicker;
 
-  this.subscribe('visits');
   this.subscribe('userdata');
 
   this.visitorNotes = "";
@@ -44,7 +43,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       var date = visit.requestedDate;
       var visitDateTime = new Date( date.getFullYear(), date.getMonth(), date.getDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
-       if ( visitDateTime > tomorrowFirstThing() ) {
+       if ( visitDateTime > new Date() ) {
          Meteor.call('visits.scheduleVisit', visit._id, visitDateTime, this.visitorNotes, (err) => {
            if (err) return handleError(err.reason);
          });
@@ -58,16 +57,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     }
 
   };
-
-  function tomorrowFirstThing() {
-    var tomorrowFirstThing = new Date();
-    tomorrowFirstThing.setTime(tomorrowFirstThing.getTime() +  ( 24 * 60 * 60 * 1000));
-    tomorrowFirstThing.setHours(0);
-    tomorrowFirstThing.setMinutes(0);
-    tomorrowFirstThing.setSeconds(0);
-    tomorrowFirstThing.setMilliseconds(0);
-    return tomorrowFirstThing
-  }
 
   this.cancel = function () {
     this.hideScheduleVisitModal();

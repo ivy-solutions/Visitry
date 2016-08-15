@@ -11,17 +11,27 @@ Meteor.publish("visits", function (options) {
   return Visits.find({
     agencyId: {$in: agencies},
     inactive: {$exists: false},
-    $or: [{feedbackId: null}, {requestedDate: {$gt: today}}]
+    $or: [
+      {
+        visitTime: {$lt: new Date()},
+        $or: [{requesterId: this.userId, requesterFeedbackId: null},
+          {visitorId: this.userId, visitorFeedbackId: null}]
+      },
+      {requestedDate: {$gt: today}}]
   }, options);
 });
 
 Meteor.publish("userRequests", function (options) {
   var today = new Date();
   today.setHours(0, 0, 0, 0);
+  //active requests requested by me for a future date, or for a past date and needing my feedback
   var userRequests = Visits.find({
     requesterId: {$eq: this.userId},
     inactive: {$exists: false},
-    $or: [{feedbackId: null}, {requestedDate: {$gt: today}}]
+    $or: [
+      {visitTime: {$lt: new Date()},requesterFeedbackId: null},
+      {requestedDate: {$gt: today}}
+      ]
   }, options);
   var visitorIds = userRequests.map(function (visitRequest) {
     return visitRequest.visitorId
@@ -113,6 +123,7 @@ Meteor.methods({
     if (this.userId !== visit.visitorId) {
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
+    var scheduledDateTime = visit.visitTime;
     visit.cancelledAt = new Date();
     visit.visitorId = null;
     visit.visitTime = null;
@@ -121,7 +132,7 @@ Meteor.methods({
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(visit.visitTime).format('MMM. d, h:mm') + ".";
+    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(scheduledDateTime).format('MMM. d, h:mm') + ".";
 
     Meteor.call('userNotification',
       msgText,
@@ -155,20 +166,18 @@ Meteor.methods({
       visit.requesterId
     );
   },
-  'visits.attachRequesterFeedback'(visitId, feedbackId) {
+  'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
       throw new Meteor.Error('not-found');
     }
-    visit.requesterFeedbackId = feedbackId;
-    visit.save();
-  },
-  'visits.attachVisitorFeedback'(visitId, feedbackId){
-    const visit = Visit.findOne(visitId);
-    if (!visit) {
-      throw new Meteor.Error('not-found');
+    // the visitor must submit his own feedback
+    // requester feedback may be submitted by a user acting on the requester's behalf
+    if ( visit.visitorId == this.userId) {
+      visit.visitorFeedbackId = feedbackId;
+    } else {
+      visit.requesterFeedbackId = feedbackId;
     }
-    visit.visitorFeedbackId = feedbackId;
     visit.save();
   }
 });

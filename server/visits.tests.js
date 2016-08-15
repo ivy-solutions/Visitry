@@ -156,8 +156,8 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('visits.attachRequesterFeedback method', () => {
-      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachRequesterFeedback'];
+    describe('visits.attachFeedback method', () => {
+      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachFeedback'];
       const feedbackId = Random.id();
       let visitId;
 
@@ -167,27 +167,18 @@ if (Meteor.isServer) {
       });
 
       it('attach requester feedback success', () => {
-        const invocation = {userId: userId};
+        const invocation = {userId: requesterId};
         attachFeedbackHandler.apply(invocation, [visitId, feedbackId]);
         var updatedVisit = Visits.findOne({_id: visitId});
         assert.equal(updatedVisit.requesterFeedbackId, feedbackId);
-      });
-    });
-
-    describe('visits.attachVisitorFeedback method',()=>{
-      const attachFeedbackHandler = Meteor.server.method_handlers['visits.attachVisitorFeedback'];
-      const feedbackId = Random.id();
-      let visitId;
-      beforeEach(()=>{
-        Visits.remove({});
-        visitId = Visits.insert(testVisit)
       });
       it('attach visitor feedback success',()=>{
         const invocation = {userId:userId};
         attachFeedbackHandler.apply(invocation,[visitId,feedbackId]);
         var updatedVisit = Visit.findOne({_id:visitId});
         assert.equal(updatedVisit.visitorFeedbackId,feedbackId);
-      })
+      });
+
     });
 
     describe('visits.createVisit method', () => {
@@ -299,7 +290,7 @@ if (Meteor.isServer) {
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
-      assert.equal(visit.notes, 'test visit agency2', JSON.stringify(visit));
+      assert.equal(visit.notes, '5. test visit agency2', JSON.stringify(visit));
     });
 
     it('user associated with no agency should see no visits', () => {
@@ -317,7 +308,7 @@ if (Meteor.isServer) {
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
-      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
+      assert.equal(visit.notes, '1. test visit agency1', JSON.stringify(visit));
     });
 
     it('user associated with multiple agencies should see visits from all', () => {
@@ -329,7 +320,7 @@ if (Meteor.isServer) {
       const notesFromVisits = visitCursor.map(function (visit) {
         return visit.notes;
       });
-      assert.sameMembers(notesFromVisits, ['test visit agency1', 'test visit agency2']);
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '5. test visit agency2']);
     });
 
     it('user from Acton sees no visits if visitRange is set to 10 miles', () => {
@@ -401,15 +392,62 @@ if (Meteor.isServer) {
       const invocation = {userId: requesterId};
       const cursors = publication.apply(invocation);
       const visitCursor = cursors[0];
-      assert.equal(visitCursor.count(), 4);
       var visit = visitCursor.fetch()[0];
-      assert.equal(visit.notes, 'test visit agency1', JSON.stringify(visit));
+      var notesFromVisits = visitCursor.map(function (visit) {
+        return visit.notes
+      });
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '4. scheduled visit agency1', '5. test visit agency2']);
+      assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
+
+  });
+
+  describe('visits Publication', () => {
+    var findOneUserStub;
+
+    const publication = Meteor.server.publish_handlers["visits"];
+
+    beforeEach(() => {
+      Visits.remove({});
+      insertTestVisits();
+      findOneUserStub = sinon.stub(Meteor.users, 'findOne');
+      findOneUserStub.returns({
+        username: 'Harry',
+        userData: {
+          agencyIds: [agencyId]
+        }
+      });
+    });
+
+    afterEach(function () {
+      Meteor.users.findOne.restore();
+    });
+
+    it('requester gets own future visits in agency1 and past scheduled requests where that have no requester feedback', () => {
+      const invocation = {userId: requesterId};
+      const visitCursor = publication.apply(invocation, []);
+      var notesFromVisits = visitCursor.map(function (visit) {
+        return visit.notes
+      });
+      assert.equal(visitCursor.count(), 2, notesFromVisits);
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '4. scheduled visit agency1']);
+    });
+
+    it('visitor gets unscheduled future visit requests and self-scheduled in future or without visitor feedback', () => {
+      const invocation = {userId: userId};
+      const visitCursor = publication.apply(invocation);
+      var notesFromVisits = visitCursor.map(function (visit) {
+        return visit.notes
+      });
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '3. past visit agency1 with requester feedback', '4. scheduled visit agency1']);
+      assert.equal(visitCursor.count(), 3, notesFromVisits);
+    });
+
   });
 
   function insertTestVisits() {
     Visits.insert({
-      notes: 'test visit agency1',
+      notes: '1. test visit agency1',
       requestedDate: tomorrow,
       createdAt: new Date(),
       requesterId: requesterId,
@@ -424,7 +462,7 @@ if (Meteor.isServer) {
       }
     });
     Visits.insert({
-      notes: 'past visit agency1',
+      notes: '2. past unscheduled visit agency1',
       requestedDate: yesterday,
       createdAt: new Date(),
       requesterId: requesterId,
@@ -439,7 +477,7 @@ if (Meteor.isServer) {
       }
     });
     Visits.insert({
-      notes: 'past visit agency1 with feedback',
+      notes: '3. past visit agency1 with requester feedback',
       requestedDate: yesterday,
       createdAt: new Date(),
       requesterId: requesterId,
@@ -452,14 +490,17 @@ if (Meteor.isServer) {
           coordinates: [-71.0589, 42.3601]
         }
       },
-      feedbackId: Random.id()
+      visitTime: yesterday,
+      visitorId: userId,
+      requesterFeedbackId: Random.id()
     });
     Visits.insert({
-      notes: 'scheduled visit agency1',
+      notes: '4. scheduled visit agency1',
       requestedDate: tomorrow,
       createdAt: new Date(),
       requesterId: requesterId,
       visitorId: userId,
+      visitTime: tomorrow,
       agencyId: agencyId,
       location: {
         address: "Boston",
@@ -471,7 +512,7 @@ if (Meteor.isServer) {
       }
     });
     Visits.insert({
-      notes: 'test visit agency2',
+      notes: '5. test visit agency2',
       requestedDate: tomorrow,
       createdAt: new Date(),
       requesterId: requesterId,
@@ -485,5 +526,25 @@ if (Meteor.isServer) {
         }
       }
     });
+    Visits.insert({
+      notes: '6. past visit with visitor and requester feedback, agency1',
+      requestedDate: yesterday,
+      createdAt: new Date(),
+      requesterId: requesterId,
+      agencyId: agencyId,
+      location: {
+        address: "Boston",
+        formattedAddress: "Boston",
+        geo: {
+          type: "Point",
+          coordinates: [-71.0589, 42.3601]
+        }
+      },
+      visitTime: yesterday,
+      visitorId: userId,
+      requesterFeedbackId: Random.id(),
+      visitorFeedbackId: Random.id()
+    });
+
   }
 }

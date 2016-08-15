@@ -62,8 +62,13 @@ describe('Schedule Visit', function () {
         chai.assert.equal( errorMsg, "Press schedule button to schedule visit.");
       });
 
-      it('message if request for today', function () {
-        controller.setSelectedTime(new Date());
+      it('message if request for earlier today', function () {
+        var todayAt1am = new Date();
+        todayAt1am.setHours(1);
+        todayAt1am.setMinutes(0);
+        todayAt1am.setSeconds(0);
+        todayAt1am.setMilliseconds(0);
+        controller.setSelectedTime(todayAt1am);
         var visitWithTodaysDate = {requestedDate: new Date()};
         controller.submit(visitWithTodaysDate);
         chai.assert.equal( errorMsg, "Schedule Time must be in future.");

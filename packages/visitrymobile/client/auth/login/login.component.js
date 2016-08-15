@@ -21,12 +21,13 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         this.credentials.username = '';
         this.credentials.password = '';
         var user = Meteor.user();
+        //TODO we will sometime handle unaffiliated users
         var goto;
-        if (!hasValidAgency()) {
-          goto = 'agencyList'
-        } else {
-          goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
-        }
+        // if (!hasValidAgency()) {
+        //   goto = 'agencyList'
+        // } else {
+           goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        //}
         $state.go(goto);
       }
     });
