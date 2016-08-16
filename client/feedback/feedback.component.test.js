@@ -66,7 +66,7 @@ describe('Client Feedback', function () {
     });
 
     describe('Submit feedback validation', function () {
-      var meteorCallSpy;
+      var meteorCallStub;
       var meteorUserIdStub;
       var handleErrorStub;
       var errorMsg;
@@ -74,7 +74,7 @@ describe('Client Feedback', function () {
       beforeEach(function () {
         meteorUserIdStub = sinon.stub(Meteor, 'userId');
         meteorUserIdStub.returns(Random.id());
-        meteorCallSpy = sinon.spy(Meteor, 'call');
+        meteorCallStub = sinon.stub(Meteor, 'call');
 
         inject(function ($rootScope, $componentController, $stateParams) {
           $stateParams.visitId = Random.id();
@@ -93,14 +93,14 @@ describe('Client Feedback', function () {
       it("submit handles validation error, no visitor", function () {
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, '"visitorId" is required');
-        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
+        chai.assert.isFalse(meteorCallStub.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles validation error, no user rating", function () {
         controller.visitor = {_id: Random.id()};
         controller.requester = {_id: Random.id()};
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, '"companionRating" has to be greater than or equal 1');
-        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
+        chai.assert.isFalse(meteorCallStub.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles validation error, no visit rating", function () {
         controller.visitor = {_id: Random.id()};
@@ -108,7 +108,7 @@ describe('Client Feedback', function () {
         controller.companionRating.selectStar(1);
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, '"visitRating" has to be greater than or equal 1')
-        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
+        chai.assert.isFalse(meteorCallStub.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles no validation error", function () {
         controller.visitor = {_id: Random.id()};
@@ -117,7 +117,7 @@ describe('Client Feedback', function () {
         controller.visitRating.selectStar(1);
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, null);
-        chai.assert.isTrue(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
+        chai.assert.isTrue(meteorCallStub.withArgs('feedback.createFeedback').calledOnce);
       });
     });
 
