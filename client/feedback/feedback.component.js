@@ -126,23 +126,13 @@ angular.module('visitry').directive('feedback', function () {
               if (err) {
                 throw(err);
               }
-              else {
-                var feedbackId = returnValue._id;
-                Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-                  if (err) {
-                    throw(err);
-                  }
-                  else {
-                    if (this.isVisitor == true) {
-                      $state.go('visitorFeedbackList');
-                    }
-                    else {
-                      $state.go('pendingVisits');
-                    }
-                  }
-                });
-              }
             });
+            if (this.isVisitor == true) {
+              $state.go('visitorFeedbackList');
+            }
+            else {
+              $state.go('pendingVisits');
+            }
             this.resetForm(form);
           } catch (err) {
             console.log("Submit feedback " + JSON.stringify(err));

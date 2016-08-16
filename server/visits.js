@@ -197,7 +197,7 @@ Meteor.methods({
     } else {
       visit.requesterFeedbackId = feedbackId;
     }
-    logger.info( "visits.attachFeedback for " + this.userId);
+    logger.info( "visits.attachFeedback visitId: " + visitId + " userId: " + this.userId);
     visit.save();
   }
 });

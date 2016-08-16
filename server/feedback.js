@@ -15,6 +15,7 @@ Meteor.methods({
         throw err;
       }
     });
+    Meteor.call('visits.attachFeedback', newFeedback.visitId, newFeedback._id);
     return newFeedback;
   }
 });

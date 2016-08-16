@@ -66,17 +66,15 @@ describe('Client Feedback', function () {
     });
 
     describe('Submit feedback validation', function () {
-
-      var meteorCallStub;
+      var meteorCallSpy;
       var meteorUserIdStub;
       var handleErrorStub;
       var errorMsg;
 
       beforeEach(function () {
-        meteorCallStub = sinon.stub(Meteor, 'call');
-        meteorCallStub.withArgs('feedback.createFeedback').returns( {_id: Random.id()});
         meteorUserIdStub = sinon.stub(Meteor, 'userId');
         meteorUserIdStub.returns(Random.id());
+        meteorCallSpy = sinon.spy(Meteor, 'call');
 
         inject(function ($rootScope, $componentController, $stateParams) {
           $stateParams.visitId = Random.id();
@@ -94,13 +92,15 @@ describe('Client Feedback', function () {
       var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };
       it("submit handles validation error, no visitor", function () {
         controller.submitFeedback(form);
-         chai.assert.equal(errorMsg, '"visitorId" is required');
+        chai.assert.equal(errorMsg, '"visitorId" is required');
+        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles validation error, no user rating", function () {
         controller.visitor = {_id: Random.id()};
         controller.requester = {_id: Random.id()};
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, '"userRating" has to be greater than or equal 1');
+        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles validation error, no visit rating", function () {
         controller.visitor = {_id: Random.id()};
@@ -108,6 +108,7 @@ describe('Client Feedback', function () {
         controller.visitorRating.selectStar(1);
         controller.submitFeedback(form);
         chai.assert.equal(errorMsg, '"visitRating" has to be greater than or equal 1')
+        chai.assert.isFalse(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
       });
       it("submit handles no validation error", function () {
         controller.visitor = {_id: Random.id()};
@@ -115,20 +116,21 @@ describe('Client Feedback', function () {
         controller.visitorRating.selectStar(1);
         controller.visitRating.selectStar(1);
         controller.submitFeedback(form);
-        chai.assert.equal(errorMsg, null)
+        chai.assert.equal(errorMsg, null);
+        chai.assert.isTrue(meteorCallSpy.withArgs('feedback.createFeedback').calledOnce);
       });
     });
 
-    describe('Submit feedback', function () {
+    describe('Submit feedback success', function () {
 
-      var meteorMock;
+      var meteorCallStub;
       var meteorUserIdStub;
       var handleErrorStub;
       var stateSpy;
       var errorMsg;
 
       beforeEach(function () {
-        meteorMock = sinon.mock(Meteor);
+        meteorCallStub = sinon.stub(Meteor, 'call');
         meteorUserIdStub = sinon.stub(Meteor, 'userId');
         meteorUserIdStub.returns(Random.id());
 
@@ -141,19 +143,29 @@ describe('Client Feedback', function () {
       });
 
       afterEach(function () {
-        meteorMock.restore()
+        errorMsg=null;
+        Meteor.call.restore();
         Meteor.userId.restore();
       });
 
       var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };
-      it("feedback.createFeedback called ", function () {
-        meteorMock.expects("call").withArgs('feedback.createFeedback').once();
+      it("after feedback visitor goes to  visitorFeedbackList ", function () {
         controller.visitor = {_id: Random.id()};
         controller.requester = {_id: Random.id()};
-        controller.visitorRating.selectStar(1);
-        controller.visitRating.selectStar(1);
+        controller.visitorRating.selectStar(5);
+        controller.visitRating.selectStar(5);
+        controller.isVisitor=true;
         controller.submitFeedback(form);
-         meteorMock.verify();
+        chai.assert.isTrue(stateSpy.withArgs('visitorFeedbackList').calledOnce)
+      });
+      it("after feedback requester goes to pendingVisits ", function () {
+        controller.visitor = {_id: Random.id()};
+        controller.requester = {_id: Random.id()};
+        controller.visitorRating.selectStar(5);
+        controller.visitRating.selectStar(5);
+        controller.isVisitor=false;
+        controller.submitFeedback(form);
+        chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
       });
 
     });
