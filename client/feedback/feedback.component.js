@@ -18,7 +18,7 @@ angular.module('visitry').directive('feedback', function () {
       $reactive(this).attach($scope);
       this.subscribe('userdata');
 
-      this.userComments = '';
+      this.companionComments = '';
       this.visitComments = '';
       this.timeSpent = 60;
 
