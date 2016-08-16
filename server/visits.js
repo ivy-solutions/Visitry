@@ -95,8 +95,14 @@ Meteor.methods({
     }
     visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
 
-    logger.info( "create visit for " + this.userId);
-    visit.save();
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("failed to create visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "created visit for " + this.userId);
+    return visit;
   },
   'visits.rescindRequest'(visitId) {
     var visit = Visit.findOne(visitId);
@@ -123,6 +129,7 @@ Meteor.methods({
         visit.visitorId
       )
     }
+    return visit;
   },
   'visits.cancelScheduled'(visitId) {
     const visit = Visit.findOne(visitId);
@@ -139,8 +146,13 @@ Meteor.methods({
     visit.visitorId = null;
     visit.visitTime = null;
     visit.visitorNotes = null;
-    logger.info( "visits.cancelScheduled for " + this.userId);
-    visit.save({fields: ['cancelledAt', 'visitorId', 'visitTime', 'visitorNotes']});
+    visit.save({fields: ['cancelledAt', 'visitorId', 'visitTime', 'visitorNotes']},function(err, id) {
+      if (err) {
+        logger.error("visits.cancelScheduled failed to update visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "visits.cancelScheduled cancelled visitId: " + visitId + " userId: " + this.userId);
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne(this.userId);
@@ -151,6 +163,7 @@ Meteor.methods({
       msgTitle,
       visit.requesterId
     );
+    return visit;
   },
   'visits.scheduleVisit'(visitId, time, notes) {
     const visit = Visit.findOne(visitId);
@@ -163,8 +176,13 @@ Meteor.methods({
     visit.visitTime = time;
     visit.visitorNotes = notes;
     visit.scheduledAt = new Date();
-    logger.info( "visits.scheduleVisit for " + this.userId);
-    visit.save();
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("visits.scheduleVisit failed to update visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "visits.scheduleVisit scheduled visitId: " + visitId + " userId: " + this.userId);
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne(this.userId);
@@ -179,6 +197,7 @@ Meteor.methods({
       msgTitle,
       visit.requesterId
     );
+    return visit;
   },
   'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
@@ -197,7 +216,13 @@ Meteor.methods({
     } else {
       visit.requesterFeedbackId = feedbackId;
     }
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("visits.attachFeedback failed to update visit. err: " + err);
+        throw err;
+      }
+    });
     logger.info( "visits.attachFeedback visitId: " + visitId + " userId: " + this.userId);
-    visit.save();
+    return visit;
   }
 });

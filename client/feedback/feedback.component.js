@@ -122,7 +122,7 @@ angular.module('visitry').directive('feedback', function () {
               if ( err )
                 throw err;
             });
-            Meteor.call('feedback.createFeedback', feedbackResponse, function (err, returnValue) {
+            Meteor.call('feedback.createFeedback', feedbackResponse, function (err) {
               if (err) {
                 throw(err);
               }

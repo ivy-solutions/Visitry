@@ -39,8 +39,13 @@ Meteor.methods({
     currentUser.userData.lastName = lastName;
     currentUser.userData.role = role;
 
+    currentUser.save(function(err, id) {
+      if (err) {
+        logger.error("updateName failed to update user. err: " + err);
+        throw err;
+      }
+    });
     logger.info("updateName for userId: " + this.userId );
-    currentUser.save();
   },
   //TODO not used
   updateEmail(email)
@@ -78,8 +83,13 @@ Meteor.methods({
     } else {  //removing location
       currentUser.userData.location = null;
     }
+    currentUser.save(function(err, id) {
+      if (err) {
+        logger.error("updateLocation failed to update user. err: " + err);
+        throw err;
+      }
+    });
     logger.info("updateLocation for userId: " + this.userId );
-    currentUser.save();
   },
   updateUserData(data) {
     if (!this.userId) {
@@ -91,8 +101,13 @@ Meteor.methods({
     currentUser.userData.role = data.role;
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
+    currentUser.save(function(err, id) {
+      if (err) {
+        logger.error("updateUserData failed to update user. err: " + err);
+        throw err;
+      }
+    });
     logger.info("updateUserData for userId: " + this.userId );
-    currentUser.save();
   },
   updatePicture(data) {
     if (!this.userId) {
@@ -102,8 +117,13 @@ Meteor.methods({
     }
     var currentUser = User.findOne( this.userId );
     currentUser.userData.picture = data;
+    currentUser.save({fields: ['userData.picture'] },function(err, id) {
+      if (err) {
+        logger.error("updatePicture failed to update user. err: " + err);
+        throw err;
+      }
+    });
     logger.info("updatePicture for userId: " + this.userId );
-    currentUser.save({fields: ['userData.picture'] });
   }
 });
 
