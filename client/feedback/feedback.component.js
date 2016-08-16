@@ -26,8 +26,8 @@ angular.module('visitry').directive('feedback', function () {
         visitorId: '',
         requesterId: '',
         submitterId: Meteor.userId(),
-        userRating: 0,
-        userComments: '',
+        companionRating: 0,
+        companionComments: '',
         visitRating: 0,
         visitComments: '',
         visitId: $stateParams.visitId,
@@ -55,7 +55,7 @@ angular.module('visitry').directive('feedback', function () {
       });
 
 //TODO: create a directive that does this
-      this.visitorRating = {
+      this.companionRating = {
         badStars: [
           {
             id: 1
@@ -76,7 +76,7 @@ angular.module('visitry').directive('feedback', function () {
           this.badStars = this.goodStars.concat(this.badStars);
           this.goodStars = this.badStars.slice(0, id);
           this.badStars = this.badStars.slice(id);
-          feedbackResponse.userRating = id;
+          feedbackResponse.companionRating = id;
         }
       };
 
@@ -110,7 +110,7 @@ angular.module('visitry').directive('feedback', function () {
         if (form.$valid) {
           feedbackResponse.visitorId = this.visitor._id;
           feedbackResponse.requesterId = this.requester._id;
-          feedbackResponse.userComments = this.userComments;
+          feedbackResponse.companionComments = this.companionComments;
           feedbackResponse.visitComments = this.visitComments;
           feedbackResponse.timeSpent = parseInt(this.timeSpent);
 
@@ -143,9 +143,9 @@ angular.module('visitry').directive('feedback', function () {
 
       this.resetForm= function(form) {
         this.userSubmitted = false;
-        this.visitorRating.goodStars = [];
+        this.companionRating.goodStars = [];
         this.visitRating.goodStars = [];
-        this.userComments ="";
+        this.companionComments ="";
         this.visitComments="";
         this.timeSpent=-1;
         form.$setUntouched();

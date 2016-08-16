@@ -21,11 +21,11 @@
           <span ng-if="feedback.isVisitor">Rate your host, {{feedback.requester.userData.firstName}}</span>
         </div>
         <ion-item>
-          <ng-md-icon ng-repeat="goodStar in feedback.visitorRating.goodStars" icon="star" size="50"
+          <ng-md-icon ng-repeat="goodStar in feedback.companionRating.goodStars" icon="star" size="50"
                       style="fill:#FF5461"
-                      ng-click="feedback.visitorRating.selectStar(goodStar.id)"></ng-md-icon>
-          <ng-md-icon ng-repeat="badStar in feedback.visitorRating.badStars" icon="star_border" size="50"
-                      style="fill:black" ng-click="feedback.visitorRating.selectStar(badStar.id)"></ng-md-icon>
+                      ng-click="feedback.companionRating.selectStar(goodStar.id)"></ng-md-icon>
+          <ng-md-icon ng-repeat="badStar in feedback.companionRating.badStars" icon="star_border" size="50"
+                      style="fill:black" ng-click="feedback.companionRating.selectStar(badStar.id)"></ng-md-icon>
            <div class="list list-inset">
             <label class="item item-input">
         <textarea rows="2" ng-model="feedback.userComments" placeholder="Leave a Comment">
@@ -35,7 +35,7 @@
         </ion-item>
           <div layout="row">
               <span flex></span>
-              <span class="error-message" ng-show="feedback.visitorRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
+              <span class="error-message" ng-show="feedback.companionRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
           </div>
         <div class="item item-divider">
           Rate the overall visit

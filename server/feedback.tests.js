@@ -23,8 +23,8 @@ if (Meteor.isServer) {
         visitorId: Random.id(),
         requesterId: Random.id(),
         submitterId: Random.id(),
-        userRating: 2,
-        userComments: "Two star comments",
+        companionRating: 2,
+        companionComments: "Two star comments",
         visitRating: 4,
         visitComments: "4 star comments",
         visitId: Random.id(),
@@ -48,18 +48,18 @@ if (Meteor.isServer) {
       });
       it('fails if no user rating', () => {
         const invocation = {userId: Random.id()};
-        testFeedback.userRating = null;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"userRating" is required');
+        testFeedback.companionRating = null;
+        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" is required');
       });
       it('fails if user rating too low', () => {
         const invocation = {userId: Random.id()};
-        testFeedback.userRating = 0;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"userRating" has to be greater than or equal 1');
+        testFeedback.companionRating = 0;
+        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" has to be greater than or equal 1');
       });
       it('fails if user rating too high', () => {
         const invocation = {userId: Random.id()};
-        testFeedback.userRating = 6;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"userRating" has to be less than or equal 5');
+        testFeedback.companionRating = 6;
+        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" has to be less than or equal 5');
       });
       it('fails if no visit rating', () => {
         const invocation = {userId: Random.id()};
