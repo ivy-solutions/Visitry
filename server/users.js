@@ -53,10 +53,10 @@ Meteor.methods({
     logger.info("updateEmail for userId: " + this.userId );
 
     if (email && Meteor.user().emails) {
-      Accounts.removeEmail(Meteor.userId, Meteor.user().emails[0].addresss);
+      Accounts.removeEmail(this.userId, Meteor.user().emails[0].addresss);
     }
 
-    return Accounts.addEmail(Meteor.userId(), email );
+    return Accounts.addEmail(this.userId, email );
   },
   updateLocation(loc) {
     if (!this.userId) {
@@ -115,12 +115,12 @@ Accounts.onCreateUser(function(options, user) {
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
-    logger.error( "user has no agency. userId: " + this.userId);
+    logger.error( "user has no agency. userId: " + user._id);
     var agency = Agency.findOne({name:'IVY Agency'});
     if ( agency ) {
       user.userData.agencyIds = [agency._id];
     }
   }
-  logger.info("onCreateUser for userId: " + this.userId );
+  logger.info("onCreateUser for userId: " + user._id );
   return user;
 });
