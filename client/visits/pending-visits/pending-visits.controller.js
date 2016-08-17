@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);
@@ -77,7 +78,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   };
 
   function handleError(err) {
-    $log.error('visits.rescindRequest error ', err);
+    logger.error('visits.rescindRequest error ', err);
 
     $ionicPopup.alert({
       title: err.reason || 'Cancel failed',

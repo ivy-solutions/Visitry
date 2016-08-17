@@ -22,7 +22,6 @@ describe ( 'SharedFunctions', function() {
   describe ('groupVisitsByRequestedDate', function() {
     it('groups by requestedDate into 3 groups', function () {
       var dateGroupedArray = Meteor.myFunctions.groupVisitsByRequestedDate([ pastVisitRequest,todayAt9VisitRequest,nowVisitRequest,futureVisitRequest,sameDayFutureVisitRequest]);
-      console.log( JSON.stringify(dateGroupedArray));
       chai.assert.equal(3,dateGroupedArray.length,"Grouped by yesterday, today, tomorrow");
       chai.assert.equal(1, dateGroupedArray[0].visits.length, "yesterday");
       chai.assert.equal(pastVisitRequest.requestedDate, dateGroupedArray[0].visits[0].requestedDate, "pastVisitRequest");

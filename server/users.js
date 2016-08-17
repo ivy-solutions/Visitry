@@ -3,8 +3,8 @@ import { User } from '/model/users'
 import { logger } from '/server/logging'
 
 Meteor.publish("userdata", function () {
-  logger.info("publish userdata to " + this.userId );
   if (this.userId) {
+    logger.info("publish userdata to " + this.userId );
     var user = User.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
     return User.find({agencyId: user.userData.agencyId },
       {fields: {username: 1, emails: 1,
@@ -17,10 +17,10 @@ Meteor.publish("userdata", function () {
 });
 
 Meteor.publish("userProfile", function () {
-  logger.info("publish userProfile to " + this.userId );
   if (this.userId) {
+    logger.info("publish userProfile to " + this.userId );
     return User.find({_id:this.userId},
-      {fields: {username: 1, emails: 1, primaryEmail: 1, 'userData': 1}});
+      {fields: {username: 1, 'userData': 1}});
   } else {
     this.ready();
   }

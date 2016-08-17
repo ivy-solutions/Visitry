@@ -4,48 +4,56 @@ import { User } from '/model/users'
 import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
-  logger.info("publish visits to " + this.userId );
-  var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  // active future visit requests, or past requests for which feedback is needed
-  var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
-  return Visits.find({
-    agencyId: {$in: agencies},
-    inactive: {$exists: false},
-    $or: [
-      {
-        visitTime: {$lt: new Date()},
-        $or: [{requesterId: this.userId, requesterFeedbackId: null},
-          {visitorId: this.userId, visitorFeedbackId: null}]
-      },
-      {requestedDate: {$gt: today}}]
-  }, options);
+  if (this.userId) {
+    logger.info("publish visits to " + this.userId);
+    var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // active future visit requests, or past requests for which feedback is needed
+    var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
+    return Visits.find({
+      agencyId: {$in: agencies},
+      inactive: {$exists: false},
+      $or: [
+        {
+          visitTime: {$lt: new Date()},
+          $or: [{requesterId: this.userId, requesterFeedbackId: null},
+            {visitorId: this.userId, visitorFeedbackId: null}]
+        },
+        {requestedDate: {$gt: today}}]
+    }, options);
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("userRequests", function (options) {
-  logger.info("publish userRequests to " + this.userId );
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  //active requests requested by me for a future date, or for a past date and needing my feedback
-  var userRequests = Visits.find({
-    requesterId: {$eq: this.userId},
-    inactive: {$exists: false},
-    $or: [
-      {visitTime: {$lt: new Date()},requesterFeedbackId: null},
-      {requestedDate: {$gt: today}}
+  if (this.userId) {
+    logger.info("publish userRequests to " + this.userId);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    //active requests requested by me for a future date, or for a past date and needing my feedback
+    var userRequests = Visits.find({
+      requesterId: {$eq: this.userId},
+      inactive: {$exists: false},
+      $or: [
+        {visitTime: {$lt: new Date()}, requesterFeedbackId: null},
+        {requestedDate: {$gt: today}}
       ]
-  }, options);
-  var visitorIds = userRequests.map(function (visitRequest) {
-    return visitRequest.visitorId
-  });
-  return [userRequests,
-    Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}})];
+    }, options);
+    var visitorIds = userRequests.map(function (visitRequest) {
+      return visitRequest.visitorId
+    });
+    return [userRequests,
+      Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}})];
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("availableVisits", function () {
-  logger.info("publish availableVisits to " + this.userId );
   if (this.userId) {
+    logger.info("publish availableVisits to " + this.userId );
     const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
     var user = Meteor.users.findOne({_id: this.userId}, {
@@ -83,7 +91,6 @@ Meteor.publish("availableVisits", function () {
     this.ready();
   }
 });
-
 
 Meteor.methods({
   'visits.createVisit'(visit) {

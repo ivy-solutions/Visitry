@@ -3,6 +3,7 @@
  */
 import { User } from '/model/users'
 import { Visit } from '/model/visits'
+import {logger} from '/client/logging'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -19,6 +20,7 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
 
       var subscription = this.subscribe('userProfile');
+      var subscription2 = this.subscribe('visits');
 
       this.helpers({
         isVisitor: ()=> {
@@ -39,18 +41,19 @@ angular.module('visitry').directive('visitry', function () {
           return feedback.count();
         },
         isLoggedIn: ()=> {
-          console.log(Meteor.userId());
+          logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
           return Meteor.userId() !== null;
         }
       });
 
       this.logout = () => {
-        console.log("logout");
+        logger.info('visitry.logout userId: ' + Meteor.userId());
         Meteor.logout(function (err) {
           if (err) {
-            console.log(err);
+            logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
           subscription.stop();
+          subscription2.stop();
           $ionicHistory.clearHistory();
           $state.go('login');
         });

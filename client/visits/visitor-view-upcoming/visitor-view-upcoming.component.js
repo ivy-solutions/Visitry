@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $state,$ionicPopup,$ionicListDelegate, $filter) {
   $reactive(this).attach($scope);
@@ -36,7 +37,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
 
   this.getRequester = function (visit) {
     if ( visit == 'undefined' ) {
-      console.log("No visit.");
+      logger.error("visitor-view-upcoming visits - No visit.");
       return null;
     }
     return User.findOne({_id: visit.requesterId});
@@ -75,7 +76,7 @@ angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope
   }
 
   function handleError(err) {
-    $log.error('visits.cancelScheduled error ', err);
+    logger.error('visits.cancelScheduled error ', err);
 
     $ionicPopup.alert({
       title: err.reason || 'Cancel failed',

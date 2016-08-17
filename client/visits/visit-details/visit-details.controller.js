@@ -14,7 +14,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.helpers({
     theVisit:() => {
       var visit = Visit.findOne({_id: $stateParams.visitId});
-      console.log( "visit:" + JSON.stringify(visit));
       if ( visit ) {
         this.visit = visit;
         this.requester = User.findOne({_id: visit.requesterId});

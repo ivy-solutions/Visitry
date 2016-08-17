@@ -1,6 +1,7 @@
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
 import {Feedback} from '/model/feedback'
+import {logger} from '/client/logging'
 
 
 angular.module('visitry').directive('feedback', function () {
@@ -48,7 +49,6 @@ angular.module('visitry').directive('feedback', function () {
             this.requester = User.findOne({_id: v.requesterId});
             //if the current user is not the visitor for the visit, it may be the requester or someone acting on the requester's behalf
             this.isVisitor = this.visitor._id == Meteor.userId() ? true : false;
-            console.log( "is Visitor" + this.isVisitor)
           }
           return v
         }
@@ -114,7 +114,7 @@ angular.module('visitry').directive('feedback', function () {
           feedbackResponse.visitComments = this.visitComments;
           feedbackResponse.timeSpent = parseInt(this.timeSpent);
 
-          console.log("Feedback: " + JSON.stringify(feedbackResponse));
+          logger.info("Feedback submitFeedback: " + JSON.stringify(feedbackResponse));
 
           try {
             var feedback = new Feedback(feedbackResponse);
@@ -135,7 +135,6 @@ angular.module('visitry').directive('feedback', function () {
             }
             this.resetForm(form);
           } catch (err) {
-            console.log("Submit feedback " + JSON.stringify(err));
             this.handleError(err.reason)
           }
         }
@@ -153,11 +152,11 @@ angular.module('visitry').directive('feedback', function () {
       };
 
       this.handleError = function (message) {
-        console.log('Error ', message);
+        logger.error('Submit feedback error: ', message);
 
         $ionicPopup.alert({
-          title: message,
-          template: 'Please try again',
+          title: 'Error',
+          template: message,
           okType: 'button-positive button-clear'
         });
       }

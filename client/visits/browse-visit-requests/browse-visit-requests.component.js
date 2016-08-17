@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
   $reactive(this).attach($scope);
@@ -34,47 +35,48 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   });
 
   this.helpers({
-      openVisits: () => {
+    openVisits: () => {
       var today = new Date();
       today.setHours(0,0,0,0);
 
       var userId = Meteor.userId();
-      var user = User.findOne({_id: userId}, {fields: {'userData.location': 1,'userData.visitRange': 1}});
-      if (user && user.userData && user.userData.location) {
-        this.visitRange = user.userData.visitRange;
-        this.fromLocation = user.userData.location.geo;
-        this.hasLocation = true;
-      }else {
-        this.visitRange = 3000;
-        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = Boston;
-        this.hasLocation = false;
+      if (userId) {
+        var user = User.findOne({_id: userId}, {fields: {'userData.location': 1, 'userData.visitRange': 1}});
+        if (user && user.userData && user.userData.location) {
+          this.visitRange = user.userData.visitRange;
+          this.fromLocation = user.userData.location.geo;
+          this.hasLocation = true;
+        } else {
+          this.visitRange = 3000;
+          this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston;
+          this.hasLocation = false;
+        }
+        logger.info("openVisits within " + this.visitRange + " miles of " + JSON.stringify(this.fromLocation));
+        var visits = Visit.find({
+          visitorId: null,
+          "location.geo": {
+            $near: {
+              $geometry: this.fromLocation,
+              $maxDistance: this.visitRange * 1609
+            }
+          },
+          requestedDate: {$gt: today},
+          'requesterId': {$ne: userId},
+          inactive: {$exists: false}
+        }, {
+          sort: this.getReactively('listSort'),
+          fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1}
+        });
+        this.openVisitCount = visits.count();
+        return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
       }
-      console.log( "open Visits: " + this.visitRange  + " " + JSON.stringify(this.fromLocation));
-      var visits = Visit.find({
-         visitorId: null,
-         "location.geo": {
-           $near: {
-             $geometry: this.fromLocation,
-             $maxDistance: this.visitRange * 1609
-           }
-         },
-         requestedDate: {$gt: today},
-         'requesterId': {$ne: userId},
-         inactive: {$exists: false}
-       }, {
-         sort: this.getReactively('listSort'),
-         fields: {"requesterId": 1,"requestedDate": 1, "notes": 1, "location": 1}
-       });
-      this.openVisitCount = visits.count();
-      return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });
 
    ////////
 
   this.getRequester = function (visit) {
-    if ( visit == 'undefined' ) {
-      console.log("No visit.");
+    if ( visit == null ) {
       return null;
     }
     return User.findOne({_id: visit.requesterId});
@@ -112,12 +114,10 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   }
 
   this.visitDetails = function (id) {
-    console.log( "view details: " + id );
     $state.go( 'visitDetails', {visitId: id} );
   };
 
   this.scheduleVisit = function(visit) {
-    console.log("visit id:" + visit._id);
     $scope.visit = visit;
     $scope.modalCtrl.show();
   };

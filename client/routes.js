@@ -1,8 +1,10 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+
 import {Visits } from '/model/visits'
 import {User} from '/model/users'
+import {logger} from '/client/logging'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
@@ -28,16 +30,18 @@ angular.module('visitry')
             const visits = Meteor.subscribe('userRequests');
             Tracker.autorun(()=> {
               const isReady = visits.ready();
-              var visitNeedingFeedback = Visits.findOne({
-                requesterFeedbackId: null,
-                requesterId: Meteor.userId(),
-                visitTime: {$lt: new Date()}
-              });
-              if (isReady && visitNeedingFeedback) {
-                console.log("Yes lets go to feedbacks");
-                $location.url('/requester/feedback/' + visitNeedingFeedback._id);
-              } else {
-                console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
+              if ( Meteor.userId() ) {
+                var visitNeedingFeedback = Visits.findOne({
+                  requesterFeedbackId: null,
+                  requesterId: Meteor.userId(),
+                  visitTime: {$lt: new Date()}
+                });
+                if (isReady && visitNeedingFeedback) {
+                  logger.info("Yes, lets go to feedbacks");
+                  $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                } else {
+                  logger.info(`Visits data is ${isReady ? 'ready' : 'not ready'} for user: ${Meteor.userId()}`)
+                }
               }
             })
           }
@@ -97,34 +101,7 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/auth/login/login.html';
           }
         },
-        controller: 'loginCtrl as login',
-        resolve: {
-          loggedIn: function ($location) {
-            if (Meteor.userId()) {
-              var profile = Meteor.subscribe('userProfile');
-              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-              if ( user ) {
-                console.log('There was a user id : ' + JSON.stringify(user));
-                switch (user.userData.role) {
-                  case 'visitor':
-                    console.log('visitor');
-                    $location.url('/visitor/browseRequests');
-                    break;
-                  case 'requester':
-                    console.log('requester');
-                    $location.url('/requester/pendingVisits');
-                    break;
-                  default:
-                    console.log('invalid role');
-                    break;
-                }
-              }
-              else {
-                console.log ("no user");
-              }
-            }
-          }
-        }
+        controller: 'loginCtrl as login'
       })
       .state('register', {
         url: '/register',
