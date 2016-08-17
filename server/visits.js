@@ -5,7 +5,7 @@ import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
   if (this.userId) {
-    logger.info("publish visits to " + this.userId);
+    logger.verbose("publish visits to " + this.userId);
     var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
     var today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -29,7 +29,7 @@ Meteor.publish("visits", function (options) {
 
 Meteor.publish("userRequests", function (options) {
   if (this.userId) {
-    logger.info("publish userRequests to " + this.userId);
+    logger.verbose("publish userRequests to " + this.userId);
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     //active requests requested by me for a future date, or for a past date and needing my feedback
@@ -53,7 +53,7 @@ Meteor.publish("userRequests", function (options) {
 
 Meteor.publish("availableVisits", function () {
   if (this.userId) {
-    logger.info("publish availableVisits to " + this.userId );
+    logger.verbose("publish availableVisits to " + this.userId );
     const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
     var user = Meteor.users.findOne({_id: this.userId}, {

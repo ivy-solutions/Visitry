@@ -4,7 +4,7 @@ import { logger } from '/server/logging'
 
 Meteor.publish("userdata", function () {
   if (this.userId) {
-    logger.info("publish userdata to " + this.userId );
+    logger.verbose("publish userdata to " + this.userId );
     var user = User.findOne({_id: this.userId},{fields: {'userData.agencyId': 1}});
     return User.find({agencyId: user.userData.agencyId },
       {fields: {username: 1, emails: 1,
@@ -18,7 +18,7 @@ Meteor.publish("userdata", function () {
 
 Meteor.publish("userProfile", function () {
   if (this.userId) {
-    logger.info("publish userProfile to " + this.userId );
+    logger.verbose("publish userProfile to " + this.userId );
     return User.find({_id:this.userId},
       {fields: {username: 1, 'userData': 1}});
   } else {
