@@ -18,6 +18,7 @@ angular.module('visitry').directive('visitry', function () {
     controllerAs: 'visitry',
     controller: function ($scope, $reactive, $state, $ionicHistory) {
       $reactive(this).attach($scope);
+      $scope.platform = ionic.Platform.platform();
 
       var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
