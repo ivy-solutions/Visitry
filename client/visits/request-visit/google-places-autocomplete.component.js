@@ -82,14 +82,10 @@ angular.module("visitry")
             }
           }
         };
-        initOpts();
         if (scope.gPlace == undefined) {
           scope.gPlace = new google.maps.places.Autocomplete(element[0], {});
-          console.log('gPlace undefined');
-          console.log(scope.gPlace);
         }
         google.maps.event.addListener(scope.gPlace, 'place_changed', function () {
-          console.log('place changed');
           var result = scope.gPlace.getPlace();
           if (result !== undefined) {
             if (result.address_components !== undefined) {
@@ -109,7 +105,6 @@ angular.module("visitry")
         });
         //function to get retrieve the autocompletes first result using the AutocompleteService
         var getPlace = function (result) {
-          console.log(result)
           var autocompleteService = new google.maps.places.AutocompleteService();
           if (result.name.length > 0) {
             autocompleteService.getPlacePredictions(
@@ -138,8 +133,9 @@ angular.module("visitry")
 
                           //on focusout the value reverts, need to set it again.
                           var watchFocusOut = element.on('focusout', function (event) {
+
                             element.val(detailsResult.formatted_address);
-                            element.unbind('focusout')
+                            //element.unbind('focusout')
                           })
                         });
                       }
@@ -152,6 +148,7 @@ angular.module("visitry")
         controller.$render = function () {
           var location = controller.$viewValue;
           element.val(location);
+          console.log(location);
         };
 
         //watch options provided to directive
