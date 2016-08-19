@@ -20,7 +20,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.helpers({
     userLocation: ()=> {
       currentUser = User.findOne(Meteor.userId());
-      console.log("currentUser" + JSON.stringify(currentUser));
       if (currentUser.userData && currentUser.userData.location) {
         this.visitRequest.location.name = currentUser.userData.location.address;
       }
