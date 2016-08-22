@@ -3,7 +3,7 @@
  */
 import { logger } from '/server/logging'
 
-Push.debug=false;
+Push.debug=true;
 
 Push.allow({
   send: function(userId, notification) {
