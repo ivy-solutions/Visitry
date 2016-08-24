@@ -19,7 +19,7 @@ let logFile = new winston.transports.File({
 });
 
 //Note: This will create a log file in the default run directory.
-// When running locally that file will be, e.g., : Visitry/.meteor/local/build/programs/server/visitry.log.2016-08-17
+// When running locally that file will be, e.g., : Visitry/.meteor/local/build/programs/server/2016-08-17.visitry.log
 // If we want to put this in some more accessible place we need to get the permissions on that directory right and edit the filename below
 let fileRotate = new winston.transports.DailyRotateFile({
   name: 'file',
