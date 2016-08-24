@@ -87,7 +87,7 @@ if (Meteor.isServer) {
         assert.equal(Visits.find({inactive: true}).count(), 1);
       });
 
-      it('sends a notification if the visit had been scheduled', () => {
+      it('sends a notification if the request has been rescinded', () => {
         Visits.update(requestId, {$set: {visitorId: userId}});
         const invocation = {userId: requesterId};
         rescindHandler.apply(invocation, [requestId]);

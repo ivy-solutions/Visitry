@@ -122,7 +122,6 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
     logger.info( "rescind visit request for " + this.userId);
-    visit.softRemove();
 
     if (visit.visitorId) {
       //communicate with visitor
@@ -136,6 +135,8 @@ Meteor.methods({
         visit.visitorId
       )
     }
+    visit.softRemove();
+
     return visit;
   },
   'visits.cancelScheduled'(visitId) {
