@@ -3,13 +3,14 @@
  */
 import { Visit } from '/model/visits'
 import { User } from '/model/users'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
   this.visit;
-  this.requester
+  this.requester;
 
   this.helpers({
     theVisit:() => {
@@ -33,6 +34,15 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.isRequester = function() {
     return this.visit && (Meteor.userId() == this.visit.requesterId)
+  };
+
+  this.canCallRequester = function() {
+    return !this.isRequester() && this.requester.userData.phoneNumber != null;
+  };
+
+  this.canCallVisitor = function() {
+    var visitor = this.getVisitor();
+    return this.isRequester() && visitor && visitor.userData.phoneNumber != null;
   };
 
   this.getRequester = function () {
@@ -80,5 +90,15 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     }
     return '';
   };
+
+  this.dialCompanion = (user) => {
+    if ( user && user.userData && user.userData.phoneNumber) {
+      var phoneNumber = user.userData.phoneNumber;
+      window.plugins.CallNumber.callNumber(function (){}, function (result) {
+        logger.error('Error: '+ result + ' dialing phone number of user:' + user.username + ' phone: ' + phoneNumber);
+      }, phoneNumber, true);
+    }
+  };
+
 
 });

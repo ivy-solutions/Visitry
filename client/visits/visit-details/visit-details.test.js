@@ -69,6 +69,46 @@ describe('View Visit Details', function () {
     });
   });
 
+  describe( "canCallRequester", function () {
+    it( "is true", function() {
+      controller.requester.userData.phoneNumber = "+15551212";
+      controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
+      chai.assert.isTrue(controller.canCallRequester());
+    });
+    it( "requester has no phone number", function() {
+      controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
+      chai.assert.isFalse(controller.canCallRequester());
+    });
+    it( "visit is not yet scheduled", function() {
+      controller.visit = {requesterId : 'requesterId'};
+      chai.assert.isFalse(controller.canCallRequester());
+    });
+    it( "user is the requester", function() {
+      controller.visit = {requesterId : Meteor.userId(), visitorId: 'visitorId'};
+      chai.assert.isFalse(controller.canCallRequester());
+    });
+  });
+
+  describe( "canCallVisitor", function () {
+    it( "is true", function() {
+      findOneStub.returns({ userData: { firstName: "Victoria", picture: "Victoria's picture", phoneNumber: "+15551212"} })
+      controller.visit = {requesterId : Meteor.userId(), visitorId: 'visitorId'};
+      chai.assert.isTrue(controller.canCallVisitor());
+    });
+    it( "visitor has no phone number", function() {
+      controller.visit = {requesterId : Meteor.userId(), visitorId: 'someOtherId'};
+      chai.assert.isFalse(controller.canCallVisitor());
+    });
+    it( "visit is not yet scheduled", function() {
+      controller.visit = {requesterId : 'visitorId'};
+      chai.assert.isFalse(controller.canCallVisitor());
+    });
+    it( "user is the visitor", function() {
+      controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
+      chai.assert.isFalse(controller.canCallVisitor());
+    });
+  });
+
   describe( "hasAboutInfo", function () {
     it( "user has about info", function() {
       var userWith = {userData: {firstName: "Alfonso", about: "I enjoy mountain climbing, writing symphonies and studying Urdu."}};
