@@ -65,16 +65,20 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         if (err) {
           return handleError(err);
         } else {
-          //clear form
-          this.resetForm(form);
-
-          if (this.currentUser.userData.role == "visitor") {
-            $state.go('browseRequests');
-          } else {
-            $state.go('pendingVisits');
-          }
+          return this.submitSuccess(form);
         }
       });
+    }
+  };
+
+  this.submitSuccess = function (form) {
+    //clear form
+    this.resetForm(form);
+
+    if (this.currentUser.userData.role == "visitor") {
+      $state.go('browseRequests');
+    } else {
+      $state.go('pendingVisits');
     }
   };
 

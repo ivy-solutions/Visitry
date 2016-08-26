@@ -27,8 +27,9 @@ describe ( 'Profile', function() {
 
   beforeEach(function () {
     form = { $valid: true,
-      visitorLocation : {$pristine: true},
-      requesterLocation : {$pristine: true},
+      visitorLocation : {$pristine: true, $touched: false},
+      requesterLocation : {$pristine: true, $touched: false},
+      phoneNumber : {$pristine: true, $touched: false},
       $setUntouched: function(){},
       $setPristine: function(){}
     };
@@ -82,12 +83,13 @@ describe ( 'Profile', function() {
       controller.currentUser = user;
       controller.distance = "17";
       controller.isVisitor = true;
+      controller.phoneNumber = "(800) 555-1212";
       controller.submitUpdate(form);
       chai.assert.isTrue(Meteor.call.calledWith('updateUserData'),"updateUserData called");
     });
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;
-      form.visitorLocation.$pristine = false;
+      form.visitorLocation.$touched = true;
       controller.locationDetails = {
         name: "Boston",
         geometry: {
@@ -119,17 +121,22 @@ describe ( 'Profile', function() {
       controller.submitUpdate(form);
       chai.assert.isFalse(Meteor.call.calledWith('updateLocation'),"updateLocation not called");
     });
+  });
+
+  describe( 'submitSuccess', function() {
     it('visitor goes to browseRequests', function() {
+      meteorStub.returns(); //no error
       controller.currentUser = user;
-      controller.submitUpdate(form);
+      controller.submitSuccess(form);
       chai.assert.isTrue(stateSpy.withArgs('browseRequests').calledOnce)
     });
     it('requester goes to pendingVisits', function() {
       user.userData.role = 'requester';
       controller.currentUser = user;
-      controller.submitUpdate(form);
+      controller.submitSuccess(form);
       chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
     });
+
   });
 
   describe('isLocationValid', function() {
@@ -171,7 +178,7 @@ describe ( 'Profile', function() {
             }
           }
         }
-      }
+      };
       user.userData.location.address = "";
       chai.assert.isFalse(controller.isLocationValid());
     });

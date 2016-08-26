@@ -101,7 +101,7 @@ Meteor.methods({
     currentUser.userData.role = data.role;
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
-    currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber: "";
+    currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber: null; //remove phone number of there is none
     currentUser.save(function(err, id) {
       if (err) {
         logger.error("updateUserData failed to update user. err: " + err);

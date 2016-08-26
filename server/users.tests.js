@@ -120,9 +120,9 @@ if (Meteor.isServer) {
     describe('users.updateUserData method', () => {
       const updateUserDataHandler = Meteor.server.method_handlers['updateUserData'];
 
-      it('succeeds when valid first and last name passed', () => {
+      it('succeeds when valid fields passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens"}]);
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumer:"(800)555-1212"}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.role, "visitor");
         assert.equal(updatedUser.userData.visitRange, 20);
@@ -156,6 +156,28 @@ if (Meteor.isServer) {
         } catch (err) {
           assert.equal( err.error , 'validation-error', err.error);
           assert.equal( err.reason , '"userData.visitRange" has to be greater than 0', err.reason)
+        }
+      });
+      it('succeeds when no phoneNumber', () => {
+        const invocation = {userId: testUserId};
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens"}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.isNull(updatedUser.userData.phoneNumber);
+      });
+      it('succeeds when phoneNumber with dashes', () => {
+        const invocation = {userId: testUserId};
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumber:"800-555-1212"}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.phoneNumber, "800-555-1212");
+      });
+      it('fails when phoneNumber is invalid', () => {
+        const invocation = {userId: testUserId};
+        try {
+          updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumber:"800 555-121"}]);
+          fail("expected exception");
+        } catch (err) {
+          assert.equal( err.error , 'validation-error', err.error);
+          assert.equal( err.reason , 'Phone number format should be (nnn) nnn-nnnn', err.reason)
         }
       });
 
