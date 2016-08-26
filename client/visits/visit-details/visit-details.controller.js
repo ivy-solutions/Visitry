@@ -5,7 +5,7 @@ import { Visit } from '/model/visits'
 import { User } from '/model/users'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
@@ -94,12 +94,23 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.dialCompanion = (user) => {
     if ( user && user.userData && user.userData.phoneNumber) {
       var phoneNumber = user.userData.phoneNumber;
+      var username = user.username;
       phoneNumber = phoneNumber.replace(/[^\d]/g, "");
       window.plugins.CallNumber.callNumber(function (){}, function (result) {
-        logger.error('Error: '+ result + ' dialing phone number of user:' + user.username + ' phone: ' + phoneNumber);
+        logger.error('Error: '+ result + ' dialing phone number of user:' + username + ' phone: ' + phoneNumber);
+        handleError(result);
       }, phoneNumber, true);
     }
   };
+
+  function handleError(err) {
+    var message = err== 'NoFeatureCallSupported'? 'Device does not support calling.' : err;
+    $ionicPopup.alert({
+      title: 'Error',
+      template: message,
+      okType: 'button-positive button-clear'
+    });
+  }
 
 
 });
