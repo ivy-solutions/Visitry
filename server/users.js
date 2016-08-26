@@ -10,7 +10,7 @@ Meteor.publish("userdata", function () {
       {fields: {username: 1, emails: 1,
         'userData.location': 1, 'userData.visitRange': 1,
         'userData.firstName':1, 'userData.lastName':1,
-        'userData.picture': 1, 'userData.about': 1}});
+        'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1}});
   } else {
     this.ready();
   }
@@ -101,6 +101,7 @@ Meteor.methods({
     currentUser.userData.role = data.role;
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
+    currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber: "";
     currentUser.save(function(err, id) {
       if (err) {
         logger.error("updateUserData failed to update user. err: " + err);

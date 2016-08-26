@@ -7,13 +7,12 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   $reactive(this).attach($scope);
 
   this.isVisitor = false;
-
    this.helpers({
     currentUser: () => {
       var user = Meteor.user();
       if (user) {
         this.isVisitor = user && user.userData && user.userData.role === 'visitor';
-        this.distance = this.isVisitor && user.userData.visitRange ? user.userData.visitRange.toString() : "10";
+        this.distance = this.isVisitor && user.userData.visitRange != null ? user.userData.visitRange.toString() : "10";
         logger.info("profile currentUser. isVisitor:" + this.isVisitor + " visitRange:" + this.distance);
       }
       return user;
@@ -36,51 +35,47 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     return false;
   };
 
-  var saveError = false;
-   this.submitUpdate = (form) => {
-     if(form.$valid && (this.isLocationValid() || (form.visitorLocation.$pristine==true && form.requesterLocation.$pristine==true) )) {
+  this.submitUpdate = (form) => {
+    if(form.$valid && (this.isLocationValid() || (form.visitorLocation.$pristine==true && form.requesterLocation.$pristine==true) )) {
+      //location
+      if (form.visitorLocation.$touched || form.requesterLocation.$touched) { //if location has changed
+        // location is optional - can be blank or selected
+        var newLocation = null;
+        if (this.locationDetails) {
+          newLocation = {
+            name: this.currentUser.userData.location.address,
+            formattedAddress: this.locationDetails.formatted_address,
+            latitude: this.locationDetails.geometry.location.lat(),
+            longitude: this.locationDetails.geometry.location.lng()
+          };
+        }
 
-       this.currentUser.userData.visitRange = parseInt(this.distance, 10);
-       logger.info("profile.submitUpdate user: " + JSON.stringify(this.currentUser.userData));
-       Meteor.call('updateUserData', this.currentUser.userData, (err) => {
-         if (err) {
-           saveError = true;
-           return handleError(err);
-         }
-       });
+        logger.info("profile.submitUpdate update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
+        Meteor.call('updateLocation', newLocation, (err) => {
+          if (err) {
+            return handleError(err);
+          }
+        });
+      }
 
-       if (form.visitorLocation.$pristine==false || form.requesterLocation.$pristine==false) { //if location has changed
-         // location is optional - can be blank or selected
-         var newLocation = null;
-         if (this.locationDetails) {
-           newLocation = {
-             name: this.currentUser.userData.location.address,
-             formattedAddress: this.locationDetails.formatted_address,
-             latitude: this.locationDetails.geometry.location.lat(),
-             longitude: this.locationDetails.geometry.location.lng()
-           };
-         }
+      //userData
+      this.currentUser.userData.visitRange = parseInt(this.distance, 10);
+      logger.info("profile.submitUpdate user: " + JSON.stringify(this.currentUser.userData));
+      Meteor.call('updateUserData', this.currentUser.userData, (err) => {
+        if (err) {
+          return handleError(err);
+        } else {
+          //clear form
+          this.resetForm(form);
 
-         logger.info("profile.submitUpdate update location: " + this.currentUser.userData.location.address + " " + JSON.stringify(this.locationDetails));
-         Meteor.call('updateLocation', newLocation, (err) => {
-           if (err) {
-             saveError = true;
-             return handleError(err);
-           }
-         });
-       }
-
-       if (saveError==false) {
-         //clear form
-         this.resetForm(form);
-
-         if (this.currentUser.userData.role == "visitor") {
-           $state.go('browseRequests');
-         } else {
-           $state.go('pendingVisits');
-         }
-       }
-     }
+          if (this.currentUser.userData.role == "visitor") {
+            $state.go('browseRequests');
+          } else {
+            $state.go('pendingVisits');
+          }
+        }
+      });
+    }
   };
 
 

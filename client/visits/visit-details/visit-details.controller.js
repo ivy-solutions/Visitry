@@ -94,6 +94,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.dialCompanion = (user) => {
     if ( user && user.userData && user.userData.phoneNumber) {
       var phoneNumber = user.userData.phoneNumber;
+      phoneNumber = phoneNumber.replace(/[^\d]/g, "");
       window.plugins.CallNumber.callNumber(function (){}, function (result) {
         logger.error('Error: '+ result + ' dialing phone number of user:' + user.username + ' phone: ' + phoneNumber);
       }, phoneNumber, true);

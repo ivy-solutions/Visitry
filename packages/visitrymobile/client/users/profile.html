@@ -1,6 +1,6 @@
 <ion-view title="{{profile.currentUser.username}}" hide-back-button=true>
 
-    <ion-content class="profile">
+    <ion-content class="has-header profile">
         <form name="profileForm" novalidate="" ng-submit="profile.submitUpdate(profileForm)">
              <div ng-if="!profile.currentUser.userData.picture">
                  <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
@@ -45,6 +45,15 @@
                         50
                     </div>
                 </label>
+                <label class="item item-input">
+                    <input type="text" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
+                           placeholder="Optional phone number" ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" >
+                    </input>
+                </label>
+                <div layout="row">
+                    <span flex></span>
+                    <span class="error-message" ng-show="profileForm.phoneNumber.$invalid && profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
+                </div>
                 <label class="item item-input item-stacked-label">
                     <div class="input-label">About You</div>
                     <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
