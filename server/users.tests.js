@@ -22,7 +22,7 @@ if (Meteor.isServer) {
       }
     });
     afterEach(() => {
-      Meteor.users.remove(testUserId);
+      Meteor.users.remove(testUserId, function(err) { if (err) console.log(err); });
     });
 
     describe('users.updateName method', () => {

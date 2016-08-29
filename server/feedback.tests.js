@@ -37,13 +37,13 @@ if (Meteor.isServer) {
 
     describe('feedback.createFeedback method', () => {
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
-      beforeEach(() => {
-        Feedbacks.remove({});
+      beforeEach(function() {
+        Feedbacks.remove({}, function(err) { if (err) console.log(err); })
       });
 
       it('creates feedback', () => {
         const invocation = {userId: Random.id()};
-        createHandler.apply(invocation, [testFeedback]);
+        createHandler.apply(invocation, [testFeedback])
         assert.equal(Feedbacks.find().count(), 1);
       });
       it('fails if no user rating', () => {
