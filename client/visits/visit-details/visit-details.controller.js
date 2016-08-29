@@ -37,12 +37,12 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.canCallRequester = function() {
-    return !this.isRequester() && this.requester.userData.phoneNumber != null;
+    return !this.isRequester() && this.requester.userData.phoneNumber != null && !ionic.Platform.isIPad();
   };
 
   this.canCallVisitor = function() {
     var visitor = this.getVisitor();
-    return this.isRequester() && visitor && visitor.userData.phoneNumber != null;
+    return this.isRequester() && visitor && visitor.userData.phoneNumber != null && !ionic.Platform.isIPad();
   };
 
   this.getRequester = function () {

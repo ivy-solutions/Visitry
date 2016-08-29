@@ -1,6 +1,7 @@
 /**
  * Created by sarahcoletti on 2/15/16.
  */
+
 angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $state, $reactive, $ionicPopup) {
   $reactive(this).attach($scope);
 
@@ -17,7 +18,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         return handleError(err)
       }
       else {
-        console.log('Login success ' + this.credentials.username );
+        console.log('Login success ' + this.credentials.username + "device: " + JSON.stringify(ionic.Platform.device()));
         this.resetForm(form);
         var user = Meteor.user();
         //TODO we will sometime handle unaffiliated users
