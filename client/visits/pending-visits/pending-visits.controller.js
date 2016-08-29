@@ -8,6 +8,9 @@ import {logger} from '/client/logging'
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);
 
+  this.subscribe('userRequests');
+  this.subscribe('userdata');
+
   this.showDelete = false;
   this.canSwipe = true;
   this.listSort = {
