@@ -5,9 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-
 import { Visit,Visits } from '/model/visits'
-import { User } from '/model/users'
 import '/server/visits.js';
 
 if (Meteor.isServer) {

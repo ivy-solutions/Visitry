@@ -6,7 +6,6 @@ import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import { User } from '/model/users'
 import '/client/feedback/feedback.component';
 
 
@@ -88,6 +87,8 @@ describe('Client Feedback', function () {
 
       var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };
       it("submit feedback inserts an entry into the Feedback collection", function () {
+        controller.visitor = {_id:Random.id()};
+        controller.requester = {_id:Random.id()};
         controller.visitorRating.selectStar(1);
         controller.visitRating.selectStar(1);
         controller.submitFeedback(form);

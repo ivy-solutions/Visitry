@@ -1,7 +1,6 @@
 /**
  * Created by sarahcoletti on 2/18/16.
  */
-import { User } from '/model/users'
 
 angular.module('visitry').directive('listVisits', function () {
   return {

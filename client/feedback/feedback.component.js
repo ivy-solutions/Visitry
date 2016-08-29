@@ -1,5 +1,4 @@
 import { Visit } from '/model/visits'
-import { User } from '/model/users'
 import {Feedback} from '/model/feedback'
 
 angular.module('visitry').directive('feedback', function () {

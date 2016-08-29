@@ -2,7 +2,6 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import {Visits } from '/model/visits'
-import {User} from '/model/users'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {

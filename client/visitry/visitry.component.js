@@ -1,7 +1,6 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-import { User } from '/model/users'
 import { Visit } from '/model/visits'
 
 angular.module('visitry').directive('visitry', function () {
@@ -41,7 +40,6 @@ angular.module('visitry').directive('visitry', function () {
           return feedback.count();
         },
         isLoggedIn: ()=> {
-          console.log(Meteor.userId());
           return Meteor.userId() !== null;
         }
       });

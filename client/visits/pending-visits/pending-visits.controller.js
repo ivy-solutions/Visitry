@@ -2,7 +2,6 @@
  * Created by sarahcoletti on 2/18/16.
  */
 import { Visit } from '/model/visits'
-import { User } from '/model/users'
 
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);

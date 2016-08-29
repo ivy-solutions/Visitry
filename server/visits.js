@@ -1,6 +1,5 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
-import { User } from '/model/users'
 
 Meteor.publish("visits", function (options) {
   var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});

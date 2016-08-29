@@ -1,7 +1,6 @@
 /**
  * Created by n0235626 on 7/25/16.
  */
-import { User } from '/model/users'
 import {Visits} from '/model/visits'
 
 angular.module("visitry").controller('visitorFeedbackList', function ($scope, $reactive, $state) {
@@ -12,9 +11,6 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
 
   this.showDelete = false;
   this.canSwipe = false;
-  this.listSort = {
-    visitTime:-1
-  };
   this.numFeedback = 0;
 
   this.helpers({
@@ -23,7 +19,7 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
         visitorFeedbackId: null,
         visitorId: Meteor.userId(),
         visitTime: {$lt: new Date()}
-      }, {sort: this.getReactively('listSort')});
+      }, {sort: {visitTime:-1}});
       this.numFeedback = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
@@ -36,10 +32,10 @@ angular.module("visitry").controller('visitorFeedbackList', function ($scope, $r
   this.getRequesterImage = function(visit) {
     if (visit.requesterId) {
       var requester = this.getRequester(visit);
-      if ( requester == undefined || requester.userData == undefined || requester.userData.picture == undefined ) {
-        return "";
+      if ( requester && requester.userData && requester.userData.picture ) {
+        return requester.userData.picture;
       }
-      return requester.userData.picture;
+      return "";
     }
     return "";
   };

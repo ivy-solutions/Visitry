@@ -6,8 +6,8 @@ import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import {User} from '/model/users';
 import '/client/feedback/visitor-feedback-list.component';
+import '/model/users.js'
 
 describe('Visitor Feedback List', function () {
   beforeEach(function () {
@@ -56,7 +56,6 @@ describe('Visitor Feedback List', function () {
       });
     });
 
-
     afterEach(function () {
       stateSpy.restore();
       User.findOne.restore();
@@ -69,9 +68,6 @@ describe('Visitor Feedback List', function () {
       it('cannot swipe', function () {
         chai.assert.equal(controller.canSwipe, false);
       });
-      it('list sorted ascending by visit time', function () {
-        chai.assert.equal(controller.listSort.visitTime, -1);
-      })
     });
 
     describe('Give Feedback',function(){

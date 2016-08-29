@@ -4,10 +4,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
-
-import { User } from '/model/users';
-
 import '/server/users.js';
+import '/model/users.js'
 
 if (Meteor.isServer) {
   describe('Users', () => {

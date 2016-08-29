@@ -1,3 +1,67 @@
-<div layout="row" layout-align="center start" layout-margin>
-  MANAGE!
+<div layout-margin>
+  <div layout="row" layout-padding>
+    <md-list flex="33">
+      <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+        <md-subheader style="background-color: #0086b3">Upcoming Visits</md-subheader>
+        <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
+      </div>
+      <div ng-repeat="visitsByDate in adminManage.upcomingVisits" md-whiteframe="1">
+        <div class="item item-divider">
+          <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
+        </div>
+        <md-list-item class="md-3-line" ng-repeat="visit in visitsByDate.visits">
+          <img ng-src="{{adminManage.getUserImage(visit.visitorId)}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="row" layout-align="space-between center">
+            <h3>{{adminManage.getUser(visit.visitorId)| firstNameLastInitial}}</h3>
+            <div layout="column" layout-align="center center">
+              <p>is visiting</p>
+              <p>{{visit.visitTime | date: "h:mm"}}</p>
+              <p>{{visit.location | approximateLocation}}</p>
+            </div>
+            <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
+          </div>
+          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
+        </md-list-item>
+      </div>
+    </md-list>
+    <md-list flex="33">
+      <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+        <md-subheader style="background-color: #0086b3">Outstanding Requests</md-subheader>
+        <a style="color: ghostwhite" ng-href="/admin/manage/seniors" layout-padding>See More >></a>
+      </div>
+      <div ng-repeat="visitsByDate in adminManage.outstandingRequests" md-whiteframe="1">
+        <div class="item item-divider">
+          <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
+        </div>
+        <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits">
+          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="column" flex>
+            <div layout="row" layout-align="space-between center">
+              <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
+              <p>{{visit.location | approximateLocation}}</p>
+            </div>
+            <div layout="row" layout-align="space-between center">
+              <p>{{visit.notes}}</p>
+              <p>{{visit.requestedDate | date: "h:mm"}}</p>
+            </div>
+          </div>
+        </md-list-item>
+      </div>
+    </md-list>
+    <md-list flex="33">
+      <div md-whiteframe="1">
+        <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+          <md-subheader style="background-color: #0086b3">Top Visitors</md-subheader>
+          <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
+        </div>
+        <md-list-item class="md-2-line" ng-repeat="visitor in adminManage.topVisitors">
+          <img ng-src="{{visitor.userData.picture}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="row" layout-align="space-between center">
+            <h3>{{visitor.userData.firstName}} {{visitor.userData.lastName}}</h3>
+            <h3>{{visitor.visitCount}}</h3>
+          </div>
+        </md-list-item>
+      </div>
+  </div>
+  </md-list>
 </div>
