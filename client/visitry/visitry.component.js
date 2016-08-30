@@ -23,6 +23,10 @@ angular.module('visitry').directive('visitry', function () {
       var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
 
+      this.autorun(() => {
+        $scope.connectionStatus = Meteor.status().status;
+      });
+
       this.helpers({
         isVisitor: ()=> {
           if (Meteor.userId()) {

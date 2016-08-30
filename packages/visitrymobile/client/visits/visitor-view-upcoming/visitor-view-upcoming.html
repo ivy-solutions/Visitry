@@ -1,7 +1,10 @@
 <ion-view view-title="Upcoming Visits" hide-back-button=true>
     <ion-content class="has-header has-tabs">
         <ion-list show-delete="visitorViewUpcoming.showDelete" can-swipe="visitorViewUpcoming.canSwipe">
-            <div class="numVisits" ng-hide="!visitorViewUpcoming.upcomingVisits.length==0">
+            <div class="warning" ng-hide="connectionStatus==='connected'">
+                No internet connection.
+            </div>
+            <div class="emptyListInfo" ng-hide="!visitorViewUpcoming.upcomingVisits.length==0">
                 No scheduled visits
             </div>
             <div ng-repeat="visitsByDate in visitorViewUpcoming.upcomingVisits">

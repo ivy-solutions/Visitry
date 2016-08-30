@@ -1,7 +1,7 @@
 <ion-view view-title="Give Feedback" hide-back-button=true>
   <ion-content class="has-header has-tabs">
     <ion-list show-delete="feedbackList.showDelete" can-swipe="feedbackList.canSwipe">
-        <div class="numVisits" ng-hide="feedbackList.numFeedback!=0">
+        <div class="emptyListInfo" ng-hide="feedbackList.numFeedback!=0">
             No recent visits needing feedback.
         </div>
       <div ng-repeat="visitsByDate in feedbackList.pendingFeedback">
