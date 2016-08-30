@@ -14,10 +14,10 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state) {
+    controller: function ($scope, $reactive, $state,$cookies) {
       $reactive(this).attach($scope);
 
-      var subscription = this.subscribe('userProfile');
+      this.subscribe('userProfile');
       this.helpers({
         isVisitor: ()=> {
           if (Meteor.userId()) {
@@ -50,9 +50,14 @@ angular.module('visitry').directive('visitry', function () {
           if (err) {
             console.log(err);
           }
-          subscription.stop();
-          //$ionicHistory.clearHistory();
-          $state.go('login');
+          else{
+            if(Meteor.isCordova) {
+              $ionicHistory.clearHistory();
+            }else{
+              $cookies.remove('agencyId');
+            }
+            $state.go('login',{reload: true});
+          }
         });
       };
     }

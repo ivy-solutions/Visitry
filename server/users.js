@@ -27,9 +27,9 @@ Meteor.publish("userProfile", function () {
   }
 });
 
-Meteor.publish("topVisitors", function (numberOfDays) {
+Meteor.publish("topVisitors", function (agency, numberOfDays) {
   var self = this;
-  var visitors = User.find({'userData.role': {$eq: 'visitor'}}, {
+  var visitors = User.find({'userData.role': {$eq: 'visitor'}, 'userData.agencyIds': {$elemMatch: {$eq: agency}}}, {
     fields: {
       username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1,
       'userData.picture': 1
@@ -39,8 +39,9 @@ Meteor.publish("topVisitors", function (numberOfDays) {
     var initializing = true;
     var visits = Visits.find({
       'visitorId': {$eq: user._id},
-      'visitTime': {$exists: true, $lt: new Date(), $gt: dateByDaysBefore(numberOfDays)}
-    }, {fields: {}})
+      'visitTime': {$exists: true, $lt: new Date(), $gt: dateByDaysBefore(numberOfDays)},
+      'agencyId': {$eq: agency}
+    }, {fields: {}});
     user.visitCount = visits.count();
     self.added('topVisitors', user._id, user);
     visits.observeChanges({

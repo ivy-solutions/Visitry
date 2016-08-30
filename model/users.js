@@ -46,5 +46,7 @@ User = Class.create({
     }
   }
 });
+var TopVisitors = new Mongo.Collection('topVisitors');
 
+export {TopVisitors}
 //export { User };
