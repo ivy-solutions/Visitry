@@ -44,19 +44,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     }
   });
 
-  this.getUser = function (userId) {
-    if (userId == 'undefined') {
-      console.log("No User Specified.");
-      return null;
-    }
-    return User.findOne({_id: userId});
-  };
+  this.getUser = Meteor.myFunctions.getUser;
 
-  this.getUserImage = function (userId) {
-    var user = this.getUser(userId);
-    if (user && user.userData && user.userData.picture)
-      return user.userData.picture;
-    else
-      return "";
-  };
+  this.getUserImage = Meteor.myFunctions.getUserImage;
 });
