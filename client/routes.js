@@ -217,16 +217,27 @@ angular.module('visitry')
         },
         controller: 'adminAdminCtrl as adminAdmin'
       })
-      .state('adminHelp', {
+      .state('adminHelpOverview', {
         url: '/admin/help',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
-            return '/packages/visitrymobile/client/admin-console/help/help.html';
+            return '/packages/visitrymobile/client/admin-console/help/help-overview.html';
           } else {
-            return '/packages/visitry-browser/client/admin-console/help/help.html';
+            return '/packages/visitry-browser/client/admin-console/help/help-overview.html';
           }
         },
-        controller: 'adminHelpCtrl as adminHelp'
+        controller: 'adminHelpOverviewCtrl as adminHelpOverview'
+      })
+      .state('adminHelpAbout',{
+        url:'/admin/help/about',
+        templateUrl:()=>{
+          if(Meteor.isCordova){
+            return '/packages/visitrymobile/client/admin-console/help/help-overview.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-about.html';
+          }
+        },
+        controller: 'adminHelpAboutCtrl as adminHelpAbout'
       });
 
     $urlRouterProvider.otherwise("/login");

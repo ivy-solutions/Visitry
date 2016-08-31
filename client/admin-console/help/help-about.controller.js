@@ -1,9 +1,9 @@
 /**
- * Created by n0235626 on 8/9/16.
+ * Created by n0235626 on 8/31/16.
  */
 import pjson from '/package.json'
 
-angular.module('visitry.browser').controller('adminHelpOverviewCtrl', function ($scope, $state, $reactive) {
+angular.module('visitry.browser').controller('adminHelpAboutCtrl', function ($scope, $state, $reactive) {
   $reactive(this).attach($scope);
   this.developers = "Ivy Solutions";
   this.version = pjson.version;

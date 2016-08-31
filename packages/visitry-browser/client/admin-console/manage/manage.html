@@ -5,6 +5,10 @@
         <md-subheader style="background-color: #0086b3">Upcoming Visits</md-subheader>
         <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
       </div>
+      <div layout="row" layout-align="center center"
+           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+      </div>
       <div ng-repeat="visitsByDate in adminManage.upcomingVisits" md-whiteframe="1">
         <div class="item item-divider">
           <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
@@ -28,6 +32,10 @@
       <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
         <md-subheader style="background-color: #0086b3">Outstanding Requests</md-subheader>
         <a style="color: ghostwhite" ng-href="/admin/manage/seniors" layout-padding>See More >></a>
+      </div>
+      <div layout="row" layout-align="center center"
+           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
       </div>
       <div ng-repeat="visitsByDate in adminManage.outstandingRequests" md-whiteframe="1">
         <div class="item item-divider">
@@ -53,6 +61,9 @@
         <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
           <md-subheader style="background-color: #0086b3">Top Visitors</md-subheader>
           <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
+        </div>
+        <div layout="row" layout-align="center center" ng-hide="adminManage.isTopVisitorsReady">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>
         <md-list-item class="md-2-line" ng-repeat="visitor in adminManage.topVisitors">
           <img ng-src="{{visitor.userData.picture}}" class="md-avatar"/>

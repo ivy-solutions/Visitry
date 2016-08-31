@@ -33,7 +33,7 @@ Package.onUse(function(api) {
     'client/admin-console/admin-home.html',
     'client/admin-console/admin/admin.html',
     'client/admin-console/analytics/analytics.html',
-    'client/admin-console/help/help.html',
+    'client/admin-console/help/help-overview.html',
     'client/admin-console/manage/manage.html'
   ], 'client')
 });

@@ -5,20 +5,30 @@ import { Visit } from '/model/visits'
 import {TopVisitors} from '/model/users'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive,$cookies) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
   this.agencyId = $cookies.get('agencyId');
-  this.subscribe('visits');
-  this.subscribe('userdata');
-  this.subscribe('topVisitors', ()=> {
-    return [this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange')]
-  }, {
-    onReady: function () {
-      console.log("onReady And the Items actually Arrive", arguments);
-    }
+  this.isTopVisitorsReady = false;
+  this.isUserDataReady = false;
+  this.isVisitDataReady = false;
+  this.subscribe('visits', ()=> {
+    return [];
+  }, ()=> {
+    this.isVisitDataReady = true;
   });
+  this.subscribe('userdata', ()=> {
+    return [];
+  }, ()=> {
+    this.isUserDataReady = true;
+  });
+  this.subscribe('topVisitors', ()=> {
+      return [this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange')]
+    }, ()=> {
+      this.isTopVisitorsReady = true;
+    }
+  );
 
   this.helpers({
     upcomingVisits: ()=> {
