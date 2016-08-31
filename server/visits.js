@@ -127,7 +127,7 @@ Meteor.methods({
       //communicate with visitor
       var msgTitle = "Visit request cancelled";
       var user = User.findOne(this.userId);
-      var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).format('MMM d') + '.';
+      var msgText = user.fullName + " cancelled the visit request for " + moment.utc(visit.requestDate).format('ddd., MMM. D') + '.';
 
       Meteor.call('userNotification',
         msgText,
@@ -164,7 +164,7 @@ Meteor.methods({
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(scheduledDateTime).format('MMM. d, h:mm') + ".";
+    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(scheduledDateTime).format('ddd., MMM. D, h:mm') + ".";
 
     Meteor.call('userNotification',
       msgText,
@@ -194,7 +194,7 @@ Meteor.methods({
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " scheduled a visit for " + moment(visit.visitTime).format('MMM. d, h:mm');
+    var msgText = user.fullName + " scheduled a visit for " + moment(visit.visitTime).format('ddd., MMM. D, h:mm');
     if (visit.visitorNotes) {
       msgText += ', saying, "' + visit.visitorNotes + '"';
     }
