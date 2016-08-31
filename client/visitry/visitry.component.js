@@ -22,9 +22,15 @@ angular.module('visitry').directive('visitry', function () {
 
       var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
+      var subscription3 = this.subscribe('userRequests');
+
 
       this.autorun(() => {
-        $scope.connectionStatus = Meteor.status().status;
+        var status = Meteor.status();
+        $scope.connectionStatus = (status.connected==true || (status.status!='disconnected' && status.retryCount < 3)) ? 'ok' : status.status;
+        if (status.status!=='connected') {
+          logger.error( "Lost server connection " + JSON.stringify(status) );
+        }
       });
 
       this.helpers({
@@ -59,6 +65,7 @@ angular.module('visitry').directive('visitry', function () {
           }
           subscription.stop();
           subscription2.stop();
+          subscription3.stop();
           $ionicHistory.clearHistory();
           $state.go('login');
         });

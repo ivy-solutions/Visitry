@@ -13,6 +13,9 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
   this.subscribe('userProfile');
 
   this.login = (form) => {
+    if ($scope.connectionStatus !== 'ok') {
+      handleError( new Error("No connection to server."))
+    }
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
         return handleError(err)
