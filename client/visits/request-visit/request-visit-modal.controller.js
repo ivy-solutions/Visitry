@@ -1,4 +1,5 @@
 import { Visit } from '/model/visits.js'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
   $reactive(this).attach($scope);
@@ -83,7 +84,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       } else {
         newVisit.location = currentUser.userData.location;
       }
-      console.log(newVisit);
+      logger.info("New visit request", newVisit);
       Meteor.call('visits.createVisit',newVisit, (err) => {
         if (err) return handleError(err);
       });
@@ -99,7 +100,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   }
 
   function handleError(err) {
-    console.log('account save error ', err);
+    logger.error('new visit request save error ', err);
 
     $ionicPopup.alert({
       title: err.reason || 'Request failed',

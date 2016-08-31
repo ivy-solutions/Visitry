@@ -1,10 +1,13 @@
-<ion-view view-title="Requested Visits" hide-back-button=true>
+<ion-view view-title="Requests" hide-back-button=true>
   <ion-nav-buttons side="secondary" class="show">
     <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header">
-    <div class="numVisits" ng-hide="pendingVisits.numRequests>0">
+    <div class="warning" ng-hide="connectionStatus==='connected'">
+      No internet connection.
+    </div>
+    <div class="emptyListInfo" ng-hide="pendingVisits.numRequests>0">
       No active requests. Press + to request a visit.
     </div>
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">

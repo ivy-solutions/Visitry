@@ -1,4 +1,5 @@
 import { Class } from 'meteor/jagi:astronomy';
+import { timestamp } from 'meteor/jagi:astronomy-timestamp-behavior'
 
 const Feedbacks = new Mongo.Collection("feedback");
 
@@ -30,12 +31,11 @@ const Feedback = Class.create({
     visitorId: {type: String, immutable: true},
     requesterId: {type:String,immutable:true},
     submitterId:{type:String,immutable:true},
-    userRating: {type: Number, validators: starValueValidator},
-    userComments: {type: String,optional:true},
+    companionRating: {type: Number, validators: starValueValidator},
+    companionComments: {type: String,optional:true},
     visitRating: {type: Number, validators: starValueValidator},
     visitComments: {type: String,optional:true},
     visitId: {type: String, immutable: true},
-    createdAt: {type: Date, immutable: true},
     timeSpent: {type: Number, optional: true }
   },
   behaviors: {

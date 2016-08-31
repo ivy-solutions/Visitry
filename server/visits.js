@@ -1,46 +1,58 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
+import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
-  var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  // active future visit requests, or past requests for which feedback is needed
-  var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
-  return Visits.find({
-    agencyId: {$in: agencies},
-    inactive: {$exists: false},
-    $or: [
-      {
-        visitTime: {$lt: new Date()},
-        $or: [{requesterId: this.userId, requesterFeedbackId: null},
-          {visitorId: this.userId, visitorFeedbackId: null}]
-      },
-      {requestedDate: {$gt: today}}]
-  }, options);
+  if (this.userId) {
+    logger.verbose("publish visits to " + this.userId);
+    var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    // active future visit requests, or past requests for which feedback is needed
+    var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
+    return Visits.find({
+      agencyId: {$in: agencies},
+      inactive: {$exists: false},
+      $or: [
+        {
+          visitTime: {$lt: new Date()},
+          $or: [{requesterId: this.userId, requesterFeedbackId: null},
+            {visitorId: this.userId, visitorFeedbackId: null}]
+        },
+        {requestedDate: {$gt: today}}]
+    }, options);
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("userRequests", function (options) {
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  //active requests requested by me for a future date, or for a past date and needing my feedback
-  var userRequests = Visits.find({
-    requesterId: {$eq: this.userId},
-    inactive: {$exists: false},
-    $or: [
-      {visitTime: {$lt: new Date()},requesterFeedbackId: null},
-      {requestedDate: {$gt: today}}
+  if (this.userId) {
+    logger.verbose("publish userRequests to " + this.userId);
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    //active requests requested by me for a future date, or for a past date and needing my feedback
+    var userRequests = Visits.find({
+      requesterId: {$eq: this.userId},
+      inactive: {$exists: false},
+      $or: [
+        {visitTime: {$lt: new Date()}, requesterFeedbackId: null},
+        {requestedDate: {$gt: today}}
       ]
-  }, options);
-  var visitorIds = userRequests.map(function (visitRequest) {
-    return visitRequest.visitorId
-  });
-  return [userRequests,
-    Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}})];
+    }, options);
+    var visitorIds = userRequests.map(function (visitRequest) {
+      return visitRequest.visitorId
+    });
+    return [userRequests,
+      Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}})];
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("availableVisits", function () {
   if (this.userId) {
+    logger.verbose("publish availableVisits to " + this.userId );
     const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
     var user = Meteor.users.findOne({_id: this.userId}, {
@@ -79,27 +91,36 @@ Meteor.publish("availableVisits", function () {
   }
 });
 
-
 Meteor.methods({
   'visits.createVisit'(visit) {
     visit.requesterId = this.userId;
     var requester = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
     if (!requester.userData.agencyIds || requester.userData.agencyIds.length == 0) {
+      logger.warn("user without agency affiliation attempted to create visit request, userId: " + this.userId );
       throw new Meteor.Error('requires-agency', "User must be affiliated with an agency.")
     }
     visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
 
-    visit.save();
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("failed to create visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "created visit for " + this.userId);
+    return visit;
   },
   'visits.rescindRequest'(visitId) {
     var visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.rescindRequest for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found', 'Visit request not found.');
     }
     if (this.userId !== visit.requesterId) {
+      logger.error( "visits.rescindRequest user is not requester. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
-    visit.softRemove();
+    logger.info( "rescind visit request for " + this.userId);
 
     if (visit.visitorId) {
       //communicate with visitor
@@ -113,13 +134,18 @@ Meteor.methods({
         visit.visitorId
       )
     }
+    visit.softRemove();
+
+    return visit;
   },
   'visits.cancelScheduled'(visitId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.cancelScheduled for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found');
     }
     if (this.userId !== visit.visitorId) {
+      logger.error( "visits.cancelScheduled user is not visitor. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
     var scheduledDateTime = visit.visitTime;
@@ -127,7 +153,13 @@ Meteor.methods({
     visit.visitorId = null;
     visit.visitTime = null;
     visit.visitorNotes = null;
-    visit.save({fields: ['cancelledAt', 'visitorId', 'visitTime', 'visitorNotes']});
+    visit.save({fields: ['cancelledAt', 'visitorId', 'visitTime', 'visitorNotes']},function(err, id) {
+      if (err) {
+        logger.error("visits.cancelScheduled failed to update visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "visits.cancelScheduled cancelled visitId: " + visitId + " userId: " + this.userId);
 
     var msgTitle = "Visit cancelled";
     var user = User.findOne(this.userId);
@@ -138,10 +170,12 @@ Meteor.methods({
       msgTitle,
       visit.requesterId
     );
+    return visit;
   },
   'visits.scheduleVisit'(visitId, time, notes) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.scheduleVisit for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found');
     }
 
@@ -149,7 +183,13 @@ Meteor.methods({
     visit.visitTime = time;
     visit.visitorNotes = notes;
     visit.scheduledAt = new Date();
-    visit.save();
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("visits.scheduleVisit failed to update visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "visits.scheduleVisit scheduled visitId: " + visitId + " userId: " + this.userId);
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne(this.userId);
@@ -164,10 +204,16 @@ Meteor.methods({
       msgTitle,
       visit.requesterId
     );
+    return visit;
   },
   'visits.attachFeedback'(visitId, feedbackId) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
+      logger.error( "visits.attachFeedback for visit not found. visitId: " + visitId + " userId: " + this.userId);
+      throw new Meteor.Error('not-found');
+    }
+    if (!feedbackId) {
+      logger.error( "visits.attachFeedback for feedback not found: feedbackId: " + feedbackId + "visitId:" + visitId + " userId:" + this.userId);
       throw new Meteor.Error('not-found');
     }
     // the visitor must submit his own feedback
@@ -177,6 +223,13 @@ Meteor.methods({
     } else {
       visit.requesterFeedbackId = feedbackId;
     }
-    visit.save();
+    visit.save(function(err, id) {
+      if (err) {
+        logger.error("visits.attachFeedback failed to update visit. err: " + err);
+        throw err;
+      }
+    });
+    logger.info( "visits.attachFeedback visitId: " + visitId + " userId: " + this.userId);
+    return visit;
   }
 });

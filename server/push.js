@@ -1,7 +1,9 @@
 /**
  * Created by sarahcoletti on 7/18/16.
  */
-Push.debug=false;
+import { logger } from '/server/logging'
+
+Push.debug=true;
 
 Push.allow({
   send: function(userId, notification) {
@@ -11,6 +13,7 @@ Push.allow({
 
 Meteor.methods({
   serverNotification: function(text,title) {
+    logger.info( "serverNotification:" + text );
     var badge = 1
     Push.send({
       from: 'push',
@@ -27,6 +30,7 @@ Meteor.methods({
     });
   },
   userNotification: function(text,title,userId) {
+    logger.info( "userNotification:" + text );
     var badge = 1
     Push.send({
       from: 'push',

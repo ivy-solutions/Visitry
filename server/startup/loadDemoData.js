@@ -3,10 +3,13 @@
  */
 import {Agency, Agencies} from '/model/agencies'
 import {Visit, Visits } from '/model/visits'
+import { logger } from '/server/logging'
 
 Meteor.startup(function ()  {
 
+  logger.info("startup")
   if (Meteor.users.find().count() === 0) {
+    logger.info("No users found - creating Admin user");
     //create one admin user
     Accounts.createUser({
       username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99',
@@ -16,6 +19,7 @@ Meteor.startup(function ()  {
     var sarahc = Meteor.users.findOne({username: 'Sarahc'});
     //create the agencies
     if (Agencies.find().count() === 0) {
+      logger.info("No agencies found - creating demo agencies");
       var agency1 = new Agency(
         {
           name: "IVY Agency",
@@ -59,6 +63,7 @@ Meteor.startup(function ()  {
 
     var agency = Agency.findOne({name:'IVY Agency'});
     //create a few test users
+    logger.info("Creating demo users");
     Accounts.createUser({
       username: 'Vivian', email: 'viv@aol.com', password: 'Visitry99',
       userData: {
@@ -136,6 +141,7 @@ Meteor.startup(function ()  {
   }
 
   if(Visits.find().count() ===0){
+    logger.info("No visit requests found - creating demo visits");
     var agency = Agency.findOne({name:'IVY Agency'});
     var vivian = Meteor.users.findOne({username:'Vivian'});
     var requester1 = Meteor.users.findOne({username:'requester1'});

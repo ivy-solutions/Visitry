@@ -2,18 +2,18 @@
  * Created by sarahcoletti on 3/2/16.
  */
 import { Visit } from '/model/visits'
+import {logger} from '/client/logging'
 
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
   this.visit;
-  this.requester
+  this.requester;
 
   this.helpers({
     theVisit:() => {
       var visit = Visit.findOne({_id: $stateParams.visitId});
-      console.log( "visit:" + JSON.stringify(visit));
       if ( visit ) {
         this.visit = visit;
         this.requester = User.findOne({_id: visit.requesterId});
@@ -33,6 +33,15 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.isRequester = function() {
     return this.visit && (Meteor.userId() == this.visit.requesterId)
+  };
+
+  this.canCallRequester = function() {
+    return !this.isRequester() && this.requester.userData.phoneNumber != null;
+  };
+
+  this.canCallVisitor = function() {
+    var visitor = this.getVisitor();
+    return this.isRequester() && visitor && visitor.userData.phoneNumber != null;
   };
 
   this.getRequester = function () {
@@ -80,5 +89,27 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     }
     return '';
   };
+
+  this.dialCompanion = (user) => {
+    if ( user && user.userData && user.userData.phoneNumber) {
+      var phoneNumber = user.userData.phoneNumber;
+      var username = user.username;
+      phoneNumber = phoneNumber.replace(/[^\d]/g, "");
+      window.plugins.CallNumber.callNumber(function (){}, function (result) {
+        logger.error('Error: '+ result + ' dialing phone number of user:' + username + ' phone: ' + phoneNumber);
+        handleError(result);
+      }, phoneNumber, true);
+    }
+  };
+
+  function handleError(err) {
+    var message = err== 'NoFeatureCallSupported'? 'Device does not support calling.' : err;
+    $ionicPopup.alert({
+      title: 'Error',
+      template: message,
+      okType: 'button-positive button-clear'
+    });
+  }
+
 
 });

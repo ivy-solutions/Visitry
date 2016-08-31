@@ -1,6 +1,9 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header has-tabs">
-         <div class="numVisits" ng-hide="browseVisitRequests.openVisitCount > 0">
+         <div class="warning" ng-hide="connectionStatus==='connected'">
+             No internet connection.
+         </div>
+         <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
              No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
          </div>
          <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
@@ -25,12 +28,14 @@
         </ion-list>
     </ion-content>
 </ion-view>
-<ion-tabs class="tabs-balanced tabs-icon-top">
-    <ion-tab title="Choose" icon-on="ion-leaf" icon-off="ion-leaf" href="/visitor/browseRequests">
+<ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}">
+    <ion-tab title="CHOOSE" ng-attr-icon="{{platform != 'android' ? 'ion-leaf' : undefined}}" href="/visitor/browseRequests">
     </ion-tab>
-    <ion-tab title="Scheduled" icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" href="/visitor/upcoming">
+    <ion-tab title="SCHEDULED" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-calendar' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-calendar-outline' : undefined}}" href="/visitor/upcoming">
     </ion-tab>
-    <ion-tab title="Feedback" badge="visitry.feedbackOutstanding" icon-on="ion-ios-star" badge-style="badge-assertive" icon-off="ion-ios-star-outline" href="/visitor/feedback">
+    <ion-tab title="FEEDBACK" badge="visitry.feedbackOutstanding" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-star' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-star-outline' : undefined}}" badge-style="badge-assertive" href="/visitor/feedback">
     </ion-tab>
 </ion-tabs>
 

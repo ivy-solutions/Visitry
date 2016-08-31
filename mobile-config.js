@@ -4,7 +4,7 @@
 App.info({
   id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '0.0.5',
+  version: '0.0.11',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',

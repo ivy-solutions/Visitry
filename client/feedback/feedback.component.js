@@ -1,5 +1,7 @@
 import { Visit } from '/model/visits'
 import {Feedback} from '/model/feedback'
+import {logger} from '/client/logging'
+
 
 angular.module('visitry').directive('feedback', function () {
   return {
@@ -12,11 +14,11 @@ angular.module('visitry').directive('feedback', function () {
       }
     },
     controllerAs: 'feedback',
-    controller: function ($scope, $reactive, $state, $stateParams) {
+    controller: function ($scope, $reactive, $state, $stateParams, $ionicPopup) {
       $reactive(this).attach($scope);
       this.subscribe('userdata');
 
-      this.userComments = '';
+      this.companionComments = '';
       this.visitComments = '';
       this.timeSpent = 60;
 
@@ -24,8 +26,8 @@ angular.module('visitry').directive('feedback', function () {
         visitorId: '',
         requesterId: '',
         submitterId: Meteor.userId(),
-        userRating: 0,
-        userComments: '',
+        companionRating: 0,
+        companionComments: '',
         visitRating: 0,
         visitComments: '',
         visitId: $stateParams.visitId,
@@ -46,14 +48,13 @@ angular.module('visitry').directive('feedback', function () {
             this.requester = User.findOne({_id: v.requesterId});
             //if the current user is not the visitor for the visit, it may be the requester or someone acting on the requester's behalf
             this.isVisitor = this.visitor._id == Meteor.userId() ? true : false;
-            console.log( "is Visitor" + this.isVisitor)
           }
           return v
         }
       });
 
 //TODO: create a directive that does this
-      this.visitorRating = {
+      this.companionRating = {
         badStars: [
           {
             id: 1
@@ -74,7 +75,7 @@ angular.module('visitry').directive('feedback', function () {
           this.badStars = this.goodStars.concat(this.badStars);
           this.goodStars = this.badStars.slice(0, id);
           this.badStars = this.badStars.slice(id);
-          feedbackResponse.userRating = id;
+          feedbackResponse.companionRating = id;
         }
       };
 
@@ -108,51 +109,56 @@ angular.module('visitry').directive('feedback', function () {
         if (form.$valid) {
           feedbackResponse.visitorId = this.visitor._id;
           feedbackResponse.requesterId = this.requester._id;
-          feedbackResponse.userComments = this.userComments;
+          feedbackResponse.companionComments = this.companionComments;
           feedbackResponse.visitComments = this.visitComments;
           feedbackResponse.timeSpent = parseInt(this.timeSpent);
 
-          console.log("Feedback: " + JSON.stringify(feedbackResponse));
+          logger.info("Feedback submitFeedback: " + JSON.stringify(feedbackResponse));
 
-          var feedback = new Feedback(feedbackResponse);
-          Meteor.call('feedback.createFeedback', feedbackResponse, function (err, returnValue) {
-            if (err) {
-              console.log( "submitFeedback error:", err);
-              throw(err);
+          try {
+            var feedback = new Feedback(feedbackResponse);
+            feedback.validate(function (err) {
+              if ( err )
+                throw err;
+            });
+            Meteor.call('feedback.createFeedback', feedbackResponse, function (err) {
+              if (err) {
+                throw(err);
+              }
+            });
+            if (this.isVisitor == true) {
+              $state.go('visitorFeedbackList');
             }
             else {
-              var feedbackId = returnValue;
-              Meteor.call('visits.attachFeedback', feedbackResponse.visitId, feedbackId, function (err, updates) {
-                if (err) {
-                  console.log(err);
-                }
-                else {
-                  console.log( "is Visitor2" + this.isVisitor)
-                  if (this.isVisitor == true) {
-                    $state.go('visitorFeedbackList');
-                  }
-                  else {
-                    $state.go('pendingVisits');
-                  }
-                };
-              });
-              this.resetForm(form);
+              $state.go('pendingVisits');
             }
-          });
+            this.resetForm(form);
+          } catch (err) {
+            this.handleError(err.reason)
+          }
         }
       };
 
       this.resetForm= function(form) {
         this.userSubmitted = false;
-        this.visitorRating.goodStars = [];
+        this.companionRating.goodStars = [];
         this.visitRating.goodStars = [];
-        this.userComments ="";
+        this.companionComments ="";
         this.visitComments="";
         this.timeSpent=-1;
         form.$setUntouched();
         form.$setPristine();
       };
 
+      this.handleError = function (message) {
+        logger.error('Submit feedback error: ', message);
+
+        $ionicPopup.alert({
+          title: 'Error',
+          template: message,
+          okType: 'button-positive button-clear'
+        });
+      }
     }
   }
 });

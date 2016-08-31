@@ -2,9 +2,13 @@
  * Created by sarahcoletti on 2/18/16.
  */
 import { Visit } from '/model/visits'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);
+
+  this.subscribe('userRequests');
+  this.subscribe('userdata');
 
   this.showDelete = false;
   this.canSwipe = true;
@@ -76,7 +80,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   };
 
   function handleError(err) {
-    $log.error('visits.rescindRequest error ', err);
+    logger.error('visits.rescindRequest error ', err);
 
     $ionicPopup.alert({
       title: err.reason || 'Cancel failed',

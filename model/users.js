@@ -20,9 +20,16 @@ const UserData = Class.create({
     },
     agencyIds: {type: [String], optional: true},  //user can initially be unassigned to an agency
     about: {type: String, optional: true},
-    location: {type: Address, optional: true},
-    visitRange: {type: Number, optional: true, default: 10, validators: [{type: 'gt', param: 0}]},  //area in miles within which to filter visit requests
-    picture: {type: String, optional: true}
+    location: {type: Address, optional:true},
+    visitRange: {type: Number, optional:true, default: 10, validators: [{type:'gt', param: 0}]},  //area in miles within which to filter visit requests
+    picture: {type: String, optional: true},
+    phoneNumber: { type: String, optional:true,
+      validators: [
+        {type: 'regexp', param: /^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/, message: 'Phone number format should be (nnn) nnn-nnnn'},
+        {type: 'minLength', param: 9},
+        {type: 'maxLength', param: 15}
+      ]
+    }
   }
 });
 
@@ -49,4 +56,3 @@ User = Class.create({
 var TopVisitors = new Mongo.Collection('topVisitors');
 
 export {TopVisitors}
-//export { User };

@@ -1,16 +1,26 @@
 <ion-view title="Sign in" hide-back-button=true>
     <ion-content class="padding">
         <ion-item class="card padding">
-            <label class="item item-input">
-                <input type="text" ng-model="login.credentials.username" placeholder="Username" />
-            </label>
-            <label class="item item-input">
-                <input type="password" ng-model="login.credentials.password" placeholder="Password" />
-            </label>
-            <div class="padding">
-                <button class="button button-block" ng-click="login.login()">Sign in</button>
-                <button class="button button-block" ng-click="login.createAccount()">New Account</button>
-            </div>
+            <form name="loginForm" novalidate="" ng-submit="loginForm.$valid && login.login(loginForm)">
+                <label class="item item-input">
+                    <input type="text" name = "username" ng-model="login.credentials.username" placeholder="Username" required />
+                </label>
+                <div layout="row" ng-show="loginForm.username.$invalid && loginForm.$submitted">
+                    <span flex></span>
+                    <span class="error-message" ng-show="loginForm.username.$error">Username is required.</span>
+                </div>
+                <label class="item item-input">
+                    <input type="password" name="password" ng-model="login.credentials.password" placeholder="Password" required />
+                </label>
+                <div layout="row">
+                    <span flex></span>
+                    <span class="error-message" ng-show="loginForm.password.$invalid && loginForm.$submitted">Password is required.</span>
+                </div>
+                <div class="padding">
+                    <button type="submit" class="button button-block">Sign in</button>
+                    <button type="button" class="button button-block" ng-click="login.createAccount(loginForm)">New Account</button>
+                </div>
+            </form>
         </ion-item>
     </ion-content>
 </ion-view>

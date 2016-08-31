@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import {Visits } from '/model/visits'
+import {logger} from '/client/logging'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
@@ -27,16 +28,18 @@ angular.module('visitry')
             const visits = Meteor.subscribe('userRequests');
             Tracker.autorun(()=> {
               const isReady = visits.ready();
-              var visitNeedingFeedback = Visits.findOne({
-                requesterFeedbackId: null,
-                requesterId: Meteor.userId(),
-                visitTime: {$lt: new Date()}
-              });
-              if (isReady && visitNeedingFeedback) {
-                console.log("Yes lets go to feedbacks");
-                $location.url('/requester/feedback/' + visitNeedingFeedback._id);
-              } else {
-                console.log(`Visits data is ${isReady ? 'ready' : 'not ready'}`)
+              if ( Meteor.userId() ) {
+                var visitNeedingFeedback = Visits.findOne({
+                  requesterFeedbackId: null,
+                  requesterId: Meteor.userId(),
+                  visitTime: {$lt: new Date()}
+                });
+                if (isReady && visitNeedingFeedback) {
+                  logger.info("Yes, lets go to feedbacks");
+                  $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                } else {
+                  logger.info(`Visits data is ${isReady ? 'ready' : 'not ready'} for user: ${Meteor.userId()}`)
+                }
               }
             })
           }

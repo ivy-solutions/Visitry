@@ -53,13 +53,13 @@ describe('Schedule Visit', function () {
     describe('submit error handling', function () {
       var errorMsg;
       beforeEach(function () {
-        var handleErrorStub = sinon.stub(controller, 'handleError', function(msg) { errorMsg = msg; } );
+        var handleErrorStub = sinon.stub(controller, 'handleError', function(title, msg) { errorMsg = msg; } );
       });
 
       it('message if no time selected', function () {
         var visitWithNoDate = {};
         controller.submit(visitWithNoDate);
-        chai.assert.equal( errorMsg, "Press schedule button to schedule visit.");
+        chai.assert.equal( errorMsg, "Press Set Time button to schedule visit.");
       });
 
       it('message if request for earlier today', function () {
@@ -71,14 +71,14 @@ describe('Schedule Visit', function () {
         controller.setSelectedTime(todayAt1am);
         var visitWithTodaysDate = {requestedDate: new Date()};
         controller.submit(visitWithTodaysDate);
-        chai.assert.equal( errorMsg, "Schedule Time must be in future.");
+        chai.assert.equal( errorMsg, "Time must be in future.");
       });
 
       it('message if request for past date', function () {
         controller.setSelectedTime(new Date());
         var visitWithPastDate = {requestedDate: new Date(2016, 5, 1, 0, 0, 0, 0)};
         controller.submit(visitWithPastDate);
-        chai.assert.equal( errorMsg, "Schedule Time must be in future.");
+        chai.assert.equal( errorMsg, "Time must be in future.");
       });
     });
 

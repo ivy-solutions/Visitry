@@ -29,6 +29,7 @@ blaze@2.1.8
 blaze-html-templates@1.0.4
 blaze-tools@1.0.9
 boilerplate-generator@1.0.9
+brentjanderson:winston-client@0.2.1
 caching-compiler@1.1.6
 caching-html-compiler@1.0.6
 callback-hook@1.0.9
@@ -61,6 +62,7 @@ hwillson:stub-collections@1.0.1
 hybrid:asset-builder@0.2.1
 id-map@1.0.8
 jagi:astronomy@2.1.2
+infinitedg:winston@0.7.3
 jagi:astronomy-softremove-behavior@2.0.4
 jagi:astronomy-timestamp-behavior@2.0.0
 jeremy:geocomplete@1.7.0

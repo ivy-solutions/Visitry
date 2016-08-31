@@ -55,7 +55,7 @@ if (Meteor.isServer) {
       let requestId;
 
       beforeEach(() => {
-        Visits.remove({});
+        Visits.remove({},function(err) { if (err) console.log(err); });
         requestId = Visits.insert(testVisit);
       });
 
@@ -85,7 +85,7 @@ if (Meteor.isServer) {
         assert.equal(Visits.find({inactive: true}).count(), 1);
       });
 
-      it('sends a notification if the visit had been scheduled', () => {
+      it('sends a notification if the request has been rescinded', () => {
         Visits.update(requestId, {$set: {visitorId: userId}});
         const invocation = {userId: requesterId};
         rescindHandler.apply(invocation, [requestId]);
@@ -98,7 +98,7 @@ if (Meteor.isServer) {
       let visitId;
 
       beforeEach(() => {
-        Visits.remove({});
+        Visits.remove({},function(err) { if (err) console.log(err); });
         testVisit.visitorId = userId;
         visitId = Visits.insert(testVisit);
       });
@@ -132,7 +132,7 @@ if (Meteor.isServer) {
       let visitId;
 
       beforeEach(() => {
-        Visits.remove({});
+        Visits.remove({},function(err) { if (err) console.log(err); });
         visitId = Visits.insert(testVisit);
       });
 
@@ -160,7 +160,7 @@ if (Meteor.isServer) {
       let visitId;
 
       beforeEach(() => {
-        Visits.remove({});
+        Visits.remove({},function(err) { if (err) console.log(err); });
         visitId = Visits.insert(testVisit);
       });
 
@@ -195,7 +195,7 @@ if (Meteor.isServer) {
           }
         });
 
-        Visits.remove({});
+        Visits.remove({},function(err) { if (err) console.log(err); });
         newVisit = new Visit({
           notes: 'test visit',
           requestedDate: tomorrow,
@@ -262,7 +262,7 @@ if (Meteor.isServer) {
         }
       });
 
-      Visits.remove({});
+      Visits.remove({},function(err) { if (err) console.log(err); });
       insertTestVisits();
     });
 
@@ -372,7 +372,7 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["userRequests"];
 
     beforeEach(() => {
-      Visits.remove({});
+      Visits.remove({},function(err) { if (err) console.log(err); });
       insertTestVisits();
     });
 
@@ -406,7 +406,7 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["visits"];
 
     beforeEach(() => {
-      Visits.remove({});
+      Visits.remove({},function(err) { if (err) console.log(err); });
       insertTestVisits();
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
       findOneUserStub.returns({

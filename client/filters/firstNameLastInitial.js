@@ -1,6 +1,7 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
+import {logger} from '/client/logging'
 
 angular.module('visitry').filter('firstNameLastInitial', function () {
 
@@ -24,7 +25,7 @@ angular.module('visitry').filter('firstNameLastInitial', function () {
       }
     }
     else {
-      console.log ( "Using username, " + user.username + " for " + user._id);
+      logger.info ( "Using username, " + user.username + " for " + user._id);
       return user.username;
     }
   }

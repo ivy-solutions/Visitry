@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import { Visit } from '/model/visits'
+import {logger} from '/client/logging'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -16,8 +17,15 @@ angular.module('visitry').directive('visitry', function () {
     controllerAs: 'visitry',
     controller: function ($scope, $reactive, $state,$cookies) {
       $reactive(this).attach($scope);
+      $scope.platform = ionic.Platform.platform();
 
       this.subscribe('userProfile');
+      this.subscribe('visits');
+
+      this.autorun(() => {
+        $scope.connectionStatus = Meteor.status().status;
+      });
+
       this.helpers({
         isVisitor: ()=> {
           if (Meteor.userId()) {
@@ -40,15 +48,16 @@ angular.module('visitry').directive('visitry', function () {
           return feedback.count();
         },
         isLoggedIn: ()=> {
+          logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
           return Meteor.userId() !== null;
         }
       });
 
       this.logout = () => {
-        console.log("logout");
+        logger.info('visitry.logout userId: ' + Meteor.userId());
         Meteor.logout(function (err) {
           if (err) {
-            console.log(err);
+            logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
           else{
             if(Meteor.isCordova) {

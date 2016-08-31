@@ -1,6 +1,7 @@
 /**
  * Created by sarahcoletti on 2/15/16.
  */
+
 angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $state, $reactive, $ionicPopup) {
   $reactive(this).attach($scope);
 
@@ -11,30 +12,38 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
 
   this.subscribe('userProfile');
 
-  this.login = () => {
+  this.login = (form) => {
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
         return handleError(err)
       }
       else {
-        console.log('Login success ' + this.credentials.username + " id: " + Meteor.userId());
-        this.credentials.username = '';
-        this.credentials.password = '';
+        console.log('Login success ' + this.credentials.username + "device: " + JSON.stringify(ionic.Platform.device()));
+        this.resetForm(form);
         var user = Meteor.user();
         //TODO we will sometime handle unaffiliated users
         var goto;
         // if (!hasValidAgency()) {
         //   goto = 'agencyList'
         // } else {
-           goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
         //}
         $state.go(goto);
       }
     });
   };
-  this.createAccount = () => {
-      $state.go('register');
+  this.createAccount = (form) => {
+    this.resetForm(form);
+    $state.go('register');
   };
+
+  this.resetForm= function(form) {
+    form.$setUntouched();
+    form.$setPristine();
+    this.credentials.username = '';
+    this.credentials.password ='';
+  };
+
 
   function hasValidAgency() {
     var user = Meteor.user();

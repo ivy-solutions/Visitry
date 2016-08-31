@@ -1,6 +1,7 @@
 /**
  * Created by sarahcoletti on 3/25/16.
  */
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup) {
   $reactive(this).attach($scope);
@@ -38,21 +39,20 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   this.submit = function (visit) {
     var time = this.getSelectedTime();
     if (time instanceof Date) {
-      console.log( "requestedDate UTC:" + visit.requestedDate.toUTCString() + "locale: " + visit.requestedDate.toLocaleString());
       var date = visit.requestedDate;
       var visitDateTime = new Date( date.getFullYear(), date.getMonth(), date.getDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
        if ( visitDateTime > new Date() ) {
          Meteor.call('visits.scheduleVisit', visit._id, visitDateTime, this.visitorNotes, (err) => {
-           if (err) return handleError(err.reason);
+           if (err) return handleError('Error', err.reason);
          });
          this.hideScheduleVisitModal();
          $state.go('upcoming');
       } else {
-        return this.handleError( "Schedule Time must be in future.")
+        return this.handleError( '', "Time must be in future.")
       }
     } else {
-      return this.handleError("Press schedule button to schedule visit.")
+      return this.handleError('', "Press Set Time button to schedule visit.")
     }
 
   };
@@ -71,7 +71,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     if ( typeof(visit) === 'undefined' ) {
         return null;
     }
-    console.log( " getting requester from visit: " + visit );
     return User.findOne({_id: visit.requesterId});
   };
 
@@ -80,7 +79,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       var today = new Date();
       var scheduledTime = new Date(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(),
         selectedTime.getUTCHours(), selectedTime.getUTCMinutes(), 0, 0);
-      console.log( "getSelectedTime()" + scheduledTime );
       return scheduledTime;
     } else {
       return "";
@@ -92,25 +90,24 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   };
 
   this.initTimePicker = function(requestedDate) {
-    console.log( "requestedDate: " + requestedDate);
     timePicker.inputEpochTime = (requestedDate.getHours())* 60 *60;
   };
 
   function timePickerCallback(val) {
     if (typeof (val) === 'undefined') {
-      console.log('Time not selected');
+      logger.info('Time not selected');
     } else {
       selectedTime = new Date(val * 1000);
-      console.log('The time is '+ selectedTime.getUTCHours()+ ':' + selectedTime.getUTCMinutes()+ ' in UTC');
+      logger.info('The time is '+ selectedTime.getUTCHours()+ ':' + selectedTime.getUTCMinutes()+ ' in UTC');
     }
   }
 
-  this.handleError = function (message) {
-    console.log('Error ', message);
+  this.handleError = function (title, message) {
+    logger.warn(title, message);
 
     $ionicPopup.alert({
-      title: message,
-      template: 'Please try again',
+      title: title,
+      template: message,
       okType: 'button-positive button-clear'
     });
   }
