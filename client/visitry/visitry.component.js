@@ -34,15 +34,6 @@ angular.module('visitry').directive('visitry', function () {
       });
 
       this.helpers({
-        isVisitor: ()=> {
-          if (Meteor.userId()) {
-            var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
-            if (user && user.userData) {
-              return user.userData.role === 'visitor';
-            }
-          }
-          return false;
-        },
         feedbackOutstanding: ()=> {
           var feedback = Visit.find({
             visitorFeedbackId: null,
