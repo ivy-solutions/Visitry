@@ -14,6 +14,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('angular');
   api.use('less');
+  api.use('angular:angular-material');
 
   api.addFiles([
     'client/lib/module.js',
@@ -28,7 +29,12 @@ Package.onUse(function(api) {
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
     'client/visits/schedule-visit/schedule-visit-modal.html',
-    'client/styles/main.less'
+    'client/styles/main.less',
+    'client/admin-console/admin-home.html',
+    'client/admin-console/admin/admin.html',
+    'client/admin-console/analytics/analytics.html',
+    'client/admin-console/help/help-overview.html',
+    'client/admin-console/manage/manage.html'
   ], 'client')
 });
 

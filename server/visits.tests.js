@@ -5,42 +5,49 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-
 import { Visit,Visits } from '/model/visits'
-import { User } from '/model/users'
 import '/server/visits.js';
+import '/model/users';
 
 if (Meteor.isServer) {
 
   let tomorrow = new Date();
   tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
+
+  let yesterday = new Date();
+  yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
   const requesterId = Random.id();
   const userId = Random.id();
   const agencyId = Random.id();
-  var agency2Id = Random.id();
-  let yesterday = new Date();
-  yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
-  var testVisit = {
-    notes: 'test visit',
-    requestedDate: tomorrow,
-    createdAt: new Date(),
-    agencyId: agencyId,
-    requesterId: requesterId,
-    location: {
-      address: "Boston",
-      formattedAddress: "Boston",
-      geo: {
-        type: "Point",
-        coordinates: [-71.0589, 42.3601]
-      }
-    }
-  };
+  let agency2Id = Random.id();
+
 
 
   describe('Visits', () => {
 
+
     var findUserStub;
     var meteorStub;
+    var testVisit;
+
+
+    beforeEach(function(){
+      testVisit = {
+        notes: 'test visit',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        agencyId: agencyId,
+        requesterId: requesterId,
+        location: {
+          address: "Boston",
+          formattedAddress: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      };
+    });
 
     beforeEach(() => {
       findUserStub = sinon.stub(User, 'findOne');
@@ -57,8 +64,10 @@ if (Meteor.isServer) {
       let requestId;
 
       beforeEach(() => {
-        Visits.remove({},function(err) { if (err) console.log(err); });
         requestId = Visits.insert(testVisit);
+      });
+      afterEach(()=>{
+        Visits.remove({},function(err) { if (err) console.log(err); });
       });
 
       it('can not deactivate requests of another requester', () => {
@@ -162,18 +171,23 @@ if (Meteor.isServer) {
       let visitId;
 
       beforeEach(() => {
-        Visits.remove({},function(err) { if (err) console.log(err); });
-        visitId = Visits.insert(testVisit);
       });
+      afterEach(()=>{
+        Visits.remove({},function(err) { if (err) console.log(err); });
+      })
 
       it('attach requester feedback success', () => {
+        visitId = Visits.insert(testVisit);
         const invocation = {userId: requesterId};
         attachFeedbackHandler.apply(invocation, [visitId, feedbackId]);
         var updatedVisit = Visits.findOne({_id: visitId});
         assert.equal(updatedVisit.requesterFeedbackId, feedbackId);
       });
       it('attach visitor feedback success',()=>{
-        const invocation = {userId:userId};
+        var visitorId = Random.id();
+        testVisit.visitorId = visitorId;
+        visitId = Visits.insert(testVisit);
+        const invocation = {userId:visitorId};
         attachFeedbackHandler.apply(invocation,[visitId,feedbackId]);
         var updatedVisit = Visit.findOne({_id:visitId});
         assert.equal(updatedVisit.visitorFeedbackId,feedbackId);
@@ -253,6 +267,26 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["availableVisits"];
     Visits._ensureIndex({"location.geo.coordinates": '2dsphere'});
     var findOneUserStub;
+    var testVisit;
+
+
+    beforeEach(function(){
+      testVisit = {
+        notes: 'test visit',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        agencyId: agencyId,
+        requesterId: requesterId,
+        location: {
+          address: "Boston",
+          formattedAddress: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      };
+    })
 
     beforeEach(() => {
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
@@ -373,12 +407,32 @@ if (Meteor.isServer) {
   describe('userRequests Publication', () => {
     const publication = Meteor.server.publish_handlers["userRequests"];
 
+    var testVisit;
+
+    beforeEach(function(){
+      testVisit = {
+        notes: 'test visit',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        agencyId: agencyId,
+        requesterId: requesterId,
+        location: {
+          address: "Boston",
+          formattedAddress: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      };
+    })
+
     beforeEach(() => {
-      Visits.remove({},function(err) { if (err) console.log(err); });
       insertTestVisits();
     });
 
     afterEach(function () {
+      Visits.remove({},function(err) { if (err) console.log(err); });
     });
 
     it('user with no visit requests', () => {
@@ -404,11 +458,29 @@ if (Meteor.isServer) {
 
   describe('visits Publication', () => {
     var findOneUserStub;
+    var testVisit;
+
+    beforeEach(function(){
+      testVisit = {
+        notes: 'test visit',
+        requestedDate: tomorrow,
+        createdAt: new Date(),
+        agencyId: agencyId,
+        requesterId: requesterId,
+        location: {
+          address: "Boston",
+          formattedAddress: "Boston",
+          geo: {
+            type: "Point",
+            coordinates: [-71.0589, 42.3601]
+          }
+        }
+      };
+    })
 
     const publication = Meteor.server.publish_handlers["visits"];
 
     beforeEach(() => {
-      Visits.remove({},function(err) { if (err) console.log(err); });
       insertTestVisits();
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
       findOneUserStub.returns({
@@ -420,6 +492,7 @@ if (Meteor.isServer) {
     });
 
     afterEach(function () {
+      Visits.remove({},function(err) { if (err) console.log(err); });
       Meteor.users.findOne.restore();
     });
 

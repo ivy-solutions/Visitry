@@ -1,6 +1,5 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
-import { User } from '/model/users'
 import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {

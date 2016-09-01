@@ -12,23 +12,18 @@ jquery                  # Helpful client-side library
 tracker                 # Meteor's client-side reactive programming library
 
 es5-shim                # ECMAScript 5 compatibility for older browsers.
+driftyco:ionic
 
 # angular
-angular
-angularui:angular-ui-router
-angular:angular-material
-angularui:angular-ui-bootstrap
 pbastowski:angular-babel
 angularutils:pagination
-angular:angular-messages
 angular-templates
 
 # ui widget related
 ogamedia:timer
 okland:camera-ui
-jasonaibrahim:angular-moment
 jeremy:geocomplete
-shynah:ionic-timepicker
+#shynah:ionic-timepicker
 
 # accounts
 accounts-password
@@ -47,7 +42,7 @@ jagi:astronomy-softremove-behavior
 # packaging and build related
 visitry-browser         # visitry package
 visitrymobile           # visitry package
-mquandalle:bower
+#mquandalle:bower
 hybrid:asset-builder
 standard-minifier-css
 standard-minifier-js

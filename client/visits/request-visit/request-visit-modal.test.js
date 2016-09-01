@@ -4,7 +4,7 @@ import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/request-visit/request-visit-modal.controller';
 import '/client/visits/request-visit/request-visit-modal.service';
-import { User } from '/model/users'
+import '/model/users.js'
 
 describe('Request Visit', function () {
   beforeEach(function () {

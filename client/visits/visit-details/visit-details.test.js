@@ -5,7 +5,6 @@ import 'angular-mocks';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import { User } from '/model/users'
 import '/client/visits/visit-details/visit-details.controller';
 
 

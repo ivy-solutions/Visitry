@@ -15,6 +15,7 @@ Package.onUse(function(api) {
   api.use('angular');
   api.use('driftyco:ionic');
   api.use('less');
+  api.use('shynah:ionic-timepicker');
   api.use('mquandalle:bower');
   api.use('modules');
 

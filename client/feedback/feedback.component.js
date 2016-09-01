@@ -1,5 +1,4 @@
 import { Visit } from '/model/visits'
-import { User } from '/model/users'
 import {Feedback} from '/model/feedback'
 import {logger} from '/client/logging'
 

@@ -16,7 +16,7 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state, $ionicHistory) {
+    controller: function ($scope, $reactive, $state,$cookies, $ionicHistory) {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
@@ -24,6 +24,8 @@ angular.module('visitry').directive('visitry', function () {
       var subscription2 = this.subscribe('visits');
       var subscription3 = this.subscribe('userRequests');
 
+      this.subscribe('userProfile');
+      this.subscribe('visits');
 
       this.autorun(() => {
         var status = Meteor.status();
@@ -34,6 +36,18 @@ angular.module('visitry').directive('visitry', function () {
       });
 
       this.helpers({
+        isVisitor: ()=> {
+          if (Meteor.userId()) {
+            var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+            if (user && user.userData) {
+              return user.userData.role === 'visitor';
+            }
+          }
+          return false;
+        },
+        userName: ()=> {
+          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
+        },
         feedbackOutstanding: ()=> {
           var feedback = Visit.find({
             visitorFeedbackId: null,
@@ -41,6 +55,9 @@ angular.module('visitry').directive('visitry', function () {
             visitTime: {$lt: new Date()}
           });
           return feedback.count();
+        },
+        userName: ()=> {
+          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
         },
         isLoggedIn: ()=> {
           logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
@@ -54,11 +71,17 @@ angular.module('visitry').directive('visitry', function () {
           if (err) {
             logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
-          subscription.stop();
-          subscription2.stop();
-          subscription3.stop();
-          $ionicHistory.clearHistory();
-          $state.go('login');
+          else{
+            subscription.stop();
+            subscription2.stop();
+            subscription3.stop();
+            if(Meteor.isCordova) {
+              $ionicHistory.clearHistory();
+            }else{
+              $cookies.remove('agencyId');
+            }
+            $state.go('login',{reload: true});
+          }
         });
       };
     }

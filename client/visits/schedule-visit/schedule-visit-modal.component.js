@@ -1,7 +1,6 @@
 /**
  * Created by sarahcoletti on 3/25/16.
  */
-import { User } from '/model/users'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup) {

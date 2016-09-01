@@ -2,18 +2,19 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import 'angular'
-import angularMeteor from 'angular-meteor'
-import ngMaterialIcons from 'angular-material-icons'
+import angularMeteor from 'angular-meteor';
+import uiRouter from 'angular-ui-router';
+import ngMaterialIcons from 'angular-material-icons';
+import ngMessages from 'angular-messages';
+import ngMoment from 'angular-moment';
 let modulesToLoad = [
   angularMeteor,
-  'ui.router',
+  uiRouter,
   'accounts.ui',
   'angularUtils.directives.dirPagination',
-  'ngMaterial',
-  //'ionic-ratings',
-  'ionic-timepicker',
-  'angularMoment',
-  'ngMessages',
+  'ionic',
+  ngMoment,
+  ngMessages,
   ngMaterialIcons
 ];
 

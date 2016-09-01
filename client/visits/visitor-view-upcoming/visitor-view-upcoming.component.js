@@ -2,7 +2,6 @@
  * Created by sarahcoletti on 3/13/16.
  */
 import { Visit } from '/model/visits'
-import { User } from '/model/users'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('visitorViewUpcomingCtrl', function ($scope, $reactive, $state,$ionicPopup,$ionicListDelegate, $filter) {

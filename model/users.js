@@ -5,15 +5,20 @@ import { Address } from '/model/address';
 const UserData = Class.create({
   name: 'userData',
   fields: {
-    firstName: { type: String, optional: true },
-    lastName: { type: String, optional: true},
-    role: { type:String,
+    firstName: {type: String, optional: true},
+    lastName: {type: String, optional: true},
+    role: {
+      type: String,
       validators: [
-        { type: 'choice', param: ['visitor', 'requester'], message: 'role should be either "visitor" or "requester"'},
-        { type: 'string', message: 'role should be either "visitor" or "requester"'}
+        {
+          type: 'choice',
+          param: ['visitor', 'requester', 'administrator'],
+          message: 'role should be either "visitor", "requester", or "administrator'
+        },
+        {type: 'string', message: 'role should be either "visitor", "requester", or "administrator'}
       ]
     },
-    agencyIds: {type: [String], optional: true },  //user can initially be unassigned to an agency
+    agencyIds: {type: [String], optional: true},  //user can initially be unassigned to an agency
     about: {type: String, optional: true},
     location: {type: Address, optional:true},
     visitRange: {type: Number, optional:true, default: 10, validators: [{type:'gt', param: 0}]},  //area in miles within which to filter visit requests
@@ -28,25 +33,26 @@ const UserData = Class.create({
   }
 });
 
-const User = Class.create({
+User = Class.create({
   name: 'User',
   collection: Meteor.users,
   secured: true,
   fields: {
-    username: {type: String },
-    createdAt: { type: Date },
-    userData: { type: UserData, optional:true },
+    username: {type: String},
+    createdAt: {type: Date},
+    userData: {type: UserData, optional: true},
     fullName: {
       type: String,
       resolve(doc) {
         if (doc && doc.userData)
           return doc.userData.firstName + ' ' + doc.userData.lastName;
         else {
-          "no name"
+          return "no name"
         }
       }
     }
   }
 });
+var TopVisitors = new Mongo.Collection('topVisitors');
 
-export { User };
+export {TopVisitors}

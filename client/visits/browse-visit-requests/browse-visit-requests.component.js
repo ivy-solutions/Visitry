@@ -2,7 +2,6 @@
  * Created by sarahcoletti on 2/24/16.
  */
 import { Visit } from '/model/visits'
-import { User } from '/model/users'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {

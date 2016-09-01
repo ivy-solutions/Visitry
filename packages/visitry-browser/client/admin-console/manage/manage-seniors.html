@@ -1,0 +1,34 @@
+<div layout="row" layout-align="center start" layout-margin layout-padding>
+  <div flex="10"></div>
+  <div layout="column" flex="80">
+    <div layout="row" layout-fill>
+      <div class="md-title">Hosts</div>
+      <span flex></span>
+      <md-button class="md-raised md-primary">+ Host</md-button>
+    </div>
+    <md-divider></md-divider>
+    <md-list>
+      <md-list-item>
+        <div layout="row" layout-align="space-between center" layout-fill>
+          <div flex="10"></div>
+          <div class="md-subhead" flex="30">Name</div>
+          <div class="md-subhead"flex>Primary Address</div>
+          <div class="md-subhead">Member Since</div>
+        </div>
+      </md-list-item>
+      <md-list-item ng-repeat="user in adminManageSeniors.seniors" ng-click="null">
+        <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
+          <div flex="10">
+            <img ng-src="{{user.userData.picture}}" class="md-avatar"/>
+          </div>
+          <div flex="30">
+            {{user.userData.lastName}}, {{user.userData.firstName}}
+          </div>
+          <div flex>{{user.userData.location.address}}</div>
+          <div>{{user.createdAt | date:'mediumDate'}}</div>
+        </div>
+      </md-list-item>
+    </md-list>
+  </div>
+  <div flex="10"></div>
+</div>

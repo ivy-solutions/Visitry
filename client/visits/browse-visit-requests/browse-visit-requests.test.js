@@ -9,6 +9,7 @@ import '/client/visits/browse-visit-requests/browse-visit-requests.component.js'
 import StubCollections from 'meteor/hwillson:stub-collections';
 import Visits from '/model/visits.js'
 import myFunctions from '/client/lib/sharedFunctions.js'
+import '/model/users.js'
 
 describe ( 'BrowseVisitRequests', function() {
 
