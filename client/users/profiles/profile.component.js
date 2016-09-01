@@ -2,27 +2,33 @@
  * Created by sarahcoletti on 2/23/16.
  */
 import {logger} from '/client/logging'
+import {User} from '/model/users'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
 
-  this.isVisitor = false;
    this.helpers({
     currentUser: () => {
       var user = Meteor.user();
-      if (user) {
-        this.isVisitor = user && user.userData && user.userData.role === 'visitor';
-        this.distance = this.isVisitor && user.userData.visitRange != null ? user.userData.visitRange.toString() : "10";
-        logger.info("profile currentUser. isVisitor:" + this.isVisitor + " visitRange:" + this.distance);
-      }
       return user;
-    }
+    },
+    isVisitor: () => {
+      var role =  Meteor.user() ? Meteor.user().userData.role : 'none';
+      logger.verbose( "user role:" + role);
+      return role == 'visitor';
+    },
+     distance: () => {
+       if (Meteor.user() && Meteor.user().userData.visitRange) {
+         logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
+         return Meteor.user().userData.visitRange.toString();
+       }
+       return "1";
+     }
   });
 
   this.subscribe('userProfile');
 
   this.locationDetails;
-  this.distance="1";
 
   /////////
   this.isLocationValid = ()=> {
@@ -132,7 +138,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.resetForm= function(form) {
     this.locationDetails = null;
-    this.distance=1;
+    this.distance="1";
     this.isVisitor=false;
     form.$setUntouched();
     form.$setPristine();
