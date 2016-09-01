@@ -44,7 +44,7 @@ if (Meteor.isServer) {
 
     beforeEach(() => {
       findUserStub = sinon.stub(User, 'findOne');
-      findUserStub.returns({username: 'Thelma', fullname: "Thelma Smith"});
+      findUserStub.returns({username: 'Thelma', fullName: "Thelma Smith"});
       meteorStub = sinon.stub(Meteor, 'call');
     });
     afterEach(function () {
