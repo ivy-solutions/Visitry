@@ -4,7 +4,7 @@ dependencies:
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
     - npm install -g spacejam
-    - meteor npm install
+    - meteor npm install --unsafe-perm
   pre:
     - npm install -g mupx # install meteor-up for deployment
 deployment:
