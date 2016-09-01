@@ -1,7 +1,6 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-import { User } from '/model/users'
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
@@ -16,16 +15,13 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state,$cookies, $ionicHistory) {
+    controller: function ($scope, $reactive, $state,$cookies,$ionicHistory) {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
       var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
       var subscription3 = this.subscribe('userRequests');
-
-      this.subscribe('userProfile');
-      this.subscribe('visits');
 
       this.autorun(() => {
         var status = Meteor.status();
@@ -55,9 +51,6 @@ angular.module('visitry').directive('visitry', function () {
             visitTime: {$lt: new Date()}
           });
           return feedback.count();
-        },
-        userName: ()=> {
-          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
         },
         isLoggedIn: ()=> {
           logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
