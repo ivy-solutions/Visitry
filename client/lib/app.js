@@ -7,6 +7,8 @@ import uiRouter from 'angular-ui-router';
 import ngMaterialIcons from 'angular-material-icons';
 import ngMessages from 'angular-messages';
 import ngMoment from 'angular-moment';
+import ngCookies from 'angular-cookies'
+
 let modulesToLoad = [
   angularMeteor,
   uiRouter,
@@ -15,7 +17,8 @@ let modulesToLoad = [
   'ionic',
   ngMoment,
   ngMessages,
-  ngMaterialIcons
+  ngMaterialIcons,
+  ngCookies
 ];
 
 if (Meteor.isCordova) {
