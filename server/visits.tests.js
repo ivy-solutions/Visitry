@@ -6,6 +6,7 @@ import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Visit,Visits } from '/model/visits'
+import { Agency } from '/model/agencies'
 import '/server/visits.js';
 import '/model/users';
 
@@ -517,6 +518,29 @@ if (Meteor.isServer) {
     });
 
   });
+
+  describe( 'formattedVisitTime ', () => {
+    var findOnAgencyStub;
+    beforeEach(() => {
+      findOneAgencyStub = sinon.stub(Agency, 'findOne');
+    });
+    afterEach(function () {
+      Agency.findOne.restore();
+    });
+
+    it('formatted visitTime with no time zone defaults to EST', () => {
+      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
+      var visit = { visitTime: dateAt330pmUTC };
+      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 11:30");
+    });
+    it('formatted visitTime with agency time zone = PST', () => {
+      findOneAgencyStub.returns( {timeZone: 'America/Los_Angeles'})
+      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
+      var visit = { visitTime: dateAt330pmUTC };
+      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 8:30");
+    });
+  });
+
 
   function insertTestVisits() {
     Visits.insert({

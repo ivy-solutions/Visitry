@@ -240,8 +240,12 @@ Meteor.methods({
   }
 });
 
-function formattedVisitTime(visit) {
-  var agency = Agency.find({_id:visit.agencyId}, {timeZone: 1});
-  var formattedVisitTime = moment.tz(visit.visitTime, agency.timeZone ? agency.timeZone : 'America/New_York').format('ddd., MMM. D, h:mm');
-  return formattedVisitTime;
-}
+formattedVisitTime = function(visit) {
+  var agency = Agency.findOne({_id:visit.agencyId}, {timeZone: 1});
+  var timeZone = 'America/New_York'; //default
+  if ( agency && agency.timeZone) {
+    timeZone = agency.timeZone
+  }
+  var time = moment.tz(visit.visitTime, timeZone).format('ddd., MMM. D, h:mm');
+  return time;
+};
