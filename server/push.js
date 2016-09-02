@@ -14,12 +14,10 @@ Push.allow({
 Meteor.methods({
   serverNotification: function(text,title) {
     logger.info( "serverNotification:" + text );
-    var badge = 1
     Push.send({
       from: 'push',
       title: title,
       text: text,
-      badge: badge,
       payload: {
         title: title,
         text:text
@@ -31,12 +29,10 @@ Meteor.methods({
   },
   userNotification: function(text,title,userId) {
     logger.info( "userNotification:" + text );
-    var badge = 1
     Push.send({
       from: 'push',
       title: title,
       text: text,
-      badge: badge,
       payload: {
         title: title,
         text:text
