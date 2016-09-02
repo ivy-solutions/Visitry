@@ -4,6 +4,7 @@ accounts-ui@1.1.9
 accounts-ui-unstyled@1.1.12
 aldeed:collection2@2.9.1
 aldeed:collection2-core@1.1.1
+aldeed:moment-timezone@0.4.0
 aldeed:schema-deny@1.0.1
 aldeed:schema-index@1.0.1
 aldeed:simple-schema@1.5.3
@@ -84,6 +85,7 @@ mobile-experience@1.0.4
 mobile-status-bar@1.0.12
 modules@0.6.5
 modules-runtime@0.6.5
+momentjs:moment@2.8.4
 mongo@1.1.9_1
 mongo-id@1.0.5
 mquandalle:bower@1.5.2_1

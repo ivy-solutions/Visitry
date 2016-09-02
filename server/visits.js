@@ -1,5 +1,6 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
+import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
@@ -149,7 +150,11 @@ Meteor.methods({
       logger.error( "visits.cancelScheduled user is not visitor. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
-    var scheduledDateTime = visit.visitTime;
+
+    // format msg for the push notification before the save
+    var user = User.findOne(this.userId);
+    var msgText = user.fullName + " cancelled the visit scheduled for " + formattedVisitTime(visit) + ".";
+
     visit.cancelledAt = new Date();
     visit.visitorId = null;
     visit.visitTime = null;
@@ -163,8 +168,6 @@ Meteor.methods({
     logger.info( "visits.cancelScheduled cancelled visitId: " + visitId + " userId: " + this.userId);
 
     var msgTitle = "Visit cancelled";
-    var user = User.findOne(this.userId);
-    var msgText = user.fullName + " cancelled the visit scheduled for " + moment(scheduledDateTime).local().format('ddd., MMM. D, h:mm') + ".";
     logger.verbose( msgText);
 
     Meteor.call('userNotification',
@@ -195,7 +198,7 @@ Meteor.methods({
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " scheduled a visit for " + moment(visit.visitTime).local().format('ddd., MMM. D, h:mm');
+    var msgText = user.fullName + " scheduled a visit for " + formattedVisitTime(visit);
     if (visit.visitorNotes) {
       msgText += ', saying, "' + visit.visitorNotes + '"';
     }
@@ -236,3 +239,9 @@ Meteor.methods({
     return visit;
   }
 });
+
+function formattedVisitTime(visit) {
+  var agency = Agency.find({_id:visit.agencyId}, {timeZone: 1});
+  var formattedVisitTime = moment.tz(visit.visitTime, agency.timeZone ? agency.timeZone : 'America/New_York').format('ddd., MMM. D, h:mm');
+  return formattedVisitTime;
+}
