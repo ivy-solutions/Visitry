@@ -13,8 +13,9 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
   this.subscribe('userProfile');
 
   this.login = (form) => {
-    if ($scope.connectionStatus !== 'ok') {
-      handleError( new Error("No connection to server."))
+    var status = Meteor.status();
+    if(status.connected==false ) {
+      handleError( new Error("No connection to server." + status.status))
     }
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
@@ -58,7 +59,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       console.log('Authentication error ', err);
 
       $ionicPopup.alert({
-        title: err.reason || 'User with that username and password not found.',
+        title: err.reason || err || 'User with that username and password not found.',
         template: 'Please try again',
         okType: 'button-positive button-clear'
       });
