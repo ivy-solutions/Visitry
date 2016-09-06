@@ -20,7 +20,7 @@
                      <i class="icon ion-location placeholder-icon"></i>
                     <input type="text" name="visitorLocation" id="visitorLocation" ng-google-places-autocomplete
                            ng-model="profile.currentUser.userData.location.address"
-                           details="profile.locationDetails" ng-focus="profile.disableTap()"
+                           details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
                            placeholder="Enter location from which you will usually come"/>
                 </label>
                 <div layout="row" ng-show="profile.isVisitor">
@@ -31,7 +31,7 @@
                     <i class="icon ion-location placeholder-icon"></i>
                     <input type="text" name="requesterLocation" id="requesterLocation" ng-google-places-autocomplete
                            ng-model="profile.currentUser.userData.location.address"
-                           details="profile.locationDetails" ng-focus="profile.disableTap()"
+                           details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
                            placeholder="Enter usual visit location"/>
                 </label>
                 <div layout="row" ng-hide="profile.isVisitor">

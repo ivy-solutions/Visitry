@@ -54,13 +54,17 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   };
 
   this.disableTap = function () {
+    //disable ionic data tap on elements that google adds
     container = document.getElementsByClassName('pac-container');
-    // disable ionic data tab
     angular.element(container).attr('data-tap-disabled', 'true');
+    var backdrop = document.getElementsByClassName('backdrop');
+    angular.element(backdrop).attr('data-tap-disabled', 'true');
+    var clickblock = document.getElementsByClassName('click-block');
+    angular.element(clickblock).attr('data-tap-disabled', 'true');
     // leave input field if google-address-entry is selected
-    angular.element(container).on("click", function () {
-      document.getElementById('locationInput').blur();
-    });
+     angular.element(container).on("click", function () {
+       document.getElementById('locationInput').blur();
+     });
   };
 
 
@@ -92,10 +96,14 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     }
   };
   this.cancel = function () {
+    this.location = { name:{}, details:{}}
     hideRequestVisitModal();
   };
 
   function hideRequestVisitModal() {
+    //remove the blocks google added
+    container = document.getElementsByClassName('pac-container');
+    angular.element(container).remove();
     RequestVisit.hideModal();
   }
 
