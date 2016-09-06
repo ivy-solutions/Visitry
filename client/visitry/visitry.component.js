@@ -70,6 +70,7 @@ angular.module('visitry').directive('visitry', function () {
             subscription3.stop();
             if(Meteor.isCordova) {
               $ionicHistory.clearHistory();
+              $ionicHistory.clearCache();
             }else{
               $cookies.remove('agencyId');
             }
