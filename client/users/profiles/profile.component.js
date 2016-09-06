@@ -13,7 +13,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       return user;
     },
     isVisitor: () => {
-      var role =  Meteor.user() ? Meteor.user().userData.role : 'none';
+      var role =  Meteor.user() && Meteor.user().userData? Meteor.user().userData.role : 'none';
       logger.verbose( "user role:" + role);
       return role == 'visitor';
     },
