@@ -21,7 +21,6 @@ angular.module('visitry').directive('visitry', function () {
 
       var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
-      var subscription3 = this.subscribe('userRequests');
 
       this.autorun(() => {
         var status = Meteor.status();
@@ -58,7 +57,6 @@ angular.module('visitry').directive('visitry', function () {
           else{
             subscription.stop();
             subscription2.stop();
-            subscription3.stop();
             if(Meteor.isCordova) {
               $ionicHistory.clearHistory();
               $ionicHistory.clearCache();
