@@ -16,25 +16,14 @@
             </div>
             <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
             <ion-list>
-                <label class="item item-input" ng-show="profile.isVisitor">
-                     <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="visitorLocation" id="visitorLocation" ng-google-places-autocomplete
-                           ng-model="profile.currentUser.userData.location.address"
-                           details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
-                           placeholder="Enter location from which you will usually come"/>
-                </label>
-                <div layout="row" ng-show="profile.isVisitor">
-                    <span flex></span>
-                    <span class="error-message" ng-hide="profileForm.visitorLocation.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
-                </div>
-                <label class="item item-input" ng-hide="profile.isVisitor">
+                <label class="item item-input">
                     <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="requesterLocation" id="requesterLocation" ng-google-places-autocomplete
+                    <input type="text" name="location" id="requesterLocation" ng-google-places-autocomplete
                            ng-model="profile.currentUser.userData.location.address"
                            details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
-                           placeholder="Enter usual visit location"/>
+                           placeholder="{{profile.locationPlaceholder}}"/>
                 </label>
-                <div layout="row" ng-hide="profile.isVisitor">
+                <div layout="row">
                     <span flex></span>
                     <span class="error-message" ng-hide="profileForm.requesterLocation.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
                 </div>
