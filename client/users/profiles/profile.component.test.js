@@ -27,8 +27,7 @@ describe ( 'Profile', function() {
 
   beforeEach(function () {
     form = { $valid: true,
-      visitorLocation : {$pristine: true, $touched: false},
-      requesterLocation : {$pristine: true, $touched: false},
+      location : {$pristine: true, $touched: false},
       phoneNumber : {$pristine: true, $touched: false},
       $setUntouched: function(){},
       $setPristine: function(){}
@@ -89,7 +88,7 @@ describe ( 'Profile', function() {
     });
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;
-      form.visitorLocation.$touched = true;
+      form.location.$touched = true;
       controller.locationDetails = {
         name: "Boston",
         geometry: {
