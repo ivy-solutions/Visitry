@@ -58,7 +58,7 @@ App.accessRule("*");
 App.accessRule('*.google.com/*');
 App.accessRule('*.googleapis.com/*');
 App.accessRule('*.gstatic.com/*');
-App.accessRule('http://dev.visitry.org', {
+App.accessRule('*.visitry.org', {
  'minimum-tls-version': 'TLSv1.0',
  'requires-forward-secrecy': false,
 });

@@ -9,7 +9,7 @@
     "projectNumber": 822210685703
   },
   "badge": true,
-  "production": false,
+  "production": true,
   "sound":true,
   "alert":true,
   "vibrate:":true

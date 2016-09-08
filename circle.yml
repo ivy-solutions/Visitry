@@ -8,6 +8,10 @@ dependencies:
   pre:
     - npm install -g mupx # install meteor-up for deployment
 deployment:
+  dev:
+    branch: dev
+    commands:
+      - cd $HOME/Visitry/.build/deployment/dev && mupx deploy
   staging:
     branch: master
     commands:
