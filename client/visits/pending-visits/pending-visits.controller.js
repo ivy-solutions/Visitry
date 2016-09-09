@@ -15,15 +15,17 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.listSort = {
     requestedDate: 1
   };
+  this.numRequests = -1;
+
+  this.autorun( function() {
+    var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}});
+    this.numRequests = visits.count();
+  });
 
   this.helpers({
     pendingVisits: ()=> {
       var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
-    },
-    numRequests: () => {
-      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}});
-      return visits.count();
     }
   });
 

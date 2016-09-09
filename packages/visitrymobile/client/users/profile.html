@@ -18,14 +18,14 @@
             <ion-list>
                 <label class="item item-input">
                     <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="location" id="requesterLocation" ng-google-places-autocomplete
+                    <input type="text" name="location" id="location" ng-google-places-autocomplete
                            ng-model="profile.currentUser.userData.location.address"
                            details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
                            placeholder="{{profile.locationPlaceholder}}"/>
                 </label>
                 <div layout="row">
                     <span flex></span>
-                    <span class="error-message" ng-hide="profileForm.requesterLocation.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
+                    <span class="error-message" ng-hide="profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
                 </div>
                 <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
                     <div class="range range-positive">
