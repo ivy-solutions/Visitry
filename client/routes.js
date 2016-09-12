@@ -24,25 +24,25 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: function ($location) {
-            const visits = Meteor.subscribe('userRequests', Meteor.userId());
-            Tracker.autorun(()=> {
-              const isReady = visits.ready();
-              if (Meteor.userId()) {
-                var visitNeedingFeedback = Visits.findOne({
-                  requesterFeedbackId: null,
-                  requesterId: Meteor.userId(),
-                  visitTime: {$lt: new Date()}
-                });
-                if (isReady && visitNeedingFeedback) {
-                  logger.info("Yes, lets go to feedbacks");
-                  $location.url('/requester/feedback/' + visitNeedingFeedback._id);
-                } else {
-                  logger.info(`Visits data is ${isReady ? 'ready' : 'not ready'} for user: ${Meteor.userId()}`)
-                }
-              }
-            })
-          }
+          feedback: ['$q', ($q,$location) => {
+            var deferred = $q.defer();
+            const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
+              onReady: () => {
+                 const visitNeedingFeedback = Visits.findOne({
+                   requesterFeedbackId: null,
+                   requesterId: Meteor.userId(),
+                   visitTime: {$lt: new Date()}
+                 });
+                 if (visitNeedingFeedback) {
+                   logger.info("Yes, lets go to feedbacks");
+                   $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                 }
+                deferred.resolve(visits)
+              },
+              onStop: deferred.reject
+            });
+            return deferred.promise;
+          }]
         }
       })
       .state('browseRequests', {

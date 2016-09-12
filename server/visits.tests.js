@@ -9,6 +9,7 @@ import { Visit,Visits } from '/model/visits'
 import { Agency } from '/model/agencies'
 import '/server/visits.js';
 import '/model/users';
+import '/model/visits-methods';
 
 if (Meteor.isServer) {
 
