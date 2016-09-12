@@ -27,20 +27,20 @@ Meteor.publish("visits", function (options) {
   }
 });
 
-Meteor.publish("userRequests", function (options) {
+Meteor.publish("userRequests", function (userId) {
+  logger.verbose("publish userRequests to " + userId);
   if (this.userId) {
-    logger.verbose("publish userRequests to " + this.userId);
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     //active requests requested by me for a future date, or for a past date and needing my feedback
     var userRequests = Visits.find({
-      requesterId: {$eq: this.userId},
+      requesterId: {$eq: userId},
       inactive: {$exists: false},
       $or: [
         {visitTime: {$lt: new Date()}, requesterFeedbackId: null},
         {requestedDate: {$gt: today}}
       ]
-    }, options);
+    });
     var visitorIds = userRequests.map(function (visitRequest) {
       return visitRequest.visitorId
     });
