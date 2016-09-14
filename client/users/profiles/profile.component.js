@@ -2,7 +2,7 @@
  * Created by sarahcoletti on 2/23/16.
  */
 import {logger} from '/client/logging'
-import {User} from '/model/users'
+import {Roles} from 'meteor/alanning:roles'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
@@ -13,9 +13,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       return user;
     },
     isVisitor: () => {
-      var role =  Meteor.user() && Meteor.user().userData? Meteor.user().userData.role : 'none';
-      logger.verbose( "user role:" + role);
-      return role == 'visitor';
+      return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
      distance: () => {
        if (Meteor.user() && Meteor.user().userData.visitRange) {
@@ -82,7 +80,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     //clear form
     this.resetForm(form);
 
-    if (this.currentUser.userData.role == "visitor") {
+    if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
       $state.go('browseRequests');
     } else {
       $state.go('pendingVisits');

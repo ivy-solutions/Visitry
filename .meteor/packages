@@ -24,9 +24,10 @@ ogamedia:timer
 okland:camera-ui
 jeremy:geocomplete
 
-# accounts
+# users/accounts
 accounts-password
 dotansimha:accounts-ui-angular
+alanning:roles
 
 # data
 check

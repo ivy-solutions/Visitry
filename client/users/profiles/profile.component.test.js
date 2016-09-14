@@ -24,6 +24,7 @@ describe ( 'Profile', function() {
   var meteorStub;
   var form;
   var userIdStub;
+  var user;
 
   beforeEach(function () {
     form = { $valid: true,
@@ -50,6 +51,25 @@ describe ( 'Profile', function() {
       });
       stateSpy = sinon.stub($state, 'go');
     });
+    user = {
+      userName: "userName",
+      roles: ["visitor"],
+      userData: {
+        firstName: "first",
+        lastName: "last",
+        location: {
+          address: "somewhere",
+          details: {
+            geometry: {
+              location: {
+                lat : function() { return 42} , lng: function() { return -71 }
+              }
+            }
+          }
+        },
+        visitRange: "20"
+      }
+    };
    });
 
   afterEach(function () {
@@ -57,31 +77,11 @@ describe ( 'Profile', function() {
     userIdStub.restore();
   });
 
-  var user = {
-    userName: "userName",
-    userData: {
-      firstName: "first",
-      lastName: "last",
-      role: "visitor",
-      location: {
-        address: "somewhere",
-        details: {
-          geometry: {
-            location: {
-              lat : function() { return 42} , lng: function() { return -71 }
-            }
-          }
-        }
-      },
-      visitRange: "20"
-    }
-  };
 
   describe( 'submitUpdate', function() {
     it('update UserData', function () {
       controller.currentUser = user;
       controller.distance = "17";
-      controller.isVisitor = true;
       controller.phoneNumber = "(800) 555-1212";
       controller.submitUpdate(form);
       chai.assert.isTrue(Meteor.call.calledWith('updateUserData'),"updateUserData called");
@@ -123,14 +123,25 @@ describe ( 'Profile', function() {
   });
 
   describe( 'submitSuccess', function() {
+    var rolesStub;
+    beforeEach(function () {
+      rolesStub = sinon.stub(Roles, 'userIsInRole');
+    });
+    afterEach(function () {
+      rolesStub.restore();
+    });
+
     it('visitor goes to browseRequests', function() {
       meteorStub.returns(); //no error
+      rolesStub.returns( true );
+      user.roles = ['visitor'];
       controller.currentUser = user;
       controller.submitSuccess(form);
       chai.assert.isTrue(stateSpy.withArgs('browseRequests').calledOnce)
     });
     it('requester goes to pendingVisits', function() {
-      user.userData.role = 'requester';
+      user.roles = ['requester'];
+      rolesStub.returns( false );
       controller.currentUser = user;
       controller.submitSuccess(form);
       chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)

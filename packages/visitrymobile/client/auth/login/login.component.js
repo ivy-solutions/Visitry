@@ -10,8 +10,6 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     password: ''
   };
 
-  this.subscribe('userProfile');
-
   this.login = (form) => {
     var status = Meteor.status();
     if(status.connected==false ) {
@@ -22,7 +20,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         return handleError(err)
       }
       else {
-        console.log('Login success ' + this.credentials.username + "device: " + JSON.stringify(ionic.Platform.device()));
+        console.log('Login success ' + this.credentials.username + " device: " + JSON.stringify(ionic.Platform.device()));
         this.resetForm(form);
         var user = Meteor.user();
         //TODO we will sometime handle unaffiliated users
@@ -30,8 +28,9 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         // if (!hasValidAgency()) {
         //   goto = 'agencyList'
         // } else {
-        goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        goto = Roles.userIsInRole(user, 'visitor') ? 'browseRequests' : 'pendingVisits';
         //}
+        console.log("goto: " + goto);
         $state.go(goto);
       }
     });

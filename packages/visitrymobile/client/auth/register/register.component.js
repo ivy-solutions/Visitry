@@ -24,7 +24,7 @@ angular.module("visitry.mobile").directive('register', function() {
               return handleError(err);
             }
             else {
-              Meteor.call('updateName', this.firstName, this.lastName, this.role, (err) => {
+              Meteor.call('updateName', this.firstName, this.lastName, (err) => {
                 if (err) return handleError(err);
               });
               var avatarWithInitials = generateAvatar(this.firstName, this.lastName);

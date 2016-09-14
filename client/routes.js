@@ -3,6 +3,7 @@
  */
 import {Visits } from '/model/visits'
 import {logger} from '/client/logging'
+import {Roles} from 'meteor/alanning:roles'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
@@ -103,29 +104,22 @@ angular.module('visitry')
         resolve: {
           loggedIn: function ($location) {
             if (Meteor.userId()) {
-              var profile = Meteor.subscribe('userProfile');
-              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+              var user = User.findOne({_id: Meteor.userId()});
               if (user) {
-                switch (user.userData.role) {
-                  case 'visitor':
-                    console.log('visitor');
-                    $location.url('/visitor/browseRequests');
-                    break;
-                  case 'requester':
-                    console.log('requester');
-                    $location.url('/requester/pendingVisits');
-                    break;
-                  case 'administrator':
-                    console.log('administrator');
-                    $location.url('/admin');
-                    break;
-                  default:
-                    console.log('invalid role');
-                    break;
+                if (Roles.userIsInRole(user, 'administrator')){
+                  logger.verbose('administrator');
+                  $location.url('/admin');
+                }
+                else if (Roles.userIsInRole(user, 'visitor')) {
+                  logger.verbose('visitor');
+                  $location.url('/visitor/browseRequests');
+                } else {  // role: requester or not found
+                  logger.verbose('requester ' + user.roles);
+                  $location.url('/requester/pendingVisits');
                 }
               }
               else {
-                console.log("no user");
+                logger.verbose('no user');
               }
             }
           }

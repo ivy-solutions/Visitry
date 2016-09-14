@@ -28,10 +28,10 @@ describe('Visitor Feedback List', function () {
     beforeEach(function () {
       user = {
         userName: "userName",
+        roles: ["visitor"],
         userData: {
           firstName: "first",
           lastName: "last",
-          role: "visitor",
           location: {
             name: "somewhere",
             details: {
