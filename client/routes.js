@@ -25,10 +25,11 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: ['$q', ($q,$location) => {
+          feedback: function ($q,$location) {
             var deferred = $q.defer();
             const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
               onReady: () => {
+                deferred.resolve(visits)
                  const visitNeedingFeedback = Visits.findOne({
                    requesterFeedbackId: null,
                    requesterId: Meteor.userId(),
@@ -38,12 +39,10 @@ angular.module('visitry')
                    logger.info("Yes, lets go to feedbacks");
                    $location.url('/requester/feedback/' + visitNeedingFeedback._id);
                  }
-                deferred.resolve(visits)
               },
               onStop: deferred.reject
             });
-            return deferred.promise;
-          }]
+          }
         }
       })
       .state('browseRequests', {
