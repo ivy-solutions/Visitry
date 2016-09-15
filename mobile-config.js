@@ -4,7 +4,7 @@
 App.info({
   id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '0.0.15',
+  version: '0.1.0',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',
@@ -58,7 +58,7 @@ App.accessRule("*");
 App.accessRule('*.google.com/*');
 App.accessRule('*.googleapis.com/*');
 App.accessRule('*.gstatic.com/*');
-App.accessRule('http://dev.visitry.org', {
+App.accessRule('*.visitry.org', {
  'minimum-tls-version': 'TLSv1.0',
  'requires-forward-secrecy': false,
 });

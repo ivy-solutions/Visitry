@@ -30,7 +30,7 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
 
   this.helpers({
     seniors: ()=> {
-      return User.find({'userData.role': {$eq: 'requester'}})
+      return Roles.getUsersInRole('requester')
     }
   });
 

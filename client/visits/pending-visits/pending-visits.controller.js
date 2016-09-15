@@ -7,20 +7,21 @@ import {logger} from '/client/logging'
 angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate, RequestVisit, $filter, $state) {
   $reactive(this).attach($scope);
 
-  this.subscribe('userRequests');
-  this.subscribe('userdata');
-
   this.showDelete = false;
   this.canSwipe = true;
   this.listSort = {
     requestedDate: 1
   };
-  this.numRequests = 0;
+  this.numRequests = -1;
+
+  this.autorun( function() {
+    var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}});
+    this.numRequests = visits.count();
+  });
 
   this.helpers({
     pendingVisits: ()=> {
       var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
-      this.numRequests = visits.count();
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });

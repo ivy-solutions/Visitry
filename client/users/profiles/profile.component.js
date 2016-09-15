@@ -2,7 +2,7 @@
  * Created by sarahcoletti on 2/23/16.
  */
 import {logger} from '/client/logging'
-import {User} from '/model/users'
+import {Roles} from 'meteor/alanning:roles'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
@@ -13,9 +13,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       return user;
     },
     isVisitor: () => {
-      var role =  Meteor.user() && Meteor.user().userData? Meteor.user().userData.role : 'none';
-      logger.verbose( "user role:" + role);
-      return role == 'visitor';
+      return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
      distance: () => {
        if (Meteor.user() && Meteor.user().userData.visitRange) {
@@ -26,6 +24,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      }
   });
 
+  this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location"
   this.subscribe('userProfile');
 
   this.locationDetails;
@@ -42,9 +41,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.submitUpdate = (form) => {
-    if(form.$valid && (this.isLocationValid() || (form.visitorLocation.$pristine==true && form.requesterLocation.$pristine==true) )) {
+    if(form.$valid && (this.isLocationValid() || form.location.$pristine==true )) {
       //location
-      if (form.visitorLocation.$touched || form.requesterLocation.$touched) { //if location has changed
+      if (form.location.$touched) {
         // location is optional - can be blank or selected
         var newLocation = null;
         if (this.locationDetails) {
@@ -81,7 +80,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     //clear form
     this.resetForm(form);
 
-    if (this.currentUser.userData.role == "visitor") {
+    if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
       $state.go('browseRequests');
     } else {
       $state.go('pendingVisits');
@@ -93,18 +92,13 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     // disable ionic data tap - for the google added elements
     container = document.getElementsByClassName('pac-container');
     angular.element(container).attr('data-tap-disabled', 'true');
-    var backdrop = document.getElementsByClassName('backdrop');
-    angular.element(backdrop).attr('data-tap-disabled', 'true');
-    var clickblock = document.getElementsByClassName('click-block');
-    angular.element(clickblock).attr('data-tap-disabled', 'true');
 
     // leave input field if google-address-entry is selected
     angular.element(container).on("click", function () {
-      document.getElementById('visitorLocation').blur();
+      document.getElementById('location').blur();
     });
-    angular.element(container).on("click", function () {
-      document.getElementById('requesterLocation').blur();
-    });
+    var clickblock = document.getElementsByClassName('click-block');
+    angular.element(clickblock).attr('data-tap-disabled', 'true');
 
   };
 
@@ -147,6 +141,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     this.isVisitor=false;
     form.$setUntouched();
     form.$setPristine();
+    container = document.getElementsByClassName('pac-container');
+    angular.element(container).remove();
   };
 
 });

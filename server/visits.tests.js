@@ -9,6 +9,7 @@ import { Visit,Visits } from '/model/visits'
 import { Agency } from '/model/agencies'
 import '/server/visits.js';
 import '/model/users';
+import '/model/visits-methods';
 
 if (Meteor.isServer) {
 
@@ -438,14 +439,14 @@ if (Meteor.isServer) {
 
     it('user with no visit requests', () => {
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 0);
     });
 
     it('user sees his own visit requests - future or with no feedback', () => {
       const invocation = {userId: requesterId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [requesterId]);
       const visitCursor = cursors[0];
       var visit = visitCursor.fetch()[0];
       var notesFromVisits = visitCursor.map(function (visit) {
@@ -455,7 +456,17 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
-  });
+    it("admin sees another user's visit requests", () => {
+      const invocation = {userId: userId};
+      const cursors = publication.apply(invocation, [requesterId]);
+      const visitCursor = cursors[0];
+      var visit = visitCursor.fetch()[0];
+      var notesFromVisits = visitCursor.map(function (visit) {
+        return visit.notes
+      });
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '4. scheduled visit agency1', '5. test visit agency2']);
+      assert.equal(visitCursor.count(), 3, notesFromVisits);
+    });  });
 
   describe('visits Publication', () => {
     var findOneUserStub;

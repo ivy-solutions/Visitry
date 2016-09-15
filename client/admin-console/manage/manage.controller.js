@@ -43,7 +43,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     },
     outstandingRequests: ()=> {
       let selector = {
-        'visitTime': {$exists: false},
+        'visitTime': {$eq: null},
         'agencyId': {$eq: this.agencyId}
       };
       var visits = Visit.find(selector, {sort: {requestedDate: 1}, limit: 10});

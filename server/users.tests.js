@@ -14,7 +14,7 @@ if (Meteor.isServer) {
     beforeEach(() => {
       var user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
-        testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99'});
+        testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99', role:"requester"});
       } else {
         testUserId = user._id;
       }
@@ -28,44 +28,22 @@ if (Meteor.isServer) {
 
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
-        updateNameHandler.apply(invocation, ["firstName", "lastName", "visitor"]);
+        updateNameHandler.apply(invocation, ["firstName", "lastName"]);
         var updatedUser = User.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.firstName, "firstName");
         assert.equal(updatedUser.userData.lastName, "lastName");
-        assert.equal(updatedUser.userData.role, "visitor");
       });
 
       it('fails when user is not logged in', () => {
         const invocation = {userId: null};
         try {
-          updateNameHandler.apply(invocation, ["firstName", "lastName", "visitor"]);
+          updateNameHandler.apply(invocation, ["firstName", "lastName"]);
           fail("expected exception");
         } catch (ex) {
           assert.equal( ex.error, 'not-logged-in')
         }
       });
 
-      it('fails when no role passed', () => {
-        const invocation = {userId: testUserId};
-        try {
-          updateNameHandler.apply(invocation, ["First", "Last"]);
-          fail("expected exception");
-        } catch (err) {
-          assert.equal( err.error , 'validation-error', err.error);
-          assert.equal( err.reason , '"userData.role" is required', err)
-        }
-      });
-
-      it('fails when invalid role passed', () => {
-        const invocation = {userId: testUserId};
-        try {
-          updateNameHandler.apply(invocation, ["First", "Last", "bottle-washer"]);
-          fail("expected exception");
-        } catch (err) {
-          assert.equal( err.error , 'validation-error', err.error);
-          assert.equal( err.reason , 'role should be either "visitor", "requester", or "administrator', err)
-        }
-      });
     });
 
     describe('users.updateLocation method', () => {
@@ -120,11 +98,12 @@ if (Meteor.isServer) {
 
       it('succeeds when valid fields passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumer:"(800)555-1212"}]);
+        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumber:"(800)555-1212"}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.role, "visitor");
+        assert.isTrue(Roles.userIsInRole(updatedUser, "visitor"), "role should be visitor");
         assert.equal(updatedUser.userData.visitRange, 20);
         assert.equal(updatedUser.userData.about, "I raise chickens");
+        assert.equal(updatedUser.userData.phoneNumber, "(800)555-1212");
       });
 
       it('fails when user is not logged in', () => {
