@@ -7,17 +7,6 @@ const UserData = Class.create({
   fields: {
     firstName: {type: String, optional: true},
     lastName: {type: String, optional: true},
-    // role: {
-    //   type: String,
-    //   validators: [
-    //     {
-    //       type: 'choice',
-    //       param: ['visitor', 'requester', 'administrator'],
-    //       message: 'role should be either "visitor", "requester", or "administrator'
-    //     },
-    //     {type: 'string', message: 'role should be either "visitor", "requester", or "administrator'}
-    //   ]
-    // },
     agencyIds: {type: [String], optional: true},  //user can initially be unassigned to an agency
     about: {type: String, optional: true},
     location: {type: Address, optional:true},
