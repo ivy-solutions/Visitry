@@ -33,6 +33,4 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
       return User.find({'userData.role': {$eq: 'requester'}})
     }
   });
-
-
 });
