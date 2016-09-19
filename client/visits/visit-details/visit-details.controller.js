@@ -41,7 +41,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.canCallVisitor = function() {
     var visitor = this.getVisitor();
-    return true//this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber != null;
+    return this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber != null;
   };
 
   this.getRequester = function () {
