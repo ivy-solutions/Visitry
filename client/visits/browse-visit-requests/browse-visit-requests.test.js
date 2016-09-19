@@ -8,7 +8,7 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/browse-visit-requests/browse-visit-requests.component.js';
 import StubCollections from 'meteor/hwillson:stub-collections';
 import Visits from '/model/visits.js'
-import myFunctions from '/client/lib/sharedFunctions.js'
+import '/client/visits/schedule-visit/schedule-visit-modal.service';
 import '/model/users.js'
 
 describe ( 'BrowseVisitRequests', function() {
