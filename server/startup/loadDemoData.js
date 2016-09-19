@@ -135,11 +135,12 @@ Meteor.startup(function ()  {
     Meteor.users.update(sarahc._id, {$set: {'userData.agencyIds': allAgencyIds}});
   } else {
     //users exist - migrate to new roles package
-    var usersWithoutRoles = Meteor.users.find({roles: {$eq: null}}, {'userData.role':1});
+    var usersWithoutRoles = Meteor.users.find({$or: [{roles: {$eq: null}}, {roles: {$size:0}}]}, {'userData.role':1});
     usersWithoutRoles.forEach( function (user) {
       var oldRole = user.userData.role;
+      if (!oldRole) oldRole = 'requester';
       Roles.addUsersToRoles(user, [ oldRole]);
-      console.log( "migrate role, old Role: " + oldRole  + " for " + user._id + " new Role:" + user.roles)
+      console.log( "migrate role, old Role: " + oldRole  + " for " + user._id )
     });
   }
 

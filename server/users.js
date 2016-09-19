@@ -195,10 +195,6 @@ Accounts.onCreateUser(function (options, user) {
   } else {
     user.userData = {firstName: "", lastName: ""}
   }
-  if (options.roles) {
-    logger.info("Set roles: " + options.roles)
-    Roles.setUserRoles(user._id, [options.roles])
-  }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
     logger.error("user has no agency. userId: " + user._id);
@@ -207,7 +203,9 @@ Accounts.onCreateUser(function (options, user) {
       user.userData.agencyIds = [agency._id];
     }
   }
-  logger.info("onCreateUser for userId: " + user._id);
+  user.roles = options.role ? [options.role] : ['requester'];
+
+  logger.info("onCreateUser for userId: " + user._id + " roles: " + user.roles);
   return user;
 });
 

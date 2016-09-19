@@ -4,14 +4,14 @@
            <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
                 <div class="list">
                     <label class="item item-input">
-                        <input ng-model="register.firstName" name="firstName" type="text" placeholder="First name" required />
+                        <input ng-model="register.credentials.userData.firstName" name="firstName" type="text" placeholder="First name" required />
                     </label>
                     <div layout="row" ng-show="registrationForm.firstName.$error && (registrationForm.firstName.$touched || registrationForm.$submitted)" ng-messages="registrationForm.firstName.$error">
                         <span flex></span>
                         <span class="error-message" ng-messages-include="error-list.html"></span>
                     </div>
                     <label class="item item-input">
-                        <input ng-model="register.lastName" name="lastName" type="text" placeholder="Last name" required/>
+                        <input ng-model="register.credentials.userData.lastName" name="lastName" type="text" placeholder="Last name" required/>
                     </label>
                      <div layout="row" ng-show="registrationForm.lastName.$error && (registrationForm.lastName.$touched || registrationForm.$submitted)" ng-messages="registrationForm.lastName.$error">
                         <span flex></span>
@@ -32,8 +32,8 @@
                         <span class="error-message" ng-messages-include="error-list.html"></span>
                     </div>
                     <label class="item">
-                        <ion-radio ng-model='register.role' value="requester">Request Visits</ion-radio>
-                        <ion-radio ng-model='register.role' value="visitor">Visit Others</ion-radio>
+                        <ion-radio ng-model='register.credentials.role' value="requester">Request Visits</ion-radio>
+                        <ion-radio ng-model='register.credentials.role' value="visitor">Visit Others</ion-radio>
                     </label>
                 </div>
                 <div class="padding item">

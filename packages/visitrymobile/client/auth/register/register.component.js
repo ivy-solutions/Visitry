@@ -11,11 +11,13 @@ angular.module("visitry.mobile").directive('register', function() {
 
       this.credentials = {
         username: '',
-        password: ''
+        password: '',
+        role: 'requester',
+        userData: {
+          firstName: "",
+          lastName: ""
+        }
       };
-      this.firstName = '';
-      this.lastName = '';
-      this.role = 'requester';
 
       this.createAccount = (form) => {
         if(form.$valid) {
@@ -24,10 +26,7 @@ angular.module("visitry.mobile").directive('register', function() {
               return handleError(err);
             }
             else {
-              Meteor.call('updateName', this.firstName, this.lastName, (err) => {
-                if (err) return handleError(err);
-              });
-              var avatarWithInitials = generateAvatar(this.firstName, this.lastName);
+              var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
               Meteor.call('updatePicture', avatarWithInitials);
               Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
                 if (err) {
@@ -50,8 +49,8 @@ angular.module("visitry.mobile").directive('register', function() {
       this.resetForm= function(form) {
         form.$setUntouched();
         form.$setPristine();
-        this.firstName = '';
-        this.lastName ='';
+        this.credentials.userData.firstName = '';
+        this.credentials.userData.lastName ='';
         this.credentials.username = '';
         this.credentials.password ='';
       };
