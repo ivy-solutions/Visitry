@@ -6,8 +6,10 @@ import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Visit,Visits } from '/model/visits'
+import { Agency } from '/model/agencies'
 import '/server/visits.js';
 import '/model/users';
+import '/model/visits-methods';
 import {TestVisits} from '/model/test/test-visits';
 
 if (Meteor.isServer) {
@@ -479,14 +481,14 @@ if (Meteor.isServer) {
 
     it('user with no visit requests', () => {
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 0);
     });
 
     it('user sees his own visit requests - future or with no feedback', () => {
       const invocation = {userId: requesterId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [requesterId]);
       const visitCursor = cursors[0];
       var visit = visitCursor.fetch()[0];
       var notesFromVisits = visitCursor.map(function (visit) {
@@ -496,8 +498,18 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
-  });
-/////
+    it("admin sees another user's visit requests", () => {
+      const invocation = {userId: userId};
+      const cursors = publication.apply(invocation, [requesterId]);
+      const visitCursor = cursors[0];
+      var visit = visitCursor.fetch()[0];
+      var notesFromVisits = visitCursor.map(function (visit) {
+        return visit.notes
+      });
+      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '4. scheduled visit agency1', '5. test visit agency2']);
+      assert.equal(visitCursor.count(), 3, notesFromVisits);
+    });  });
+
   describe('visits Publication', () => {
     var findOneUserStub;
     var testVisit;
@@ -577,6 +589,29 @@ if (Meteor.isServer) {
     yesterday.setTime(yesterday.getTime() + ( 24 * 60 * 60 * 1000));
     return yesterday;
   }
+
+  describe( 'formattedVisitTime ', () => {
+    var findOnAgencyStub;
+    beforeEach(() => {
+      findOneAgencyStub = sinon.stub(Agency, 'findOne');
+    });
+    afterEach(function () {
+      Agency.findOne.restore();
+    });
+
+    it('formatted visitTime with no time zone defaults to EST', () => {
+      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
+      var visit = { visitTime: dateAt330pmUTC };
+      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 11:30");
+    });
+    it('formatted visitTime with agency time zone = PST', () => {
+      findOneAgencyStub.returns( {timeZone: 'America/Los_Angeles'})
+      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
+      var visit = { visitTime: dateAt330pmUTC };
+      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 8:30");
+    });
+  });
+
 
   function insertTestVisits() {
     createTestVisit(TestVisits.createFutureBostonNonScheduledVisit(requesterId, agencyId));

@@ -1,7 +1,7 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header has-tabs">
-         <div class="warning" ng-hide="connectionStatus==='connected'">
-             No internet connection.
+         <div class="warning" ng-hide="connectionStatus=='ok'">
+             No connection to server. ({{connectionStatus}})
          </div>
          <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
              No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
@@ -21,7 +21,8 @@
                             <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
                         </div>
                     </a>
-                    <ion-option-button class="button icon ion-ios-time" ng-click="browseVisitRequests.scheduleVisit(visit)">
+                    <ion-option-button class="button-positive" ng-click="browseVisitRequests.scheduleVisit(visit)">
+                        Plan Visit
                  </ion-option-button>
                 </ion-item>
             </div>

@@ -1,8 +1,8 @@
 <ion-view view-title="Upcoming Visits" hide-back-button=true>
     <ion-content class="has-header has-tabs">
         <ion-list show-delete="visitorViewUpcoming.showDelete" can-swipe="visitorViewUpcoming.canSwipe">
-            <div class="warning" ng-hide="connectionStatus==='connected'">
-                No internet connection.
+            <div class="warning" ng-hide="connectionStatus=='ok'">
+                No connection to server. ({{connectionStatus}})
             </div>
             <div class="emptyListInfo" ng-hide="!visitorViewUpcoming.upcomingVisits.length==0">
                 No scheduled visits

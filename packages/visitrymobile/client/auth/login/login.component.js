@@ -10,15 +10,17 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     password: ''
   };
 
-  this.subscribe('userProfile');
-
   this.login = (form) => {
+    var status = Meteor.status();
+    if(status.connected==false ) {
+      handleError( new Error("No connection to server." + status.status))
+    }
     Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
       if (err) {
         return handleError(err)
       }
       else {
-        console.log('Login success ' + this.credentials.username + "device: " + JSON.stringify(ionic.Platform.device()));
+        console.log('Login success ' + this.credentials.username + " device: " + JSON.stringify(ionic.Platform.device()));
         this.resetForm(form);
         var user = Meteor.user();
         //TODO we will sometime handle unaffiliated users
@@ -26,8 +28,9 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         // if (!hasValidAgency()) {
         //   goto = 'agencyList'
         // } else {
-        goto = (user.userData && user.userData.role == 'visitor') ? 'browseRequests' : 'pendingVisits';
+        goto = Roles.userIsInRole(user, 'visitor') ? 'browseRequests' : 'pendingVisits';
         //}
+        console.log("goto: " + goto);
         $state.go(goto);
       }
     });
@@ -55,7 +58,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       console.log('Authentication error ', err);
 
       $ionicPopup.alert({
-        title: err.reason || 'User with that username and password not found.',
+        title: err.reason || err || 'User with that username and password not found.',
         template: 'Please try again',
         okType: 'button-positive button-clear'
       });

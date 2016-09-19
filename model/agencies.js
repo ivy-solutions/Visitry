@@ -32,6 +32,7 @@ const Agency = Class.create({
         param: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/ ,
         message: '"website" should be a valid URL'}] },  //URL validator
     location: { type: Address },  // Note: 2dsphere index is added in startup
+    timezone: { type: String, default: 'America/New_York'},
     activeUntil: {type: Date, optional: true },
     administratorId: { type: String },  //default mongo id generation is a string (if we want ObjectId, we would have to say so when teh collection is created)
     contactEmail: { type: String,

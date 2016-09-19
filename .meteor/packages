@@ -23,11 +23,11 @@ angular-templates
 ogamedia:timer
 okland:camera-ui
 jeremy:geocomplete
-#shynah:ionic-timepicker
 
-# accounts
+# users/accounts
 accounts-password
 dotansimha:accounts-ui-angular
+alanning:roles
 
 # data
 check
@@ -38,11 +38,11 @@ aldeed:collection2
 jagi:astronomy
 jagi:astronomy-timestamp-behavior
 jagi:astronomy-softremove-behavior
+aldeed:moment-timezone
 
 # packaging and build related
 visitry-browser         # visitry package
 visitrymobile           # visitry package
-#mquandalle:bower
 hybrid:asset-builder
 standard-minifier-css
 standard-minifier-js

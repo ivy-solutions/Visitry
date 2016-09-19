@@ -3,6 +3,7 @@
  */
 import {Visits } from '/model/visits'
 import {logger} from '/client/logging'
+import {Roles} from 'meteor/alanning:roles'
 
 angular.module('visitry')
   .config(function ($urlRouterProvider, $stateProvider, $locationProvider) {
@@ -24,24 +25,23 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: function ($location) {
-            const visits = Meteor.subscribe('userRequests');
-            Tracker.autorun(()=> {
-              const isReady = visits.ready();
-              if (Meteor.userId()) {
-                var visitNeedingFeedback = Visits.findOne({
-                  requesterFeedbackId: null,
-                  requesterId: Meteor.userId(),
-                  visitTime: {$lt: new Date()}
-                });
-                if (isReady && visitNeedingFeedback) {
-                  logger.info("Yes, lets go to feedbacks");
-                  $location.url('/requester/feedback/' + visitNeedingFeedback._id);
-                } else {
-                  logger.info(`Visits data is ${isReady ? 'ready' : 'not ready'} for user: ${Meteor.userId()}`)
-                }
-              }
-            })
+          feedback: function ($q,$location) {
+            var deferred = $q.defer();
+            const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
+              onReady: () => {
+                deferred.resolve(visits)
+                 const visitNeedingFeedback = Visits.findOne({
+                   requesterFeedbackId: null,
+                   requesterId: Meteor.userId(),
+                   visitTime: {$lt: new Date()}
+                 });
+                 if (visitNeedingFeedback) {
+                   logger.info("Yes, lets go to feedbacks");
+                   $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                 }
+              },
+              onStop: deferred.reject
+            });
           }
         }
       })
@@ -103,29 +103,22 @@ angular.module('visitry')
         resolve: {
           loggedIn: function ($location) {
             if (Meteor.userId()) {
-              var profile = Meteor.subscribe('userProfile');
-              var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.role': 1}});
+              var user = User.findOne({_id: Meteor.userId()});
               if (user) {
-                switch (user.userData.role) {
-                  case 'visitor':
-                    console.log('visitor');
-                    $location.url('/visitor/browseRequests');
-                    break;
-                  case 'requester':
-                    console.log('requester');
-                    $location.url('/requester/pendingVisits');
-                    break;
-                  case 'administrator':
-                    console.log('administrator');
-                    $location.url('/admin');
-                    break;
-                  default:
-                    console.log('invalid role');
-                    break;
+                if (Roles.userIsInRole(user, 'administrator')){
+                  logger.verbose('administrator');
+                  $location.url('/admin');
+                }
+                else if (Roles.userIsInRole(user, 'visitor')) {
+                  logger.verbose('visitor');
+                  $location.url('/visitor/browseRequests');
+                } else {  // role: requester or not found
+                  logger.verbose('requester ' + user.roles);
+                  $location.url('/requester/pendingVisits');
                 }
               }
               else {
-                console.log("no user");
+                logger.verbose('no user');
               }
             }
           }

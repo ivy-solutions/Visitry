@@ -65,6 +65,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     //clear form
     this.visitorNotes = "";
     $scope.hideModal();
+    $scope.removeModal();
   };
 
   this.getRequester = function (visit) {
