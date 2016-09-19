@@ -63,5 +63,6 @@ App.accessRule('*.visitry.org', {
  'requires-forward-secrecy': false,
 });
 App.accessRule('data:*', { type: 'navigation' });
+App.accessRule('tel:*',{type:'intent'});
 
 App.setPreference("BackupWebStorage", "local");

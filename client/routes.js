@@ -29,7 +29,7 @@ angular.module('visitry')
             var deferred = $q.defer();
             const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
               onReady: () => {
-                deferred.resolve(visits)
+                deferred.resolve(visits);
                  const visitNeedingFeedback = Visits.findOne({
                    requesterFeedbackId: null,
                    requesterId: Meteor.userId(),

@@ -1,0 +1,44 @@
+<div layout="column" flex="40">
+  <div layout="row">
+    <div class="profile-picture has-picture" flex="40" layout-align="center center" layout-padding>
+      <div class="item-avatar"><img ng-src="{{visitDetails.getRequesterImage()}}"/></div>
+    </div>
+    <div layout="column" flex="60" layout-align="space-around start" layout-padding>
+      <h4 ng-if="visitDetails.visit.visitorId">{{visitDetails.getVisitor() | firstNameLastInitial}}</h4>
+      <h4 ng-if="!visitDetails.visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{visitDetails.getTimeSinceRequested(visitDetails.visit.createdAt)}}</span>
+      </h4>
+      <div>{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</div>
+      <div class="time">
+        {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) :
+        (visitDetails.visit.requestedDate | timeOfDay) }}
+      </div>
+      <div>{{visitDetails.visit.location.address}}</div>
+    </div>
+  </div>
+  <div layout="row" layout-padding>
+    <div layout="column">
+      <div ng-show="visitDetails.visit.notes" class="item-text-wrap">
+        <span class="time">You: </span>{{visitDetails.visit.notes}}
+      </div>
+      <div ng-show="visitDetails.visit.visitorNotes" class="item-text-wrap">
+        <span>{{visitDetails.getVisitor().userData.firstName}}</span>: {{visitDetails.visit.visitorNotes}}
+      </div>
+    </div>
+  </div>
+</div>
+<div layout="row" flex="30" ng-show="visitDetails.visit.visitorId">
+  <div layout="column">
+    <h4>About {{visitDetails.getVisitor() | firstNameLastInitial}}</h4>
+    <div class="item-text-wrap">{{visitDetails.userAboutInfo(visitDetails.getVisitor())}}</div>
+  </div>
+</div>
+<div ng-show="!visitDetails.visit.visitorId" layout="row"
+     layout-align="space-around center" flex="20"
+     layout-padding>
+  <button class="button button-balanced">
+    Cancel
+  </button>
+  <button class="button button-assertive">
+    Accept
+  </button>
+</div>

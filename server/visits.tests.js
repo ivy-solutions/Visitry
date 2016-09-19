@@ -337,7 +337,7 @@ if (Meteor.isServer) {
           }
         }
       };
-      insertTestVisits();
+      insertTestVisits(requesterId, agency1Id, agency2Id, userId);
     });
 
 
@@ -378,17 +378,17 @@ if (Meteor.isServer) {
     });
 
     it('agency1 user sees only future unscheduled visits', () => {
-      findOneUserStub.returns({username: 'agency1user', userData: {agencyIds: [agencyId]}});
+      findOneUserStub.returns({username: 'agency1user', userData: {agencyIds: [agency1Id]}});
       const invocation = {userId: userId};
       const cursors = publication.apply(invocation);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
-      assert.equal(visit.notes, 'future unscheduled visit for agency: ' + agencyId, JSON.stringify(visit));
+      assert.equal(visit.notes, 'future unscheduled visit for agency: ' + agency1Id, JSON.stringify(visit));
     });
 
     it('user associated with multiple agencies should see visits from all', () => {
-      findOneUserStub.returns({username: 'MultiAgency', userData: {agencyIds: [agencyId, agency2Id]}});
+      findOneUserStub.returns({username: 'MultiAgency', userData: {agencyIds: [agency1Id, agency2Id]}});
       const invocation = {userId: userId};
       const cursors = publication.apply(invocation);
       const visitCursor = cursors[0];
@@ -396,14 +396,14 @@ if (Meteor.isServer) {
       const notesFromVisits = visitCursor.map(function (visit) {
         return visit.notes;
       });
-      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agencyId, 'future unscheduled visit for agency: ' + agency2Id]);
+      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'future unscheduled visit for agency: ' + agency2Id]);
     });
 
     it('user from Acton sees no visits if visitRange is set to 10 miles', () => {
       findOneUserStub.returns({
         username: 'Actonian',
         userData: {
-          agencyIds: [agencyId],
+          agencyIds: [agency1Id],
           visitRange: 10,
           location: {
             address: "Acton",
@@ -426,7 +426,7 @@ if (Meteor.isServer) {
       findOneUserStub.returns({
         username: 'Actonian',
         userData: {
-          agencyIds: [agencyId],
+          agencyIds: [agency1Id],
           visitRange: 50,
           location: {
             address: "Acton",
@@ -450,13 +450,23 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["userRequests"];
 
     var testVisit;
+    var agency1Id;
+    var requesterId;
+    var agency2Id;
+    var userId;
+    var tomorrow;
 
-    beforeEach(function () {
+    beforeEach(() => {
+      agency1Id = Random.id();
+      requesterId = Random.id();
+      agency2Id = Random.id();
+      userId = Random.id();
+
       testVisit = {
         notes: 'test visit',
-        requestedDate: tomorrow,
+        requestedDate: getTomorrowDate(),
         createdAt: new Date(),
-        agencyId: agencyId,
+        agencyId: agency1Id,
         requesterId: requesterId,
         location: {
           address: "Boston",
@@ -467,10 +477,7 @@ if (Meteor.isServer) {
           }
         }
       };
-    })
-
-    beforeEach(() => {
-      insertTestVisits();
+      insertTestVisits(requesterId, agency1Id, agency2Id, userId);
     });
 
     afterEach(function () {
@@ -494,7 +501,7 @@ if (Meteor.isServer) {
       var notesFromVisits = visitCursor.map(function (visit) {
         return visit.notes
       });
-      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agencyId, 'future scheduled visit for agency: ' + agencyId, 'future unscheduled visit for agency: ' + agency2Id]);
+      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'future scheduled visit for agency: ' + agency1Id, 'future unscheduled visit for agency: ' + agency2Id]);
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
@@ -506,20 +513,32 @@ if (Meteor.isServer) {
       var notesFromVisits = visitCursor.map(function (visit) {
         return visit.notes
       });
-      assert.sameMembers(notesFromVisits, ['1. test visit agency1', '4. scheduled visit agency1', '5. test visit agency2']);
+      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'future scheduled visit for agency: ' + agency1Id, 'future unscheduled visit for agency: ' + agency2Id]);
       assert.equal(visitCursor.count(), 3, notesFromVisits);
-    });  });
+    });
+  });
 
   describe('visits Publication', () => {
     var findOneUserStub;
     var testVisit;
 
-    beforeEach(function () {
+    const publication = Meteor.server.publish_handlers["visits"];
+
+    var agency1Id;
+    var requesterId;
+    var agency2Id;
+    var userId;
+
+    beforeEach(() => {
+      agency1Id = Random.id();
+      requesterId = Random.id();
+      agency2Id = Random.id();
+      userId = Random.id();
       testVisit = {
         notes: 'test visit',
-        requestedDate: tomorrow,
+        requestedDate: getTomorrowDate(),
         createdAt: new Date(),
-        agencyId: agencyId,
+        agencyId: agency1Id,
         requesterId: requesterId,
         location: {
           address: "Boston",
@@ -530,17 +549,12 @@ if (Meteor.isServer) {
           }
         }
       };
-    });
-
-    const publication = Meteor.server.publish_handlers["visits"];
-
-    beforeEach(() => {
-      insertTestVisits();
+      insertTestVisits(requesterId, agency1Id, agency2Id, userId);
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
       findOneUserStub.returns({
         username: 'Harry',
         userData: {
-          agencyIds: [agencyId]
+          agencyIds: [agency1Id]
         }
       });
     });
@@ -559,7 +573,7 @@ if (Meteor.isServer) {
         return visit.notes
       });
       assert.equal(visitCursor.count(), 2, notesFromVisits);
-      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agencyId, 'future scheduled visit for agency: ' + agencyId]);
+      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'future scheduled visit for agency: ' + agency1Id]);
     });
 
     it('visitor gets unscheduled future visit requests and self-scheduled in future or without visitor feedback', () => {
@@ -568,10 +582,31 @@ if (Meteor.isServer) {
       var notesFromVisits = visitCursor.map(function (visit) {
         return visit.notes
       });
-      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agencyId, 'past visit with requester feedback for agency: ' + agencyId, 'future scheduled visit for agency: ' + agencyId]);
+      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'past visit with requester feedback for agency: ' + agency1Id, 'future scheduled visit for agency: ' + agency1Id]);
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
+  });
+  describe('formattedVisitTime ', () => {
+    var findOnAgencyStub;
+    beforeEach(() => {
+      findOneAgencyStub = sinon.stub(Agency, 'findOne');
+    });
+    afterEach(function () {
+      Agency.findOne.restore();
+    });
+
+    it('formatted visitTime with no time zone defaults to EST', () => {
+      var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
+      var visit = {visitTime: dateAt330pmUTC};
+      assert.equal(formattedVisitTime(visit), "Sat., Oct. 1, 11:30");
+    });
+    it('formatted visitTime with agency time zone = PST', () => {
+      findOneAgencyStub.returns({timeZone: 'America/Los_Angeles'})
+      var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
+      var visit = {visitTime: dateAt330pmUTC};
+      assert.equal(formattedVisitTime(visit), "Sat., Oct. 1, 8:30");
+    });
   });
 
   function createTestVisit(visit) {
@@ -590,30 +625,8 @@ if (Meteor.isServer) {
     return yesterday;
   }
 
-  describe( 'formattedVisitTime ', () => {
-    var findOnAgencyStub;
-    beforeEach(() => {
-      findOneAgencyStub = sinon.stub(Agency, 'findOne');
-    });
-    afterEach(function () {
-      Agency.findOne.restore();
-    });
 
-    it('formatted visitTime with no time zone defaults to EST', () => {
-      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
-      var visit = { visitTime: dateAt330pmUTC };
-      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 11:30");
-    });
-    it('formatted visitTime with agency time zone = PST', () => {
-      findOneAgencyStub.returns( {timeZone: 'America/Los_Angeles'})
-      var dateAt330pmUTC = Date.UTC(2016,9,1,15,30,0,0);
-      var visit = { visitTime: dateAt330pmUTC };
-      assert.equal(formattedVisitTime(visit),  "Sat., Oct. 1, 8:30");
-    });
-  });
-
-
-  function insertTestVisits() {
+  function insertTestVisits(requesterId, agencyId, agency2Id, userId) {
     createTestVisit(TestVisits.createFutureBostonNonScheduledVisit(requesterId, agencyId));
     createTestVisit(TestVisits.createPastBostonNonScheduledVisit(requesterId, agencyId));
     createTestVisit(TestVisits.createPastBostonVisitRequesterFeedback(requesterId, agencyId, userId));

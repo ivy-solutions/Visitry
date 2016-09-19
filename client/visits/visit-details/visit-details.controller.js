@@ -41,7 +41,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.canCallVisitor = function() {
     var visitor = this.getVisitor();
-    return this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber != null;
+    return true//this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber != null;
   };
 
   this.getRequester = function () {
@@ -100,6 +100,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
         handleError(result);
       }, phoneNumber, true);
     }
+  };
+
+  this.getTimeSinceRequested = function(requestedTime){
+    return moment(requestedTime).fromNow();
   };
 
   function handleError(err) {
