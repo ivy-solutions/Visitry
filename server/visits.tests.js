@@ -505,17 +505,6 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
-    it("admin sees another user's visit requests", () => {
-      const invocation = {userId: userId};
-      const cursors = publication.apply(invocation, [requesterId]);
-      const visitCursor = cursors[0];
-      var visit = visitCursor.fetch()[0];
-      var notesFromVisits = visitCursor.map(function (visit) {
-        return visit.notes
-      });
-      assert.sameMembers(notesFromVisits, ['future unscheduled visit for agency: ' + agency1Id, 'future scheduled visit for agency: ' + agency1Id, 'future unscheduled visit for agency: ' + agency2Id]);
-      assert.equal(visitCursor.count(), 3, notesFromVisits);
-    });
   });
 
   describe('visits Publication', () => {

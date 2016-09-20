@@ -4,7 +4,7 @@ import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
-  if (this.userId) {
+  if (this.userId && Roles.userIsInRole(this.userId, 'visitor')) {
     logger.verbose("publish visits to " + this.userId);
     var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
     var today = new Date();
@@ -28,8 +28,8 @@ Meteor.publish("visits", function (options) {
 });
 
 Meteor.publish("userRequests", function (userId) {
-  logger.verbose("publish userRequests to " + userId);
-  if (this.userId) {
+  if (this.userId && this.userId === userId) { //for now, only a requester can look at their own requests
+    logger.verbose("publish userRequests of " + userId + " to " + this.userId );
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     //active requests requested by me for a future date, or for a past date and needing my feedback
@@ -52,7 +52,7 @@ Meteor.publish("userRequests", function (userId) {
 });
 
 Meteor.publish("availableVisits", function () {
-  if (this.userId) {
+  if (this.userId && Roles.userIsInRole(this.userId, 'visitor')) {
     logger.verbose("publish availableVisits to " + this.userId);
     const defaultVisitRange = 3000;
     const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston

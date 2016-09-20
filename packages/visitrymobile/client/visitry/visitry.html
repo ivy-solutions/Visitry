@@ -1,30 +1,36 @@
 <ion-side-menus enable-menu-with-back-views="true">
-  <!-- Left menu -->
-  <ion-side-menu side="left" ng-show="visitry.isLoggedIn">
-    <ion-header-bar class="bar-dark">
-    </ion-header-bar>
-    <ion-content>
-      <ion-list>
-        <!-- Note each link has the 'menu-close' attribute so the menu auto closes when clicking on one of these links -->
-        <ion-item href="/profile" menu-close>Profile</ion-item>
-        <ion-item href="/visitor/browseRequests" menu-close>As Visitor</ion-item>
-        <ion-item href="/requester/pendingVisits" menu-close>As Requester</ion-item>
-        <ion-item class="item" ng-click="visitry.logout()" menu-close>Sign out</ion-item>
-      </ion-list>
-    </ion-content>
-  </ion-side-menu>
   <ion-side-menu-content>
     <ion-nav-bar class="bar-balanced" align-title="center">
       <ion-nav-back-button>
       </ion-nav-back-button>
 
-      <ion-nav-buttons side="left">
-        <button menu-toggle="left" class="button button-clear button-icon ion-navicon" ng-if="visitry.isLoggedIn">
-        </button>
-      </ion-nav-buttons>
     </ion-nav-bar>
     <ion-nav-view></ion-nav-view>
   </ion-side-menu-content>
 
 </ion-side-menus>
 
+<ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}"
+          delegate-handle="visitorTabs" ng-show="visitry.isVisitor">
+    <ion-tab title="CHOOSE" ng-attr-icon="{{platform != 'android' ? 'ion-leaf' : undefined}}" href="/visitor/browseRequests">
+    </ion-tab>
+    <ion-tab title="SCHEDULED" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-calendar' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-calendar-outline' : undefined}}" href="/visitor/upcoming" on-deselect="visitry.prevTab()">
+    </ion-tab>
+    <ion-tab title="FEEDBACK" badge="visitry.feedbackOutstanding" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-star' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-star-outline' : undefined}}" badge-style="badge-assertive"
+             href="/visitor/feedback" >
+    </ion-tab>
+    <ion-tab title="ME" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-person' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" on-select="visitry.showUserActions()" >
+    </ion-tab>
+</ion-tabs>
+<ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}"
+          delegate-handle="requesterTabs" ng-show="visitry.showRequesterTabs()">
+    <ion-tab title="REQUESTS" ng-attr-icon="{{platform != 'android' ? 'ion-leaf' : undefined}}" href="/requester/pendingVisits"
+        disabled="visitry.feedbackNeeded">
+    </ion-tab>
+    <ion-tab title="ME" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-person' : undefined}}"
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" on-select="visitry.showUserActions()">
+    </ion-tab>
+</ion-tabs>
