@@ -76,12 +76,18 @@ angular.module('visitry').directive('visitry', function () {
 
       this.feedbackNeeded = () => {
         return $ionicHistory.currentStateName() === 'requesterFeedback';
-      }
+      };
 
       this.showRequesterTabs = () => {
         return Meteor.userId() !== null &&
-            !Roles.userIsInRole( Meteor.userId(), 'visitor')
-      }
+            !Roles.userIsInRole( Meteor.userId(), 'visitor') &&
+          $ionicHistory.currentStateName() != 'profile'
+      };
+      this.showVisitorTabs = () => {
+        return Meteor.userId() !== null &&
+          Roles.userIsInRole( Meteor.userId(), 'visitor') &&
+          $ionicHistory.currentStateName() != 'profile'
+      };
 
       this.showUserActions = ( ) => {
         var profileText = "Profile";
@@ -94,6 +100,7 @@ angular.module('visitry').directive('visitry', function () {
         buttons.push( {text: notificationsText});
 
         var logout = this.logout;
+
         // Show the action sheet
         var hideSheet = $ionicActionSheet.show({
 
@@ -127,9 +134,10 @@ angular.module('visitry').directive('visitry', function () {
           buttonClicked: function(index) {
             logger.info("user actions:" + index);
             if ( buttons[index].text === profileText) {
-              $state.go('profile');
+               $state.go('profile');
             } else if (buttons[index].text === notificationsText) {
               //TODO show notifications
+              this.cancel()
             }
             return true;
           },
