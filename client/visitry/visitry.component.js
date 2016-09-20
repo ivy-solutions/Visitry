@@ -126,13 +126,12 @@ angular.module('visitry').directive('visitry', function () {
               else {
                 $ionicTabsDelegate.$getByHandle('requesterTabs').select(tabIndex.tabNum);
               }
-            } else {  //not sure where we are
+            } else {  //not sure where we were
               $ionicTabsDelegate.select(0);
             }
             return true;
           },
           buttonClicked: function(index) {
-            logger.info("user actions:" + index);
             if ( buttons[index].text === profileText) {
                $state.go('profile');
             } else if (buttons[index].text === notificationsText) {

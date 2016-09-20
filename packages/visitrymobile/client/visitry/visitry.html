@@ -22,7 +22,7 @@
              href="/visitor/feedback" >
     </ion-tab>
     <ion-tab title="ME" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-person' : undefined}}"
-             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" on-select="visitry.showUserActions()" >
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" ng-click="visitry.showUserActions()" >
     </ion-tab>
 </ion-tabs>
 <ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}"
@@ -31,6 +31,6 @@
         disabled="visitry.feedbackNeeded">
     </ion-tab>
     <ion-tab title="ME" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-person' : undefined}}"
-             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" on-select="visitry.showUserActions()">
+             ng-attr-icon-off="{{platform != 'android' ? 'ion-ios-person-outline' : undefined}}" ng-click="visitry.showUserActions()">
     </ion-tab>
 </ion-tabs>
