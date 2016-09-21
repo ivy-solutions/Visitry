@@ -7,7 +7,7 @@ import {Roles} from 'meteor/alanning:roles'
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
   $reactive(this).attach($scope);
 
-   this.helpers({
+  this.helpers({
     currentUser: () => {
       var user = Meteor.user();
       return user;
@@ -16,7 +16,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
      distance: () => {
-       if (Meteor.user() && Meteor.user().userData.visitRange) {
+       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
          logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
          return Meteor.user().userData.visitRange.toString();
        }
@@ -25,7 +25,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location"
-  this.subscribe('userProfile');
+  var subscription = this.subscribe('userProfile');
 
   this.locationDetails;
 
@@ -65,15 +65,23 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
       //userData
       this.currentUser.userData.visitRange = parseInt(this.distance, 10);
-      logger.info("profile.submitUpdate user: " + JSON.stringify(this.currentUser.userData));
       Meteor.call('updateUserData', this.currentUser.userData, (err) => {
         if (err) {
           return handleError(err);
-        } else {
-          return this.submitSuccess(form);
         }
       });
+
+      this.updateUserEmail();
+      return this.submitSuccess(form);
     }
+  };
+
+  this.updateUserEmail = () => {
+     Meteor.call('updateUserEmail', this.currentUser.emails[0].address, (err) => {
+      if (err) {
+        return handleError(err);
+      }
+    });
   };
 
   this.submitSuccess = function (form) {
@@ -143,6 +151,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');
     angular.element(container).remove();
+    subscription.stop();
   };
 
 });

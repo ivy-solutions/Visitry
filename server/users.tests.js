@@ -159,5 +159,50 @@ if (Meteor.isServer) {
       });
 
     });
+    describe('users.updateUserEmail method', () => {
+      var anotherTestUserId;
+      beforeEach(() => {
+        var user = Meteor.users.findOne({username: 'anotherTestUser'});
+        if (!user) {
+          anotherTestUserId = Accounts.createUser({
+            username: 'anotherTestUser',
+            password: 'Visitry99',
+            role:"requester",
+            emails: [{address: "oldemail@somplace.com", verified: false}]
+          });
+        } else {
+          anotherTestUserId = user._id;
+        }
+      });
+      afterEach(() => {
+        Meteor.users.remove(anotherTestUserId, function(err) { if (err) console.log(err); });
+      });
+
+      const updateEmailHandler = Meteor.server.method_handlers['updateUserEmail'];
+
+      it('succeeds when email passed', () => {
+        const invocation = {userId: testUserId};
+        updateEmailHandler.apply(invocation, ["abc@someplace.com"]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.emails[0].address, "abc@someplace.com");
+      });
+
+      it('succeeds when user has an email already', () => {
+        const invocation = {userId: anotherTestUserId};
+        updateEmailHandler.apply(invocation, ["newEmail@someplace.com"]);
+        var updatedUser = Meteor.users.findOne({_id: anotherTestUserId});
+        assert.equal(updatedUser.emails[0].address, "newEmail@someplace.com");
+      });
+      it('fails when user is not logged in', () => {
+        const invocation = {userId: null};
+        try {
+          updateEmailHandler.apply(invocation, ["newEmail@someplace.com"]);
+          fail("expected exception");
+        } catch (ex) {
+          assert.equal( ex.error, 'not-logged-in')
+        }
+      });
+    });
+
   });
 }

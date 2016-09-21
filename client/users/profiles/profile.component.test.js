@@ -54,6 +54,7 @@ describe ( 'Profile', function() {
     user = {
       userName: "userName",
       roles: ["visitor"],
+      emails: [{address: 'abc@someplace.com', verified:false}],
       userData: {
         firstName: "first",
         lastName: "last",
@@ -85,6 +86,7 @@ describe ( 'Profile', function() {
       controller.phoneNumber = "(800) 555-1212";
       controller.submitUpdate(form);
       chai.assert.isTrue(Meteor.call.calledWith('updateUserData'),"updateUserData called");
+      chai.assert.isTrue(Meteor.call.calledWith('updateUserEmail'),"updateUserData called");
     });
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;

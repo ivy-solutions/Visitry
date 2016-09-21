@@ -24,7 +24,7 @@ Meteor.publish("userProfile", function () {
   if (this.userId) {
     logger.verbose("publish userProfile to " + this.userId);
     return User.find({_id: this.userId},
-      {fields: {username: 1, roles: 1, 'userData': 1}});
+      {fields: {username: 1, emails: 1, roles: 1, 'userData': 1}});
   } else {
     this.ready();
   }
@@ -158,6 +158,7 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user data.');
     }
+
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
@@ -186,6 +187,26 @@ Meteor.methods({
       }
     });
     logger.info("updatePicture for userId: " + this.userId);
+  },
+  updateUserEmail(email) {
+    if (!this.userId) {
+      logger.error("updateUserEmail - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update user email.');
+    }
+    var currentUser = Meteor.users.findOne(this.userId, {emails:1});
+    var currentEmails = currentUser.emails;
+    logger.info( "currentEmails" + JSON.stringify(currentUser));
+    if ( currentEmails != null  ) {
+      logger.info("removeEmail for userId: " + this.userId );
+      Accounts.removeEmail(currentUser._id, currentUser.emails[0].address)
+    }
+    if (email) {
+      logger.info("addEmail for userId: " + this.userId + " email:" + email);
+      Accounts.addEmail(currentUser._id, email);
+      //Accounts.sendVerificationEmail(currentUser._id);
+    }
+    logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   }
 });
 
@@ -193,7 +214,7 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: ""}
+    user.userData = {firstName: "", lastName: "", visitRange:1}
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
