@@ -3,7 +3,7 @@
 */
 <ion-view view-title="Visit Request">
     <ion-content padding="true" scroll="true">
-      <div ng-if="visitDetails.isRequester()"
+      <div ng-if="!visitDetails.isVisitor()"
            ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-requester.html'">
       </div>
       <div ng-if="visitDetails.isVisitor()"

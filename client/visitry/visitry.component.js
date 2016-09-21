@@ -45,14 +45,15 @@ angular.module('visitry').directive('visitry', function () {
         isLoggedIn: ()=> {
           logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
           return Meteor.userId() !== null;
-        },
-        isRequester: ()=> {
-          return Meteor.userId !==null  && Roles.userIsInRole(Meteor.userId(), 'requester')
-        },
-        isVisitor: ()=> {
-          return Meteor.userId !==null && Roles.userIsInRole(Meteor.userId(), 'visitor')
         }
       });
+
+      this.isRequester = ()=> {
+        return Roles.userIsInRole(Meteor.userId(), 'requester')
+      };
+      this.isVisitor = ()=> {
+        return Roles.userIsInRole(Meteor.userId(), 'visitor')
+      };
 
       this.logout = () => {
         logger.info('visitry.logout userId: ' + Meteor.userId());
@@ -76,17 +77,6 @@ angular.module('visitry').directive('visitry', function () {
 
       this.feedbackNeeded = () => {
         return $ionicHistory.currentStateName() === 'requesterFeedback';
-      };
-
-      this.showRequesterTabs = () => {
-        return Meteor.userId() !== null &&
-            !Roles.userIsInRole( Meteor.userId(), 'visitor') &&
-          $ionicHistory.currentStateName() != 'profile'
-      };
-      this.showVisitorTabs = () => {
-        return Meteor.userId() !== null &&
-          Roles.userIsInRole( Meteor.userId(), 'visitor') &&
-          $ionicHistory.currentStateName() != 'profile'
       };
 
       this.showUserActions = ( ) => {
