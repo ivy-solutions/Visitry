@@ -25,7 +25,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";
-  this.subscribe('userProfile');
 
   this.locationDetails;
 
@@ -72,26 +71,40 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       });
 
       if (form.email.$touched) {
-        this.updateUserEmail();
+        Meteor.call('updateUserEmail', this.currentUser.emails[0].address, (err) => {
+          if (err) {
+            return handleError(err);
+          }
+        });
       }
 
       //clear form
       this.resetForm(form);
-      $ionicHistory.goBack();
+      return this.submitSuccess(form);
     }
   };
 
-  this.updateUserEmail = () => {
-     Meteor.call('updateUserEmail', this.currentUser.emails[0].address, (err) => {
-      if (err) {
-        return handleError(err);
+
+  this.submitSuccess = function (form) {
+    //clear form
+    this.resetForm(form);
+
+    if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
+      $ionicHistory.goBack();
+    } else {
+       if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+        $state.go('browseRequests');
+      } else {
+        $state.go('pendingVisits');
       }
-    });
+    }
   };
+
+
 
   this.disableTap = function () {
     // disable ionic data tap - for the google added elements
-    container = document.getElementsByClassName('pac-container');
+    container = document.getElementsByClassName('pac-container')[0];
     angular.element(container).attr('data-tap-disabled', 'true');
 
     // leave input field if google-address-entry is selected

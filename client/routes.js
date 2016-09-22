@@ -137,7 +137,19 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/users/profile.html';
           }
         },
-        controller: 'profileCtrl as profile'
+        controller: 'profileCtrl as profile',
+        resolve: {
+          userprofile: ['$q', ($q) => {
+            var deferred = $q.defer();
+
+            const profile = Meteor.subscribe('userProfile', {
+              onReady: deferred.resolve,
+              onStop: deferred.reject
+            });
+
+            return deferred.promise;
+          }]
+        }
       })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',

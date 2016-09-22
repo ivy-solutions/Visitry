@@ -27,14 +27,19 @@ angular.module("visitry.mobile").directive('register', function() {
             }
             else {
               var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
-              Meteor.call('updatePicture', avatarWithInitials);
-              Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
+              Meteor.call('updatePicture', avatarWithInitials,(err) => {
                 if (err) {
-                  return handleError(err)
+                  return handleError(err);
                 }
-                this.resetForm(form);
-                $state.go('profile');
-
+                else {
+                  Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
+                    if (err) {
+                      return handleError(err)
+                    }
+                    this.resetForm(form);
+                    $state.go('profile');
+                  });
+                }
               });
             }
           })

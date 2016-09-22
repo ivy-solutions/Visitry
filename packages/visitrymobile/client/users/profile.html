@@ -49,7 +49,7 @@
                     <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
                 </div>
                 <label class="item item-input">
-                    <input type="email" name="email" ng-model="profile.currentUser.emails[0].address"
+                    <input type="email" name="email" id="email" ng-model="profile.currentUser.emails[0].address"
                            placeholder="Email address" required>
                     </input>
                 </label>

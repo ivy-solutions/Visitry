@@ -5,7 +5,6 @@ angular.module('visitry').directive('hideTabs', function($rootScope, $ionicTabsD
   return {
     restrict: 'A',
     link: function($scope, $el) {
-      var isVisitor = Roles.userIsInRole(Meteor.userId(), 'visitor');
       $scope.$on("$ionicView.beforeEnter", function () {
         $ionicTabsDelegate.$getByHandle('visitorTabs').showBar(false)
         $ionicTabsDelegate.$getByHandle('requesterTabs').showBar(false)
@@ -15,7 +14,7 @@ angular.module('visitry').directive('hideTabs', function($rootScope, $ionicTabsD
         if ( isVisitor)
           $ionicTabsDelegate.$getByHandle('visitorTabs').showBar(true);
         else
-          $ionicTabsDelegate.$getByHandle('requesterTabs').showBar(true)
+          $ionicTabsDelegate.$getByHandle('requesterTabs').showBar(Meteor.userId()!=null)
       });
     }
   };
