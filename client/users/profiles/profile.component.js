@@ -24,8 +24,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
      }
   });
 
-  this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location"
-  var subscription = this.subscribe('userProfile');
+  this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";
+  this.subscribe('userProfile');
 
   this.locationDetails;
 
@@ -151,7 +151,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');
     angular.element(container).remove();
-    subscription.stop();
   };
 
 });
