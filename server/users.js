@@ -108,22 +108,6 @@ Meteor.methods({
     });
     logger.info("updateName for userId: " + this.userId);
   },
-  //TODO not used
-  updateEmail(email)
-  {
-    if (!this.userId) {
-      logger.error("updateEmail - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update email.');
-    }
-    logger.info("updateEmail for userId: " + this.userId);
-
-    if (email && Meteor.user().emails) {
-      Accounts.removeEmail(this.userId, Meteor.user().emails[0].addresss);
-    }
-
-    return Accounts.addEmail(this.userId, email);
-  },
   updateLocation(loc) {
     if (!this.userId) {
       logger.error("updateLocation - user not logged in");
@@ -163,6 +147,7 @@ Meteor.methods({
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
     currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number of there is none
+    currentUser.userData.locationInfo = data.locationInfo;
     Roles.addUsersToRoles(currentUser, [data.role]);
     currentUser.save(function (err, id) {
       if (err) {

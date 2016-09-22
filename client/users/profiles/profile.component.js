@@ -71,7 +71,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         }
       });
 
-      this.updateUserEmail();
+      if (form.email.$touched) {
+        this.updateUserEmail();
+      }
+
       //clear form
       this.resetForm(form);
       $ionicHistory.goBack();

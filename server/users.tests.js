@@ -98,12 +98,18 @@ if (Meteor.isServer) {
 
       it('succeeds when valid fields passed', () => {
         const invocation = {userId: testUserId};
-        updateUserDataHandler.apply(invocation, [{role:"visitor", visitRange:20, about:"I raise chickens", phoneNumber:"(800)555-1212"}]);
+        updateUserDataHandler.apply(invocation, [
+          {role:"visitor",
+            visitRange:20,
+            about:"I raise chickens",
+            phoneNumber:"(800)555-1212",
+            locationInfo: "Apt.3B"}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.isTrue(Roles.userIsInRole(updatedUser, "visitor"), "role should be visitor");
         assert.equal(updatedUser.userData.visitRange, 20);
         assert.equal(updatedUser.userData.about, "I raise chickens");
         assert.equal(updatedUser.userData.phoneNumber, "(800)555-1212");
+        assert.equal(updatedUser.userData.locationInfo, "Apt.3B");
       });
 
       it('fails when user is not logged in', () => {
