@@ -124,33 +124,6 @@ describe ( 'Profile', function() {
     });
   });
 
-  describe( 'submitSuccess', function() {
-    var rolesStub;
-    beforeEach(function () {
-      rolesStub = sinon.stub(Roles, 'userIsInRole');
-    });
-    afterEach(function () {
-      rolesStub.restore();
-    });
-
-    it('visitor goes to browseRequests', function() {
-      meteorStub.returns(); //no error
-      rolesStub.returns( true );
-      user.roles = ['visitor'];
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('browseRequests').calledOnce)
-    });
-    it('requester goes to pendingVisits', function() {
-      user.roles = ['requester'];
-      rolesStub.returns( false );
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
-    });
-
-  });
-
   describe('isLocationValid', function() {
     it( 'true when user has selected a location', function(){
       controller.currentUser = user;

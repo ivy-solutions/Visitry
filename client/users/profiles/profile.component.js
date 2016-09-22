@@ -4,7 +4,7 @@
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$log,$ionicLoading) {
+angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
 
   this.helpers({
@@ -72,7 +72,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       });
 
       this.updateUserEmail();
-      return this.submitSuccess(form);
+      //clear form
+      this.resetForm(form);
+      $ionicHistory.goBack();
     }
   };
 
@@ -83,18 +85,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       }
     });
   };
-
-  this.submitSuccess = function (form) {
-    //clear form
-    this.resetForm(form);
-
-    if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
-      $state.go('browseRequests');
-    } else {
-      $state.go('pendingVisits');
-    }
-  };
-
 
   this.disableTap = function () {
     // disable ionic data tap - for the google added elements
