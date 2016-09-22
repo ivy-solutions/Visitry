@@ -70,7 +70,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         }
       });
 
-      if (form.email.$touched) {
+      if (form.email.$pristine!=true) {
         Meteor.call('updateUserEmail', this.currentUser.emails[0].address, (err) => {
           if (err) {
             return handleError(err);
@@ -78,8 +78,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         });
       }
 
-      //clear form
-      this.resetForm(form);
       return this.submitSuccess(form);
     }
   };
@@ -89,6 +87,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     //clear form
     this.resetForm(form);
 
+    logger.info($ionicHistory.backTitle());
     if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
       $ionicHistory.goBack();
     } else {

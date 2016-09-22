@@ -6,7 +6,7 @@ angular.module("visitry.mobile").directive('register', function() {
     restrict: 'E',
     templateUrl: '/packages/visitrymobile/client/auth/register/register.html',
     controllerAs: 'register',
-    controller: function ($scope, $reactive, $state, $ionicPopup ) {
+    controller: function ($scope, $reactive, $state, $ionicPopup, $ionicHistory ) {
       $reactive(this).attach($scope);
 
       this.credentials = {
@@ -52,6 +52,9 @@ angular.module("visitry.mobile").directive('register', function() {
       };
 
       this.resetForm= function(form) {
+        $ionicHistory.nextViewOptions({
+          disableBack: true
+        });
         form.$setUntouched();
         form.$setPristine();
         this.credentials.userData.firstName = '';
