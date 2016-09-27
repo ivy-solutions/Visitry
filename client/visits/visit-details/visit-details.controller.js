@@ -25,27 +25,24 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   ////////
 
   this.isVisitor = function() {
-    if (this.visit && this.visit.visitorId && (Meteor.userId() == this.visit.visitorId)) {
-      return true;
-    }
-    return false;
+    return Roles.userIsInRole(Meteor.userId(), ['visitor']);
   };
 
   this.isRequester = function() {
-    return this.visit && (Meteor.userId() == this.visit.requesterId)
+    return Roles.userIsInRole(Meteor.userId(),['requester']);
   };
 
   this.canCallRequester = function() {
-    return !this.isRequester() && this.requester.userData && this.requester.userData.phoneNumber != null;
+    return (this.isVisitor() && this.requester.userData && this.requester.userData.phoneNumber)?true:false;
   };
 
   this.canCallVisitor = function() {
     var visitor = this.getVisitor();
-    return this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber != null;
+    return (this.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber)?true:false;
   };
 
   this.getRequester = function () {
-    if ( this.visit == undefined ) {
+    if ( this.visit === undefined ) {
       return null;
     }
     if ( this.requester ) {
@@ -77,10 +74,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       }
     }
     return "";
-  };
-
-  this.hasAboutInfo = (user) => {
-    return user && user.userData && user.userData.about != null && user.userData.about.length > 0;
   };
 
   this.userAboutInfo = (user) => {

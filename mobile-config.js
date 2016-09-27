@@ -60,7 +60,7 @@ App.accessRule('*.googleapis.com/*');
 App.accessRule('*.gstatic.com/*');
 App.accessRule('*.visitry.org', {
  'minimum-tls-version': 'TLSv1.0',
- 'requires-forward-secrecy': false,
+ 'requires-forward-secrecy': false
 });
 App.accessRule('data:*', { type: 'navigation' });
 App.accessRule('tel:*',{type:'intent'});

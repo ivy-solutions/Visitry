@@ -6,7 +6,7 @@ angular.module('visitry').directive('hideTabs', function($rootScope, $ionicTabsD
     restrict: 'A',
     link: function($scope, $el) {
       $scope.$on("$ionicView.beforeEnter", function () {
-        $ionicTabsDelegate.$getByHandle('visitorTabs').showBar(false)
+        $ionicTabsDelegate.$getByHandle('visitorTabs').showBar(false);
         $ionicTabsDelegate.$getByHandle('requesterTabs').showBar(false)
       });
       $scope.$on("$ionicView.beforeLeave", function () {

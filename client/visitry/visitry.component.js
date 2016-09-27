@@ -48,6 +48,12 @@ angular.module('visitry').directive('visitry', function () {
         }
       });
 
+      this.isTabsAllowedInState=()=>{
+        let currentState= $state.current.name;
+        let hideTabStates = ['visitDetails'];
+        return !hideTabStates.includes(currentState);
+      };
+
       this.isRequester = ()=> {
         return Roles.userIsInRole(Meteor.userId(), 'requester')
       };

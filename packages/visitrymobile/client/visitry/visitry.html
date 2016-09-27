@@ -11,7 +11,7 @@
 </ion-side-menus>
 
 <ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}"
-          delegate-handle="visitorTabs" ng-show="visitry.isVisitor()">
+          delegate-handle="visitorTabs" ng-show="visitry.isVisitor()&&visitry.isTabsAllowedInState()">
     <ion-tab title="CHOOSE" ng-attr-icon="{{platform != 'android' ? 'ion-leaf' : undefined}}" href="/visitor/browseRequests">
     </ion-tab>
     <ion-tab title="SCHEDULED" ng-attr-icon-on="{{platform != 'android' ? 'ion-ios-calendar' : undefined}}"
@@ -29,7 +29,7 @@
     </ion-tab>
 </ion-tabs>
 <ion-tabs class="tabs-balanced" ng-class="{'tabs-color-dark': platform == 'android', 'tabs-icon-top': platform!='android'}"
-          delegate-handle="requesterTabs" ng-hide="visitry.isVisitor()">
+          delegate-handle="requesterTabs" ng-hide="visitry.isVisitor()&&!visitry.isTabsAllowedInState()">
     <ion-tab title="REQUESTS" ng-attr-icon="{{platform != 'android' ? 'ion-leaf' : undefined}}" href="/requester/pendingVisits"
              disabled="visitry.feedbackNeeded()">
     </ion-tab>
