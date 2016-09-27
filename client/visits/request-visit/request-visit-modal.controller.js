@@ -13,6 +13,10 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     time: 0,
     notes: ''
   };
+  this.autoCompleteOptions = {
+    watchEnter: true,
+    country: 'us'
+  };
 
   this.userSubmitted = false;
   var currentUser;
@@ -53,21 +57,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     }
   };
 
-  this.disableTap = function () {
-    //disable ionic data tap on elements that google adds
-    container = document.getElementsByClassName('pac-container');
-    logger.verbose( "disbaleTap:" + container.length);
-    var locationInput = document.getElementById('locationInput');
-    angular.element(container).attr('data-tap-disabled', 'true');
-    // leave input field if google-address-entry is selected
-     angular.element(container).on("click", function () {
-       locationInput.blur();
-     });
-    var clickblock = document.getElementsByClassName('click-block');
-    angular.element(clickblock).attr('data-tap-disabled', 'true');
-  };
-
-
   this.submit = function () {
     this.userSubmitted = true;
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
@@ -78,7 +67,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       //location from selection or from user default
       if ( this.visitRequest.location.details.geometry ) {
         newVisit.location = {
-          address: this.visitRequest.location.name,
+          address: this.visitRequest.location.details.name + ", " + this.visitRequest.location.details.vicinity,
           formattedAddress: this.visitRequest.location.details.formatted_address,
           geo: {
             type: "Point",
@@ -102,7 +91,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 
   function hideRequestVisitModal() {
     //remove the blocks google added
-    container = document.getElementsByClassName('pac-container');
+    var container = document.getElementsByClassName('pac-container');
     angular.element(container).remove();
     RequestVisit.hideModal();
   }

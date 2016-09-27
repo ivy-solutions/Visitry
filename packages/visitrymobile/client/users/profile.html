@@ -18,9 +18,9 @@
              <ion-list>
                 <label class="item item-input">
                     <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="location" id="location" ng-google-places-autocomplete
-                           ng-model="profile.currentUser.userData.location.address"
-                           details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
+                    <input type="text" name="location" id="locationInput" google-places-autocomplete-hack
+                           ng-model="profile.location.address"
+                           details="profile.location.details" disable-tap
                            placeholder="{{profile.locationPlaceholder}}"/>
                 </label>
                 <div layout="row">

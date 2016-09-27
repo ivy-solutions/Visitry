@@ -92,7 +92,7 @@ describe ( 'Profile', function() {
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;
       form.location.$touched = true;
-      controller.locationDetails = {
+      controller.location.details = {
         name: "Boston",
         geometry: {
           location: {
@@ -147,13 +147,13 @@ describe ( 'Profile', function() {
     });
     it ( 'false when location details is blank but location has text', function() {
       controller.currentUser = user;
-      controller.locationDetails = null;
-      user.userData.location.address = "text";
+      controller.location.details = null;
+      controller.location.address = "text";
       chai.assert.isFalse(controller.isLocationValid());
     });
-    it ( 'false when location details is blank but location has text', function() {
+    it ( 'true when location details is filled in but location is empty', function() {
       controller.currentUser = user;
-      controller.locationDetails = {
+      controller.location.details = {
         name: "Boston",
         geometry: {
           location: {
@@ -165,8 +165,8 @@ describe ( 'Profile', function() {
           }
         }
       };
-      user.userData.location.address = "";
-      chai.assert.isFalse(controller.isLocationValid());
+      controller.location.address = "";
+      chai.assert.isTrue(controller.isLocationValid());
     });
   });
 });
