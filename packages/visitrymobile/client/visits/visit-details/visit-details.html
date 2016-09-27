@@ -2,56 +2,29 @@
 * Created by sarahcoletti on 3/2/16.
 */
 <ion-view view-title="Visit Request">
-    <ion-content padding="true" scroll="true">
-      <div ng-if="visitDetails.isRequester()"
-           ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-requester.html'">
-      </div>
-      <div ng-if="visitDetails.isVisitor()"
-           ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-visitor.html'">
-      </div>
+  <ion-content padding="true" scroll="true" class="has-footer">
+    <div ng-if="visitDetails.isRequester()"
+         ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-requester.html'">
+    </div>
+    <div ng-if="visitDetails.isVisitor()"
+         ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-visitor.html'">
+    </div>
 
-      <!--    <ion-item class="item-text-wrap">
-            <h2>
-              <div class="time">
-                {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) :
-                (visitDetails.visit.requestedDate | timeOfDay) }}
-              </div>
-            </h2>
-            <h3>
-              <p>{{(visitDetails.visit.visitorId || visitDetails.isRequester()) ? (visitDetails.visit.location.address) :
-                "Near: " + (visitDetails.visit.location | approximateLocation)}}</p>
-            </h3>
-          </ion-item>
-          <ion-list>
-            <ion-item class="item-avatar item-text-wrap">
-              <img ng-src="{{visitDetails.getRequesterImage()}}"/>
-              <h2>
-                <a class="dark button-icon ion-ios-telephone"
-                   ng-click="visitDetails.dialCompanion(visitDetails.getRequester())"
-                   ng-show="visitDetails.canCallRequester()"> Call </a>
-                {{visitDetails.getRequester() | firstNameLastInitial}}
-              </h2>
-              <p>{{visitDetails.visit.notes}}</p>
-            </ion-item>
-            <ion-item ng-show="!visitDetails.isRequester() && visitDetails.hasAboutInfo(visitDetails.getRequester())"
-                      class="item-text-wrap">
-              About {{visitDetails.getRequester() | firstNameLastInitial}}:
-              <p>{{visitDetails.userAboutInfo(visitDetails.getRequester())}}</p>
-            </ion-item>
-            <ion-item ng-show="visitDetails.visit.visitTime" class="item-avatar item-text-wrap">
-              <img ng-src="{{visitDetails.getVisitorImage()}}"/>
-              <h2>
-                <a class="dark button-icon ion-ios-telephone" ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())"
-                   ng-show="visitDetails.canCallVisitor()"> Call </a>
-                {{visitDetails.getVisitor() | firstNameLastInitial}}
-              </h2>
-              <p>{{visitDetails.visit.visitorNotes}}</p>
-            </ion-item>
-            <ion-item ng-show="visitDetails.isRequester() && visitDetails.hasAboutInfo(visitDetails.getVisitor())"
-                      class="item-text-wrap">
-              About {{visitDetails.getVisitor() | firstNameLastInitial}}:
-              <p>{{visitDetails.userAboutInfo(visitDetails.getVisitor())}}</p>
-            </ion-item>
-          </ion-list>-->
-    </ion-content>
+  </ion-content>
+  <div class="bar bar-footer invisible-footer" layout-padding>
+    <button class="button button-block button-balanced"
+            ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())" ng-if="visitDetails.canCallVisitor()"
+            layout-padding><i class="ion-ios-telephone"></i> Call
+    </button>
+    <button class="button button-block button-balanced"
+            ng-click="visitDetails.dialCompanion(visitDetails.getRequester())" ng-if="visitDetails.canCallRequester()"
+            layout-padding><i class="ion-ios-telephone"></i> Call
+    </button>
+    <button class="button button-block button-balanced" ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()" layout-padding>
+      Schedule
+    </button>
+    <button class="button button-block button-assertive" ng-if="(visitDetails.visit.visitorId)" layout-padding>
+      Cancel
+    </button>
+  </div>
 </ion-view>

@@ -22,10 +22,12 @@ describe('View Visit Details', function () {
   var controller;
   var findOneStub;
   var userIdStub;
+  var userIsInRoleStub;
 
   beforeEach(function () {
     findOneStub = sinon.stub(User, 'findOne');
     userIdStub = sinon.stub(Meteor, 'userId');
+    userIsInRoleStub=sinon.stub(Roles,'userIsInRole');
     inject(function ($rootScope, $state) {
       controller = $controller('visitDetailsCtrl', {
         $scope: $rootScope.$new(true),
@@ -39,90 +41,90 @@ describe('View Visit Details', function () {
   afterEach(function () {
     User.findOne.restore();
     Meteor.userId.restore();
+    Roles.userIsInRole.restore();
   });
 
   describe( "isVisitor", function () {
-    it( "is true", function() {
-      userIdStub.returns( "someUserId")
-      controller.visit = {visitorId : "someUserId"};
+    it( "user is visitor", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       chai.assert.isTrue(controller.isVisitor() );
     });
-    it( "visitor is someone else", function() {
-      controller.visit = {visitorId : 'someOtherUser'};
-      chai.assert.isFalse(controller.isVisitor());
-    });
-    it( "no visitor", function() {
-      controller.visit = {};
+    it( "user is not visitor", function() {
+      userIdStub.returns('someUserId');
+      userIsInRoleStub.returns(false);
       chai.assert.isFalse(controller.isVisitor());
     });
   });
 
   describe( "isRequester", function () {
-    it( "is true", function() {
-      controller.visit = {requesterId : Meteor.userId()};
+    it( "user is requester", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       chai.assert.isTrue(controller.isRequester());
     });
-    it( "requester is someone else", function() {
-      controller.visit = {requesterId : 'someOtherUser'};
+    it( "user is not requester", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(false);
       chai.assert.isFalse(controller.isRequester());
     });
   });
 
   describe( "canCallRequester", function () {
-    it( "is true", function() {
+    it( "user is visitor and has a phone number" , function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       controller.requester.userData.phoneNumber = "+15551212";
       controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
       chai.assert.isTrue(controller.canCallRequester());
     });
-    it( "requester has no phone number", function() {
+    it( "user is visitor with no phone number", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
       chai.assert.isFalse(controller.canCallRequester());
     });
-    it( "visit is not yet scheduled", function() {
+    it( "user is visitor but the visit is not yet scheduled", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       controller.visit = {requesterId : 'requesterId'};
       chai.assert.isFalse(controller.canCallRequester());
     });
     it( "user is the requester", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(false);
       controller.visit = {requesterId : Meteor.userId(), visitorId: 'visitorId'};
       chai.assert.isFalse(controller.canCallRequester());
     });
   });
 
   describe( "canCallVisitor", function () {
-    it( "is true", function() {
+    it( "user is requester for the visit and has a phone number", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       findOneStub.returns({ userData: { firstName: "Victoria", picture: "Victoria's picture", phoneNumber: "+15551212"} })
       controller.visit = {requesterId : Meteor.userId(), visitorId: 'visitorId'};
       chai.assert.isTrue(controller.canCallVisitor());
     });
-    it( "visitor has no phone number", function() {
+    it( "user is the requester for the visit but does not have a phone number", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       controller.visit = {requesterId : Meteor.userId(), visitorId: 'someOtherId'};
       chai.assert.isFalse(controller.canCallVisitor());
     });
-    it( "visit is not yet scheduled", function() {
+    it( "user is the requester for the visit but the visit has not been scheduled", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(true);
       controller.visit = {requesterId : 'visitorId'};
       chai.assert.isFalse(controller.canCallVisitor());
     });
-    it( "user is the visitor", function() {
+    it( "user is a visitor", function() {
+      userIdStub.returns( "someUserId");
+      userIsInRoleStub.returns(false);
       controller.visit = {requesterId : 'requesterId', visitorId: Meteor.userId()};
       chai.assert.isFalse(controller.canCallVisitor());
     });
   });
-
-  describe( "hasAboutInfo", function () {
-    it( "user has about info", function() {
-      var userWith = {userData: {firstName: "Alfonso", about: "I enjoy mountain climbing, writing symphonies and studying Urdu."}};
-       chai.assert(controller.hasAboutInfo(userWith));
-    });
-    it( "has no about info", function() {
-      var userWithout = {userData: {firstName: "Boring"}};
-      chai.assert.isFalse(controller.hasAboutInfo(userWithout));
-    });
-    it( "has empty about info", function() {
-      var userWithout = {userData: {firstName: "Empty", about:""}};
-      chai.assert.isFalse(controller.hasAboutInfo(userWithout));
-    });
-  });
-
 
   describe( "getRequesterImage", function () {
     it( "if requester has a picture", function() {
@@ -151,6 +153,26 @@ describe('View Visit Details', function () {
       chai.assert.equal(controller.getVisitorImage(), "");
     });
   });
+
+  describe("user about info",function(){
+    var user;
+    beforeEach(function () {
+      user = {
+        userData:{
+        }
+      }
+    });
+    afterEach(function(){
+      user=null;
+    });
+    it('user has about info',function(){
+      user.userData.about = 'This is about the user';
+      chai.assert.isString(controller.userAboutInfo(user),'This is about the user');
+    });
+    it('user does not have about info',function(){
+      chai.assert.isString(controller.userAboutInfo(user),'');
+    });
+  })
 
 
 });
