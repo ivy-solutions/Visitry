@@ -1,9 +1,9 @@
-<ion-view title="Sign in" hide-back-button=true>
+<ion-view title="Sign in" hide-back-button=true hide-tabs>
     <ion-content class="padding">
         <ion-item class="card padding">
             <form name="loginForm" novalidate="" ng-submit="loginForm.$valid && login.login(loginForm)">
                 <label class="item item-input">
-                    <input type="text" name = "username" ng-model="login.credentials.username" placeholder="Username" required />
+                    <input type="text" name = "username" ng-model="login.credentials.username" placeholder="Username or email" required />
                 </label>
                 <div layout="row" ng-show="loginForm.username.$invalid && loginForm.$submitted">
                     <span flex></span>

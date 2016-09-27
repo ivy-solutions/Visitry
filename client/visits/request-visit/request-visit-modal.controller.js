@@ -31,9 +31,9 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     if ( this.userSubmitted ) {
       //user has selected a location, or has a default location that matches what is on screen
       var hasSelectedLocation = this.visitRequest.location.details.geometry != null;
-      var hasDefaultUserLocation = !(currentUser.userData.location == null);
+      var usingProfileLocation = currentUser.userData.location != null && currentUser.userData.location.address === this.visitRequest.location.name;
       return this.visitRequest.location.name.length > 0 && (
-        hasSelectedLocation || (hasDefaultUserLocation &&  this.visitRequest.location.name == currentUser.userData.location.address))
+        hasSelectedLocation || usingProfileLocation)
     } else {
       return true;
     }
@@ -56,10 +56,12 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.disableTap = function () {
     //disable ionic data tap on elements that google adds
     container = document.getElementsByClassName('pac-container');
+    logger.verbose( "disbaleTap:" + container.length);
+    var locationInput = document.getElementById('locationInput');
     angular.element(container).attr('data-tap-disabled', 'true');
     // leave input field if google-address-entry is selected
      angular.element(container).on("click", function () {
-       document.getElementById('locationInput').blur();
+       locationInput.blur();
      });
     var clickblock = document.getElementsByClassName('click-block');
     angular.element(clickblock).attr('data-tap-disabled', 'true');

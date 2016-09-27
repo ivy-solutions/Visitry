@@ -30,6 +30,7 @@ describe ( 'Profile', function() {
     form = { $valid: true,
       location : {$pristine: true, $touched: false},
       phoneNumber : {$pristine: true, $touched: false},
+      email: {$pristine: true, $touched: true},
       $setUntouched: function(){},
       $setPristine: function(){}
     };
@@ -54,6 +55,7 @@ describe ( 'Profile', function() {
     user = {
       userName: "userName",
       roles: ["visitor"],
+      emails: [{address: 'abc@someplace.com', verified:false}],
       userData: {
         firstName: "first",
         lastName: "last",
@@ -67,6 +69,7 @@ describe ( 'Profile', function() {
             }
           }
         },
+        locationInfo: "Apt.3B",
         visitRange: "20"
       }
     };
@@ -120,33 +123,6 @@ describe ( 'Profile', function() {
       controller.submitUpdate(form);
       chai.assert.isFalse(Meteor.call.calledWith('updateLocation'),"updateLocation not called");
     });
-  });
-
-  describe( 'submitSuccess', function() {
-    var rolesStub;
-    beforeEach(function () {
-      rolesStub = sinon.stub(Roles, 'userIsInRole');
-    });
-    afterEach(function () {
-      rolesStub.restore();
-    });
-
-    it('visitor goes to browseRequests', function() {
-      meteorStub.returns(); //no error
-      rolesStub.returns( true );
-      user.roles = ['visitor'];
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('browseRequests').calledOnce)
-    });
-    it('requester goes to pendingVisits', function() {
-      user.roles = ['requester'];
-      rolesStub.returns( false );
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
-    });
-
   });
 
   describe('isLocationValid', function() {
