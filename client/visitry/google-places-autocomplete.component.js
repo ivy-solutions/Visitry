@@ -62,7 +62,7 @@ angular.module("visitry")
         }
 
         scope.gPlace = new google.maps.places.Autocomplete(element[0], {});
-        if (scope.options.country) {
+        if (opts.componentRestrictions) {
           scope.gPlace.setComponentRestrictions(opts.componentRestrictions);
         }
 
@@ -111,6 +111,7 @@ angular.module("visitry")
 
 
         var listener = (scope.gPlace).addListener('place_changed', function () {
+          logger.verbose('place_changed')
           var result = scope.gPlace.getPlace();
           if (result !== undefined) {
             if (result.address_components !== undefined) {

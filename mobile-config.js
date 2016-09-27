@@ -65,4 +65,6 @@ App.accessRule('*.visitry.org', {
 App.accessRule('data:*', { type: 'navigation' });
 App.accessRule('tel:*',{type:'intent'});
 
+App.setPreference("WebAppStartupTimeout", 60000);
+App.setPreference("LoadUrlTimeoutValue", 60000);
 App.setPreference("BackupWebStorage", "local");
