@@ -15,7 +15,7 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state,$cookies,$ionicHistory) {
+    controller: function ($scope, $reactive, $state,$cookies,$ionicHistory,$ionicActionSheet, $timeout, $ionicTabsDelegate) {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
@@ -48,6 +48,13 @@ angular.module('visitry').directive('visitry', function () {
         }
       });
 
+      this.isRequester = ()=> {
+        return Roles.userIsInRole(Meteor.userId(), 'requester')
+      };
+      this.isVisitor = ()=> {
+        return Roles.userIsInRole(Meteor.userId(), 'visitor')
+      };
+
       this.logout = () => {
         logger.info('visitry.logout userId: ' + Meteor.userId());
         Meteor.logout(function (err) {
@@ -66,6 +73,72 @@ angular.module('visitry').directive('visitry', function () {
             $state.go('login',{reload: true});
           }
         });
+      };
+
+      this.feedbackNeeded = () => {
+        return $ionicHistory.currentStateName() === 'requesterFeedback';
+      };
+
+      this.showUserActions = ( ) => {
+        var profileText = "Profile";
+        var notificationsText = "Notifications";
+        var signOutText = "Sign Out";
+        var cancelText = "Cancel";
+        var titleText = "";
+        var buttons = [];
+        buttons.push( {text: profileText});
+        buttons.push( {text: notificationsText});
+
+        var logout = this.logout;
+
+        // Show the action sheet
+        var hideSheet = $ionicActionSheet.show({
+
+          buttons: buttons,
+          destructiveText: signOutText,
+          titleText: titleText,
+          cancelText: cancelText,
+          cancel: function() { //reselect the current tab
+            var tabStatesMap = [
+              {state: 'pendingVisits', tabNum: 0},
+              {state: 'requesterFeedback', tabNum: 0},
+              {state: 'browseRequests', tabNum:0},
+              {state:'upcoming', tabNum:1},
+              {state:'visitorFeedbackList', tabNum: 2}];
+            var tabIndex = tabStatesMap.find(
+              function (tabState) {
+                return (tabState.state === $ionicHistory.currentStateName());
+              }
+            );
+            if (tabIndex) {
+              if (Roles.userIsInRole( Meteor.userId(), 'visitor'))
+                $ionicTabsDelegate.$getByHandle('visitorTabs').select(tabIndex.tabNum);
+              else {
+                $ionicTabsDelegate.$getByHandle('requesterTabs').select(tabIndex.tabNum);
+              }
+            } else {  //not sure where we were
+              $ionicTabsDelegate.select(0);
+            }
+            return true;
+          },
+          buttonClicked: function(index) {
+            if ( buttons[index].text === profileText) {
+               $state.go('profile');
+            } else if (buttons[index].text === notificationsText) {
+              //TODO show notifications
+              this.cancel()
+            }
+            return true;
+          },
+          destructiveButtonClicked: function() {
+            logout();
+          }
+        });
+
+        // Hide the sheet after 15 seconds
+        $timeout(function() {
+          hideSheet();
+        }, 15000);
       };
     }
   }

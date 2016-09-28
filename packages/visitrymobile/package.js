@@ -34,6 +34,8 @@ Package.onUse(function(api) {
     'client/visits/schedule-visit/schedule-visit-modal.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
     'client/visits/visit-details/visit-details.html',
+    'client/visits/visit-details/visit-details-requester.html',
+    'client/visits/visit-details/visit-details-visitor.html',
     'client/users/profile.less',
     'client/styles/login.less',
     'client/styles/main.less',

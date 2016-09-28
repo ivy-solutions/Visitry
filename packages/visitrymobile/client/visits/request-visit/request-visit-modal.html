@@ -13,9 +13,9 @@
       <div class="list list-inset">
         <label class="item item-input">
           <i class="icon ion-location placeholder-icon"></i>
-          <input type="text" id="locationInput" ng-google-places-autocomplete
+          <input type="text" id="locationInput" ng-google-places-autocomplete-hack options="requestVisit.autoCompleteOptions"
                  ng-model="requestVisit.visitRequest.location.name"
-                 details="requestVisit.visitRequest.location.details" ng-focus="requestVisit.disableTap()" data-tap-disabled="true" />
+                 details="requestVisit.visitRequest.location.details" disable-tap/>
         </label>
         <div layout="row">
           <span flex></span>

@@ -24,7 +24,7 @@ Meteor.publish("userProfile", function () {
   if (this.userId) {
     logger.verbose("publish userProfile to " + this.userId);
     return User.find({_id: this.userId},
-      {fields: {username: 1, roles: 1, 'userData': 1}});
+      {fields: {username: 1, emails: 1, roles: 1, 'userData': 1}});
   } else {
     this.ready();
   }
@@ -108,22 +108,6 @@ Meteor.methods({
     });
     logger.info("updateName for userId: " + this.userId);
   },
-  //TODO not used
-  updateEmail(email)
-  {
-    if (!this.userId) {
-      logger.error("updateEmail - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update email.');
-    }
-    logger.info("updateEmail for userId: " + this.userId);
-
-    if (email && Meteor.user().emails) {
-      Accounts.removeEmail(this.userId, Meteor.user().emails[0].addresss);
-    }
-
-    return Accounts.addEmail(this.userId, email);
-  },
   updateLocation(loc) {
     if (!this.userId) {
       logger.error("updateLocation - user not logged in");
@@ -158,10 +142,12 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user data.');
     }
+
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
     currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number of there is none
+    currentUser.userData.locationInfo = data.locationInfo;
     Roles.addUsersToRoles(currentUser, [data.role]);
     currentUser.save(function (err, id) {
       if (err) {
@@ -186,6 +172,26 @@ Meteor.methods({
       }
     });
     logger.info("updatePicture for userId: " + this.userId);
+  },
+  updateUserEmail(email) {
+    if (!this.userId) {
+      logger.error("updateUserEmail - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update user email.');
+    }
+    var currentUser = Meteor.users.findOne(this.userId, {emails:1});
+    var currentEmails = currentUser.emails;
+    logger.info( "currentEmails" + JSON.stringify(currentUser));
+    if ( currentEmails != null  ) {
+      logger.info("removeEmail for userId: " + this.userId );
+      Accounts.removeEmail(currentUser._id, currentUser.emails[0].address)
+    }
+    if (email) {
+      logger.info("addEmail for userId: " + this.userId + " email:" + email);
+      Accounts.addEmail(currentUser._id, email);
+      //Accounts.sendVerificationEmail(currentUser._id);
+    }
+    logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   }
 });
 
@@ -193,11 +199,7 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: ""}
-  }
-  if (options.roles) {
-    logger.info("Set roles: " + options.roles)
-    Roles.setUserRoles(user._id, [options.roles])
+    user.userData = {firstName: "", lastName: "", visitRange:1}
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
@@ -207,7 +209,9 @@ Accounts.onCreateUser(function (options, user) {
       user.userData.agencyIds = [agency._id];
     }
   }
-  logger.info("onCreateUser for userId: " + user._id);
+  user.roles = options.role ? [options.role] : ['requester'];
+
+  logger.info("onCreateUser for userId: " + user._id + " roles: " + user.roles);
   return user;
 });
 

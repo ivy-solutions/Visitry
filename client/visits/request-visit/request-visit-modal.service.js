@@ -15,8 +15,8 @@ angular.module('visitry').service('RequestVisit', function ($rootScope, $ionicMo
   }
 
   function hideModal() {
-    this._scope.$destroy();
     this._modal.remove();
+    this._scope.$destroy();
   }
 });
 

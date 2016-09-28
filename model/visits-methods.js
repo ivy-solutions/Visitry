@@ -138,10 +138,13 @@ Meteor.methods({
     }
     // the visitor must submit his own feedback
     // requester feedback may be submitted by a user acting on the requester's behalf
-    if ( visit.visitorId == this.userId) {
+    if ( visit.visitorId === this.userId) {
       visit.visitorFeedbackId = feedbackId;
-    } else {
+    } else if(visit.requesterId === this.userId){
       visit.requesterFeedbackId = feedbackId;
+    }
+    else{
+      throw new Meteor.Error('not-authorized');
     }
     visit.save(function(err, id) {
       if (err) {

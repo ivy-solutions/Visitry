@@ -1,7 +1,7 @@
-<ion-view title="{{profile.currentUser.username}}" hide-back-button=true>
+<ion-view title="{{profile.currentUser.username}}" hide-back-button=false hide-tabs>
 
     <ion-content class="has-header profile">
-        <form name="profileForm" novalidate="" ng-submit="profile.submitUpdate(profileForm)">
+        <form name="profile.profileForm" novalidate="" ng-submit="profile.submitUpdate(profile.profileForm)">
              <div ng-if="!profile.currentUser.userData.picture">
                  <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
                           <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
@@ -14,19 +14,24 @@
                     </div>
                 </div>
             </div>
-            <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}</div>
-            <ion-list>
+            <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a></div>
+             <ion-list>
                 <label class="item item-input">
                     <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="location" id="location" ng-google-places-autocomplete
-                           ng-model="profile.currentUser.userData.location.address"
-                           details="profile.locationDetails" ng-focus="profile.disableTap()" data-tap-disabled="true"
+                    <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
+                           ng-model="profile.location.address"
+                           details="profile.location.details" disable-tap
                            placeholder="{{profile.locationPlaceholder}}"/>
                 </label>
                 <div layout="row">
                     <span flex></span>
-                    <span class="error-message" ng-hide="profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
+                    <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
                 </div>
+                 <label class="item item-input item-stacked-label" ng-show="!profile.isVisitor">
+                     <div class="input-label">Location Notes</div>
+                     <textarea ng-model="profile.currentUser.userData.locationInfo" rows="2" placeholder="Apt. number, parking advice, or other info for visitor.">
+                    </textarea>
+                 </label>
                 <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
                     <div class="range range-positive">
                         1
@@ -35,13 +40,23 @@
                     </div>
                 </label>
                 <label class="item item-input">
-                    <input type="text" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
-                           placeholder="Optional phone number" ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" >
+                    <input type="tel" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
+                           placeholder="Optional phone number">
                     </input>
                 </label>
                 <div layout="row">
                     <span flex></span>
-                    <span class="error-message" ng-show="profileForm.phoneNumber.$invalid && profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
+                    <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
+                </div>
+                <label class="item item-input">
+                    <input type="email" name="email" id="email" ng-model="profile.currentUser.emails[0].address"
+                           placeholder="Email address" required>
+                    </input>
+                </label>
+                <div layout="row">
+                    <span flex></span>
+                    <span class="error-message" ng-show="profile.profileForm.email.$error.required">Email required</span>
+                    <span class="error-message" ng-show="profile.profileForm.email.$invalid && profile.profileForm.email.$touched"> Invalid email address</span>
                 </div>
                 <label class="item item-input item-stacked-label">
                     <div class="input-label">About You</div>
