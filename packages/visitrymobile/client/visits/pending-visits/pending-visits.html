@@ -18,6 +18,7 @@
         <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
                   on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
             <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}" ng-click="pendingVisits.visitDetails(visit._id)">
+            <div ng-if="!visit.visitorId" class="visit-picture no-visitor"></div>
             <a ng-click="pendingVisits.visitDetails(visit._id)">
               <div>
                 <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>

@@ -1,7 +1,7 @@
 <div layout="column">
   <div layout="row">
       <div ng-if="!visitDetails.visit.visitorId">
-          <div class="profile-picture no-visitor">
+          <div class="profile-picture has-picture no-visitor">
               <div class="item-avatar" layout-padding>No Visitor</div>
           </div>
       </div>
@@ -10,7 +10,7 @@
             <div class="item-avatar" layout-padding><img ng-src="{{visitDetails.getVisitorImage()}}"/></div>
           </div>
        </div>
-    <div layout="column" flex="60" layout-align="space-around start" layout-padding>
+    <div layout="column" flex="55" layout-align="space-around start" layout-padding>
       <h4 ng-if="visitDetails.visit.visitorId">{{visitDetails.getVisitor() | firstNameLastInitial}}</h4>
       <h4 ng-if="!visitDetails.visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{visitDetails.getTimeSinceRequested(visitDetails.visit.createdAt)}}</span>
       </h4>

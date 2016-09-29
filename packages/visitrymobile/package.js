@@ -43,6 +43,7 @@ Package.onUse(function(api) {
     'client/visits/visit-details/visit-details.import.less',
     'client/visits/request-visit/google-places-autocomplete.import.less',
     'client/visits/schedule-visit/schedule-visit.import.less',
+    'client/visits/pending-visits/pending-visits.import.less',
     'client/visits/browse-visit-requests/browse-visit-requests.import.less',
     'client/visits/request-visit/request-visit.import.less',
     'client/feedback/feedback.html',
