@@ -1,6 +1,3 @@
-/**
- * Created by sarahcoletti on 9/24/16.
- */
 import {logger} from '/client/logging'
 
 'use strict';

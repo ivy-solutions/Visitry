@@ -19,7 +19,7 @@ angular.module('visitry').directive('disableTap', function($timeout) {
           document.getElementById('locationInput').blur();
         });
 
-       },500);
+       },1000);
 
     }
   };
