@@ -16,7 +16,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       var visit = Visit.findOne({_id: $stateParams.visitId});
       if ( visit ) {
         this.visit = visit;
-        this.requester = User.findOne({_id: visit.requesterId});
+        this.requester = User.findOne({_id: visit.requesterId},{userData:1});
       }
       return visit;
     }
@@ -80,7 +80,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     if (user && user.userData && user.userData.about) {
         return user.userData.about;
     }
-    return '';
+    return 'No profile information provided.';
   };
 
   this.dialCompanion = (user) => {
@@ -97,6 +97,12 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.getTimeSinceRequested = function(requestedTime){
     return moment(requestedTime).fromNow();
+  };
+
+  this.showRequestersLocationNotes = () => {
+    var amtheVisitor = this.visit.visitorId === Meteor.userId();
+    var visitLocationIsFromRequesterProfile = this.requester.userData.location && this.visit.location.address === this.requester.userData.location.address;
+    return amtheVisitor && visitLocationIsFromRequesterProfile;
   };
 
   function handleError(err) {

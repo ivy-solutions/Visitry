@@ -5,27 +5,29 @@
     </div>
     <div layout="column" flex="60" layout-align="space-around start" layout-padding>
       <h4>{{visitDetails.getRequester() | firstNameLastInitial}}</h4>
-      <div>{{visitDetails.visit.requestedDate | date: "EEEE, MMMM d"}}</div>
-      <div class="time">
+      <h4>{{visitDetails.visit.requestedDate | date: "EEE., MMMM d"}}</h4>
+      <h3 class="time">
         {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) :
         (visitDetails.visit.requestedDate | timeOfDay) }}
-      </div>
-      <div class="item-text-wrap">Near: {{visitDetails.visit.location | approximateLocation}}</div>
+      </h3>
+      <h4 class="item-text-wrap" ng-show="visitDetails.visit.visitorId">{{visitDetails.visit.location.address}}</h4>
+      <div ng-show="visitDetails.showRequestersLocationNotes()">{{visitDetails.requester.userData.locationInfo}}</div>
+      <h4 class="item-text-wrap" ng-show="!visitDetails.visit.visitorId">Near: {{visitDetails.visit.location | approximateLocation}}</h4>
     </div>
   </div>
-  <div layout="row" layout-padding>
-    <div layout="column">
-      <h4>Notes</h4>
-      <div ng-show="visitDetails.visit.notes" class="item-text-wrap">
-        <span>{{visitDetails.getRequester().userData.firstName}}</span>: {{visitDetails.visit.notes}}
-      </div>
-      <div ng-show="visitDetails.visit.visitorNotes" class="item-text-wrap">
-        <span class="time">Me: </span> {{visitDetails.visit.visitorNotes}}
-      </div>
+    <div layout="row" layout-padding>
+        <div layout="column">
+          <h4>Notes</h4>
+          <div ng-show="visitDetails.visit.notes" class="item-text-wrap">
+            <span>{{visitDetails.getRequester().userData.firstName}}</span>: {{visitDetails.visit.notes}}
+          </div>
+          <div ng-show="visitDetails.visit.visitorNotes" class="item-text-wrap">
+            <span class="time">Me: </span> {{visitDetails.visit.visitorNotes}}
+          </div>
+        </div>
     </div>
-  </div>
 </div>
-<div layout="row" ng-show="visitDetails.visit.visitorId">
+<div layout="row" layout-padding>
   <div layout="column">
     <h4>About {{visitDetails.getRequester() | firstNameLastInitial}}</h4>
     <div class="item-text-wrap">{{visitDetails.userAboutInfo(visitDetails.getRequester())}}</div>
