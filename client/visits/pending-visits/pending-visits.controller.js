@@ -14,14 +14,16 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   };
   this.numRequests = -1;
 
+  this.subscribe( 'userRequests', () => { return [Meteor.userId()]});
+
   this.autorun( function() {
-    var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}});
+    var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gte:new Date()}});
     this.numRequests = visits.count();
   });
 
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gt:new Date()}}, {sort: this.getReactively('listSort')});
+      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gte:new Date()}}, {sort: this.getReactively('listSort')});
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     }
   });
@@ -33,9 +35,8 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.showRequestVisitModal = function () {
     RequestVisit.showModal();
   };
-  this.hideRequestVisitModal = function () {
-    RequestVisit.hideModal();
-  };
+
+
   this.getTimeSinceRequested = function(requestedTime){
     return moment(requestedTime).fromNow();
   };
