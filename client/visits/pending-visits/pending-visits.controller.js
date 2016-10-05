@@ -15,6 +15,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.numRequests = -1;
 
   this.subscribe( 'userRequests', () => { return [Meteor.userId()]});
+  this.subscribe('userdata');
 
   this.autorun( function() {
     var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gte:new Date()}});
@@ -29,7 +30,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   });
 
   this.getVisitor = function (visit) {
-    return User.findOne({_id: visit.visitorId});
+    return User.findOne({_id: visit.visitorId},{userData:1});
   };
 
   this.showRequestVisitModal = function () {
