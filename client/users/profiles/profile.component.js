@@ -72,14 +72,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         }
       });
 
-      if (form.email.$pristine!=true) {
-        Meteor.call('updateUserEmail', this.currentUser.emails[0].address, (err) => {
-          if (err) {
-            return handleError(err);
-          }
-        });
-      }
-
       return this.submitSuccess(form);
     }
   };

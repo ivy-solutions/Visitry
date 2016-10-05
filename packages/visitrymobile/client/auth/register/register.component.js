@@ -10,6 +10,7 @@ angular.module("visitry.mobile").directive('register', function() {
       $reactive(this).attach($scope);
 
       this.credentials = {
+        email: '',
         username: '',
         password: '',
         role: 'requester',
@@ -21,6 +22,10 @@ angular.module("visitry.mobile").directive('register', function() {
 
       this.createAccount = (form) => {
         if(form.$valid) {
+          // use email as username if no username provided
+          if ( this.credentials.username.length <1 ) {
+            this.credentials.username = this.credentials.email
+          }
           Accounts.createUser(this.credentials, (err) => {
             if (err) {
               return handleError(err);
@@ -61,6 +66,7 @@ angular.module("visitry.mobile").directive('register', function() {
         this.credentials.userData.lastName ='';
         this.credentials.username = '';
         this.credentials.password ='';
+        this.credentials.email='';
       };
 
       function handleError(err) {
