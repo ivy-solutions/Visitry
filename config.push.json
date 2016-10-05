@@ -1,4 +1,9 @@
 {
+  "apn": {
+    "passphrase": "Visitry99",
+    "key": "SCVisitryDevKey.pem",
+    "cert": "VisitryPush.pem"
+  },
   "apn-dev": {
     "passphrase": "Visitry99",
     "key": "SCVisitryDevKey.pem",
@@ -9,7 +14,7 @@
     "projectNumber": 822210685703
   },
   "badge": true,
-  "production": true,
+  "production": false,
   "sound":true,
   "alert":true,
   "vibrate:":true
