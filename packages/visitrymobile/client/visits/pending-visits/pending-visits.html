@@ -30,7 +30,7 @@
                 <span flex></span>
               </div>
               <p>{{visit.location.address}}</p>
-              <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
+              <p style="white-space: nowrap">{{visit.notes}}</p>
 
             </a>
               <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
