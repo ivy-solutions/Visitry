@@ -5,6 +5,26 @@ import { logger } from '/server/logging'
 
 Push.debug=true;
 
+Push.Configure({
+  apn: {
+    certData: Assets.getText('VisitryPush.pem'),
+    keyData: Assets.getText('SCVisitryDevKey.pem'),
+    passphrase: 'Visitry99',
+    production: true,
+    //gateway: 'gateway.push.apple.com'
+  },
+  "apn-dev": {
+    certData: Assets.getText('VisitryPush.pem'),
+    keyData: Assets.getText('SCVisitryDevKey.pem'),
+    passphrase: 'Visitry99',
+    production: false,
+    //gateway: 'gateway.push.apple.com'
+  },
+  "gcm": {
+    "apiKey": "AIzaSyCBf3yJEp6ZiUE4CKllsLkwsneI3_K1BzY"
+  },
+});
+
 Push.allow({
   send: function(userId, notification) {
     return true; // Allow all users to send

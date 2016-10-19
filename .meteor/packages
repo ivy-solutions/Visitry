@@ -38,6 +38,7 @@ jagi:astronomy
 jagi:astronomy-timestamp-behavior
 jagi:astronomy-softremove-behavior
 aldeed:moment-timezone
+meteorhacks:aggregate
 
 # packaging and build related
 visitry-browser         # visitry package
@@ -56,8 +57,7 @@ practicalmeteor:faker
 random
 
 # notifications
-raix:push
+raix:push@3.1.0-pre.1
 
 #other
 brentjanderson:winston-client
-meteorhacks:aggregate
