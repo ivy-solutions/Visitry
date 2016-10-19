@@ -10,7 +10,7 @@ Push.Configure({
     certData: Assets.getText('VisitryPush.pem'),
     keyData: Assets.getText('SCVisitryDevKey.pem'),
     passphrase: 'Visitry99',
-    production: true,
+    production: false,
     //gateway: 'gateway.push.apple.com'
   },
   "apn-dev": {
