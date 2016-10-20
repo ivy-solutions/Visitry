@@ -14,7 +14,7 @@ Push.Configure({
     //gateway: 'gateway.push.apple.com'
   },
   "gcm": {
-    "apiKey": "AIzaSyCBf3yJEp6ZiUE4CKllsLkwsneI3_K1BzY",
+    "apiKey": "AIzaSyBw6Y5Amshc_i8V8rcbffIo4WNdsrYF4nM",
     "projectNumber": "822210685703"
   },
 });
