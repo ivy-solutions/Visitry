@@ -39,9 +39,9 @@ Meteor.methods({
 
     if (visit.visitorId) {
       //communicate with visitor
-      var msgTitle = "Visit request cancelled";
+      var msgTitle = "Cancelled";
       var user = User.findOne(this.userId);
-      var msgText = user.fullName + " cancelled the visit request for " + moment(visit.requestDate).local().format('ddd., MMM. D') + '.';
+      var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" cancelled.";
 
       console.log( msgText);
       Meteor.call('userNotification',
@@ -67,7 +67,7 @@ Meteor.methods({
 
     // format msg for the push notification before the save
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " cancelled the visit scheduled for " + formattedVisitTime(visit) + ".";
+    var msgText = "Visit on " + formattedVisitTime(visit) + " cancelled by " + user.fullName + ".";
 
     visit.cancelledAt = new Date();
     visit.visitorId = null;
@@ -112,7 +112,7 @@ Meteor.methods({
 
     var msgTitle = "Visit scheduled";
     var user = User.findOne(this.userId);
-    var msgText = user.fullName + " scheduled a visit for " + formattedVisitTime(visit);
+    var msgText = "Visit scheduled for " + formattedVisitTime(visit) + " by " + user.fullName;
     if (visit.visitorNotes) {
       msgText += ', saying, "' + visit.visitorNotes + '"';
     }
@@ -163,6 +163,6 @@ formattedVisitTime = function(visit) {
   if ( agency && agency.timeZone) {
     timeZone = agency.timeZone
   }
-  var time = moment.tz(visit.visitTime, timeZone).format('ddd., MMM. D, h:mm');
+  var time = moment.tz(visit.visitTime, timeZone).format('MMM. D, h:mm');
   return time;
 };

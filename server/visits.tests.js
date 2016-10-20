@@ -588,13 +588,13 @@ if (Meteor.isServer) {
     it('formatted visitTime with no time zone defaults to EST', () => {
       var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
       var visit = {visitTime: dateAt330pmUTC};
-      assert.equal(formattedVisitTime(visit), "Sat., Oct. 1, 11:30");
+      assert.equal(formattedVisitTime(visit), "Oct. 1, 11:30");
     });
     it('formatted visitTime with agency time zone = PST', () => {
       findOneAgencyStub.returns({timeZone: 'America/Los_Angeles'})
       var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
       var visit = {visitTime: dateAt330pmUTC};
-      assert.equal(formattedVisitTime(visit), "Sat., Oct. 1, 8:30");
+      assert.equal(formattedVisitTime(visit), "Oct. 1, 8:30");
     });
   });
 
