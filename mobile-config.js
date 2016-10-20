@@ -4,7 +4,7 @@
 App.info({
   id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '1.0.3',
+  version: '1.0.5',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',
@@ -70,5 +70,5 @@ App.setPreference("LoadUrlTimeoutValue", 60000);
 App.setPreference("BackupWebStorage", "local");
 
 App.configurePlugin('phonegap-plugin-push', {
-  SENDER_ID: 822210685703
+  SENDER_ID: '822210685703'
 });

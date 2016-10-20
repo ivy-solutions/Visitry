@@ -13,15 +13,9 @@ Push.Configure({
     production: false,
     //gateway: 'gateway.push.apple.com'
   },
-  "apn-dev": {
-    certData: Assets.getText('VisitryPush.pem'),
-    keyData: Assets.getText('SCVisitryDevKey.pem'),
-    passphrase: 'Visitry99',
-    production: false,
-    //gateway: 'gateway.push.apple.com'
-  },
   "gcm": {
-    "apiKey": "AIzaSyCBf3yJEp6ZiUE4CKllsLkwsneI3_K1BzY"
+    "apiKey": "AIzaSyCBf3yJEp6ZiUE4CKllsLkwsneI3_K1BzY",
+    "projectNumber": "822210685703"
   },
 });
 
@@ -53,6 +47,7 @@ Meteor.methods({
       from: 'push',
       title: title,
       text: text,
+      badge: 1,
       payload: {
         title: title,
         text:text
