@@ -7,11 +7,10 @@ Push.debug=true;
 
 Push.Configure({
   apn: {
-    certData: Assets.getText('VisitryPush.pem'),
+    certData: Assets.getText(Meteor.settings.apnCert),
     keyData: Assets.getText('SCVisitryDevKey.pem'),
     passphrase: 'Visitry99',
-    production: false,
-    //gateway: 'gateway.push.apple.com'
+    production: Meteor.settings.isProduction
   },
   "gcm": {
     "apiKey": "AIzaSyBw6Y5Amshc_i8V8rcbffIo4WNdsrYF4nM",
@@ -43,7 +42,6 @@ Meteor.methods({
       from: 'push',
       title: title,
       text: text,
-      badge: 1,
       query: {
         userId: userId //this will send to a specific Meteor.user()._id
       }
