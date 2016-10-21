@@ -6,6 +6,7 @@ dependencies:
     - npm install -g spacejam
     - meteor npm install
   pre:
+    - apt-get install nodejs-legacy
     - npm install -g mupx # install meteor-up for deployment
 deployment:
   dev:
