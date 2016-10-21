@@ -5,19 +5,6 @@ import { logger } from '/server/logging'
 
 Push.debug=true;
 
-Push.Configure({
-  apn: {
-    certData: Assets.getText(Meteor.settings.apnCert),
-    keyData: Assets.getText('SCVisitryDevKey.pem'),
-    passphrase: 'Visitry99',
-    production: Meteor.settings.isProduction
-  },
-  "gcm": {
-    "apiKey": "AIzaSyBw6Y5Amshc_i8V8rcbffIo4WNdsrYF4nM",
-    "projectNumber": "822210685703"
-  },
-});
-
 Push.allow({
   send: function(userId, notification) {
     return true; // Allow all users to send

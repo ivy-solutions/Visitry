@@ -1,3 +1,6 @@
+general:
+  artifacts:
+    - "cordova-build/platforms/android/build/outputs/apk"
 dependencies:
   cache_directories:
     - ~/.meteor
