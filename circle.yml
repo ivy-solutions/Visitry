@@ -3,10 +3,9 @@ dependencies:
     - ~/.meteor
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
-    - npm install -g spacejam
+    - npm -g install spacejam@rc
     - meteor npm install
   pre:
-    - apt-get install nodejs-legacy
     - npm install -g mupx # install meteor-up for deployment
 deployment:
   dev:
