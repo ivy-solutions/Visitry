@@ -31,7 +31,7 @@ if (Meteor.isServer) {
 
     beforeEach(() => {
       findUserStub = sinon.stub(User, 'findOne');
-      findUserStub.returns({username: 'Thelma', fullname: "Thelma Smith"});
+      findUserStub.returns({username: 'Thelma', fullname: "Thelma Smith", userData: { firstName: "Thelma", lastName: "Smith"}});
       meteorStub = sinon.stub(Meteor, 'call');
       requesterId = Random.id();
       userId = Random.id();
