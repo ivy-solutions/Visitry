@@ -3,5 +3,5 @@
 
   },
   "apnCert": "ProdPushNotifications.pem",
-  "isProduction": false
+  "isProduction": true
 }
