@@ -20,10 +20,12 @@
             ng-click="visitDetails.dialCompanion(visitDetails.getRequester())" ng-if="visitDetails.canCallRequester()"
             layout-padding><i class="ion-ios-telephone"></i> Call
     </button>
-    <button class="button button-block button-balanced" ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()" layout-padding>
+    <button class="button button-block button-balanced"
+            ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()" ng-click="visitDetails.scheduleVisit()"
+            layout-padding>
       Plan Visit
     </button>
-    <button class="button button-block button-assertive" ng-if="(visitDetails.visit.visitorId)" layout-padding>
+    <button class="button button-block button-assertive" ng-if="(visitDetails.visit.visitorId)||(visitDetails.isRequester())" ng-click="visitDetails.cancelVisit()" layout-padding>
       Cancel Visit
     </button>
   </div>
