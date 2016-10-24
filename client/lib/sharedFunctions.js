@@ -39,14 +39,19 @@ Meteor.myFunctions = {
     return Roles.userIsInRole(Meteor.userId(), ['visitor']);
   },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
-    let visitor = User.findOne({_id: visit.visitorId}, {userData: 1});
-    let cancelVisitMethod = (Meteor.myFunctions.isRequester()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
+    let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
     let confirmMessage = '';
     if (visit.visitorId) {
-      confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(visitor) + " on " + $filter('date')(new Date(visit.visitTime), 'MMMM d, h:mm') + "?"
+      let otherParty = null;
+      if (visit.requesterId === Meteor.userId()) {
+        otherParty = User.findOne({_id: visit.visitorId}, {userData: 1});
+      } else {
+        otherParty = User.findOne({_id:visit.requesterId}, {userData:1});
+      }
+      confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(otherParty) + " on " + $filter('date')(new Date(visit.visitTime), 'MMMM d, h:mm') + "?"
     }
     else {
-      confirmMessage = "Do you want to cancel your visit request for " + $filter('date')(new Date(visit.requestedDate)) + " ?";
+      confirmMessage = "Do you want to cancel your visit request for " + $filter('date')(new Date(visit.requestedDate), 'MMMM d') + "?";
     }
     let confirmPopup = $ionicPopup.confirm({
       template: confirmMessage,
