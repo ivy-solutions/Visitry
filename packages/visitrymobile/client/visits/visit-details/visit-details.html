@@ -11,20 +11,29 @@
     </div>
 
   </ion-content>
-  <div class="bar bar-footer invisible-footer" layout-padding>
-    <button class="button button-block button-balanced"
-            ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())" ng-if="visitDetails.canCallVisitor()"
-            layout-padding><i class="ion-ios-telephone"></i> Call
-    </button>
-    <button class="button button-block button-balanced"
-            ng-click="visitDetails.dialCompanion(visitDetails.getRequester())" ng-if="visitDetails.canCallRequester()"
-            layout-padding><i class="ion-ios-telephone"></i> Call
-    </button>
-    <button class="button button-block button-balanced" ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()" layout-padding>
-      Schedule
-    </button>
-    <button class="button button-block button-assertive" ng-if="(visitDetails.visit.visitorId)" layout-padding>
-      Cancel
-    </button>
-  </div>
+    <div class="bar bar-footer invisible-footer">
+        <ion-subfooter-bar class="bar bar-subfooter bar-light">
+            <button class="button button-block button-balanced"
+                    ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())"
+                    ng-if="visitDetails.canCallVisitor()"
+                    ><i class="ion-ios-telephone"></i> Call
+            </button>
+            <button class="button button-block button-balanced"
+                    ng-click="visitDetails.dialCompanion(visitDetails.getRequester())"
+                    ng-if="visitDetails.canCallRequester()"
+                    ><i class="ion-ios-telephone"></i> Call
+            </button>
+        </ion-subfooter-bar>
+        <button class="button button-block button-balanced"
+                ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()"
+                ng-click="visitDetails.scheduleVisit()"
+                >
+            Plan Visit
+        </button>
+        <button class="button button-block button-assertive"
+                ng-if="(visitDetails.visit.visitorId)||(visitDetails.isRequester())"
+                ng-click="visitDetails.cancelVisit()" >
+            Cancel Visit
+        </button>
+    </div>
 </ion-view>

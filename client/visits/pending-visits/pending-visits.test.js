@@ -83,6 +83,6 @@ describe('Pending Visit Requests', function () {
       controller.showCancelVisitConfirm({visitor: '12341'});
       chai.assert(spyOnConfirm.calledOnce)
     })
-  })
+  });
 
 });

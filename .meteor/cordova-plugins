@@ -1,4 +1,6 @@
 call-number@1.0.1
 cordova-plugin-actionsheet@2.2.2
 cordova-plugin-device@1.1.1
+cordova-plugin-meteor-webapp@1.4.1
 cordova-plugin-phonecaller@0.0.2
+phonegap-plugin-push@1.5.2

@@ -1,9 +1,12 @@
+general:
+  artifacts:
+    - "/home/ubuntu/Visitry/.meteor/local/cordova-build/platforms/android/build/outputs/apk"
 dependencies:
   cache_directories:
     - ~/.meteor
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
-    - npm install -g spacejam
+    - npm -g install spacejam@rc
     - meteor npm install
   pre:
     - npm install -g mupx # install meteor-up for deployment

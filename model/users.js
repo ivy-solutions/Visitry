@@ -28,10 +28,16 @@ User = Class.create({
   collection: Meteor.users,
   secured: true,
   fields: {
-    username: {type: String},
+    username: {type: String, optional:true},
     createdAt: {type: Date},
     userData: {type: UserData, optional: true},
     //roles: {type: [String]},  //Roles pacakge and astronomy validation don't work well together
+    emails: {
+      type: [Object],
+      default: function () {
+        return [];
+      }
+    },
     fullName: {
       type: String,
       resolve(doc) {

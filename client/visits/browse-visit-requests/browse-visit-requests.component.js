@@ -118,7 +118,5 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
 
   this.scheduleVisit = function(visit) {
     ScheduleVisit.showModal( visit );
-
    };
-
 });

@@ -30,7 +30,6 @@ describe ( 'Profile', function() {
     form = { $valid: true,
       location : {$pristine: true, $touched: false},
       phoneNumber : {$pristine: true, $touched: false},
-      email: {$pristine: true, $touched: true},
       $setUntouched: function(){},
       $setPristine: function(){}
     };

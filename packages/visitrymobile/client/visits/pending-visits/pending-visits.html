@@ -18,6 +18,7 @@
         <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
                   on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
             <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}" ng-click="pendingVisits.visitDetails(visit._id)">
+            <div ng-if="!visit.visitorId" class="visit-picture no-visitor" ng-click="pendingVisits.visitDetails(visit._id)"></div>
             <a ng-click="pendingVisits.visitDetails(visit._id)">
               <div>
                 <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
@@ -28,7 +29,9 @@
                 </h2>
                 <span flex></span>
               </div>
-              <p>{{visit.notes}}</p>
+              <p>{{visit.location.address}}</p>
+              <p style="white-space: nowrap">{{visit.notes}}</p>
+
             </a>
               <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
                 Cancel Visit

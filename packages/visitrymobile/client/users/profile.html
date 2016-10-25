@@ -48,16 +48,6 @@
                     <span flex></span>
                     <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
                 </div>
-                <label class="item item-input">
-                    <input type="email" name="email" id="email" ng-model="profile.currentUser.emails[0].address"
-                           placeholder="Email address" required>
-                    </input>
-                </label>
-                <div layout="row">
-                    <span flex></span>
-                    <span class="error-message" ng-show="profile.profileForm.email.$error.required">Email required</span>
-                    <span class="error-message" ng-show="profile.profileForm.email.$invalid && profile.profileForm.email.$touched"> Invalid email address</span>
-                </div>
                 <label class="item item-input item-stacked-label">
                     <div class="input-label">About You</div>
                     <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">

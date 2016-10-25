@@ -33,7 +33,7 @@ const Visit = Class.create({
     visitorNotes: {type: String, optional: true},
     requesterFeedbackId: {type: String, optional: true},
     visitorFeedbackId: {type: String, optional: true},
-    createdAt: {type: Date, immutable: true},
+    createdAt: {type: Date, immutable: true, optional:true},  //optional in that the client update doesn't need it
     updatedAt: {type: Date},
     inactive: {type: Boolean, optional: true},
     removedAt: {type: Date, optional: true},

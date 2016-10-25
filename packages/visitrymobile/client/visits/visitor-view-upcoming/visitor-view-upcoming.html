@@ -13,14 +13,12 @@
                 </div>
                 <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
                     <img ng-src="{{visitorViewUpcoming.getRequesterImage(visit)}}" ng-click="visitorViewUpcoming.visitDetails(visit._id)"/>
-                    <div class="timeOfDay">{{visit.visitTime | date: "h:mm"}}</div>
-                    <div class="visitInfo">
-                        <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
-                            <h2>{{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}
-                            <span class="distance">{{visit.location | approximateLocation}}</span></h2>
-                            <p style="white-space: nowrap">{{visit.notes}}</p>
-                        </a>
-                    </div>
+                    <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
+                        <h2><span class="timeOfDay">{{visit.visitTime | date: "h:mm"}}</span>
+                        {{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h2>
+                        <h3>{{visit.location | approximateLocation}}</h3>
+                        <p style="white-space: nowrap">{{visit.notes}}</p>
+                    </a>
                     <ion-option-button class="button-assertive" ng-click="visitorViewUpcoming.cancelVisit(visit)">
                         Cancel Visit
                     </ion-option-button>

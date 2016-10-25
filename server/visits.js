@@ -91,3 +91,34 @@ Meteor.publish("availableVisits", function () {
     this.ready();
   }
 });
+
+Meteor.methods({
+  'visitorsByFrequency'(agency, numberOfDays) {
+    let group = {
+      _id: {
+        visitorId: '$visitorId'
+      },
+      numVisits: {
+        $sum: 1
+      }
+    };
+    var recentVisits = Visits.aggregate(
+      {
+        $match: {
+          'agencyId': {$eq: agency},
+          'visitTime': {$exists: true, $lt: new Date(), $gt: dateByDaysBefore(numberOfDays)}
+        }
+      },
+      {$group: group}
+    );
+    recentVisits.sort(function (a, b) {
+      return b.numVisits - a.numVisits;
+    });
+    return recentVisits;
+  }
+});
+
+function dateByDaysBefore(daysBefore) {
+  var priorDate = new Date() - daysBefore * 24 * 3600 * 1000;
+  return new Date(priorDate)
+};
