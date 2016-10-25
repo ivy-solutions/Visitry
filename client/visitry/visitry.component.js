@@ -87,7 +87,7 @@ angular.module('visitry').directive('visitry', function () {
         var titleText = "";
         var buttons = [];
         buttons.push( {text: profileText});
-        buttons.push( {text: notificationsText});
+        //buttons.push( {text: notificationsText});
 
         var logout = this.logout;
 

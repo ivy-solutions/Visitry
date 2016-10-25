@@ -2,6 +2,6 @@
   "public": {
 
   },
-  "apnCert": "ProdPushNotifications.pem",
+  "apnCert": "ProdPushCert.pem",
   "isProduction": true
 }
