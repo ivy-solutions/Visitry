@@ -4,10 +4,10 @@ Meteor.startup(function () {
   //the cert info is taken form the .build/deployment/settings but we set some defaults here
 
   var cert = Meteor.settings.apnCert ? Meteor.settings.apnCert : "VisitryPush.pem";
-  logger.info(cert);
   var isProduction = Meteor.settings.isProduction ? true : false;
+  logger.info( "Push isProduction:" + isProduction + " cert:" + cert);
 
-  Push.debug = isProduction ? true : false;
+  Push.debug = true;
 
   Push.Configure({
     apn: {
