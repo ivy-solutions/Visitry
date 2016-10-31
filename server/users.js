@@ -1,6 +1,7 @@
 import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
+import { Counts } from 'meteor/tmeasday:publish-counts';
 
 Meteor.publish("userdata", function () {
   if (this.userId) {
@@ -70,11 +71,9 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
       'roles': {$elemMatch: {$eq: 'requester'}}
     };
     var queryOptions = {
-      sort: options.sort,
-      skip: options.skip,
-      limit: options.limit,
       fields: {
         createdAt: 1,
+        'userData.agencyIds': 1,
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.picture': 1,
@@ -82,6 +81,9 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'roles':1
       }
     };
+    Counts.publish(this, 'numberSeniorUsers', User.find(selector), {
+      noReady: true
+    });
     return User.find(selector, queryOptions);
   } else {
     this.ready();

@@ -1,6 +1,7 @@
 /**
  * Created by n0235626 on 8/31/16.
  */
+import { Counts } from 'meteor/tmeasday:publish-counts';
 
 
 angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function ($scope, $state, $reactive, $cookies) {
@@ -10,27 +11,35 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.recordPerPage = 10;
   this.page = 1;
   this.sort = {
-    'userData.lastName': -1
+    'userData.lastName': 1
   };
-  this.queryOptions = {
-    limit: parseInt(this.recordPerPage),
-    skip: parseInt((this.page - 1) * this.recordPerPage),
-    sort: this.sort
-  };
-  //FIXME: THis might not work the way I expect
-  this.autorun(() => {
-    this.queryOptions.limit = parseInt(this.getReactively('recordPerPage'));
-    this.queryOptions.skip = parseInt((this.getReactively('page') - 1) * this.recordPerPage);
-    this.queryOptions.sort = this.getReactively('sort');
-  });
 
   this.subscribe('seniorUsers', ()=> {
-    return [this.getReactively('agencyId'), this.getReactively('queryOptions')]
+    return [this.getReactively('agencyId')]
   });
 
   this.helpers({
     seniors: ()=> {
-      return Roles.getUsersInRole('requester')
+      let selector = {
+        'userData.agencyIds': {$elemMatch: {$eq: this.agencyId}},
+        'roles': {$elemMatch: {$eq: 'requester'}}
+      };
+      return Meteor.users.find(selector,
+        {
+          limit: parseInt(this.getReactively('recordPerPage')),
+          skip:parseInt((this.getReactively('page') - 1) * this.recordPerPage),
+          sort:this.getReactively('sort')
+        }
+      );
+    },
+    seniorsCount() {
+      return Counts.get('numberSeniorUsers');
     }
   });
+
+  this.pageChanged = function (newPage) {
+    this.page = newPage;
+  };
+
 });
+
