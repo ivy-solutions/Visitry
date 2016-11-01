@@ -40,7 +40,7 @@
   // ROOT_URL must be set to your correct domain (https or http)
   // will be: http://visitry.org/visitry 
   "env": {
-    "PORT": 443,
+    "PORT": 80,
     "ROOT_URL": "https://dev.visitry.org"
   },
 
