@@ -11,14 +11,16 @@
       // Also, for non-standard ssh port use this
       //"sshOptions": { "port" : 49154 },
       // server specific environment variables
-      "ssl": {
-        "certificate": "/etc/letsencrypt/live/dev.visitry.org/fullchain.pem", // this is a bundle of certificates
-        "key": "/etc/letsencrypt/live/dev.visitry.org/privkey.pem", // this is the private key of the certificate
-        "port": 443 // 443 is the default value and it's the standard HTTPS port
-      },
+
       "env": {}
     }
   ],
+
+  "ssl": {
+    "certificate": "/etc/letsencrypt/live/dev.visitry.org/fullchain.pem", // this is a bundle of certificates
+    "key": "/etc/letsencrypt/live/dev.visitry.org/privkey.pem", // this is the private key of the certificate
+    "port": 443 // 443 is the default value and it's the standard HTTPS port
+  },
 
   // Install MongoDB on the server. Does not destroy the local MongoDB on future setups
   "setupMongo": true,
