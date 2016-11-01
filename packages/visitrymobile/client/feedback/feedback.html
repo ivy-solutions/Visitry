@@ -57,7 +57,7 @@
               <span class="error-message" ng-show="feedback.visitRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
           </div>
           <div class="item item-divider" ng-if="feedback.isVisitor">
-              Estimate the time spent visiting - {{feedback.timeSpent | hoursMinutes }}
+              Estimate time spent - {{feedback.timeSpent | hoursMinutes }}
           </div>
           <ion-item ng-if="feedback.isVisitor">
                   <div class="range range-positive">
