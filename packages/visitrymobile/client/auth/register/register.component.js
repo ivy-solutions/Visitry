@@ -6,36 +6,45 @@ angular.module("visitry.mobile").directive('register', function() {
     restrict: 'E',
     templateUrl: '/packages/visitrymobile/client/auth/register/register.html',
     controllerAs: 'register',
-    controller: function ($scope, $reactive, $state, $ionicPopup ) {
+    controller: function ($scope, $reactive, $state, $ionicPopup, $ionicHistory ) {
       $reactive(this).attach($scope);
 
       this.credentials = {
+        email: '',
         username: '',
-        password: ''
+        password: '',
+        role: 'requester',
+        userData: {
+          firstName: "",
+          lastName: ""
+        }
       };
-      this.firstName = '';
-      this.lastName = '';
-      this.role = 'requester';
 
       this.createAccount = (form) => {
         if(form.$valid) {
+          // use email as username if no username provided
+          if ( this.credentials.username.length <1 ) {
+            this.credentials.username = this.credentials.email
+          }
           Accounts.createUser(this.credentials, (err) => {
             if (err) {
               return handleError(err);
             }
             else {
-              Meteor.call('updateName', this.firstName, this.lastName, (err) => {
-                if (err) return handleError(err);
-              });
-              var avatarWithInitials = generateAvatar(this.firstName, this.lastName);
-              Meteor.call('updatePicture', avatarWithInitials);
-              Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
+              var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
+              Meteor.call('updatePicture', avatarWithInitials,(err) => {
                 if (err) {
-                  return handleError(err)
+                  return handleError(err);
                 }
-                this.resetForm(form);
-                $state.go('profile');
-
+                else {
+                  Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
+                    if (err) {
+                      return handleError(err)
+                    }
+                    this.resetForm(form);
+                    $state.go('profile');
+                  });
+                }
               });
             }
           })
@@ -48,12 +57,16 @@ angular.module("visitry.mobile").directive('register', function() {
       };
 
       this.resetForm= function(form) {
+        $ionicHistory.nextViewOptions({
+          disableBack: true
+        });
         form.$setUntouched();
         form.$setPristine();
-        this.firstName = '';
-        this.lastName ='';
+        this.credentials.userData.firstName = '';
+        this.credentials.userData.lastName ='';
         this.credentials.username = '';
         this.credentials.password ='';
+        this.credentials.email='';
       };
 
       function handleError(err) {

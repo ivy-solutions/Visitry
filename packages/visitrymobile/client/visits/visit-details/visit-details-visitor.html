@@ -1,0 +1,35 @@
+<div layout="column">
+  <div layout="row">
+    <div class="profile-picture has-picture" layout-align="center center">
+      <div class="item-avatar"><img ng-src="{{visitDetails.getRequesterImage()}}"/></div>
+    </div>
+    <div layout="column" flex="60" layout-align="space-around start"  layout-fill>
+      <h4>{{visitDetails.getRequester() | firstNameLastInitial}}</h4>
+      <h4 layout-margin>{{visitDetails.visit.requestedDate | date: "EEE., MMM. d"}}</h4>
+      <h3 class="time" layout-margin>
+        {{visitDetails.visit.visitTime ? (visitDetails.visit.visitTime | date: "h:mm" ) :
+        (visitDetails.visit.requestedDate | timeOfDay) }}
+      </h3>
+      <h5 class="item-text-wrap" ng-show="visitDetails.visit.visitorId">{{visitDetails.visit.location.address}}</h5>
+      <div ng-show="visitDetails.showRequestersLocationNotes()">{{visitDetails.requester.userData.locationInfo}}</div>
+      <h5 class="item-text-wrap" ng-show="!visitDetails.visit.visitorId">Near: {{visitDetails.visit.location | approximateLocation}}</h5>
+    </div>
+  </div>
+    <div layout="row">
+        <div layout="column">
+          <h4>Notes</h4>
+          <div ng-show="visitDetails.visit.notes" class="item-text-wrap">
+            <span class="commenter">{{visitDetails.getRequester().userData.firstName}}</span>: {{visitDetails.visit.notes}}
+          </div>
+          <div ng-show="visitDetails.visit.visitorNotes" class="item-text-wrap">
+            <span class="commenter">Me: </span> {{visitDetails.visit.visitorNotes}}
+          </div>
+        </div>
+    </div>
+</div>
+<div layout="row">
+  <div layout="column">
+    <h4>About {{visitDetails.getRequester() | firstNameLastInitial}}</h4>
+    <div class="item-text-wrap">{{visitDetails.userAboutInfo(visitDetails.getRequester())}}</div>
+  </div>
+</div>

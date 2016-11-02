@@ -1,9 +1,50 @@
 .time {
-  float: right;
   font-weight: bold;
   color: @color3;
+}
+.commenter {
+  font-weight: bold;
+  color: @color2;
 }
 .item-avatar .visitInfo p{
   word-wrap: break-word;
   white-space: normal;
+}
+
+.profile-picture{
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  width: 9rem;
+  height: 9rem;
+  margin: 0.5rem auto 1rem auto;
+  background-color: #9ca8aa;
+  text-align: center;
+  color: #ccc;
+  position: relative;
+  background-position: center center;
+  background-size: auto 100%;
+}
+.profile-picture.has-picture {
+  background-color: #9ca8aa;
+  .item-avatar > img:first-child {
+    max-width: 150px;
+    max-height: 150px;
+    top:0;
+    left:0;
+  }
+}
+.profile-picture.no-visitor:before{
+  content: "\f143";
+  font-family: "Ionicons";
+  font-size: 4rem;
+  line-height: 9.5rem;
+  text-align: center;
+}
+
+.invisible-footer{
+  background-color:transparent !important;
+  background-image: none !important;
+  border:0px !important;
+  margin-bottom: 10px;
 }

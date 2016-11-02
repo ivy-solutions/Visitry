@@ -55,6 +55,7 @@ ejson@1.0.12
 email@1.0.16
 es5-shim@4.5.13
 fastclick@1.0.12
+force-ssl@1.0.12
 geojson-utils@1.0.9
 hot-code-push@1.0.4
 html-tools@1.0.10
@@ -79,6 +80,8 @@ mdg:camera@1.4.1
 mdg:validation-error@0.5.1
 meteor@1.1.16
 meteor-base@1.0.4
+meteorhacks:aggregate@1.3.0
+meteorhacks:collection-utils@1.2.0
 minifier-css@1.1.13
 minifier-js@1.1.13
 minimongo@1.0.17
@@ -89,6 +92,7 @@ modules-runtime@0.6.5
 momentjs:moment@2.8.4
 mongo@1.1.9_1
 mongo-id@1.0.5
+mongo-livedata@1.0.12
 mquandalle:bower@1.5.2_1
 mrt:moment@2.8.1
 npm-bcrypt@0.8.6_3
@@ -108,7 +112,7 @@ practicalmeteor:sinon@1.14.1_2
 promise@0.7.3
 raix:eventemitter@0.1.3
 raix:eventstate@0.0.4
-raix:push@3.0.2
+raix:push@3.1.0-pre.1
 random@1.0.10
 rate-limit@1.0.5
 reactive-dict@1.1.8

@@ -15,36 +15,42 @@ describe('SharedFunctions', function () {
   const futureVisitRequest = {requestedDate: tomorrow};
   const pastVisitRequest = {requestedDate: yesterday};
   const sameDayFutureVisitRequest = {requestedDate: new Date(futureVisitRequest.requestedDate)};
-  var today = new Date()
+  var today = new Date();
   const nowVisitRequest = {requestedDate: today};
   var todayAt9 = new Date(today);
-  todayAt9.setHours(9, 0, 0, 0)
+  todayAt9.setHours(9, 0, 0, 0);
   const todayAt9VisitRequest = {requestedDate: todayAt9};
 
   var findOneStub;
   var user;
+  var userIdStub;
+  var userIsInRoleStub;
 
   beforeEach(function () {
     findOneStub = sinon.stub(User, 'findOne', function (selector) {
       if (selector._id === "123") {
         return {_id: "123", username: "test", userData: {"picture": "pic"}}
       }
-        else if(selector._id==="nopic"){
+      else if (selector._id === "nopic") {
         return {_id: "123", username: "test", userData: {"picture": ""}}
       }
       else {
         return null
       }
     });
+    userIdStub = sinon.stub(Meteor, 'userId');
+    userIsInRoleStub = sinon.stub(Roles, 'userIsInRole');
   });
   afterEach(function () {
     User.findOne.restore();
+    Meteor.userId.restore();
+    Roles.userIsInRole.restore();
   });
 
   describe('groupVisitsByRequestedDate', function () {
     it('groups by requestedDate into 3 groups', function () {
-      var dateGroupedArray = Meteor.myFunctions.groupVisitsByRequestedDate([ pastVisitRequest,todayAt9VisitRequest,nowVisitRequest,futureVisitRequest,sameDayFutureVisitRequest]);
-      chai.assert.equal(3,dateGroupedArray.length,"Grouped by yesterday, today, tomorrow");
+      var dateGroupedArray = Meteor.myFunctions.groupVisitsByRequestedDate([pastVisitRequest, todayAt9VisitRequest, nowVisitRequest, futureVisitRequest, sameDayFutureVisitRequest]);
+      chai.assert.equal(3, dateGroupedArray.length, "Grouped by yesterday, today, tomorrow");
       chai.assert.equal(1, dateGroupedArray[0].visits.length, "yesterday");
       chai.assert.equal(pastVisitRequest.requestedDate, dateGroupedArray[0].visits[0].requestedDate, "pastVisitRequest");
       chai.assert.equal(2, dateGroupedArray[1].visits.length, "Today");
@@ -73,9 +79,41 @@ describe('SharedFunctions', function () {
       var userImage = Meteor.myFunctions.getUserImage("321");
       chai.assert.equal(userImage, "");
     });
-    it('getUserImage returns empty string if user does not have a picture',function(){
+    it('getUserImage returns empty string if user does not have a picture', function () {
       var userImage = Meteor.myFunctions.getUserImage("nopic");
-      chai.assert.equal(userImage,"");
-    })
-  })
+      chai.assert.equal(userImage, "");
+    });
+  });
+
+  describe('showCanceledVisitConfirm', function () {
+    //FIXME: I don't know how to test this because I have to pass in $filter, $ionicListDelegate,
+    // $ionicHistory. I know I can mock $ionicPopup but I don't know how to mock the other things
+  });
+
+  describe("isVisitor", function () {
+    it("user is visitor", function () {
+      userIdStub.returns("someUserId");
+      userIsInRoleStub.returns(true);
+      chai.assert.isTrue(Meteor.myFunctions.isVisitor());
+    });
+    it("user is not visitor", function () {
+      userIdStub.returns('someUserId');
+      userIsInRoleStub.returns(false);
+      chai.assert.isFalse(Meteor.myFunctions.isVisitor());
+    });
+  });
+
+  describe("isRequester", function () {
+    it("user is requester", function () {
+      userIdStub.returns("someUserId");
+      userIsInRoleStub.returns(true);
+      chai.assert.isTrue(Meteor.myFunctions.isRequester());
+    });
+    it("user is not requester", function () {
+      userIdStub.returns("someUserId");
+      userIsInRoleStub.returns(false);
+      chai.assert.isFalse(Meteor.myFunctions.isRequester());
+    });
+  });
+
 });

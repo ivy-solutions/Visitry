@@ -11,8 +11,10 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.topVisitorsDayRange = 365;
   this.agencyId = $cookies.get('agencyId');
   this.isTopVisitorsReady = false;
+  this.isFrequentVisitorsReady = false;
   this.isUserDataReady = false;
   this.isVisitDataReady = false;
+  this.freqVisitors=[];
   this.subscribe('visits', ()=> {
     return [];
   }, ()=> {
@@ -51,6 +53,22 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     },
     topVisitors: ()=> {
       return TopVisitors.find({}, {sort: {visitCount: -1}, limit: 10});
+    },
+    frequentVisitors: () => {
+      var visitorIds = [];
+      var users;
+      this.call('visitorsByFrequency', this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange'), (error, visitorFrequency) => {
+        if (error)
+          console.log( error );
+        else {
+           this.freqVisitors = visitorFrequency.map( function (visitFreq) {
+            var visitor = Meteor.users.findOne({_id: visitFreq._id.visitorId}, {userData: 1});
+            visitor.visitCount = visitFreq.numVisits;
+            return visitor;
+          });
+          this.isFrequentVisitorsReady = true;
+        }
+      });
     }
   });
 

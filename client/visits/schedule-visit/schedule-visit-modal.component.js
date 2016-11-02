@@ -3,16 +3,8 @@
  */
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup) {
+angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup, ScheduleVisit) {
   $reactive(this).attach($scope);
-
-    $scope.hideModal = function () {
-      selectedTime = null;
-      $scope.modalCtrl.hide();
-    };
-    $scope.removeModal = function () {
-      $scope.modalCtrl.remove();
-    };
 
 
   var timePicker = {
@@ -64,8 +56,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
   this.hideScheduleVisitModal = function()  {
     //clear form
     this.visitorNotes = "";
-    $scope.hideModal();
-    $scope.removeModal();
+    ScheduleVisit.hideModal()
   };
 
   this.getRequester = function (visit) {

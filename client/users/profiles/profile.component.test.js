@@ -54,6 +54,7 @@ describe ( 'Profile', function() {
     user = {
       userName: "userName",
       roles: ["visitor"],
+      emails: [{address: 'abc@someplace.com', verified:false}],
       userData: {
         firstName: "first",
         lastName: "last",
@@ -67,6 +68,7 @@ describe ( 'Profile', function() {
             }
           }
         },
+        locationInfo: "Apt.3B",
         visitRange: "20"
       }
     };
@@ -89,7 +91,7 @@ describe ( 'Profile', function() {
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;
       form.location.$touched = true;
-      controller.locationDetails = {
+      controller.location.details = {
         name: "Boston",
         geometry: {
           location: {
@@ -122,33 +124,6 @@ describe ( 'Profile', function() {
     });
   });
 
-  describe( 'submitSuccess', function() {
-    var rolesStub;
-    beforeEach(function () {
-      rolesStub = sinon.stub(Roles, 'userIsInRole');
-    });
-    afterEach(function () {
-      rolesStub.restore();
-    });
-
-    it('visitor goes to browseRequests', function() {
-      meteorStub.returns(); //no error
-      rolesStub.returns( true );
-      user.roles = ['visitor'];
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('browseRequests').calledOnce)
-    });
-    it('requester goes to pendingVisits', function() {
-      user.roles = ['requester'];
-      rolesStub.returns( false );
-      controller.currentUser = user;
-      controller.submitSuccess(form);
-      chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
-    });
-
-  });
-
   describe('isLocationValid', function() {
     it( 'true when user has selected a location', function(){
       controller.currentUser = user;
@@ -171,13 +146,13 @@ describe ( 'Profile', function() {
     });
     it ( 'false when location details is blank but location has text', function() {
       controller.currentUser = user;
-      controller.locationDetails = null;
-      user.userData.location.address = "text";
+      controller.location.details = null;
+      controller.location.address = "text";
       chai.assert.isFalse(controller.isLocationValid());
     });
-    it ( 'false when location details is blank but location has text', function() {
+    it ( 'true when location details is filled in but location is empty', function() {
       controller.currentUser = user;
-      controller.locationDetails = {
+      controller.location.details = {
         name: "Boston",
         geometry: {
           location: {
@@ -189,8 +164,8 @@ describe ( 'Profile', function() {
           }
         }
       };
-      user.userData.location.address = "";
-      chai.assert.isFalse(controller.isLocationValid());
+      controller.location.address = "";
+      chai.assert.isTrue(controller.isLocationValid());
     });
   });
 });

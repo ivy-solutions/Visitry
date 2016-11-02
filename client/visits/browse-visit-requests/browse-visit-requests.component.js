@@ -4,7 +4,7 @@
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, $ionicModal) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, ScheduleVisit) {
   $reactive(this).attach($scope);
 
   $scope.Math = window.Math;
@@ -117,26 +117,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   };
 
   this.scheduleVisit = function(visit) {
-    $scope.visit = visit;
-    $scope.modalCtrl.show();
-  };
-
-  $ionicModal.fromTemplateUrl(getModalHtml(), function(modal) {
-    $scope.modalCtrl = modal;
-  }, {
-    scope: $scope,  // give the modal access to parent scope
-    animation: 'slide-in-left'
-  });
-
-
-  function getModalHtml() {
-    if (Meteor.isCordova) {
-      return '/packages/visitrymobile/client/visits/schedule-visit/schedule-visit-modal.html'
-    }
-    else {
-      return '/packages/visitry-browser/client/visits/schedule-visit/schedule-visit-modal.html'
-    }
-  }
-
-
+    ScheduleVisit.showModal( visit );
+   };
 });

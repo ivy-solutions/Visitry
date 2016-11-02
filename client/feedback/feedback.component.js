@@ -48,6 +48,8 @@ angular.module('visitry').directive('feedback', function () {
             this.requester = User.findOne({_id: v.requesterId});
             //if the current user is not the visitor for the visit, it may be the requester or someone acting on the requester's behalf
             this.isVisitor = this.visitor._id == Meteor.userId() ? true : false;
+          } else {
+            logger.error( "Failed to find visit requiring feedback. id: " + $stateParams.visitId);
           }
           return v
         }
