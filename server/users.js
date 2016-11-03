@@ -76,8 +76,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.agencyIds': 1,
         'userData.firstName': 1,
         'userData.lastName': 1,
-        'userData.picture': 1,
-        'userData.location': 1,
+        'userData.location.address': 1,
         'roles':1
       }
     };
