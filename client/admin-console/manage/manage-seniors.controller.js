@@ -10,8 +10,9 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.agencyId = $cookies.get('agencyId');
   this.recordPerPage = 10;
   this.page = 1;
+  this.order = 1;
   this.sort = {
-    'userData.lastName': 1
+    'userData.lastName': this.order
   };
 
   this.subscribe('seniorUsers', ()=> {
@@ -40,6 +41,14 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.pageChanged = function (newPage) {
     this.page = newPage;
   };
+
+  this.toggleSort= function (fieldname) {
+    var newSort = {};
+    this.order = -this.order;
+    newSort[fieldname] = parseInt(this.order);
+    this.sort = newSort;
+  }
+
 
 });
 
