@@ -20,12 +20,12 @@
                     <label class="item item-input">
                         <input ng-model="register.credentials.email" name="email" type="text" placeholder="Email" required ng-minlength="5" autocorrect="off" autocapitalize="off"/>
                     </label>
-                    <div layout="row" ng-show="registrationForm.email.$error && (registrationForm.email.$touched || registrationForm.$submitted)" ng-messages="registrationForm.username.$error">
+                    <div layout="row" ng-show="registrationForm.email.$error && (registrationForm.email.$touched || registrationForm.$submitted)" ng-messages="registrationForm.email.$error">
                         <span flex></span>
                         <span class="error-message" ng-messages-include="error-list.html"></span>
                     </div>
                     <label class="item item-input">
-                         <input ng-model="register.credentials.username" name="username" type="text" placeholder="Optional Username" ng-minlength="5" ng-maxlength="20" autocomplete="off" autocorrect="off"/>
+                         <input ng-model="register.credentials.username" name="username" type="text" placeholder="Optional Username" ng-maxlength="20" autocomplete="off" autocorrect="off"/>
                     </label>
                     <div layout="row" ng-show="registrationForm.username.$error && (registrationForm.username.$touched || registrationForm.$submitted)" ng-messages="registrationForm.username.$error">
                         <span flex></span>
