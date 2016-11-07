@@ -11,6 +11,7 @@ Meteor.publish("userdata", function () {
       {
         fields: {
           username: 1, emails: 1, roles: 1,
+          'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
           'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1
