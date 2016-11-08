@@ -29,7 +29,7 @@ angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function
 
     this.helpers({
         visitors: ()=> {
-            return User.find({'userData.role': {$eq: 'visitor'}})
+            return Roles.getUsersInRole('visitor')
         }
     });
 });
