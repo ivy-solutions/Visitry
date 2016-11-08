@@ -27,6 +27,7 @@ angular.module('visitry')
         resolve: {
           feedback: function ($q,$location) {
             var deferred = $q.defer();
+            deferred.notify('Checking for feedback');
             const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
               onReady: () => {
                 deferred.resolve(visits);
@@ -36,7 +37,7 @@ angular.module('visitry')
                    visitTime: {$lt: new Date()}
                  });
                  if (visitNeedingFeedback) {
-                   logger.info("Yes, lets go to feedbacks");
+                   logger.info("Yes, lets go to feedbacks" + visitNeedingFeedback._id);
                    $location.url('/requester/feedback/' + visitNeedingFeedback._id);
                  }
               },

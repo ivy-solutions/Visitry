@@ -10,7 +10,7 @@ Meteor.methods({
   'visits.createVisit'(visit) {
     visit.requesterId = this.userId;
     var requester = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
-    if (!requester.userData.agencyIds || requester.userData.agencyIds.length == 0) {
+    if (requester.userData.agencyIds==null || requester.userData.agencyIds.length === 0) {
       console.log("user without agency affiliation attempted to create visit request, userId: " + this.userId);
       throw new Meteor.Error('requires-agency', "User must be affiliated with an agency.")
     }
