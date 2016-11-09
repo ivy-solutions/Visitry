@@ -8,6 +8,7 @@ import ngMaterialIcons from 'angular-material-icons';
 import ngMessages from 'angular-messages';
 import ngMoment from 'angular-moment';
 import ngCookies from 'angular-cookies'
+import utilsPagination from 'angular-utils-pagination';
 
 let modulesToLoad = [
   angularMeteor,
@@ -18,7 +19,8 @@ let modulesToLoad = [
   ngMoment,
   ngMessages,
   ngMaterialIcons,
-  ngCookies
+  ngCookies,
+  utilsPagination
 ];
 
 if (Meteor.isCordova) {

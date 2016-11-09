@@ -7,7 +7,7 @@
       <div class="warning" ng-hide="connectionStatus=='ok'">
           No connection to server. ({{connectionStatus}})
       </div>
-    <div class="emptyListInfo" ng-hide="pendingVisits.numRequests>0">
+    <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
       No active requests. Press + to request a visit.
     </div>
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">

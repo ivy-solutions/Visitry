@@ -12,20 +12,35 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.listSort = {
     requestedDate: 1
   };
-  this.numRequests = -1;
+  this.hasRequests = true;
+  this.userId = Meteor.userId();
+  this.visits = null;
 
-  this.subscribe( 'userRequests', () => { return [Meteor.userId()]});
+  var requestsSubscription = this.subscribe( 'userRequests',
+    () => { return [this.getReactively('userId')]}
+  );
   this.subscribe('userdata');
 
   this.autorun( function() {
-    var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gte:new Date()}});
-    this.numRequests = visits.count();
+    if ( Meteor.userId()) {
+      this.visits = Visit.find({
+        requesterId: Meteor.userId(),
+        requestedDate: {$gte: new Date()}
+      }, {sort: this.getReactively('listSort')});
+      this.hasRequests = this.visits.count() > 0;
+    } else {
+      requestsSubscription.stop();
+    }
   });
+
 
   this.helpers({
     pendingVisits: ()=> {
-      var visits = Visit.find({requesterId: Meteor.userId(),requestedDate:{$gte:new Date()}}, {sort: this.getReactively('listSort')});
-      return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
+      if (Meteor.userId()) {
+        return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
+      } else {
+        requestsSubscription.stop();
+      }
     }
   });
 
