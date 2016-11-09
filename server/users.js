@@ -90,6 +90,32 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
   }
 });
 
+Meteor.publish("visitorUsers", function (agencyId, options) {
+  if (this.userId) {
+    logger.verbose("publish visitorUsers to " + this.userId);
+    var selector = {
+      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
+      'userData.role': {$eq: 'visitor'}
+    };
+    var queryOptions = {
+      sort: options.sort,
+      skip: options.skip,
+      limit: options.limit,
+      fields: {
+        createdAt: 1,
+        'userData.firstName': 1,
+        'userData.lastName': 1,
+        'userData.picture': 1,
+        'userData.location': 1,
+        'userData.role':1
+      }
+    };
+    return User.find(selector, queryOptions);
+  } else {
+    this.ready();
+  }
+});
+
 Meteor.methods({
   updateName(firstName, lastName)
   {
