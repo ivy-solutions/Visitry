@@ -117,7 +117,7 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile',
         resolve: {
-          userprofile: ['$q', ($q) => {
+          userprofile: function($q) {
             var deferred = $q.defer();
 
             const profile = Meteor.subscribe('userProfile', {
@@ -126,7 +126,7 @@ angular.module('visitry')
             });
 
             return deferred.promise;
-          }]
+          }
         }
       })
       .state('requesterFeedback', {
@@ -301,7 +301,7 @@ angular.module('visitry')
       Meteor.logout(function (err) {
         logger.info('Logging user out');
         if (err) {
-          logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
+          logger.error('logUserOut ' + err + ' logging user out userId: ' + Meteor.userId());
         }
         else {
           if (Meteor.isCordova) {
@@ -321,36 +321,36 @@ angular.module('visitry')
       }
     });
     $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
-        if (toState.name === 'login')
-          if (event && event.targetScope && event.targetScope.currentUser) {
-            //to prevent login view
-            event.preventDefault();
-          }
+      if (toState.name === 'login') {
+         if (event && Meteor.userId()) {
+          //to prevent login view
+          event.preventDefault();
+        }
       }
-    );
+    });
 
     Accounts.onLogin(function () {
       if ($state.is('login')) {
-         var handle = Meteor.subscribe('userBasics');
-        Tracker.autorun(() => {
-          const isReady = handle.ready();
-          var user = User.findOne(Meteor.userId());
-          var validAgency = user && user.userData.agencyIds && user.userData.agencyIds[0] ? true : false
-          if ( Meteor.userId() && validAgency ) {
-             if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-              $state.go('adminManage');
+        if ( Meteor.userId() ) {
+          var handle = Meteor.subscribe('userBasics');
+          Tracker.autorun(() => {
+            const isReady = handle.ready();
+            var user = User.findOne(Meteor.userId());
+            var validAgency = user && user.userData.agencyIds && user.userData.agencyIds[0] ? true : false;
+            if (validAgency) {
+              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+                $state.go('adminManage');
+              }
+              else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                $state.go('browseRequests');
+              } else {  // role: requester or not found
+                $state.go('pendingVisits');
+              }
+            } else {
+              logger.error( "user with no agency." + Meteor.userId());
             }
-            else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-              $state.go('browseRequests');
-            } else {  // role: requester or not found
-              $state.go('pendingVisits');
-            }
-          } else {
-            $state.go('login');
-          }
-
-        });
-
+          });
+        }
       }
     });
 

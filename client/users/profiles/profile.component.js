@@ -4,12 +4,12 @@
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
+angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory,userprofile) {
   $reactive(this).attach($scope);
 
   this.helpers({
     currentUser: () => {
-      var user = Meteor.user();
+      var user = User.findOne({_id:Meteor.userId()}, {userData:1});
       return user;
     },
     isVisitor: () => {
@@ -85,7 +85,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
       $ionicHistory.goBack();
     } else {
-       if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+      $ionicHistory.nextViewOptions({
+        historyRoot: true
+      });
+      if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
         $state.go('browseRequests');
       } else {
         $state.go('pendingVisits');

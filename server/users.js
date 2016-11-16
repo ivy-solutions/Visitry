@@ -195,22 +195,6 @@ Meteor.methods({
     });
     logger.info("updateUserData for userId: " + this.userId);
   },
-  updatePicture(data) {
-    if (!this.userId) {
-      logger.error("updatePicture - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update picture.');
-    }
-    var currentUser = User.findOne(this.userId);
-    currentUser.userData.picture = data;
-    currentUser.save({fields: ['userData.picture']}, function (err, id) {
-      if (err) {
-        logger.error("updatePicture failed to update user. err: " + err);
-        throw err;
-      }
-    });
-    logger.info("updatePicture for userId: " + this.userId);
-  },
   updateUserEmail(email) {
     if (!this.userId) {
       logger.error("updateUserEmail - user not logged in");

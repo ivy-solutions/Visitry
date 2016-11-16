@@ -19,7 +19,6 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
-      var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
 
       this.autorun(() => {
@@ -62,7 +61,6 @@ angular.module('visitry').directive('visitry', function () {
             logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
           else{
-            subscription.stop();
             subscription2.stop();
             if(Meteor.isCordova) {
               $ionicHistory.clearHistory();
