@@ -333,7 +333,9 @@ angular.module('visitry')
          var handle = Meteor.subscribe('userBasics');
         Tracker.autorun(() => {
           const isReady = handle.ready();
-          if ( Meteor.userId()) {
+          var user = User.findOne(Meteor.userId());
+          var validAgency = user && user.userData.agencyIds && user.userData.agencyIds[0] ? true : false
+          if ( Meteor.userId() && validAgency ) {
              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
               $state.go('adminManage');
             }
