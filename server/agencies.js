@@ -13,3 +13,16 @@ Meteor.publish("allAgencies", function (options) {
     activeUntil: { $gt : today}
   },options);
 });
+
+Meteor.methods({
+  getAgency(agencyId)
+  {
+    if (!this.userId) {
+      logger.error("getAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in.');
+    }
+    logger.info( "getAgency" + agencyId);
+    return Agencies.findOne({_id: agencyId}, {fields: {name:1, website:1, location:1, contactPhone: 1 }})
+  }
+});

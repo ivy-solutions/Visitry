@@ -4,7 +4,7 @@
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory,userprofile) {
+angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
 
   this.helpers({
