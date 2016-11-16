@@ -4,7 +4,8 @@
 
 angular.module('visitry.browser').controller('loginCtrl', function ($scope, $state, $reactive, $cookies) {
   $reactive(this).attach($scope);
-  this.subscribe('userdata');
+
+  this.subscribe('userBasics');
 
   this.credentials = {
     email: '',
@@ -12,6 +13,7 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
   };
 
   this.error = '';
+
 
   this.login = () => {
     Meteor.loginWithPassword(this.credentials.email, this.credentials.password, (err) => {
@@ -23,7 +25,6 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
         console.log('Login success ' + this.credentials.email);
         var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
         $cookies.put('agencyId', user.userData.agencyIds[0]);
-        $state.go('adminHome');
       }
     });
   };

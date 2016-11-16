@@ -4,7 +4,7 @@ import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("visits", function (options) {
-  if (this.userId && Roles.userIsInRole(this.userId, 'visitor')) {
+  if (this.userId) {
     logger.verbose("publish visits to " + this.userId);
     var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
     var today = new Date();

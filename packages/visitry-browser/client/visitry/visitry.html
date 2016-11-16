@@ -101,7 +101,6 @@
     </md-menu-bar>
     <span flex></span>
     <div class="navbar-right navbar-text">
-      <md-button ng-href="/login" ng-show="!visitry.isLoggedIn">Login</md-button>
       <span ng-show="visitry.isLoggedIn">Welcome {{visitry.userName.username}}</span>
       <md-button ng-show="visitry.isLoggedIn" ng-click="visitry.logout()">Logout</md-button>
     </div>

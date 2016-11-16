@@ -28,7 +28,7 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
         // if (!hasValidAgency()) {
         //   goto = 'agencyList'
         // } else {
-        goto = Roles.userIsInRole(user, 'visitor') ? 'browseRequests' : 'pendingVisits';
+        goto = Roles.userIsInRole(Meteor.userId(), ['visitor']) ? 'browseRequests' : 'pendingVisits';
         //}
         console.log("goto: " + goto);
         $state.go(goto);
