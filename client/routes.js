@@ -333,9 +333,7 @@ angular.module('visitry')
          var handle = Meteor.subscribe('userBasics');
         Tracker.autorun(() => {
           const isReady = handle.ready();
-          console.log(`Handle is ${isReady ? 'ready' : 'not ready'}`);
           if ( Meteor.userId()) {
-            //var user = User.findOne({_id: Meteor.userId()}, {userData: 1});
              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
               $state.go('adminManage');
             }
