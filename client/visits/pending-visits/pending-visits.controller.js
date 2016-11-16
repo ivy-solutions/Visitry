@@ -4,7 +4,8 @@
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate,$ionicHistory, RequestVisit, $filter, $state) {
+angular.module('visitry').controller('pendingVisitsCtrl',
+  function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate,$ionicHistory, RequestVisit, $filter, $state, feedback) {
   $reactive(this).attach($scope);
 
   this.showDelete = false;
@@ -16,9 +17,6 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
   this.userId = Meteor.userId();
   this.visits = null;
 
-  var requestsSubscription = this.subscribe( 'userRequests',
-    () => { return [this.getReactively('userId')]}
-  );
   this.subscribe('userdata');
 
   this.autorun( function() {
@@ -29,7 +27,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
       }, {sort: this.getReactively('listSort')});
       this.hasRequests = this.visits.count() > 0;
     } else {
-      requestsSubscription.stop();
+      feedback.stop()
     }
   });
 
@@ -39,7 +37,7 @@ angular.module('visitry').controller('pendingVisitsCtrl', function ($scope, $sta
       if (Meteor.userId()) {
         return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
       } else {
-        requestsSubscription.stop();
+        feedback.stop()
       }
     }
   });

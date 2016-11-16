@@ -19,7 +19,7 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
-      var subscription = this.subscribe('userBasics');
+      var subscription = this.subscribe('userProfile');
       var subscription2 = this.subscribe('visits');
 
       this.autorun(() => {

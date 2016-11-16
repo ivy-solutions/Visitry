@@ -42,6 +42,7 @@ angular.module('visitry')
               },
               onStop: deferred.reject
             });
+            return deferred.promise;
           }
         }
       })
