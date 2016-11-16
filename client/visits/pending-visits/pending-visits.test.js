@@ -32,9 +32,10 @@ describe('Pending Visit Requests', function () {
         return promise;
       }
      };
+     var feedback = {stop: function(){}};
     spyOnConfirm = sinon.spy(mockIonicPopup, 'confirm');
     inject(function ($rootScope,$ionicPopup) {
-       controller = $controller('pendingVisitsCtrl', {$scope: $rootScope.$new(true), $ionicPopup: mockIonicPopup
+       controller = $controller('pendingVisitsCtrl', {$scope: $rootScope.$new(true), $ionicPopup: mockIonicPopup, feedback: feedback
       });
 
     });
