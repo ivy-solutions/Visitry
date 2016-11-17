@@ -60,8 +60,8 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            const available = Meteor.subscribe('availableVisits', {
-              onReady: deferred.resolve,
+            const available = Meteor.subscribe('availableVisits', [], {
+              onReady: () => {deferred.resolve(available)},
               onStop: deferred.reject
             });
 
@@ -115,19 +115,7 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/users/profile.html';
           }
         },
-        controller: 'profileCtrl as profile',
-        resolve: {
-          userprofile: function($q) {
-            var deferred = $q.defer();
-
-            const profile = Meteor.subscribe('userProfile', {
-              onReady: deferred.resolve,
-              onStop: deferred.reject
-            });
-
-            return deferred.promise;
-          }
-        }
+        controller: 'profileCtrl as profile'
       })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
@@ -335,19 +323,15 @@ angular.module('visitry')
           var handle = Meteor.subscribe('userBasics');
           Tracker.autorun(() => {
             const isReady = handle.ready();
-            var user = User.findOne(Meteor.userId());
-            var validAgency = user && user.userData.agencyIds && user.userData.agencyIds[0] ? true : false;
-            if (validAgency) {
-              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-                $state.go('adminManage');
-              }
-              else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                $state.go('browseRequests');
-              } else {  // role: requester or not found
-                $state.go('pendingVisits');
-              }
+            if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+              $state.go('adminManage');
+            }
+            else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+              $state.go('browseRequests');
+            } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+              $state.go('pendingVisits');
             } else {
-              logger.error( "user with no agency." + Meteor.userId());
+              logger.error( "user with no role." + Meteor.userId());
             }
           });
         }

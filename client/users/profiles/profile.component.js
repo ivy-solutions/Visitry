@@ -7,11 +7,18 @@ import {Roles} from 'meteor/alanning:roles'
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
 
+  this.currentUser = Meteor.user();
+
+  this.autorun( function() {
+    if (Meteor.userId()) {
+      this.apply('getUserData', [Meteor.userId()], (err, result) => {
+        this.currentUser.userData = result;
+        console.log(this.currentUser);
+      });
+    }
+  });
+
   this.helpers({
-    currentUser: () => {
-      var user = User.findOne({_id:Meteor.userId()}, {userData:1});
-      return user;
-    },
     isVisitor: () => {
       return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
@@ -130,9 +137,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   }
 
   this.resetForm= function(form) {
-    this.locationDetails = null;
-    this.distance="1";
-    this.isVisitor=false;
     form.$setUntouched();
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');

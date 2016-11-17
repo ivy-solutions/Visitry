@@ -22,16 +22,6 @@ Meteor.publish("userdata", function () {
   }
 });
 
-Meteor.publish("userProfile", function () {
-  if (this.userId) {
-    logger.verbose("publish userProfile to " + this.userId);
-    return User.find({_id: this.userId},
-      {fields: {username: 1, emails: 1, roles: 1, 'userData': 1}});
-  } else {
-    this.ready();
-  }
-});
-
 Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
