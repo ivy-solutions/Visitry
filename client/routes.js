@@ -270,7 +270,6 @@ angular.module('visitry')
       }
     }
     function updateAgencyIdCookie($q, $timeout,$state, $cookies,$ionicHistory){
-      Meteor.subscribe('userBasics');
       if(!(Meteor.userId())){
         logger.debug('User not logged in');
         $timeout(function () {
@@ -280,7 +279,7 @@ angular.module('visitry')
         return $q.reject();
       }
       else if(!$cookies.get('agencyId')){
-        var user = User.findOne({_id:Meteor.userId()});
+         var user = User.findOne({_id:Meteor.userId()});
         $cookies.put('agencyId',user.userData.agencyIds[0]);
       }
       return $q.resolve();
@@ -320,7 +319,7 @@ angular.module('visitry')
     Accounts.onLogin(function () {
       if ($state.is('login')) {
         if ( Meteor.userId() ) {
-          var handle = Meteor.subscribe('userBasics');
+          const handle = Meteor.subscribe('userBasics');
           Tracker.autorun(() => {
             const isReady = handle.ready();
             if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
@@ -334,6 +333,7 @@ angular.module('visitry')
               logger.error( "user with no role." + Meteor.userId());
             }
           });
+          handle.stop();
         }
       }
     });

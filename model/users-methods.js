@@ -16,8 +16,8 @@ Meteor.methods({
     console.log("updatePicture for userId: " + this.userId);
   },
   getUserData(userId) {
-    console.log("getUserData");
-    var user = User.findOne({_id: userId}, {fields: {userData:1}});
+    console.log("getUserData " + userId);
+    var user = User.find({_id: userId}, {fields: {userData:1}});
     return user.userData;
   }
 });
