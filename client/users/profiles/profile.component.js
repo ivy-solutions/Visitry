@@ -10,7 +10,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.currentUser = Meteor.user();
 
   this.autorun( function() {
-    if (Meteor.userId() && this.currentUser.userData == null) {
+    if (Meteor.userId() && this.currentUser && this.currentUser.userData == null) {
       this.apply('getUserData', [Meteor.userId()], (err, result) => {
         if (!err) {
           this.currentUser.userData = result;
