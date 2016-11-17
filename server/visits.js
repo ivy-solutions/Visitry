@@ -66,12 +66,14 @@ Meteor.publish("availableVisits", function () {
     var visitRange = user.userData.visitRange ? user.userData.visitRange : defaultVisitRange;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
     var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
     //active unfilled future visit requests
     var availableRequests = Visits.find({
       agencyId: {$in: userAgencies},
       visitorId: null,
       inactive: {$exists: false},
-      requestedDate: {$gt: new Date()},
+      requestedDate: {$gt: today},
       'location.geo': {
         $near: {
           $geometry: fromLocation,
