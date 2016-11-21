@@ -75,6 +75,7 @@ less@2.6.5
 livedata@1.0.18
 localstorage@1.0.11
 logging@1.0.14
+mbanting:cordova-accounts-resume@1.1.0
 mdg:camera@1.4.1
 mdg:validation-error@0.5.1
 meteor@1.1.16
@@ -123,6 +124,7 @@ service-configuration@1.0.10
 session@1.1.6
 sha@1.0.8
 shynah:ionic-timepicker@0.4.0
+skinnygeek1010:cordova-status@0.2.0
 spacebars@1.0.12
 spacebars-compiler@1.0.12
 srp@1.0.9

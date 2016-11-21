@@ -68,7 +68,7 @@ angular.module('visitry').directive('visitry', function () {
             }else{
               $cookies.remove('agencyId');
             }
-            $state.go('login',{reload: true});
+            $state.go('login',{reload: true, notify:false});
           }
         });
       };

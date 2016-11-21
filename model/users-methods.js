@@ -19,5 +19,10 @@ Meteor.methods({
     console.log("getUserData " + userId);
     var user = User.find({_id: userId}, {fields: {userData:1}});
     return user.userData;
+  },
+  getRoles() {
+    console.log("getRoles " + this.userId);
+    var user = Meteor.users.find({_id: Meteor.userId()}, {fields: {roles:1}});
+    return user.roles;
   }
 });

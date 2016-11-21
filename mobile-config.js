@@ -72,3 +72,7 @@ App.setPreference("BackupWebStorage", "local");
 App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: '822210685703'
 });
+// Configure cordova file plugin - needed for mbanting:cordova-accounts-resume
+App.configurePlugin('cordova-plugin-file', {
+  iosPersistentFileLocation: 'Library'
+});

@@ -47,7 +47,8 @@ User = Class.create({
           return "no name"
         }
       }
-    }
+    },
+    roles: {type:[String], optional:true}
   }
 });
 var TopVisitors = new Mongo.Collection('topVisitors');

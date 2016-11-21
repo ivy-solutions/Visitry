@@ -304,21 +304,38 @@ angular.module('visitry')
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
-        $state.go('login');
+        $state.go('login', {notify:false});
       }
     });
     $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
       if (toState.name === 'login') {
          if (event && Meteor.userId()) {
-          //to prevent login view
-          event.preventDefault();
+           let nextState;
+           Meteor.call( 'getRoles', [], function(err,result) {
+             if (!err) {
+               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+                 nextState = 'adminManage';
+               }
+               else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                 nextState = 'browseRequests';
+               } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+                 nextState = 'pendingVisits';
+               }
+             }
+           });
+           if (nextState) {
+             logger.info("nextState: " + nextState);
+             event.preventDefault();
+             return $state.go(nextState);
+           }
         }
+        return;  //go to login page
       }
     });
 
     Accounts.onLogin(function () {
       if ($state.is('login')) {
-        if ( Meteor.userId() ) {
+        if (Meteor.userId() && !Meteor.loggingIn()) {
           const handle = Meteor.subscribe('userBasics');
           Tracker.autorun(() => {
             const isReady = handle.ready();
