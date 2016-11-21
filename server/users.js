@@ -26,7 +26,7 @@ Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
     return User.find({_id: this.userId},
-      {fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
+      { limit:1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
   } else {
     this.ready();
   }

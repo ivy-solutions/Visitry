@@ -309,24 +309,21 @@ angular.module('visitry')
     });
     $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
       if (toState.name === 'login') {
-         if (event && Meteor.userId()) {
-           let nextState;
-           Meteor.call( 'getRoles', [], function(err,result) {
-             if (!err) {
-               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-                 nextState = 'adminManage';
-               }
-               else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                 nextState = 'browseRequests';
-               } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-                 nextState = 'pendingVisits';
-               }
-             }
-           });
+         if (event && Meteor.userId() && !Meteor.loggingIn()) {
+           let nextState
+           if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+             nextState = 'adminManage';
+           }
+           else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+             nextState = 'browseRequests';
+           } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+             nextState = 'pendingVisits';
+           }
            if (nextState) {
-             logger.info("nextState: " + nextState);
              event.preventDefault();
              return $state.go(nextState);
+           } else {
+             logger.error("userId but no user role")
            }
         }
         return;  //go to login page
@@ -334,6 +331,7 @@ angular.module('visitry')
     });
 
     Accounts.onLogin(function () {
+      // if we are already logged in but on the login page, redirect to role-based appropriate page
       if ($state.is('login')) {
         if (Meteor.userId() && !Meteor.loggingIn()) {
           const handle = Meteor.subscribe('userBasics');
