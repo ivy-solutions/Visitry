@@ -25,7 +25,7 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: function ($q,$location) {
+          feedback: function ($q,$state) {
             var deferred = $q.defer();
             const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
               onReady: () => {
@@ -37,7 +37,7 @@ angular.module('visitry')
                  });
                  if (visitNeedingFeedback) {
                    logger.info("Yes, lets go to feedbacks" + visitNeedingFeedback._id);
-                   $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                   $state.go('requesterFeedback', {visitId: visitNeedingFeedback._id});
                  }
               },
               onStop: deferred.reject
@@ -309,8 +309,8 @@ angular.module('visitry')
     });
     $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
       if (toState.name === 'login') {
-         if (event && Meteor.userId() && !Meteor.loggingIn()) {
-           let nextState
+         if (event && Meteor.userId()) {
+           let nextState;
            if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
              nextState = 'adminManage';
            }
@@ -320,6 +320,7 @@ angular.module('visitry')
              nextState = 'pendingVisits';
            }
            if (nextState) {
+             logger.info(nextState);
              event.preventDefault();
              return $state.go(nextState);
            } else {
@@ -333,19 +334,21 @@ angular.module('visitry')
     Accounts.onLogin(function () {
       // if we are already logged in but on the login page, redirect to role-based appropriate page
       if ($state.is('login')) {
-        if (Meteor.userId() && !Meteor.loggingIn()) {
+        if (Meteor.userId()) {
           const handle = Meteor.subscribe('userBasics');
           Tracker.autorun(() => {
-            const isReady = handle.ready();
-            if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-              $state.go('adminManage');
-            }
-            else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-              $state.go('browseRequests');
-            } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-              $state.go('pendingVisits');
-            } else {
-              logger.error( "user with no role." + Meteor.userId());
+            if (Meteor.userId()) {
+              const isReady = handle.ready();
+              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+                $state.go('adminManage');
+              }
+              else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                $state.go('browseRequests');
+              } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+                $state.go('pendingVisits');
+              } else {
+                logger.error("user with no role." + Meteor.userId());
+              }
             }
           });
           handle.stop();

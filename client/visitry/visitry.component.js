@@ -19,7 +19,8 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
 
-      var subscription2 = this.subscribe('visits');
+      var visitsSubscription = this.subscribe('visits');
+      this.feedbackOutstanding;
 
       this.autorun(() => {
         var status = Meteor.status();
@@ -27,19 +28,17 @@ angular.module('visitry').directive('visitry', function () {
         if (status.status!=='connected') {
           logger.error( "Lost server connection " + JSON.stringify(status) );
         }
+        var feedback = Visit.find({
+          visitorFeedbackId: null,
+          visitorId: Meteor.userId(),
+          visitTime: {$lt: new Date()}
+        });
+        this.feedbackOutstanding = feedback.count();
       });
 
       this.helpers({
         userName: ()=> {
           return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
-        },
-        feedbackOutstanding: ()=> {
-          var feedback = Visit.find({
-            visitorFeedbackId: null,
-            visitorId: Meteor.userId(),
-            visitTime: {$lt: new Date()}
-          });
-          return feedback.count();
         },
         isLoggedIn: ()=> {
           logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
@@ -61,7 +60,9 @@ angular.module('visitry').directive('visitry', function () {
             logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
           else{
-            subscription2.stop();
+            if (visitsSubscription) {
+              visitsSubscription.stop();
+            }
             if(Meteor.isCordova) {
               $ionicHistory.clearHistory();
               $ionicHistory.clearCache();
