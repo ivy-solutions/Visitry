@@ -45,7 +45,7 @@ Meteor.publish("userRequests", function (userId) {
       return visitRequest.visitorId
     });
     return [userRequests,
-      Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1}})];
+      Meteor.users.find({_id: {$in: visitorIds}}, {fields: {userData: 1, emails: 1}})];
   } else {
     this.ready();
   }
@@ -81,14 +81,14 @@ Meteor.publish("availableVisits", function () {
         }
       }
     }, {
-      fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1}
+      fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1, "agencyId": 1}
     });
     var requesterIds = availableRequests.map(function (visit) {
       return visit.requesterId
     });
     requesterIds.push(this.userId);
     return [availableRequests,
-      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1}})];
+      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails:1}})];
   } else {
     this.ready();
   }

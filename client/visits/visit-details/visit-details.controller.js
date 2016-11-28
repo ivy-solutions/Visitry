@@ -16,7 +16,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
       var visit = Visit.findOne({_id: $stateParams.visitId});
       if (visit) {
         this.visit = visit;
-        this.requester = User.findOne({_id: visit.requesterId}, {userData: 1});
+        this.requester = User.findOne({_id: visit.requesterId}, {userData: 1, emails:1});
       }
       return visit;
     }
@@ -41,6 +41,38 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return (Meteor.myFunctions.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber) ? true : false;
   };
 
+  this.visitorEmailLink = function () {
+    var visitor = this.getVisitor();
+    if (visitor && visitor.emails.length > 0) {
+      return "mailto:" + visitor.emails[0].address;
+    }
+    return "";
+  };
+
+  this.requesterEmailLink = function () {
+    var requester = this.getRequester();
+    if (requester && requester.emails.length > 0) {
+      return "mailto:" + requester.emails[0].address;
+    }
+    return "";
+  };
+
+  this.visitorTextLink = function () {
+    var visitor = this.getVisitor();
+    if (visitor && visitor.userData && visitor.userData.phoneNumber) {
+      return "sms:" + visitor.userData.phoneNumber;
+    }
+    return "";
+  };
+
+  this.requesterTextLink = function () {
+    var requester = this.getRequester();
+    if (requester && requester.userData && requester.userData.phoneNumber) {
+      return "sms:" + requester.userData.phoneNumber;
+    }
+    return "";
+  };
+
   this.getRequester = function () {
     if (this.visit === undefined) {
       return null;
@@ -48,7 +80,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     if (this.requester) {
       return this.requester;
     }
-    return User.findOne({_id: this.visit.requesterId});
+    return User.findOne({_id: this.visit.requesterId}, {userData:1, emails:1});
   };
 
   this.getVisitor = function () {
