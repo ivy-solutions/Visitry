@@ -106,6 +106,17 @@ angular.module('visitry')
         url: '/register',
         template: '<register></register>'
       })
+      .state('resetPassword', {
+        url: '/resetPassword',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/auth/reset-password/reset-password.html';
+          } else {
+            return '/packages/visitry-browser/client/auth/reset-password/reset-password.html';
+          }
+        },
+        controller: 'resetPasswordCtrl as resetpw'
+      })
       .state('profile', {
         url: '/profile',
         templateUrl: ()=> {
