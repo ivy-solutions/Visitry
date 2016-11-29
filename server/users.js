@@ -32,6 +32,16 @@ Meteor.publish("userBasics", function () {
   }
 });
 
+Meteor.publish("userProfile", function () {
+  if (this.userId) {
+    logger.verbose("publish userProfile to " + this.userId);
+    return User.find({_id: this.userId},
+      { limit:1, fields: {username: 1, emails: 1, roles: 1, userData: 1}});
+  } else {
+    this.ready();
+  }
+});
+
 Meteor.publish("topVisitors", function (agency, numberOfDays) {
   var self = this;
   var visitors = User.find({'roles': {$elemMatch: {$eq:'visitor'}}, 'userData.agencyIds': {$elemMatch: {$eq: agency}}}, {

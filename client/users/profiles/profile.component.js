@@ -9,14 +9,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.currentUser = Meteor.user();
 
-  this.autorun( function() {
-    if (Meteor.userId() && this.currentUser && this.currentUser.userData == null) {
-      this.apply('getUserData', [Meteor.userId()], (err, result) => {
-        if (!err) {
-          this.currentUser.userData = result;
-        }
-      });
-    }
+  this.subscribe('userProfile');
+
+  this.autorun (() => {
+    this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
+      username: 1, emails: 1, roles: 1,
+        'userData.agencyIds': 1,
+        'userData.location': 1, 'userData.visitRange': 1,
+        'userData.firstName': 1, 'userData.lastName': 1,
+        'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1}}
+        );
   });
 
   this.helpers({
@@ -35,7 +37,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";
 
   this.location = {
-    address: this.currentUser && this.currentUser.userData.location ? this.currentUser.userData.location.address : "",
+    address: this.currentUser && this.currentUser.userData && this.currentUser.userData.location ? this.currentUser.userData.location.address : "",
     details: ""
   };
 
@@ -105,26 +107,31 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.updatePicture = () => {
-    logger.info( "profile.updatePicture for " + this.currentUser.username);
-    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80 }, function (err, data) {
-      if (err && (err.error == 'cancel' || err.reason == 'no image selected') ) {
-        return;
+    logger.info( "profile.updatePicture for " + Meteor.userId());
+    MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80, correctOrientation: true, allowEdit:true, targetWidth:200, targetHeight:200 },
+      function (err, data) {
+        if (err && (err.error == 'cancel' || err.reason == 'no image selected')) {
+          logger.info(err);
+          return;
+        }
+
+        if (err) {
+          return handleError(err);
+        }
+
+        $ionicLoading.show({
+          template: 'Updating picture...'
+        });
+
+        Meteor.call('updatePicture', data, (err) => {
+          logger.info("picture updated");
+          $ionicLoading.hide();
+          if (err) {
+            handleError(err);
+          }
+        });
       }
-
-      if (err) {
-        return handleError(err);
-      }
-
-      $ionicLoading.show({
-        template: 'Updating picture...'
-      });
-
-      Meteor.call('updatePicture', data, (err) => {
-        $ionicLoading.hide();
-        if (err)
-          handleError(err);
-      });
-    });
+    );
   };
 
   function handleError(err) {

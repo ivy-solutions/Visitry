@@ -70,7 +70,7 @@ App.accessRule( 'sms:*',{type:'intent'});
 App.setPreference("WebAppStartupTimeout", 60000);
 App.setPreference("LoadUrlTimeoutValue", 60000);
 App.setPreference("BackupWebStorage", "local");
-
+//id for android push notifications
 App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: '822210685703'
 });
@@ -78,3 +78,9 @@ App.configurePlugin('phonegap-plugin-push', {
 App.configurePlugin('cordova-plugin-file', {
   iosPersistentFileLocation: 'Library'
 });
+// in ios10, we need to provide reason for access to photo library, camera
+// Note: couldn't get backtick for multi-line strings to work
+App.appendToConfig("<platform name='ios'>"+
+  "<config-file platform='ios' target='*-Info.plist' parent='NSPhotoLibraryUsageDescription'><string>Provide photos for user profile</string></config-file>"+
+  "<config-file platform='ios' target='*-Info.plist' parent='NSCameraUsageDescription'><string>Provide photos for user profile</string></config-file>"+
+  "</platform>");
