@@ -4,7 +4,7 @@
 App.info({
   id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '1.0.5',
+  version: '1.0.11',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',
@@ -64,7 +64,7 @@ App.accessRule('*.visitry.org', {
 });
 App.accessRule('data:*', { type: 'navigation' });
 App.accessRule('tel:*',{type:'intent'});
-App.accessRule( 'mailto:*',{type:'intent'});
+App.accessRule( 'mailto:*',{type:'navigation'});
 App.accessRule( 'sms:*',{type:'intent'});
 
 App.setPreference("WebAppStartupTimeout", 60000);

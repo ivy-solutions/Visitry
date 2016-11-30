@@ -25,7 +25,7 @@
             ><i class="ion-android-textsms"></i> Text
             </button>
             <button class="button button-balanced"
-                    ng-href={{visitDetails.visitorEmailLink()}}
+                    ng-click="visitDetails.sendMail()"
                     ng-if="visitDetails.isRequester() && visitDetails.visitorEmailLink()"
             ><i class="ion-ios-email"></i> Email
             </button>
@@ -41,7 +41,7 @@
             ><i class="ion-android-textsms"></i> Text
             </button>
             <button class="button button-balanced"
-                    ng-href={{visitDetails.requesterEmailLink()}}
+                    ng-click="visitDetails.sendMail()"
                     ng-if="visitDetails.isVisitor() && visitDetails.requesterEmailLink()"
             ><i class="ion-ios-email"></i> Email
             </button>

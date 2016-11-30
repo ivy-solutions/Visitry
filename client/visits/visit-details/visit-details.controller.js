@@ -11,6 +11,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.visit;
   this.requester;
 
+
   this.helpers({
     theVisit: () => {
       var visit = Visit.findOne({_id: $stateParams.visitId});
@@ -23,6 +24,20 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   });
 
   ////////
+
+  this.sendMail = function(){
+    var formattedDate = this.visit.visitTime ? $filter('date')(new Date(this.visit.visitTime), 'MMMM d, h:mm') : $filter('date')(new Date(this.visit.requestedTime), 'MMMM d, h:mm');
+    var subject= "Visit on " + formattedDate;
+    var to;
+    if ( this.visit.requesterId === Meteor.userId()) {
+      to = this.visitorEmailLink()
+    } else {
+      to = this.requesterEmailLink()
+    }
+    if (to) {
+      window.open(to + '?subject=' + subject, '_system');
+    }
+  };
 
   this.isVisitor = function () {
     return Meteor.myFunctions.isVisitor();
@@ -41,18 +56,20 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return (Meteor.myFunctions.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber) ? true : false;
   };
 
-  this.visitorEmailLink = function () {
-    var visitor = this.getVisitor();
-    if (visitor && visitor.emails.length > 0) {
-      return "mailto:" + visitor.emails[0].address;
-    }
-    return "";
-  };
-
   this.requesterEmailLink = function () {
     var requester = this.getRequester();
     if (requester && requester.emails.length > 0) {
       return "mailto:" + requester.emails[0].address;
+    }
+    return "";
+  };
+
+  this.visitorEmailLink = function () {
+    if (this.visit && this.visit.visitorId) {
+      var visitor = User.findOne({_id: this.visit.visitorId});
+      if (visitor && visitor.emails.length > 0) {
+        return "mailto:" + visitor.emails[0].address;
+      }
     }
     return "";
   };
