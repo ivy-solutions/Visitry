@@ -4,7 +4,7 @@
 App.info({
   id: 'com.ivysolutions.visitry.app',
   name: 'Visitry',
-  version: '1.0.10',
+  version: '1.0.11',
   description: 'Request and schedule visits through volunteer visiting programs',
   author: 'IvySolutions',
   email: 'admin@visitry.org',
@@ -64,11 +64,23 @@ App.accessRule('*.visitry.org', {
 });
 App.accessRule('data:*', { type: 'navigation' });
 App.accessRule('tel:*',{type:'intent'});
+App.accessRule( 'mailto:*',{type:'navigation'});
+App.accessRule( 'sms:*',{type:'intent'});
 
 App.setPreference("WebAppStartupTimeout", 60000);
 App.setPreference("LoadUrlTimeoutValue", 60000);
 App.setPreference("BackupWebStorage", "local");
-
+//id for android push notifications
 App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: '822210685703'
 });
+// Configure cordova file plugin - needed for mbanting:cordova-accounts-resume
+App.configurePlugin('cordova-plugin-file', {
+  iosPersistentFileLocation: 'Library'
+});
+// in ios10, we need to provide reason for access to photo library, camera
+// Note: couldn't get backtick for multi-line strings to work
+App.appendToConfig("<platform name='ios'>"+
+  "<config-file platform='ios' target='*-Info.plist' parent='NSPhotoLibraryUsageDescription'><string>Provide photos for user profile</string></config-file>"+
+  "<config-file platform='ios' target='*-Info.plist' parent='NSCameraUsageDescription'><string>Provide photos for user profile</string></config-file>"+
+  "</platform>");

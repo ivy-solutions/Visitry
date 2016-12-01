@@ -23,7 +23,7 @@ const Visit = Class.create({
   collection: Visits,
   fields: {
     requesterId: {type: String, immutable: true},
-    agencyId: {type: String},
+    agencyId: {type: String, immutable: true},
     location: {type: Address},
     requestedDate: {type: Date},
     notes: {type: String, optional: true},

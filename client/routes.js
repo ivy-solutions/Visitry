@@ -25,9 +25,8 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: function ($q,$location) {
+          feedback: function ($q,$state) {
             var deferred = $q.defer();
-            deferred.notify('Checking for feedback');
             const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
               onReady: () => {
                 deferred.resolve(visits);
@@ -38,11 +37,12 @@ angular.module('visitry')
                  });
                  if (visitNeedingFeedback) {
                    logger.info("Yes, lets go to feedbacks" + visitNeedingFeedback._id);
-                   $location.url('/requester/feedback/' + visitNeedingFeedback._id);
+                   $state.go('requesterFeedback', {visitId: visitNeedingFeedback._id});
                  }
               },
               onStop: deferred.reject
             });
+            return deferred.promise;
           }
         }
       })
@@ -60,8 +60,8 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            const available = Meteor.subscribe('availableVisits', {
-              onReady: deferred.resolve,
+            const available = Meteor.subscribe('availableVisits', [], {
+              onReady: () => {deferred.resolve(available)},
               onStop: deferred.reject
             });
 
@@ -100,34 +100,22 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/auth/login/login.html';
           }
         },
-        controller: 'loginCtrl as login',
-        resolve: {
-          loggedIn: function ($location) {
-            if (Meteor.userId()) {
-              var user = User.findOne({_id: Meteor.userId()});
-              if (user) {
-                if (Roles.userIsInRole(user, 'administrator')){
-                  logger.verbose('administrator');
-                  $location.url('/admin');
-                }
-                else if (Roles.userIsInRole(user, 'visitor')) {
-                  logger.verbose('visitor');
-                  $location.url('/visitor/browseRequests');
-                } else {  // role: requester or not found
-                  logger.verbose('requester ' + user.roles);
-                  $location.url('/requester/pendingVisits');
-                }
-              }
-              else {
-                logger.verbose('no user');
-              }
-            }
-          }
-        }
+        controller: 'loginCtrl as login'
       })
       .state('register', {
         url: '/register',
         template: '<register></register>'
+      })
+      .state('resetPassword', {
+        url: '/resetPassword',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/auth/reset-password/reset-password.html';
+          } else {
+            return '/packages/visitry-browser/client/auth/reset-password/reset-password.html';
+          }
+        },
+        controller: 'resetPasswordCtrl as resetpw'
       })
       .state('profile', {
         url: '/profile',
@@ -138,19 +126,7 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/users/profile.html';
           }
         },
-        controller: 'profileCtrl as profile',
-        resolve: {
-          userprofile: ['$q', ($q) => {
-            var deferred = $q.defer();
-
-            const profile = Meteor.subscribe('userProfile', {
-              onReady: deferred.resolve,
-              onStop: deferred.reject
-            });
-
-            return deferred.promise;
-          }]
-        }
+        controller: 'profileCtrl as profile'
       })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
@@ -192,8 +168,18 @@ angular.module('visitry')
           }
         },
         controller: 'adminHomeCtrl as adminHome',
-        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
-      })
+        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie,
+          currentUser: ['$meteor', '$q', function($meteor, $q) {
+            return $meteor.requireUser().then(function(user) {
+              if(!_.contains(user.roles, 'administrator')) {
+                // fail the promise chain
+                return $q.reject('FORBIDDEN');
+              }
+              // keep the success promise chain
+              return user;
+            });
+          }]}
+        })
       .state('adminManage', {
         url: '/admin/manage',
         templateUrl: ()=> {
@@ -275,7 +261,8 @@ angular.module('visitry')
           }
         },
         controller: 'adminHelpAboutCtrl as adminHelpAbout'
-      });
+      })
+     ;
     $urlRouterProvider.otherwise("/login");
 
     function authenticate($q, $state, $timeout, $cookies,$ionicHistory) {
@@ -294,7 +281,6 @@ angular.module('visitry')
       }
     }
     function updateAgencyIdCookie($q, $timeout,$state, $cookies,$ionicHistory){
-      Meteor.subscribe('userData');
       if(!(Meteor.userId())){
         logger.debug('User not logged in');
         $timeout(function () {
@@ -304,7 +290,7 @@ angular.module('visitry')
         return $q.reject();
       }
       else if(!$cookies.get('agencyId')){
-        var user = User.findOne({_id:Meteor.userId()});
+         var user = User.findOne({_id:Meteor.userId()});
         $cookies.put('agencyId',user.userData.agencyIds[0]);
       }
       return $q.resolve();
@@ -313,7 +299,7 @@ angular.module('visitry')
       Meteor.logout(function (err) {
         logger.info('Logging user out');
         if (err) {
-          logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
+          logger.error('logUserOut ' + err + ' logging user out userId: ' + Meteor.userId());
         }
         else {
           if (Meteor.isCordova) {
@@ -321,16 +307,65 @@ angular.module('visitry')
           } else {
             $cookies.remove('agencyId');
           }
-          $state.go('login', {reload: true});
         }
       });
     }
   })
   .run(function ($rootScope, $state) {
+
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
-        $state.go('login');
+        $state.go('login', {notify:false});
       }
     });
+    $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
+      if (toState.name === 'login') {
+         if (event && Meteor.userId()) {
+           let nextState;
+           if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+             nextState = 'adminManage';
+           }
+           else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+             nextState = 'browseRequests';
+           } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+             nextState = 'pendingVisits';
+           }
+           if (nextState) {
+             logger.info(nextState);
+             event.preventDefault();
+             return $state.go(nextState);
+           } else {
+             logger.error("userId but no user role")
+           }
+        }
+        return;  //go to login page
+      }
+    });
+
+    Accounts.onLogin(function () {
+      // if we are already logged in but on the login page, redirect to role-based appropriate page
+      if ($state.is('login')) {
+        if (Meteor.userId()) {
+          const handle = Meteor.subscribe('userBasics');
+          Tracker.autorun(() => {
+            if (Meteor.userId()) {
+              const isReady = handle.ready();
+              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+                $state.go('adminManage');
+              }
+              else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                $state.go('browseRequests');
+              } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+                $state.go('pendingVisits');
+              } else {
+                logger.error("user with no role." + Meteor.userId());
+              }
+            }
+          });
+          handle.stop();
+        }
+      }
+    });
+
   });
 

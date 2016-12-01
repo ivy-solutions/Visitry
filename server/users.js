@@ -22,11 +22,21 @@ Meteor.publish("userdata", function () {
   }
 });
 
+Meteor.publish("userBasics", function () {
+  if (this.userId) {
+    logger.verbose("publish userBasics to " + this.userId);
+    return User.find({_id: this.userId},
+      { limit:1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
+  } else {
+    this.ready();
+  }
+});
+
 Meteor.publish("userProfile", function () {
   if (this.userId) {
     logger.verbose("publish userProfile to " + this.userId);
     return User.find({_id: this.userId},
-      {fields: {username: 1, emails: 1, roles: 1, 'userData': 1}});
+      { limit:1, fields: {username: 1, emails: 1, roles: 1, userData: 1}});
   } else {
     this.ready();
   }
@@ -184,22 +194,6 @@ Meteor.methods({
       }
     });
     logger.info("updateUserData for userId: " + this.userId);
-  },
-  updatePicture(data) {
-    if (!this.userId) {
-      logger.error("updatePicture - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update picture.');
-    }
-    var currentUser = User.findOne(this.userId);
-    currentUser.userData.picture = data;
-    currentUser.save({fields: ['userData.picture']}, function (err, id) {
-      if (err) {
-        logger.error("updatePicture failed to update user. err: " + err);
-        throw err;
-      }
-    });
-    logger.info("updatePicture for userId: " + this.userId);
   },
   updateUserEmail(email) {
     if (!this.userId) {

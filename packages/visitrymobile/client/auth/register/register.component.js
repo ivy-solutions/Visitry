@@ -26,6 +26,7 @@ angular.module("visitry.mobile").directive('register', function() {
           if ( this.credentials.username.length <1 ) {
             this.credentials.username = this.credentials.email
           }
+          //createUser logs user on, if successful
           Accounts.createUser(this.credentials, (err) => {
             if (err) {
               return handleError(err);
@@ -37,13 +38,8 @@ angular.module("visitry.mobile").directive('register', function() {
                   return handleError(err);
                 }
                 else {
-                  Meteor.loginWithPassword(this.credentials.username, this.credentials.password, (err) => {
-                    if (err) {
-                      return handleError(err)
-                    }
-                    this.resetForm(form);
-                    $state.go('profile');
-                  });
+                  this.resetForm(form);
+                  $state.go('profile', {reload:true});
                 }
               });
             }
@@ -53,7 +49,10 @@ angular.module("visitry.mobile").directive('register', function() {
 
       this.cancel = function (form) {
         this.resetForm(form);
-        $state.go( 'login');
+        if ( Meteor.userId()) {
+          Meteor.logout();
+        }
+        $state.go( 'login', {notify:false});
       };
 
       this.resetForm= function(form) {

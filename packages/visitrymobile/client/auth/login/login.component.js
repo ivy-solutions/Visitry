@@ -22,16 +22,6 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
       else {
         console.log('Login success ' + this.credentials.username + " device: " + JSON.stringify(ionic.Platform.device()));
         this.resetForm(form);
-        var user = Meteor.user();
-        //TODO we will sometime handle unaffiliated users
-        var goto;
-        // if (!hasValidAgency()) {
-        //   goto = 'agencyList'
-        // } else {
-        goto = Roles.userIsInRole(user, 'visitor') ? 'browseRequests' : 'pendingVisits';
-        //}
-        console.log("goto: " + goto);
-        $state.go(goto);
       }
     });
   };

@@ -13,16 +13,39 @@
   </ion-content>
     <div class="bar bar-footer invisible-footer">
         <ion-subfooter-bar class="bar bar-subfooter bar-light">
-            <button class="button button-block button-balanced"
+            <div class="button-bar">
+            <button class="button button-balanced"
                     ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())"
                     ng-if="visitDetails.canCallVisitor()"
                     ><i class="ion-ios-telephone"></i> Call
             </button>
-            <button class="button button-block button-balanced"
+            <button class="button button-balanced"
+                    ng-href={{visitDetails.visitorTextLink()}}
+                            ng-if="visitDetails.isRequester() && visitDetails.visitorTextLink()"
+            ><i class="ion-android-textsms"></i> Text
+            </button>
+            <button class="button button-balanced"
+                    ng-click="visitDetails.sendMail()"
+                    ng-if="visitDetails.isRequester() && visitDetails.visitorEmailLink()"
+            ><i class="ion-ios-email"></i> Email
+            </button>
+
+            <button class="button button-balanced"
                     ng-click="visitDetails.dialCompanion(visitDetails.getRequester())"
                     ng-if="visitDetails.canCallRequester()"
                     ><i class="ion-ios-telephone"></i> Call
             </button>
+            <button class="button button-balanced"
+                    ng-href={{visitDetails.requesterTextLink()}}
+                            ng-if="visitDetails.isVisitor() && visitDetails.requesterTextLink()"
+            ><i class="ion-android-textsms"></i> Text
+            </button>
+            <button class="button button-balanced"
+                    ng-click="visitDetails.sendMail()"
+                    ng-if="visitDetails.isVisitor() && visitDetails.requesterEmailLink()"
+            ><i class="ion-ios-email"></i> Email
+            </button>
+            </div>
         </ion-subfooter-bar>
         <button class="button button-block button-balanced"
                 ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()"

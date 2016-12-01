@@ -1,7 +1,6 @@
 <md-content layout-fill layout="column">
-  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none">
-    <md-button ng-href="/admin"><h1 class="md-title">Visitry</h1></md-button>
-    <md-menu-bar ng-show="visitry.isLoggedIn">
+  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none"><img src="/assets/images/logoNoBackground.png" width="200px"/>
+     <md-menu-bar ng-show="visitry.isLoggedIn">
       <md-menu>
         <button ng-click="$mdOpenMenu()">
           Manage
@@ -101,7 +100,6 @@
     </md-menu-bar>
     <span flex></span>
     <div class="navbar-right navbar-text">
-      <md-button ng-href="/login" ng-show="!visitry.isLoggedIn">Login</md-button>
       <span ng-show="visitry.isLoggedIn">Welcome {{visitry.userName.username}}</span>
       <md-button ng-show="visitry.isLoggedIn" ng-click="visitry.logout()">Logout</md-button>
     </div>

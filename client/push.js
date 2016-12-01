@@ -18,3 +18,4 @@ Push.Configure({
     sound: true
   }
 });
+Push.setBadge(0);

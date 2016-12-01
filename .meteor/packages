@@ -27,6 +27,7 @@ jeremy:geocomplete
 accounts-password
 dotansimha:accounts-ui-angular
 alanning:roles
+mbanting:cordova-accounts-resume
 
 # data
 check
@@ -61,3 +62,4 @@ raix:push@3.1.0-pre.1
 
 #other
 brentjanderson:winston-client
+email

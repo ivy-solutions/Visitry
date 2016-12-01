@@ -1,5 +1,5 @@
 <ion-view title="Sign in" hide-back-button=true hide-tabs>
-    <ion-content class="padding">
+    <ion-content class="padding login">
         <ion-item class="card padding">
             <form name="loginForm" novalidate="" ng-submit="loginForm.$valid && login.login(loginForm)">
                 <label class="item item-input">
@@ -19,6 +19,9 @@
                 <div class="padding">
                     <button type="submit" class="button button-block">Sign in</button>
                     <button type="button" class="button button-block" ng-click="login.createAccount(loginForm)">New Account</button>
+                </div>
+                <div layout="row">
+                    <a ng-href="resetPassword">Forgot password?</a>
                 </div>
             </form>
         </ion-item>
