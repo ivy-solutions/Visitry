@@ -20,7 +20,7 @@
                     ><i class="ion-ios-telephone"></i> Call
             </button>
             <button class="button button-balanced"
-                    ng-href={{visitDetails.visitorTextLink()}}
+                    ng-click="visitDetails.sendText()"
                             ng-if="visitDetails.isRequester() && visitDetails.visitorTextLink()"
             ><i class="ion-android-textsms"></i> Text
             </button>
@@ -36,7 +36,7 @@
                     ><i class="ion-ios-telephone"></i> Call
             </button>
             <button class="button button-balanced"
-                    ng-href={{visitDetails.requesterTextLink()}}
+                    ng-click="visitDetails.sendText()"
                             ng-if="visitDetails.isVisitor() && visitDetails.requesterTextLink()"
             ><i class="ion-android-textsms"></i> Text
             </button>
