@@ -15,7 +15,7 @@ Push.Configure({
   ios: {
     alert: true,
     badge: true,
-    sound: true
+    sound: true,
+    clearBadge:true
   }
 });
-Push.setBadge(0);

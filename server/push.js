@@ -31,18 +31,5 @@ Meteor.methods({
         userId: userId //this will send to a specific Meteor.user()._id
       }
     });
-  },
-  delayedUserNotification: function(text,title,userId,when) {
-    logger.info( "delayedUserNotification:" + text );
-    Push.send({
-      from: 'push',
-      title: title,
-      text: text,
-      query: {
-        userId: userId //this will send to a specific Meteor.user()._id
-      },
-      delayUntil: when
-    });
-  },
 
 });
