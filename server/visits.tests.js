@@ -111,7 +111,7 @@ if (Meteor.isServer) {
         Visits.update(visitId, {$set: {visitorId: userId}});
         const invocation = {userId: requesterId};
         rescindHandler.apply(invocation, [visitId]);
-        assert(Meteor.call.calledWith('userNotification'), "userNotification called");
+        assert(Meteor.call.calledWith('notifications.visitCancelled'), "notifications.visitCancelled called");
       });
     });
 
@@ -159,7 +159,7 @@ if (Meteor.isServer) {
       it('sends a notification if the visit had been scheduled', () => {
         const invocation = {userId: userId};
         cancelScheduledHandler.apply(invocation, [visitId]);
-        assert(Meteor.call.calledWith('userNotification'), "userNotification called");
+        assert(Meteor.call.calledWith('notifications.visitCancelled'), "notifications.visitCancelled called");
       });
     });
 
@@ -189,7 +189,7 @@ if (Meteor.isServer) {
       it('sends a notification to requester', () => {
         const invocation = {userId: userId};
         scheduleVisitHandler.apply(invocation, [visitId, getTomorrowDate(), "message"]);
-        assert(Meteor.call.calledWith('userNotification'), "userNotification called");
+        assert(Meteor.call.calledWith('notifications.visitScheduled'), "notifications.visitScheduled called");
       });
     });
 
@@ -575,27 +575,6 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 3, notesFromVisits);
     });
 
-  });
-  describe('formattedVisitTime ', () => {
-    var findOnAgencyStub;
-    beforeEach(() => {
-      findOneAgencyStub = sinon.stub(Agency, 'findOne');
-    });
-    afterEach(function () {
-      Agency.findOne.restore();
-    });
-
-    it('formatted visitTime with no time zone defaults to EST', () => {
-      var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
-      var visit = {visitTime: dateAt330pmUTC};
-      assert.equal(formattedVisitTime(visit), "Oct. 1, 11:30");
-    });
-    it('formatted visitTime with agency time zone = PST', () => {
-      findOneAgencyStub.returns({timeZone: 'America/Los_Angeles'})
-      var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
-      var visit = {visitTime: dateAt330pmUTC};
-      assert.equal(formattedVisitTime(visit), "Oct. 1, 8:30");
-    });
   });
 
   function createTestVisit(visit) {

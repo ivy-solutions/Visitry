@@ -48,3 +48,4 @@ const Notification = Class.create({
 
 export { NotificationStatus };
 export { Notification};
+export { Notifications};

@@ -9,6 +9,7 @@ import { logger } from '/server/logging'
 Meteor.methods({
   'notifications.visitScheduled'(visit) {
     var msgTitle = "Visit scheduled";
+    console.log(visit)
     var user = User.findOne(this.userId);
     var msgText = "Visit scheduled for " + formattedVisitTime(visit) + " by " + user.fullName;
     if (visit.visitorNotes) {
@@ -30,7 +31,7 @@ Meteor.methods({
       }
     ).save();
 
-    var oneHourBeforeVisit = moment(visit.visitTime).add(-60, 'm');
+    var oneHourBeforeVisit = moment(visit.visitTime).add(-60, 'm').toDate();
     var imminentNotificationForRequester = new Notification({
         visitId: visit._id,
         notifyDate: oneHourBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
