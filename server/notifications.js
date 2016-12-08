@@ -6,6 +6,16 @@ import { Visit } from '/model/visits'
 import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 
+Meteor.publish("receivedNotifications", function () {
+  if (this.userId) {
+    logger.verbose("publish receivedNotifications to " + this.userId);
+    return Notification.find({toUserId: this.userId, status: NotificationStatus.SENT},
+      { limit:20, sort: {notifyDate:-1} });
+  } else {
+    this.ready();
+  }
+});
+
 Meteor.methods({
   'notifications.visitScheduled'(visit) {
     var msgTitle = "Visit scheduled";

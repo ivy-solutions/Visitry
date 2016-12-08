@@ -128,6 +128,10 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
+      .state('notifications', {
+        url: '/notifications',
+        template: '<notifications></notifications>'
+      })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
         template: '<feedback></feedback>'

@@ -1,0 +1,14 @@
+<ion-view title="Latest Notifications" hide-back-button=false hide-tabs>
+    <ion-content class="has-header">
+        <ion-list>
+            <div class="emptyListInfo" ng-hide="notifications.numMessages!=0">
+                No notifications.
+            </div>
+            <ion-item ng-repeat="message in notifications.messages">
+                <h2>{{message.title}}</h2>
+                <h3>{{message.text}}</h3>
+                <h5 >Sent: {{message.notifyDate | date: "short"}}</h5>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

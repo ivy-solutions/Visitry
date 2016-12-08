@@ -124,8 +124,7 @@ angular.module('visitry').directive('visitry', function () {
             if ( buttons[index].text === profileText) {
                $state.go('profile');
             } else if (buttons[index].text === notificationsText) {
-              //TODO show notifications
-              this.cancel()
+              $state.go('notifications');
             }
             return true;
           },
