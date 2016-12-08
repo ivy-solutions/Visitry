@@ -9,7 +9,6 @@ import { logger } from '/server/logging'
 Meteor.methods({
   'notifications.visitScheduled'(visit) {
     var msgTitle = "Visit scheduled";
-    console.log(visit)
     var user = User.findOne(this.userId);
     var msgText = "Visit scheduled for " + formattedVisitTime(visit) + " by " + user.fullName;
     if (visit.visitorNotes) {
@@ -17,83 +16,75 @@ Meteor.methods({
     }
     msgText += ".";
 
-    logger.info( "notifications.visitScheduled " + msgText);
-    Meteor.call('userNotification',
-      msgText,
-      msgTitle,
-      visit.requesterId
-    );
-
     var visitScheduledNotification = new Notification({
         visitId: visit._id,
         notifyDate: new Date(), toUserId: visit.requesterId, status: NotificationStatus.SENT,
         title: msgTitle, text: msgText
       }
     ).save();
+    sendPushNotificationNow(visitScheduledNotification );
 
     var oneHourBeforeVisit = moment(visit.visitTime).add(-60, 'm').toDate();
-    var imminentNotificationForRequester = new Notification({
+    var dayOfVisitNotificationForRequester = new Notification({
         visitId: visit._id,
         notifyDate: oneHourBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
         title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
       }
     ).save();
-    var imminentNotificationForVisitor = new Notification({
+    console.log(dayOfVisitNotificationForRequester)
+    addFutureNotificationTask(dayOfVisitNotificationForRequester);
+
+    var dayOfVisitNotificationForVisitor = new Notification({
         visitId: visit._id,
         notifyDate: oneHourBeforeVisit, toUserId: visit.visitorId, status: NotificationStatus.FUTURE,
         title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
       }
     ).save();
+    addFutureNotificationTask(dayOfVisitNotificationForVisitor);
 
   },
   'notifications.visitCancelled'(visit) {
-    logger.info( visit );
     if (visit.visitorId && visit.visitorId !== this.userId ) {
       //communicate with visitor
       var msgTitle = "Cancelled";
       var user = User.findOne(this.userId);
       var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" cancelled by " + user.userData.firstName + ".";
 
-      logger.info( "notifications.visitCancelled " + msgText);
-      Meteor.call('userNotification',
-        msgText,
-        msgTitle,
-        visit.visitorId
-      );
       var visitCancelledNotification = new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.visitorId, status: NotificationStatus.SENT,
           title: msgTitle, text: msgText
         }
       ).save();
+      sendPushNotificationNow( visitCancelledNotification );
     }
     if ( visit.visitorId === this.userId){
       var user = User.findOne(this.userId);
       var msgText = "Visit on " + formattedVisitTime(visit) + " cancelled by " + user.fullName + ".";
       var msgTitle = "Visit cancelled";
-      logger.info( "notifications.visitCancelled " + msgText);
 
-      Meteor.call('userNotification',
-        msgText,
-        msgTitle,
-        visit.requesterId
-      );
-
-      var visitCancelledNotification = new Notification({
+       var visitCancelledNotification = new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.requesterId, status: NotificationStatus.SENT,
           title: msgTitle, text: msgText
         }
       ).save();
+      sendPushNotificationNow(visitCancelledNotification );
     }
     var futureNotifications = Notification.find({visitId: visit._id, status: NotificationStatus.FUTURE});
     futureNotifications.forEach((notification)=> {
       notification.remove();
     });
-
   }
 });
 
+sendPushNotificationNow = function(notification) {
+  var sentNotification = Notification.findOne(notification);
+  Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
+  logger.info( "notification.send " + sentNotification.text);
+  sentNotification.status = NotificationStatus.SENT;
+  sentNotification.save();
+};
 
 formattedVisitTime = function(visit) {
   var agency = Agency.findOne({_id:visit.agencyId}, {timeZone: 1});

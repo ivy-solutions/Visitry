@@ -60,6 +60,7 @@ if (Meteor.isServer) {
         beforeEach(function() {
           Notifications.remove({}, function(err) { if (err) console.log(err); })
           findOneUserStub.returns({fullname: "Alphonso Morris"})
+          addFutureNotificationTask = function(id){};
         });
         it('creates 3 notification records', () => {
           const invocation = {userId: userId};
