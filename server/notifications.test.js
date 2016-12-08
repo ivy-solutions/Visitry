@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import { Notifications,Notification } from '/model/notifications'
+import { Notifications,Notification, NotificationStatus } from '/model/notifications'
 import { Agency} from '/model/agencies'
 import '/server/notifications.js';
 
@@ -64,9 +64,56 @@ if (Meteor.isServer) {
         it('creates 3 notification records', () => {
           const invocation = {userId: userId};
           handler.apply(invocation, [visitorVisit]);
-          assert.equal(Notifications.find().count(), 3);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1); //notification sent to requester
+          assert.equal(Notifications.find({status: NotificationStatus.FUTURE}).count(), 2); // notification to visitor/requester on day of visit
         });
+        it('sends a push notification', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [visitorVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+      });
 
+      describe('notifications.visitCancelled method', () => {
+        const handler = Meteor.server.method_handlers['notifications.visitCancelled'];
+        beforeEach(function() {
+          Notifications.remove({}, function(err) { if (err) console.log(err); });
+          var futureNotificationParty1 = new Notification({
+              visitId: visitId,
+              notifyDate: new Date(), toUserId: userId, status: NotificationStatus.FUTURE,
+              title: "Visit today", text: "FutureNotification1, "
+            }
+          ).save();
+          var futureNotificationPart2 = new Notification({
+              visitId: visitId,
+              notifyDate: new Date(), toUserId: otherUserId, status: NotificationStatus.FUTURE,
+              title: "Visit today", text: "FutureNotification2, "
+            }
+          ).save();
+          findOneUserStub.returns({fullname: "Alice Morris", userData: {firstName: "Alice", lastName: "Morris"}});
+        });
+        it("cancel by requester sends notification and removes future notifications", () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+          assert.equal(Notifications.find({status: NotificationStatus.FUTURE}).count(), 0);
+        });
+        it('cancel by requester sends push notification to visitor', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+        it("cancel by visitor sends notification and removes future notifications", () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [visitorVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+          assert.equal(Notifications.find({status: NotificationStatus.FUTURE}).count(), 0);
+        });
+        it('cancel by requester sends push notification to visitor', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [visitorVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
       });
 
       describe('formattedVisitTime ', () => {
