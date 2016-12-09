@@ -17,6 +17,7 @@ Meteor.startup(function ()  {
     });
 
     var sarahc = Meteor.users.findOne({username: 'Sarahc'});
+    Roles.setUserRoles(sarahc._id,['visitor']);
     //create the agencies
     if (Agencies.find().count() === 0) {
       logger.info("No agencies found - creating demo agencies");
@@ -137,15 +138,6 @@ Meteor.startup(function ()  {
     let allAgencies = Agencies.find();
     let allAgencyIds = allAgencies.map( function(agency) { return agency._id});
     Meteor.users.update(sarahc._id, {$set: {'userData.agencyIds': allAgencyIds}});
-  } else {
-    //users exist - migrate to new roles package
-    var usersWithoutRoles = Meteor.users.find({$or: [{roles: {$eq: null}}, {roles: {$size:0}}]}, {'userData.role':1});
-    usersWithoutRoles.forEach( function (user) {
-      var oldRole = user.userData.role;
-      if (!oldRole) oldRole = 'requester';
-      Roles.addUsersToRoles(user, [ oldRole]);
-      console.log( "migrate role, old Role: " + oldRole  + " for " + user._id )
-    });
   }
 
   if(Visits.find().count() ===0){

@@ -4,13 +4,13 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-base             # Packages every Meteor app needs to have
-mobile-experience       # Packages for a great mobile UX
-mongo                   # The database Meteor supports right now
-session                 # Client-side reactive dictionary for your app
-jquery                  # Helpful client-side library
-tracker                 # Meteor's client-side reactive programming library
-es5-shim                # ECMAScript 5 compatibility for older browsers.
+meteor-base@1.0.4             # Packages every Meteor app needs to have
+mobile-experience@1.0.4       # Packages for a great mobile UX
+mongo@1.1.14                   # The database Meteor supports right now
+session@1.1.7                 # Client-side reactive dictionary for your app
+jquery@1.11.10                  # Helpful client-side library
+tracker@1.1.1                 # Meteor's client-side reactive programming library
+es5-shim@4.6.15                # ECMAScript 5 compatibility for older browsers.
 driftyco:ionic
 
 # angular
@@ -24,14 +24,14 @@ okland:camera-ui
 jeremy:geocomplete
 
 # users/accounts
-accounts-password
+accounts-password@1.3.3
 dotansimha:accounts-ui-angular
 alanning:roles
 mbanting:cordova-accounts-resume
 
 # data
-check
-less
+check@1.2.4
+less@2.7.8
 tmeasday:publish-counts
 aldeed:simple-schema
 aldeed:collection2
@@ -45,8 +45,8 @@ meteorhacks:aggregate
 visitry-browser         # visitry package
 visitrymobile           # visitry package
 hybrid:asset-builder
-standard-minifier-css
-standard-minifier-js
+standard-minifier-css@1.3.2
+standard-minifier-js@1.2.1
 
 # testing
 angular:angular-mocks
@@ -55,12 +55,13 @@ hwillson:stub-collections
 practicalmeteor:mocha-console-runner
 dburles:factory
 practicalmeteor:faker
-random
+random@1.0.10
 
 # notifications
 raix:push@3.1.0-pre.1
 
 #other
 brentjanderson:winston-client
-email
+email@1.1.18
 percolate:synced-cron
+shell-server
