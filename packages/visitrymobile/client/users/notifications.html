@@ -5,9 +5,9 @@
                 No notifications.
             </div>
             <ion-item ng-repeat="message in notifications.messages">
-                <h2>{{message.title}}</h2>
-                <h3>{{message.text}}</h3>
-                <h5 >Sent: {{message.notifyDate | date: "short"}}</h5>
+                <h2 class="padding-bottom">{{message.title}}</h2>
+                <div class="item-text-wrap"><h3>{{message.text}}</h3></div>
+                <p class="stable" align="right">Sent: {{message.notifyDate | date: "short"}}</p>
             </ion-item>
         </ion-list>
     </ion-content>
