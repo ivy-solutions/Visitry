@@ -9,13 +9,13 @@ dependencies:
     - npm -g install spacejam@rc
     - meteor npm install
   pre:
-    - npm install -g mupx # install meteor-up for deployment
+    - npm install -g mup # install meteor-up for deployment
 deployment:
   dev:
     branch: dev
     commands:
-      - cd $HOME/Visitry/.build/deployment/dev && mupx deploy
+      - cd $HOME/Visitry/.deploy/dev && mup deploy
   staging:
     branch: master
     commands:
-      - cd $HOME/Visitry/.build/deployment/staging && mupx deploy
+      - cd $HOME/Visitry/.deploy/staging && mup deploy
