@@ -13,11 +13,12 @@ dependencies:
   pre:
     - npm -g install ssh2
     - npm install -g mup # install meteor-up for deployment
+    - mkdir $HOME/build
 deployment:
   dev:
     branch: dev
     commands:
-      - sudo cd $HOME/Visitry/.deploy/dev && mup deploy
+      - cd $HOME/Visitry/.deploy/dev && mup deploy
   staging:
     branch: master
     commands:
