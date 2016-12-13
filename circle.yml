@@ -1,6 +1,8 @@
 general:
   artifacts:
-    - "/home/ubuntu/Visitry/.meteor/local/cordova-build/platforms/android/build/outputs/apk"
+    - "/home/build/Visitry/android/debug.apk"
+    - "/home/build/Visitry/android/release-unsigned.apk"
+    - "/home/build/Visitry/bundle.tar.gz"
 dependencies:
   cache_directories:
     - ~/.meteor
