@@ -3,6 +3,7 @@ general:
     - "/home/ubuntu/build/Visitry/android/debug.apk"
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
     - "/home/ubuntu/build/Visitry/bundle.tar.gz"
+    - "/home/ubuntu/build/Visitry/Visitry.apk"
 dependencies:
   cache_directories:
     - ~/.meteor
@@ -24,3 +25,4 @@ deployment:
     branch: master
     commands:
       - sudo cd $HOME/Visitry/.deploy/staging && mup deploy
+      - ./android-sign-apk.sh
