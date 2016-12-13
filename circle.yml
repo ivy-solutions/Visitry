@@ -13,7 +13,8 @@ dependencies:
   pre:
     - npm -g install ssh2
     - npm install -g mup # install meteor-up for deployment
-    - mkdir $HOME/build/Visitry
+    - mkdir $HOME/build/
+    - mkdir $HOME/build/Visitry/
 deployment:
   dev:
     branch: dev
