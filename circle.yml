@@ -17,8 +17,8 @@ deployment:
   dev:
     branch: dev
     commands:
-      - cd $HOME/Visitry/.deploy/dev && mup deploy
+      - cd $HOME/Visitry/.deploy/dev && sudo mup deploy
   staging:
     branch: master
     commands:
-      - cd $HOME/Visitry/.deploy/staging && mup deploy
+      - cd $HOME/Visitry/.deploy/staging && sudo mup deploy
