@@ -1,8 +1,8 @@
 general:
   artifacts:
-    - "/home/build/Visitry/android/debug.apk"
-    - "/home/build/Visitry/android/release-unsigned.apk"
-    - "/home/build/Visitry/bundle.tar.gz"
+    - "/home/ubuntu/build/Visitry/android/debug.apk"
+    - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
+    - "/home/ubuntu/build/Visitry/bundle.tar.gz"
 dependencies:
   cache_directories:
     - ~/.meteor
@@ -13,7 +13,7 @@ dependencies:
   pre:
     - npm -g install ssh2
     - npm install -g mup # install meteor-up for deployment
-    - mkdir $HOME/build
+    - mkdir $HOME/build/Visitry
 deployment:
   dev:
     branch: dev
