@@ -1,6 +1,9 @@
 general:
   artifacts:
-    - "/home/ubuntu/Visitry/.meteor/local/cordova-build/platforms/android/build/outputs/apk"
+    - "/home/ubuntu/build/Visitry/android/debug.apk"
+    - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
+    - "/home/ubuntu/build/Visitry/bundle.tar.gz"
+    - "/home/ubuntu/build/Visitry/Visitry.apk"
 dependencies:
   cache_directories:
     - ~/.meteor
@@ -9,13 +12,17 @@ dependencies:
     - npm -g install spacejam@rc
     - meteor npm install
   pre:
-    - npm install -g mupx # install meteor-up for deployment
+    - npm -g install ssh2
+    - npm install -g mup # install meteor-up for deployment
+    - mkdir $HOME/build/
+    - mkdir $HOME/build/Visitry/
 deployment:
   dev:
     branch: dev
     commands:
-      - cd $HOME/Visitry/.build/deployment/dev && mupx deploy
+      - cd $HOME/Visitry/.deploy/dev && mup deploy
   staging:
     branch: master
     commands:
-      - cd $HOME/Visitry/.build/deployment/staging && mupx deploy
+      - sudo cd $HOME/Visitry/.deploy/staging && mup deploy
+      - ./android-sign-apk.sh

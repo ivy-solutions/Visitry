@@ -14,7 +14,7 @@ Meteor.publish("userdata", function () {
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1
+          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1
         }
       });
   } else {
@@ -184,8 +184,9 @@ Meteor.methods({
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
-    currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number of there is none
+    currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number if there is none
     currentUser.userData.locationInfo = data.locationInfo;
+    currentUser.userData.acceptSMS = (data.phoneNumber && data.acceptSMS !==undefined) ? data.acceptSMS : (data.phoneNumber ? true : false); // default to true, unless there is no phone number
     Roles.addUsersToRoles(currentUser, [data.role]);
     currentUser.save(function (err, id) {
       if (err) {

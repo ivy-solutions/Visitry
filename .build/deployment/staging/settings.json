@@ -1,7 +1,0 @@
-{
-  "public": {
-
-  },
-  "apnCert": "ProdPushCert.pem",
-  "isProduction": true
-}

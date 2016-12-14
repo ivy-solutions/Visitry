@@ -19,7 +19,8 @@ const UserData = Class.create({
         {type: 'minLength', param: 9},
         {type: 'maxLength', param: 15}
       ]
-    }
+    },
+    acceptSMS: {type: Boolean, default: true}
   }
 });
 

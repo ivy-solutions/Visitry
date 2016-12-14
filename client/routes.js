@@ -128,6 +128,17 @@ angular.module('visitry')
         },
         controller: 'profileCtrl as profile'
       })
+      .state('notifications', {
+        url: '/notifications',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/users/notifications.html';
+          } else {
+            return '/packages/visitry-browser/client/users/notifications.html';
+          }
+        },
+        controller: 'notificationsCtrl as notifications'
+      })
       .state('requesterFeedback', {
         url: '/requester/feedback/:visitId',
         template: '<feedback></feedback>'

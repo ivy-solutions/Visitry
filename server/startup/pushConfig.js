@@ -13,12 +13,12 @@ Meteor.startup(function () {
     apn: {
       certData: Assets.getText(cert),
       keyData: Assets.getText('SCVisitryDevKey.pem'),
-      passphrase: 'Visitry99',
-      production: isProduction
+      passphrase: 'Visitry99'
     },
     "gcm": {
       "apiKey": "AIzaSyBw6Y5Amshc_i8V8rcbffIo4WNdsrYF4nM",
       "projectNumber": "822210685703"
     },
+    production: isProduction
   });
 });

@@ -3,7 +3,6 @@
  */
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
-import { Agency } from '/model/agencies'
 
 
 Meteor.methods({
@@ -36,20 +35,9 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
     console.log( "rescind visit request for " + this.userId);
+    //notify visitor
+    Meteor.call( 'notifications.visitCancelled', visit);
 
-    if (visit.visitorId) {
-      //communicate with visitor
-      var msgTitle = "Cancelled";
-      var user = User.findOne(this.userId);
-      var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" cancelled by " + user.userData.firstName + ".";
-
-      console.log( msgText);
-      Meteor.call('userNotification',
-        msgText,
-        msgTitle,
-        visit.visitorId
-      )
-    }
     visit.softRemove();
 
     return visit;
@@ -65,9 +53,11 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized', 'Only visitor is allowed to cancel scheduled visit.');
     }
 
+    //notify requester, before editing the visit
+    Meteor.call( 'notifications.visitCancelled', visit);
+
     // format msg for the push notification before the save
     var user = User.findOne(this.userId);
-    var msgText = "Visit on " + formattedVisitTime(visit) + " cancelled by " + user.fullName + ".";
 
     visit.cancelledAt = new Date();
     visit.visitorId = null;
@@ -81,14 +71,6 @@ Meteor.methods({
     });
     console.log( "visits.cancelScheduled cancelled visitId: " + visitId + " userId: " + this.userId);
 
-    var msgTitle = "Visit cancelled";
-    console.log( msgText);
-
-    Meteor.call('userNotification',
-      msgText,
-      msgTitle,
-      visit.requesterId
-    );
     return visit;
   },
   'visits.scheduleVisit'(visitId, time, notes) {
@@ -110,20 +92,8 @@ Meteor.methods({
     });
     console.log( "visits.scheduleVisit scheduled visitId: " + visitId + " userId: " + this.userId);
 
-    var msgTitle = "Visit scheduled";
-    var user = User.findOne(this.userId);
-    var msgText = "Visit scheduled for " + formattedVisitTime(visit) + " by " + user.fullName;
-    if (visit.visitorNotes) {
-      msgText += ', saying, "' + visit.visitorNotes + '"';
-    }
-    msgText += ".";
+    Meteor.call('notifications.visitScheduled', visit);
 
-    console.log( msgText);
-    Meteor.call('userNotification',
-      msgText,
-      msgTitle,
-      visit.requesterId
-    );
     return visit;
   },
   'visits.attachFeedback'(visitId, feedbackId) {
@@ -156,13 +126,3 @@ Meteor.methods({
     return visit;
   }
 });
-
-formattedVisitTime = function(visit) {
-  var agency = Agency.findOne({_id:visit.agencyId}, {timeZone: 1});
-  var timeZone = 'America/New_York'; //default
-  if ( agency && agency.timeZone) {
-    timeZone = agency.timeZone
-  }
-  var time = moment.tz(visit.visitTime, timeZone).format('MMM. D, h:mm');
-  return time;
-};

@@ -82,6 +82,7 @@ if (Meteor.isServer) {
             visitRange:20,
             about:"I raise chickens",
             phoneNumber:"(800)555-1212",
+            acceptSMS: false,
             locationInfo: "Apt.3B"}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         // adding ground-user package broke this.. - sjc
@@ -89,6 +90,7 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.visitRange, 20);
         assert.equal(updatedUser.userData.about, "I raise chickens");
         assert.equal(updatedUser.userData.phoneNumber, "(800)555-1212");
+        assert.equal(updatedUser.userData.acceptSMS, false);
         assert.equal(updatedUser.userData.locationInfo, "Apt.3B");
       });
 

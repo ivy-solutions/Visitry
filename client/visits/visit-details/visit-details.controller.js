@@ -74,18 +74,34 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
     return "";
   };
 
+  this.sendText = function(){
+    var to;
+    if ( this.visit.requesterId === Meteor.userId()) {
+      to = this.visitorTextLink()
+    } else {
+      to = this.requesterTextLink()
+    }
+    if (to) {
+      window.open(to, '_system');
+    }
+  };
+
   this.visitorTextLink = function () {
     var visitor = this.getVisitor();
-    if (visitor && visitor.userData && visitor.userData.phoneNumber) {
-      return "sms:" + visitor.userData.phoneNumber;
+    if (visitor && visitor.userData && visitor.userData.phoneNumber && visitor.userData.acceptSMS==true) {
+      var phoneNumber = visitor.userData.phoneNumber.replace(/[^\d]/g, "");
+      phoneNumber = phoneNumber[0] == '1' ? phoneNumber : '1' + phoneNumber
+      return "sms://" + phoneNumber;
     }
     return "";
   };
 
   this.requesterTextLink = function () {
     var requester = this.getRequester();
-    if (requester && requester.userData && requester.userData.phoneNumber) {
-      return "sms:" + requester.userData.phoneNumber;
+    if (requester && requester.userData && requester.userData.phoneNumber && requester.userData.acceptSMS==true) {
+      var phoneNumber = requester.userData.phoneNumber.replace(/[^\d]/g, "");
+      phoneNumber = phoneNumber[0] == '1' ? phoneNumber : '1' + phoneNumber
+      return "sms://" + phoneNumber;
     }
     return "";
   };
