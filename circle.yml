@@ -3,7 +3,7 @@ general:
     - "/home/ubuntu/build/Visitry/android/debug.apk"
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
     - "/home/ubuntu/build/Visitry/bundle.tar.gz"
-    - "/home/ubuntu/build/Visitry/Visitry.apk"
+    - "/home/ubuntu/build/Visitry/android/Visitry.apk"
 dependencies:
   cache_directories:
     - ~/.meteor
