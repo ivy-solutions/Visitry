@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd $HOME/build/Visitry/android
+cd /home/ubuntu/build/Visitry/android
 #fetch signing keystore
 aws s3 cp s3://visitry-build-info/signing/.keystore ./.keystore
 #sign apk file

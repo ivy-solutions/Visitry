@@ -25,4 +25,4 @@ deployment:
     branch: master
     commands:
       - cd $HOME/Visitry/.deploy/staging && mup deploy
-      #- ./android-sign-apk.sh
+      - sh ./android-sign-apk.sh
