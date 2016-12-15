@@ -7,7 +7,5 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 \
       release-unsigned.apk Visitry \
       -keystore ./.keystore \
       -storepass Visitry99
-#remove old signed version
-rm -rfv Visitry.apk
 #pack new apk
-$ANDROID_HOME/build-tools/23.0.2/zipalign 4 release-unsigned.apk Visitry.apk
+$ANDROID_HOME/build-tools/23.0.2/zipalign -f -v 4 release-unsigned.apk Visitry.apk
