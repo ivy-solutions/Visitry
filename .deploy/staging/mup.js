@@ -38,8 +38,7 @@ module.exports = {
       one: {}
     },
     buildOptions: {
-      serverOnly: false,
-      server: 'https://test.visitry.org',
+      serverOnly: true,
       debug: false,
       cleanAfterBuild: true, // default
       buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
