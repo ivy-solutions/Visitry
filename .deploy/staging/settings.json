@@ -2,7 +2,7 @@
   "public": {
 
   },
-  "apnCert": "ProdPushNotifications.pem",
+//  "apnCert": "ProdPushNotifications.pem",
   "isProduction": true,
   "smtp": "smtp://AKIAIZ2MZ23UE4OQOXDQ:AsWc2kQuldWZnjoiEzJ8vn2lIZwyvedQnI8i+bV4lhaY@email-smtp.us-east-1.amazonaws.com:25"
 }
