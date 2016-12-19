@@ -4,6 +4,7 @@ Meteor.startup(function () {
   //the cert info is taken form the .build/deployment/settings but we set some defaults here
 
   var cert = Meteor.settings.apnCert ? Meteor.settings.apnCert : "VisitryPush.pem";
+  var key = Meteor.settings.apnKey ? Meteor.settings.apnKey : "SCVisitryDevKey.pem";
   var isProduction = Meteor.settings.isProduction ? true : false;
   logger.info( "Push isProduction:" + isProduction + " cert:" + cert);
 
@@ -12,7 +13,7 @@ Meteor.startup(function () {
   Push.Configure({
     apn: {
       certData: Assets.getText(cert),
-      keyData: Assets.getText('SCVisitryDevKey.pem'),
+      keyData: Assets.getText(key),
       passphrase: 'Visitry99'
     },
     "gcm": {
