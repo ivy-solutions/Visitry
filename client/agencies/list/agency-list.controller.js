@@ -21,6 +21,7 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
     }
   });
 
+  this.subscribe('userBasics');
   this.subscribe('allAgencies', () => {
     return [
       {
@@ -31,4 +32,13 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
       this.getReactively('searchText')
     ]
   });
+
+  this.registered = (agencyId) => {
+    if (Meteor.userId()) {
+      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
+      var myAgencies = user.userData.agencyIds;
+      return myAgencies && myAgencies.includes(agencyId);
+    }
+    return false;
+  }
 });

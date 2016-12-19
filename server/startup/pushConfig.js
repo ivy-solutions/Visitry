@@ -8,7 +8,7 @@ Meteor.startup(function () {
   var isProduction = Meteor.settings.isProduction ? true : false;
   logger.info( "Push isProduction:" + isProduction + " cert:" + cert);
 
-  Push.debug = true;
+  Push.debug = isProduction;
 
   Push.Configure({
     apn: {
