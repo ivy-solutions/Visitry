@@ -20,6 +20,8 @@ deployment:
   dev:
     branch: dev
     commands:
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt $HOME/Visitry/.deploy/dev/bundle.crt
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key $HOME/Visitry/.deploy/dev/private.key
       - cd $HOME/Visitry/.deploy/dev && mup deploy
       - meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
       - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
@@ -28,6 +30,13 @@ deployment:
     commands:
       - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
       - aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem $HOME/Visitry/private/PushKey1216.pem
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt $HOME/Visitry/.deploy/staging/bundle.crt
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key $HOME/Visitry/.deploy/staging/private.key
       - cd $HOME/Visitry/.deploy/staging && mup deploy
       - meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
       - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
+  production:
+    branch: master
+    commands:
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/production/bundle.crt $HOME/Visitry/.deploy/production/bundle.crt
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/productin/private.key $HOME/Visitry/.deploy/production/private.key
