@@ -74,11 +74,19 @@ Meteor.myFunctions = {
         $ionicListDelegate.closeOptionButtons();
       }
     });
+  },
+  isMemberOfAgency: function (agencyId) {
+    if (Meteor.userId()) {
+      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
+      var myAgencies = user.userData.agencyIds;
+      return myAgencies && myAgencies.includes(agencyId);
+    }
+    return false;
   }
 };
 
 function handleError(err, $ionicPopup) {
-  logger.error('visits.rescindRequest error ', err);
+  logger.error('showCancelVisitConfirm error ', err);
   $ionicPopup.alert({
     title: err.reason || 'Cancel failed',
     template: 'Please try again',

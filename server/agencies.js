@@ -24,5 +24,18 @@ Meteor.methods({
     }
     logger.info( "getAgency" + agencyId);
     return Agencies.findOne({_id: agencyId}, {fields: {name:1, website:1, location:1, contactPhone: 1 }})
+  },
+  sendEmail(to, from, subject, text) {
+    logger.info([to, from, subject, text]);
+    // Let other method calls from the same client start running,
+    // without waiting for the email sending to complete.
+    this.unblock();
+    Email.send({
+      to: to,
+      from: from,
+      subject: subject,
+      text: text
+    });
   }
 });
+

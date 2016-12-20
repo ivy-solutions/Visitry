@@ -1,0 +1,56 @@
+/**
+* Created by sarahcoletti on 3/2/16.
+*/
+<ion-view view-title="Group" hide-back-button=false hide-tabs>
+    <ion-content padding="true" scroll="true" class="has-footer">
+        <div layout="column">
+            <div layout="row">
+                <div ng-if="agencyDetails.agency.logo">
+                    <div layout-align="center center">
+                        <div><img ng-src="{{agencyDetails.agency.logo}}"/></div>
+                    </div>
+                </div>
+                <div layout="column" flex="55" layout-align="space-around start" layout-fill>
+                    <h4> {{agencyDetails.agency.name}}</h4>
+                    <h5 class="item-text-wrap">{{agencyDetails.agency.location.address}}</h5>
+                    <a ng-href="{{agencyDetails.agency.website}}">{{agencyDetails.agency.website}}</a>
+                </div>
+            </div>
+            <div layout="row">
+                <div layout="column">
+                    <h4>Description</h4>
+                    <div class="item-text-wrap">
+                        {{agencyDetails.agency.description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    <div class="bar bar-footer invisible-footer">
+        <ion-subfooter-bar class="bar bar-subfooter bar-light">
+            <div class="button-bar">
+                <button class="button button-balanced"
+                        ng-click="agencyDetails.agency.dialContact()"
+                        ng-if="agencyDetails.agency.contactPhone"
+                ><i class="ion-ios-telephone"></i> Call
+                </button>
+                <button class="button button-balanced"
+                        ng-click="agencyDetails.agency.sendMail()"
+                        ng-if="agencyDetails.agency.contactEmail"
+                ><i class="ion-ios-email"></i> Email
+                </button>
+
+            </div>
+        </ion-subfooter-bar>
+        <button class="button button-block button-balanced"
+                ng-if="!agencyDetails.isMember()"
+                ng-click="agencyDetails.requestMembership()">
+            Request Membership
+        </button>
+        <button class="button button-block button-assertive"
+                ng-if="agencyDetails.isMember()"
+                ng-click="agencyDetails.reportConcern()" >
+            Report Concern
+        </button>
+    </div>
+</ion-view>

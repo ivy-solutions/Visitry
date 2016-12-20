@@ -1,0 +1,26 @@
+<ion-modal-view ng-controller="changeMembershipModalCtrl as report">
+    <ion-header-bar>
+        <div class="buttons" side="primary">
+            <button class="button button-clear button-balanced" ng-click="report.cancel()">Cancel</button>
+        </div>
+        <h1 class="title">Report Concern</h1>
+        <div class="buttons" side="secondary" ng-click="report.submit(agency)">
+            <button class="button button-clear button-balanced">Report</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <div class="item item-divider">
+                <div layout="row">
+                    <strong>Concern :</strong>
+                </div>
+            </div>
+            <div class="list list-inset">
+                <label class="item item-input">
+          <textarea ng-model="report.notes" rows="5">
+          </textarea>
+                </label>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

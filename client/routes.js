@@ -169,6 +169,17 @@ angular.module('visitry')
         },
         controller: 'listAgenciesCtrl as agencies'
       })
+      .state('agencyDetails', {
+        url: '/groupDetails/:groupId',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/agencies/agency-details/agency-details.html';
+          } else {
+            return '/packages/visitry-browser/client/agencies/agency-details/agency-details.html';
+          }
+        },
+        controller: 'agencyDetailsCtrl as agencyDetails'
+      })
       .state('adminHome', {
         url: '/admin',
         templateUrl: ()=> {

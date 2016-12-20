@@ -1,0 +1,30 @@
+<ion-modal-view ng-controller="changeMembershipModalCtrl as join">
+    <ion-header-bar>
+        <div class="buttons" side="primary">
+            <button class="button button-clear button-balanced" ng-click="join.cancel()">Cancel</button>
+        </div>
+        <h1 class="title">Request to Join</h1>
+        <div class="buttons" side="secondary" ng-click="join.submit(agency)">
+            <button class="button button-clear button-balanced">Submit</button>
+        </div>
+    </ion-header-bar>
+    <ion-content>
+         <form>
+             <div layout="row" class="padding">
+                 <h4>Welcome to {{agency.name}}</h4>
+             </div>
+             <div layout="row">
+                 <div class="item item-text-wrap">
+                     {{agency.welcomeMessage}}
+                 </div>
+            </div>
+             <div class="list list-inset">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Message</span>
+                    <textarea ng-model="join.notes" rows="3" placeholder="I would like to join the team of friendly visitors.">
+                    </textarea>
+                </label>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

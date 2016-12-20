@@ -22,6 +22,9 @@ Package.onUse(function(api) {
   api.addFiles([
     'client/lib/module.js',
     'client/agencies/list/agency-list.html',
+    'client/agencies/agency-details/agency-details.html',
+    'client/agencies/membership/join-modal.html',
+    'client/agencies/membership/report-modal.html',
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',
     'client/auth/register/register.component.js',

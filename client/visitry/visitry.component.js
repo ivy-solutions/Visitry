@@ -81,7 +81,7 @@ angular.module('visitry').directive('visitry', function () {
       this.showUserActions = ( ) => {
         var profileText = "Profile";
         var notificationsText = "Notifications";
-        var agenciesText = "Agencies";
+        var agenciesText = "Groups";
         var signOutText = "Sign Out";
         var cancelText = "Cancel";
         var titleText = "";

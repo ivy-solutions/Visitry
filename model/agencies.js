@@ -39,6 +39,7 @@ const Agency = Class.create({
       validators: [{type: 'email'}]},
     contactPhone: { type: String },
     logos: {type: [String], optional: true },
+    welcomeMessage: {type: String, optional:true},
     createdAt: {type:Date, immutable: true},
     updatedAt: {type:Date},
     removed: {type:Boolean, optional: true },

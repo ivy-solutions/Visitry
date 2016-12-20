@@ -38,7 +38,7 @@ Meteor.startup(function ()  {
           administratorId: sarahc._id,
           contactEmail: 'sarahcoletti12@gmail.com',
           contactPhone: '978-264-4171',
-          createdAt:new Date()
+          createdAt: new Date()
         });
       agency1.save();
       var agency2 = new Agency({
@@ -61,8 +61,8 @@ Meteor.startup(function ()  {
         });
       agency2.save();
     }
-
     var agency = Agency.findOne({name:'IVY Agency'});
+
     //create a few test users
     logger.info("Creating demo users");
     Accounts.createUser({
@@ -280,6 +280,18 @@ Meteor.startup(function ()  {
       }
     });
     futureNearbyRequest.save();
+  }
+
+  // add welcomeMessage for our demo agencies, if there are none
+  var agency = Agency.findOne({name:'IVY Agency'});
+  if (agency && !agency.welcomeMessage) {
+    agency.welcomeMessage = "We are glad to hear of your interest in friendly visiting. Our program serves many of our neighbors in the 5 town area. After pressing the Submit button above we will be in touch to arrange a short training session and invite you to meet some of our other volunteers."
+    agency.save();
+  }
+  var agency1 = Agency.findOne({name:'Test Pilot Senior Center'});
+  if (agency1 && !agency1.welcomeMessage) {
+    agency1.welcomeMessage = "We are glad to hear of your interest in friendly visiting. You are joining a group of people who reap well-deserved enjoyment from visiting and bring smiles to our elders.\r\n After pressing the Submit button above, your name and profile will be forwarded to our administrator, Amy. She will get in touch with you to invite you to an orientation for our visitors."
+    agency1.save();
   }
 
 });

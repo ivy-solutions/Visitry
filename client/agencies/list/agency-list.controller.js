@@ -4,7 +4,7 @@
 
 import {Agencies} from '/model/agencies'
 
-angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive ) {
+angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state ) {
   $reactive(this).attach($scope);
 
   this.perPage = 3;
@@ -33,12 +33,12 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
     ]
   });
 
-  this.registered = (agencyId) => {
-    if (Meteor.userId()) {
-      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
-      var myAgencies = user.userData.agencyIds;
-      return myAgencies && myAgencies.includes(agencyId);
-    }
-    return false;
+  this.isMember = (agencyId) => {
+    return Meteor.myFunctions.isMemberOfAgency(agencyId);
   }
+
+  this.agencyDetail = function (id) {
+    $state.go( 'agencyDetails', {groupId: id} );
+  };
+
 });
