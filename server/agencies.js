@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 6/30/16.
  */
-import {Agencies} from '/model/agencies'
+import {Agencies, Agency} from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("allAgencies", function (options) {
@@ -27,9 +27,24 @@ Meteor.methods({
   },
   sendEmail(to, from, subject, text) {
     logger.info([to, from, subject, text]);
-    // Let other method calls from the same client start running,
-    // without waiting for the email sending to complete.
-    this.unblock();
+    Email.send({
+      to: to,
+      from: from,
+      subject: subject,
+      text: text
+    });
+  },
+  sendJoinRequest(agencyId, notes) {
+    // add user as prospect
+    Meteor.call('addProspectiveAgency', agencyId);
+
+    var agency = Agency.findOne(agencyId);
+    var to = agency.contactEmail;
+    var currentUser = User.findOne(this.userId);
+    var from = currentUser.emails[0].address;
+    var subject = "Request to join " + agency.name;
+    var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
+    var text = username + " requests to join. " + (notes ? "Message: " + notes : "");
     Email.send({
       to: to,
       from: from,

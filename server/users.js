@@ -215,6 +215,29 @@ Meteor.methods({
       //Accounts.sendVerificationEmail(currentUser._id);
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
+  },
+  addProspectiveAgency(agencyId) {
+    if (!this.userId) {
+      logger.error("addProspectiveAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update agencies.');
+    }
+    var currentUser = User.findOne(this.userId);
+    var currentProspectiveAgencies = currentUser.userData.prospectiveAgencyIds;
+    if ( !currentProspectiveAgencies) {
+      currentUser.userData.prospectiveAgencyIds = [agencyId];
+    } else {
+      if (!currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
+        currentUser.userData.prospectiveAgencyIds.push(agencyId);
+      }
+    }
+    currentUser.save(function (err, id) {
+      if (err) {
+        logger.error("addProspectiveAgency failed to update user. err: " + err);
+        throw err;
+      }
+    });
+    logger.info("addProspectiveAgency for userId: " + this.userId);
   }
 });
 
