@@ -6,7 +6,7 @@ angular.module('visitry').controller('changeMembershipModalCtrl', function ($sco
   this.notes = "";
 
   this.submit = function (agency) {
-    if (Meteor.myFunctions.isMemberOfAgency(agency._id) ) {
+    if (Meteor.myFunctions.membershipStatus(agency._id)==='member' ) {
       var to = agency.contactEmail;
       var user = User.findOne(Meteor.userId());
       var username = user && user.userData ? user.fullName : user.username;
