@@ -4,7 +4,11 @@
             <div ng-repeat="agency in agencies.agencies">
             <ion-item>
                 <a ng-click="agencies.agencyDetail(agency._id)">
-                    <h2><i class="ion-checkmark-circled calm" ng-if=agencies.isMember(agency._id)></i> {{agency.name}} </h2>
+                    <h2>
+                        <i class="ion-checkmark-circled" ng-if="!agencies.isNotMember(agency._id)"
+                           ng-class="{calm: agencies.isMember(agency._id), energized:agencies.isPendingMember(agency._id)}" ></i>
+                        {{agency.name}}{{agencies.membershipStatus}}
+                    </h2>
                     <div class="item-text-wrap"><h3>{{agency.description}}</h3></div>
                 </a>
                 <a ng-href="{{agency.website}}">{{agency.website}}</a>

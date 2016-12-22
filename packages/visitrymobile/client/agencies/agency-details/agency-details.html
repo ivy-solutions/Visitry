@@ -45,7 +45,7 @@
         <button class="button button-block button-balanced"
                 ng-if="!agencyDetails.isMember()"
                 ng-click="agencyDetails.requestMembership()">
-            Request Membership
+            {{agencyDetails.isPendingMember() ? "Resend Join Request": "Membership Request"}}
         </button>
         <button class="button button-block button-assertive"
                 ng-if="agencyDetails.isMember()"

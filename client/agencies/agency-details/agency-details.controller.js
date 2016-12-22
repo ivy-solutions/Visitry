@@ -8,6 +8,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
+  this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId);
   this.agency
 
 
@@ -21,7 +22,13 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   ////////
 
   this.isMember = () => {
-    return Meteor.myFunctions.isMemberOfAgency(this.groupId);
+    return this.membershipStatus === 'member';
+  };
+  this.isPendingMember = () => {
+    return this.membershipStatus === 'pendingMember';
+  };
+  this.isNotMember = () => {
+    return this.membershipStatus ===  'notMember';
   };
 
   this.dialContact = () => {
