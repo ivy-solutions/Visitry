@@ -57,7 +57,7 @@ module.exports = {
       key: 'private.key',
     },
 
-    deployCheckWaitTime: 120
+    deployCheckWaitTime: 600
   },
 
   mongo: {
