@@ -159,7 +159,7 @@ angular.module('visitry')
         template: '<feedback></feedback>'
       })
       .state('agencyList', {
-        url: '/agencies',
+        url: '/groups',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/agencies/list/agency-list.html';
