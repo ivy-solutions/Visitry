@@ -4,7 +4,7 @@
 import { Agency } from '/model/agencies'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, ChangeMembership) {
+angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership) {
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
@@ -51,11 +51,22 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
     }
   };
 
+  this.canRequestMembership = () => {
+    // visitors can be members of many groups, requesters, only one
+    if ( !this.isMember() && Meteor.myFunctions.isVisitor() ) {
+      return true;
+    } else {
+      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds':1}});
+      return this.isNotMember() && !user.userData.agencyIds && !user.userData.prospectiveAgencyIds;
+    }
+  };
+
   this.requestMembership = () => {
     ChangeMembership.showModal(this.agency, false);
   };
 
-  this.reportConcern = () => {
-    ChangeMembership.showModal(this.agency, true);
+  this.goHome = () => {
+    $state.go('login');
   }
+
 });
