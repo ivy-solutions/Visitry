@@ -14,7 +14,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.isFrequentVisitorsReady = false;
   this.isUserDataReady = false;
   this.isVisitDataReady = false;
+  this.applicantsCount =-1;
   this.freqVisitors=[];
+
   this.subscribe('visits', ()=> {
     return [];
   }, ()=> {
@@ -50,6 +52,14 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       };
       var visits = Visit.find(selector, {sort: {requestedDate: 1}, limit: 10});
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
+    },
+    applicants: ()=> {
+      let selector = {
+        'userData.prospectiveAgencyIds': this.agencyId
+      };
+      var prospectiveUsers =  User.find(selector);
+      this.applicantsCount = prospectiveUsers.count();
+      return prospectiveUsers;
     },
     topVisitors: ()=> {
       return TopVisitors.find({}, {sort: {visitCount: -1}, limit: 10});

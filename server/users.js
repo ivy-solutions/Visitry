@@ -14,7 +14,8 @@ Meteor.publish("userdata", function () {
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1
+          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1,
+          'userData.prospectiveAgencyIds':1
         }
       });
   } else {
@@ -125,6 +126,7 @@ Meteor.publish("visitorUsers", function (agencyId, options) {
     this.ready();
   }
 });
+
 
 Meteor.methods({
   updateName(firstName, lastName)
