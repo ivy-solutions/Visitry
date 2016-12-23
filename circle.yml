@@ -24,8 +24,6 @@ deployment:
     commands:
       - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt $HOME/Visitry/.deploy/dev/bundle.crt
       - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key $HOME/Visitry/.deploy/dev/private.key
-      - meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
-      - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
       - cd $HOME/Visitry/.deploy/dev && mup deploy
   staging:
     branch: master
