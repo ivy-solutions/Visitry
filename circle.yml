@@ -24,7 +24,7 @@ deployment:
   dev:
     branch: dev
     commands:
-      - cd $HOME/Visitry/.deploy/dev && mup deploy && mup logs -f
+      - cd $HOME/Visitry/.deploy/dev && DEBUG=* mup deploy
   staging:
     branch: master
     commands:
