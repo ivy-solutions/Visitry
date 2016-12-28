@@ -194,10 +194,10 @@ if (Meteor.isServer) {
     describe('users.addUserToAgency', ()=> {
       const addUserToAgencyHandler = Meteor.server.method_handlers['addUserToAgency'];
       var adminTestUser;
-      beforeEach(()=>{
+      beforeEach(()=> {
         adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99', role: "administrator"});
       });
-      afterEach(()=>{
+      afterEach(()=> {
         Meteor.users.remove(adminTestUser, function (err) {
           if (err) console.log(err);
         });
@@ -208,38 +208,38 @@ if (Meteor.isServer) {
         addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0],'agency1');
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
       });
-      it('adds a user to an agency they already belong to does not double enter',()=>{
+      it('adds a user to an agency they already belong to does not double enter', ()=> {
         const invocation = {userId: adminTestUser};
         addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0],'agency1');
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
         updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0],'agency1');
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
       });
-      it('add a user to an agency when they already have an agency',()=>{
+      it('add a user to an agency when they already have an agency', ()=> {
         const invocation = {userId: adminTestUser};
         addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
         addUserToAgencyHandler.apply(invocation, [testUserId, 'agency2']);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 2);
-        assert.equal(updatedUser.userData.agencyIds[0],'agency1');
-        assert.equal(updatedUser.userData.agencyIds[1],'agency2');
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
+        assert.equal(updatedUser.userData.agencyIds[1], 'agency2');
       });
     });
 
-    describe('users.createUserFromAdmin',()=>{
+    describe('users.createUserFromAdmin', ()=> {
       const createUserFromAdminHandler = Meteor.server.method_handlers['createUserFromAdmin'];
       let accountsCreateUserSpy;
       let testNewUserId;
-      beforeEach(()=>{
-        accountsCreateUserSpy=sinon.spy(Accounts,'createUser');
+      beforeEach(()=> {
+        accountsCreateUserSpy = sinon.spy(Accounts, 'createUser');
       });
-      afterEach(()=>{
+      afterEach(()=> {
         accountsCreateUserSpy.reset();
 
         Meteor.users.remove(testNewUserId, function (err) {
@@ -247,32 +247,32 @@ if (Meteor.isServer) {
         });
       });
 
-      it('Accounts.createUser is called',()=>{
+      it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
-        createUserFromAdminHandler.apply(invocation,[{email:'test@email.com'}]);
+        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com'}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(accountsCreateUserSpy.calledOnce);
       });
     });
 
-    describe('users.sendEnrollmentEmail',()=>{
+    describe('users.sendEnrollmentEmail', ()=> {
       const sendEnrollmentEmailHandler = Meteor.server.method_handlers['sendEnrollmentEmail'];
       let accountsSendEnrollmentEmailSpy;
-      beforeEach(()=>{
-        accountsSendEnrollmentEmailSpy=sinon.spy(Accounts,'sendEnrollmentEmail');
+      beforeEach(()=> {
+        accountsSendEnrollmentEmailSpy = sinon.spy(Accounts, 'sendEnrollmentEmail');
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
           password: 'Visitry99',
           role: "requester",
-          email:'email@address.com'
+          email: 'email@address.com'
         });
       });
-      afterEach(()=>{
+      afterEach(()=> {
         accountsSendEnrollmentEmailSpy.reset();
       });
-      it('Accounts.createUser is called',()=>{
+      it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
-        sendEnrollmentEmailHandler.apply(invocation,[testUserId]);
+        sendEnrollmentEmailHandler.apply(invocation, [testUserId]);
         assert(accountsSendEnrollmentEmailSpy.calledOnce);
       });
     });
