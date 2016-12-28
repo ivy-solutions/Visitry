@@ -104,7 +104,10 @@ angular.module('visitry')
       })
       .state('register', {
         url: '/register',
-        template: '<register></register>'
+        template: '<register></register>',
+        params:{
+          role:'visitor'
+        }
       })
       .state('resetPassword', {
         url: '/resetPassword',

@@ -2,6 +2,7 @@ import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
 import { Counts } from 'meteor/tmeasday:publish-counts';
+import {Roles} from 'meteor/alanning:roles'
 
 Meteor.publish("userdata", function () {
   if (this.userId) {
@@ -26,7 +27,7 @@ Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
     return User.find({_id: this.userId},
-      { limit:1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
+      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
   } else {
     this.ready();
   }
@@ -36,7 +37,7 @@ Meteor.publish("userProfile", function () {
   if (this.userId) {
     logger.verbose("publish userProfile to " + this.userId);
     return User.find({_id: this.userId},
-      { limit:1, fields: {username: 1, emails: 1, roles: 1, userData: 1}});
+      {limit: 1, fields: {username: 1, emails: 1, roles: 1, userData: 1}});
   } else {
     this.ready();
   }
@@ -44,7 +45,10 @@ Meteor.publish("userProfile", function () {
 
 Meteor.publish("topVisitors", function (agency, numberOfDays) {
   var self = this;
-  var visitors = User.find({'roles': {$elemMatch: {$eq:'visitor'}}, 'userData.agencyIds': {$elemMatch: {$eq: agency}}}, {
+  var visitors = User.find({
+    'roles': {$elemMatch: {$eq: 'visitor'}},
+    'userData.agencyIds': {$elemMatch: {$eq: agency}}
+  }, {
     fields: {
       username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1,
       'userData.picture': 1
@@ -88,7 +92,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location.address': 1,
-        'roles':1
+        'roles': 1
       }
     };
     Counts.publish(this, 'numberSeniorUsers', User.find(selector), {
@@ -105,21 +109,21 @@ Meteor.publish("visitorUsers", function (agencyId, options) {
     logger.verbose("publish visitorUsers to " + this.userId);
     var selector = {
       'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-      'userData.role': {$eq: 'visitor'}
+      'roles': {$elemMatch: {$eq: 'visitor'}}
     };
     var queryOptions = {
-      sort: options.sort,
-      skip: options.skip,
-      limit: options.limit,
       fields: {
         createdAt: 1,
+        'userData.agencyIds': 1,
         'userData.firstName': 1,
         'userData.lastName': 1,
-        'userData.picture': 1,
-        'userData.location': 1,
-        'userData.role':1
+        'userData.location.address': 1,
+        'roles': 1
       }
     };
+    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+      noReady: true
+    });
     return User.find(selector, queryOptions);
   } else {
     this.ready();
@@ -186,7 +190,7 @@ Meteor.methods({
     currentUser.userData.about = data.about;
     currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number if there is none
     currentUser.userData.locationInfo = data.locationInfo;
-    currentUser.userData.acceptSMS = (data.phoneNumber && data.acceptSMS !==undefined) ? data.acceptSMS : (data.phoneNumber ? true : false); // default to true, unless there is no phone number
+    currentUser.userData.acceptSMS = (data.phoneNumber && data.acceptSMS !== undefined) ? data.acceptSMS : (data.phoneNumber ? true : false); // default to true, unless there is no phone number
     Roles.addUsersToRoles(currentUser, [data.role]);
     currentUser.save(function (err, id) {
       if (err) {
@@ -202,11 +206,11 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user email.');
     }
-    var currentUser = Meteor.users.findOne(this.userId, {emails:1});
+    var currentUser = Meteor.users.findOne(this.userId, {emails: 1});
     var currentEmails = currentUser.emails;
-    logger.info( "currentEmails" + JSON.stringify(currentUser));
-    if ( currentEmails != null  ) {
-      logger.info("removeEmail for userId: " + this.userId );
+    logger.info("currentEmails" + JSON.stringify(currentUser));
+    if (currentEmails != null) {
+      logger.info("removeEmail for userId: " + this.userId);
       Accounts.removeEmail(currentUser._id, currentUser.emails[0].address)
     }
     if (email) {
@@ -215,6 +219,34 @@ Meteor.methods({
       //Accounts.sendVerificationEmail(currentUser._id);
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
+  },
+  addUserToAgency(userId, agencyId){
+    if (!this.userId) {
+      logger.error("addUserToAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to add a user to an agency.');
+    }
+    if (!Roles.userIsInRole(this.userId, ['administrator'])) {
+      logger.error('addUserToAgency - unauthorized');
+      throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
+    }
+    var user = User.findOne(userId);
+    if (!user.userData.agencyIds.includes(agencyId)) {
+      user.userData.agencyIds.push(agencyId);
+      user.save((err, id)=> {
+        if (err) {
+          logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
+          throw err;
+        }
+      });
+      logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
+    }
+  },
+  createUserFromAdmin(data, callback){
+    Accounts.createUser(data, callback);
+  },
+  sendEnrollmentEmail(userId){
+    Accounts.sendEnrollmentEmail(userId);
   }
 });
 
@@ -222,7 +254,7 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: "", visitRange:1}
+    user.userData = {firstName: "", lastName: "", visitRange: 1}
   }
   //TODO include real agency in input
   if (!user.userData.agencyId) {  // use default, if no agency selected
@@ -230,6 +262,8 @@ Accounts.onCreateUser(function (options, user) {
     var agency = Agency.findOne({name: 'IVY Agency'});
     if (agency) {
       user.userData.agencyIds = [agency._id];
+    }else{
+      user.userData.agencyIds = [];
     }
   }
   user.roles = options.role ? [options.role] : ['requester'];

@@ -3,7 +3,6 @@
  */
 import { Counts } from 'meteor/tmeasday:publish-counts';
 
-
 angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function ($scope, $state, $reactive, $cookies) {
   $reactive(this).attach($scope);
 
@@ -28,8 +27,8 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
       return Meteor.users.find(selector,
         {
           limit: parseInt(this.getReactively('recordPerPage')),
-          skip:parseInt((this.getReactively('page') - 1) * this.recordPerPage),
-          sort:this.getReactively('sort')
+          skip: parseInt((this.getReactively('page') - 1) * this.recordPerPage),
+          sort: this.getReactively('sort')
         }
       );
     },
@@ -42,13 +41,15 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
     this.page = newPage;
   };
 
-  this.toggleSort= function (fieldname) {
+  this.toggleSort = function (fieldname) {
     var newSort = {};
     this.order = -this.order;
     newSort[fieldname] = parseInt(this.order);
     this.sort = newSort;
-  }
+  };
 
-
+  this.addUser = () => {
+    $state.go('register', {role: 'requester'});
+  };
 });
 

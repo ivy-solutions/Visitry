@@ -1,13 +1,13 @@
 /**
- * Created by n0235626 on 8/31/16.
+ * Created by n0235626 on 12/28/16.
  */
 import 'angular-mocks';
 import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import '/client/admin-console/manage/manage-seniors.controller';
+import '/client/admin-console/manage/manage-visitors.controller';
 
-describe('Admin Manage Seniors', function () {
+describe('Admin Manage Visitors', function () {
 
   beforeEach(function () {
     angular.mock.module('visitry');
@@ -26,7 +26,7 @@ describe('Admin Manage Seniors', function () {
   beforeEach(function () {
     inject(function ($rootScope, $state) {
       scope = $rootScope.$new(true);
-      controller = $controller('adminManageSeniorsCtrl', {$scope: scope, $state: $state});
+      controller = $controller('adminManageVisitorsCtrl', {$scope: scope, $state: $state});
       stateSpy = sinon.stub($state, 'go');
     });
   });
@@ -63,7 +63,7 @@ describe('Admin Manage Seniors', function () {
   describe('addUser', function () {
     it('navigate to the register screen', ()=> {
       controller.addUser();
-      chai.assert(stateSpy.withArgs('register', {role: "requester"}).calledOnce);
+      chai.assert(stateSpy.withArgs('register', {role: "visitor"}).calledOnce);
     });
   });
 
