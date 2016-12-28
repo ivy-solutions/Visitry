@@ -13,8 +13,6 @@ dependencies:
     - meteor npm install
     - meteor npm install --save babel-runtime
     - meteor npm install --save bcrypt
-    - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt $HOME/Visitry/.deploy/dev/bundle.crt
-    - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key $HOME/Visitry/.deploy/dev/private.key
   pre:
     - npm -g install ssh2
     - npm install -g mup # install meteor-up for deployment
@@ -25,7 +23,6 @@ deployment:
     branch: dev
     commands:
       - cd $HOME/Visitry/.deploy/dev && DEBUG=* mup deploy
-      - cd $HOME/Visitry/.deploy/dev && mup logs
   staging:
     branch: master
     commands:
