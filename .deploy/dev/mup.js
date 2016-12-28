@@ -38,6 +38,7 @@ module.exports = {
       one: {}
     },
     buildOptions: {
+      server: 'https://dev.visitry.org',  //not sure if this is used -sjc
       serverOnly: true,
       debug: true,
       cleanAfterBuild: true, // default
@@ -67,4 +68,4 @@ module.exports = {
       one: {},
     },
   },
-}
+};
