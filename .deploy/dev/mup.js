@@ -10,8 +10,8 @@ module.exports = {
       // password:
       // or leave blank for authenticate from ssh-agent
       opts: {
-        port: 22,
-      },
+        port: 22
+      }
     }
   },
 
@@ -28,7 +28,7 @@ module.exports = {
     // },
     docker: {
       //image: 'kadirahq/meteord', // (optional)
-      image: 'abernix/meteord:base', // use this image if using Meteor 1.4+
+      image: 'abernix/meteord:base' // use this image if using Meteor 1.4+
       //args:[ // lets you add/overwrite any parameter on the docker run command (optional)
         // "--link=myCustomMongoDB:myCustomMongoDB", // linking example
         // "--memory-reservation 200M" // memory reservation example
@@ -38,11 +38,9 @@ module.exports = {
       one: {}
     },
     buildOptions: {
-      server: 'https://dev.visitry.org',  //not sure if this is used -sjc
       serverOnly: true,
       debug: true,
-      cleanAfterBuild: true, // default
-      buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
+      buildLocation: '/home/ubuntu/build/Visitry' // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       //mobileSettings: {
       //}
@@ -55,7 +53,7 @@ module.exports = {
     ssl: {
       port: 443,
       crt: 'bundle.crt',
-      key: 'private.key',
+      key: 'private.key'
     },
 
     deployCheckWaitTime: 600
@@ -65,7 +63,7 @@ module.exports = {
     oplog: true,
     port: 27017,
     servers: {
-      one: {},
+      one: {}
     },
   },
 };
