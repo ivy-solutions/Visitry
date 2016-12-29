@@ -4,14 +4,14 @@ module.exports = {
       host: 'dev.visitry.org',
       username: 'ubuntu',
       // for CircleCi:
-      pem: '/home/.ssh/id_staging-server',
+      pem: '/home/ubuntu/.ssh/id_staging-server',
       //for Sarah;s machine
       //pem: '/Users/sarahcoletti/VISITRY.pem',
       // password:
       // or leave blank for authenticate from ssh-agent
       opts: {
-        port: 22,
-      },
+        port: 22
+      }
     }
   },
 
@@ -28,7 +28,7 @@ module.exports = {
     // },
     docker: {
       //image: 'kadirahq/meteord', // (optional)
-      image: 'abernix/meteord:base', // use this image if using Meteor 1.4+
+      image: 'abernix/meteord:base' // use this image if using Meteor 1.4+
       //args:[ // lets you add/overwrite any parameter on the docker run command (optional)
         // "--link=myCustomMongoDB:myCustomMongoDB", // linking example
         // "--memory-reservation 200M" // memory reservation example
@@ -40,8 +40,7 @@ module.exports = {
     buildOptions: {
       serverOnly: true,
       debug: true,
-      cleanAfterBuild: true, // default
-      buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
+      buildLocation: '/home/ubuntu/build/Visitry' // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       //mobileSettings: {
       //}
@@ -54,17 +53,17 @@ module.exports = {
     ssl: {
       port: 443,
       crt: 'bundle.crt',
-      key: 'private.key',
+      key: 'private.key'
     },
 
-    deployCheckWaitTime: 120
+    deployCheckWaitTime: 600
   },
 
   mongo: {
     oplog: true,
     port: 27017,
     servers: {
-      one: {},
+      one: {}
     },
   },
-}
+};

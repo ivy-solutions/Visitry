@@ -276,5 +276,28 @@ if (Meteor.isServer) {
         assert(accountsSendEnrollmentEmailSpy.calledOnce);
       });
     });
+
+    describe('users.addProspectiveAgency method', () => {
+      const addProspectiveAgencyHandler = Meteor.server.method_handlers['addProspectiveAgency'];
+      var agencyId = Random.id();
+
+      it('succeeds when user adding one prospective agency', () => {
+        const invocation = {userId: testUserId};
+        addProspectiveAgencyHandler.apply(invocation, [agencyId]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 1);
+        assert.equal(updatedUser.userData.prospectiveAgencyIds[0], agencyId);
+      });
+      it('succeeds when user adding two prospective agencies', () => {
+        const invocation = {userId: testUserId};
+        var agency2 = Random.id()
+        addProspectiveAgencyHandler.apply(invocation, [agencyId]);
+        addProspectiveAgencyHandler.apply(invocation, [agency2]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 2);
+        assert.equal(updatedUser.userData.prospectiveAgencyIds[0], agencyId);
+        assert.equal(updatedUser.userData.prospectiveAgencyIds[1], agency2);
+      });
+    });
   });
 }

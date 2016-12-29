@@ -6,21 +6,17 @@ angular.module('visitry').controller('changeMembershipModalCtrl', function ($sco
   this.notes = "";
 
   this.submit = function (agency) {
-    var to = agency.contactEmail;
-    var from = Meteor.user().emails[0].address;
-    var subject;
-    var text;
-    var user = User.findOne(Meteor.userId());
-    console.log(user);
-    var username = user && user.userData ? user.fullName : user.username;
-    if (Meteor.myFunctions.isMemberOfAgency(agency._id) ) {
-      subject = "Report Concern";
-      text = username + " reports: " + this.notes;
+    if (Meteor.myFunctions.membershipStatus(agency._id)==='member' ) {
+      var to = agency.contactEmail;
+      var user = User.findOne(Meteor.userId());
+      var username = user && user.userData ? user.fullName : user.username;
+      var from = Meteor.user().emails[0].address;
+      var subject = "Report Concern";
+      var text = username + " reports: " + this.notes;
+      Meteor.call('sendEmail', to, from, subject, text);
     } else {
-      subject = "Request to Join " + agency.name;
-      text = username + " requests to join. " + (this.notes ? "Message: " + this.notes : "");
+      Meteor.call('sendJoinRequest', agency._id, this.notes);
     }
-    Meteor.call('sendEmail', to, from, subject, text);
 
     this.hideModal()
   };

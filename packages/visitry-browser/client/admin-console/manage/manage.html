@@ -59,6 +59,23 @@
     <md-list flex="33">
         <div md-whiteframe="1">
             <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+                <md-subheader style="background-color: #0086b3">Applicants</md-subheader>
+            </div>
+            <div layout="row" layout-align="center center" ng-hide="adminManage.isUserDataReady">
+                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+            </div>
+            <div layout="row" layout-align="center center" ng-hide="adminManage.applicantsCount>0">
+                <h4>No pending applicants</h4>
+            </div>
+            <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants">
+                <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>
+                <div class="md-list-item-text" layout="row" layout-align="space-between center">
+                    <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
+                </div>
+            </md-list-item>
+        </div>
+        <div md-whiteframe="1">
+            <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
                 <md-subheader style="background-color: #0086b3">Frequent Visitors</md-subheader>
             </div>
             <div layout="row" layout-align="center center" ng-hide="adminManage.isFrequentVisitorsReady">

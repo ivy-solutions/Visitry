@@ -15,7 +15,8 @@ Meteor.publish("userdata", function () {
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1
+          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1,
+          'userData.prospectiveAgencyIds':1
         }
       });
   } else {
@@ -27,7 +28,7 @@ Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
     return User.find({_id: this.userId},
-      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1}});
+      { limit:1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
   } else {
     this.ready();
   }
@@ -129,6 +130,7 @@ Meteor.publish("visitorUsers", function (agencyId, options) {
     this.ready();
   }
 });
+
 
 Meteor.methods({
   updateName(firstName, lastName)
@@ -247,6 +249,29 @@ Meteor.methods({
   },
   sendEnrollmentEmail(userId){
     Accounts.sendEnrollmentEmail(userId);
+  },
+  addProspectiveAgency(agencyId) {
+    if (!this.userId) {
+      logger.error("addProspectiveAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update agencies.');
+    }
+    var currentUser = User.findOne(this.userId);
+    var currentProspectiveAgencies = currentUser.userData.prospectiveAgencyIds;
+    if ( !currentProspectiveAgencies) {
+      currentUser.userData.prospectiveAgencyIds = [agencyId];
+    } else {
+      if (!currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
+        currentUser.userData.prospectiveAgencyIds.push(agencyId);
+      }
+    }
+    currentUser.save(function (err, id) {
+      if (err) {
+        logger.error("addProspectiveAgency failed to update user. err: " + err);
+        throw err;
+      }
+    });
+    logger.info("addProspectiveAgency for userId: " + this.userId);
   }
 });
 

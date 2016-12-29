@@ -43,14 +43,14 @@
             </div>
         </ion-subfooter-bar>
         <button class="button button-block button-balanced"
-                ng-if="!agencyDetails.isMember()"
+                ng-if="agencyDetails.canRequestMembership()"
                 ng-click="agencyDetails.requestMembership()">
-            Request Membership
+            {{agencyDetails.isPendingMember() ? "Resend Join Request": "Membership Request"}}
         </button>
-        <button class="button button-block button-assertive"
-                ng-if="agencyDetails.isMember()"
-                ng-click="agencyDetails.reportConcern()" >
-            Report Concern
+        <button class="button button-block button-balanced"
+                ng-if="!agencyDetails.canRequestMembership()"
+                ng-click="agencyDetails.goHome()" >
+            <i class="ion-leaf"></i> Home
         </button>
     </div>
 </ion-view>

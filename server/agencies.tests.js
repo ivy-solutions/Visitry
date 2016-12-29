@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
+import { sinon } from 'meteor/practicalmeteor:sinon';
 
 import {Agencies, Agency} from '/model/agencies'
+import '/server/agencies.js';
 
 
 if (Meteor.isServer) {
@@ -86,6 +88,45 @@ if (Meteor.isServer) {
         } );
       });
 
+    });
+  });
+
+  describe('agencies.sendJoinRequest', () => {
+    var testUserId = Random.id();
+    var testAgencyId = Random.id();
+    var meteorStub;
+    var emailSpy;
+    var findAgencyStub;
+    var findUserStub;
+    beforeEach(() => {
+      findAgencyStub = sinon.stub(Agency, 'findOne');
+      findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
+      findUserStub = sinon.stub(User, 'findOne');
+      findUserStub.returns({username: 'Louisa', fullName: 'Louisa Jones',
+        emails: [{address: 'abc@someplace.com', verified:false}],
+      });
+      meteorStub = sinon.stub(Meteor, 'call');
+    });
+    afterEach(() => {
+      Agency.findOne.restore();
+      User.findOne.restore();
+      meteorStub.restore();
+      sinon.mock.restore();
+    });
+
+    const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
+
+    it('updates user when request to join agency made', () => {
+      const invocation = {userId: testUserId};
+      sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
+      assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
+    });
+
+    it('sends email when request to join agency made', () => {
+      var mockSend = sinon.mock(Email).expects('send').once();
+      const invocation = {userId: testUserId};
+      sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
+      mockSend.verify();
     });
   });
 }

@@ -134,6 +134,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     );
   };
 
+  this.groups = () => {
+    $state.go('agencyList');
+  };
+
   function handleError(err) {
     logger.info('userData save error ', err.reason);
 

@@ -75,13 +75,20 @@ Meteor.myFunctions = {
       }
     });
   },
-  isMemberOfAgency: function (agencyId) {
+  membershipStatus: function (agencyId) {
+    let status = 'noUser';
     if (Meteor.userId()) {
-      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
-      var myAgencies = user.userData.agencyIds;
-      return myAgencies && myAgencies.includes(agencyId);
+      const user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+      const myAgencies = user.userData.agencyIds;
+      const pendingAgencies = user.userData.prospectiveAgencyIds;
+      if (myAgencies && myAgencies.includes(agencyId))
+        status = "member";
+      else if (pendingAgencies && pendingAgencies.includes(agencyId))
+        status = "pendingMember";
+      else
+        status = "notMember";
     }
-    return false;
+    return status;
   }
 };
 

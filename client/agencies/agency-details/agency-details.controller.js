@@ -4,10 +4,11 @@
 import { Agency } from '/model/agencies'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, ChangeMembership) {
+angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership) {
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
+  this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId);
   this.agency
 
 
@@ -21,7 +22,13 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   ////////
 
   this.isMember = () => {
-    return Meteor.myFunctions.isMemberOfAgency(this.groupId);
+    return this.membershipStatus === 'member';
+  };
+  this.isPendingMember = () => {
+    return this.membershipStatus === 'pendingMember';
+  };
+  this.isNotMember = () => {
+    return this.membershipStatus ===  'notMember';
   };
 
   this.dialContact = () => {
@@ -44,11 +51,22 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
     }
   };
 
+  this.canRequestMembership = () => {
+    // visitors can be members of many groups, requesters, only one
+    if ( !this.isMember() && Meteor.myFunctions.isVisitor() ) {
+      return true;
+    } else {
+      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds':1}});
+      return this.isNotMember() && !user.userData.agencyIds && !user.userData.prospectiveAgencyIds;
+    }
+  };
+
   this.requestMembership = () => {
     ChangeMembership.showModal(this.agency, false);
   };
 
-  this.reportConcern = () => {
-    ChangeMembership.showModal(this.agency, true);
+  this.goHome = () => {
+    $state.go('login');
   }
+
 });
