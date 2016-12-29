@@ -37,13 +37,6 @@ angular.module('visitry.mobile').controller('loginCtrl', function ($scope, $stat
     this.credentials.password ='';
   };
 
-
-  function hasValidAgency() {
-    var user = Meteor.user();
-    //TODO should check the activeUntil fields of the agency to make sure it is still active
-    return user.userData && user.userData.agencyIds && user.userData.agencyIds[0];
-  }
-
   function handleError(err) {
       console.log('Authentication error ', err);
 

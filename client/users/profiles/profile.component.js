@@ -7,18 +7,33 @@ import {Roles} from 'meteor/alanning:roles'
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
 
-  this.currentUser = Meteor.user();
+  this.currentUser;
+  this.isProfileReady = false;
 
-  this.subscribe('userProfile');
+  this.subscribe('userProfile', ()=> {
+    return [];
+  }, ()=> {
+    this.isProfileReady = true;
+    this.currentUser = User.findOne({_id: Meteor.userId()}, {
+      username: 1, emails: 1, roles: 1,
+      'userData.agencyIds': 1,
+      'userData.location': 1, 'userData.visitRange': 1,
+      'userData.firstName': 1, 'userData.lastName': 1,
+      'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}
+    );
+  });
 
   this.autorun (() => {
-    this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
-      username: 1, emails: 1, roles: 1,
-        'userData.agencyIds': 1,
-        'userData.location': 1, 'userData.visitRange': 1,
-        'userData.firstName': 1, 'userData.lastName': 1,
-        'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}}
-        );
+    this.getReactively('isProfileReady');
+    // this.currentUser = User.findOne({_id: Meteor.userId()}, {
+    //   username: 1, emails: 1, roles: 1,
+    //     'userData.agencyIds': 1,
+    //     'userData.location': 1, 'userData.visitRange': 1,
+    //     'userData.firstName': 1, 'userData.lastName': 1,
+    //     'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}
+    //     );
+    console.log(this.currentUser);
+    console.log("profileReady" + this.isProfileReady);
   });
 
   this.helpers({
@@ -149,6 +164,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   }
 
   this.resetForm= function(form) {
+    this.isProfileReady=false;
     form.$setUntouched();
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');

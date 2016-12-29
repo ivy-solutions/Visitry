@@ -21,12 +21,12 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
     }
   });
 
-  this.subscribe('userBasics');
+  this.subscribe('userProfile');
   this.subscribe('allAgencies', () => {
     return [
       {
         limit: parseInt(this.perPage),
-        skip: parseInt((this.getReactively('page') - 1) * this.Page),
+        skip: parseInt((this.getReactively('page') - 1) * this.page),
         sort: this.getReactively('sort')
       },
       this.getReactively('searchText')

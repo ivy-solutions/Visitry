@@ -279,17 +279,8 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: "", visitRange: 1}
-  }
-  //TODO include real agency in input
-  if (!user.userData.agencyId) {  // use default, if no agency selected
-    logger.error("user has no agency. userId: " + user._id);
-    var agency = Agency.findOne({name: 'IVY Agency'});
-    if (agency) {
-      user.userData.agencyIds = [agency._id];
-    }else{
-      user.userData.agencyIds = [];
-    }
+    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds:[]}
+    user.hasAgency = false;
   }
   user.roles = options.role ? [options.role] : ['requester'];
 

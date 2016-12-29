@@ -346,6 +346,7 @@ angular.module('visitry')
     $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
       if (toState.name === 'login') {
          if (event && Meteor.userId()) {
+           logger.info("redirect from $stateChangeStart");
            let nextState;
            if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
              nextState = 'adminManage';
@@ -371,11 +372,17 @@ angular.module('visitry')
       // if we are already logged in but on the login page, redirect to role-based appropriate page
       if ($state.is('login')) {
         if (Meteor.userId()) {
+          logger.info("redirect from Accounts.onLogin");
           const handle = Meteor.subscribe('userBasics');
           Tracker.autorun(() => {
             if (Meteor.userId()) {
               const isReady = handle.ready();
-              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+              var user = User.findOne({_id:Meteor.userId()},{fields: {'hasAgency':1,'userData.agencyIds':1}});
+              if(!user.hasAgency) {
+                console.log("user has no agency");
+                $state.go('agencyList');
+              }
+              else if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
                 $state.go('adminManage');
               }
               else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
