@@ -95,7 +95,6 @@ if (Meteor.isServer) {
     var testUserId = Random.id();
     var testAgencyId = Random.id();
     var meteorStub;
-    var emailSpy;
     var findAgencyStub;
     var findUserStub;
     beforeEach(() => {
@@ -110,8 +109,8 @@ if (Meteor.isServer) {
     afterEach(() => {
       Agency.findOne.restore();
       User.findOne.restore();
+      Meteor.call.restore();
       meteorStub.restore();
-      sinon.mock.restore();
     });
 
     const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];

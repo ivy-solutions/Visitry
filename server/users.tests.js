@@ -241,7 +241,7 @@ if (Meteor.isServer) {
       });
       afterEach(()=> {
         accountsCreateUserSpy.reset();
-
+        Accounts.createUser.restore();
         Meteor.users.remove(testNewUserId, function (err) {
           if (err) console.log(err);
         });
@@ -258,8 +258,11 @@ if (Meteor.isServer) {
     describe('users.sendEnrollmentEmail', ()=> {
       const sendEnrollmentEmailHandler = Meteor.server.method_handlers['sendEnrollmentEmail'];
       let accountsSendEnrollmentEmailSpy;
+      let result;
       beforeEach(()=> {
-        accountsSendEnrollmentEmailSpy = sinon.spy(Accounts, 'sendEnrollmentEmail');
+        accountsSendEnrollmentEmailSpy = sinon.stub(Accounts, 'sendEnrollmentEmail', ()=> {
+          result = true;
+        });
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
           password: 'Visitry99',
@@ -268,12 +271,12 @@ if (Meteor.isServer) {
         });
       });
       afterEach(()=> {
-        accountsSendEnrollmentEmailSpy.reset();
+        Accounts.sendEnrollmentEmail.restore();
       });
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
         sendEnrollmentEmailHandler.apply(invocation, [testUserId]);
-        assert(accountsSendEnrollmentEmailSpy.calledOnce);
+        assert.equal(result,true);
       });
     });
 
