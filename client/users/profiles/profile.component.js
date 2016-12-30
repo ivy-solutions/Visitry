@@ -8,8 +8,13 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   $reactive(this).attach($scope);
 
   this.currentUser = Meteor.user();
+  this.isProfileReady = false;
 
-  this.subscribe('userProfile');
+  this.subscribe('userProfile', ()=> {
+    return [];
+  }, ()=> {
+    this.isProfileReady = true;
+  });
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
