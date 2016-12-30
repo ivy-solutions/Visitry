@@ -377,20 +377,14 @@ angular.module('visitry')
           Tracker.autorun(() => {
             if (Meteor.userId()) {
               const isReady = handle.ready();
-              var user = User.findOne({_id:Meteor.userId()},{fields: {'hasAgency':1,'userData.agencyIds':1}});
-              if(!user.hasAgency) {
-                console.log("user has no agency");
-                $state.go('agencyList');
-              }
-              else if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
                 $state.go('adminManage');
-              }
-              else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+              } else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
                 $state.go('browseRequests');
-              } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+              }else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
                 $state.go('pendingVisits');
               } else {
-                logger.error("user with no role." + Meteor.userId());
+                logger.error("user with no role."  + Meteor.userId())
               }
             }
           });

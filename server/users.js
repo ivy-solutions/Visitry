@@ -232,17 +232,28 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    var user = User.findOne(userId);
-    if (!user.userData.agencyIds.includes(agencyId)) {
-      user.userData.agencyIds.push(agencyId);
-      user.save((err, id)=> {
-        if (err) {
-          logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
-          throw err;
-        }
-      });
-      logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
+    let agency = Meteor.call('getAgency',agencyId);
+    if (!agency) {
+      logger.error('addUserToAgency - invalid agency')
+      throw new Meteor.Error('invalid-agency', 'Agency missing or can not register new users.');
     }
+    var user = User.findOne(userId);
+    if (!user.userData.agencyIds) {
+      user.userData.agencyIds = [agencyId]
+    } else if (!user.userData.agencyIds.includes(agencyId)) {
+      user.userData.agencyIds.push(agencyId);
+    }
+    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
+      user.userData.prospectiveAgencyIds.splice(index,1);
+    }
+    user.save((err, id)=> {
+      if (err) {
+        logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
+        throw err;
+      }
+    });
+    logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },
   createUserFromAdmin(data, callback){
     Accounts.createUser(data, callback);

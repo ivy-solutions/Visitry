@@ -192,15 +192,21 @@ if (Meteor.isServer) {
     });
 
     describe('users.addUserToAgency', ()=> {
+
       const addUserToAgencyHandler = Meteor.server.method_handlers['addUserToAgency'];
       var adminTestUser;
+      let meteorStub;
       beforeEach(()=> {
         adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99', role: "administrator"});
-      });
+        meteorStub = sinon.stub(Meteor, 'call', () => { //calls getAgency
+          return {name: 'fakeAgency'};
+        });
+       });
       afterEach(()=> {
         Meteor.users.remove(adminTestUser, function (err) {
           if (err) console.log(err);
         });
+        meteorStub.restore();
       });
 
       it('adds a user to an agency', ()=> {
@@ -229,6 +235,18 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.userData.agencyIds[1], 'agency2');
+      });
+      it('add a user to an agency and remove the agency from prospective', ()=> {
+        const invocation = {userId: adminTestUser};
+        let originalUser = User.findOne({_id: testUserId});
+        originalUser.userData = { prospectiveAgencyIds: ['agency1']};
+        originalUser.save();
+
+        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.agencyIds.length, 1);
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
+        assert.equal(updatedUser.userData.prospectiveAgencyIds.length,0);
       });
     });
 
