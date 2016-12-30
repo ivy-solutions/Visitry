@@ -109,7 +109,6 @@ if (Meteor.isServer) {
     afterEach(() => {
       Agency.findOne.restore();
       User.findOne.restore();
-      Meteor.call.restore();
       meteorStub.restore();
     });
 
