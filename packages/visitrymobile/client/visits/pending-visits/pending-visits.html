@@ -7,6 +7,9 @@
       <div class="warning" ng-hide="connectionStatus=='ok'">
           No connection to server. ({{connectionStatus}})
       </div>
+      <div class="warning" ng-hide="pendingVisits.hasAgency">
+          You are not yet a member of a group.
+      </div>
     <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
       No active requests. Press + to request a visit.
     </div>

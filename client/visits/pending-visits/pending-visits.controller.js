@@ -39,6 +39,10 @@ angular.module('visitry').controller('pendingVisitsCtrl',
       } else {
         feedback.stop()
       }
+    },
+    hasAgency: () => {
+      var user = User.findOne({_id: Meteor.userId()});
+      return user.hasAgency
     }
   });
 

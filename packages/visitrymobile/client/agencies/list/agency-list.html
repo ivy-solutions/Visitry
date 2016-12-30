@@ -1,6 +1,6 @@
 <ion-view title="Groups">
     <ion-content class="has-header hide-tabs">
-        <ion-list>
+        <ion-list can-swipe="agencies.canSwipe">
             <div ng-repeat="agency in agencies.agencies">
             <ion-item>
                 <a ng-click="agencies.agencyDetail(agency._id)">
@@ -13,6 +13,9 @@
                 </a>
                 <a ng-href="{{agency.website}}">{{agency.website}}</a>
                 <p>{{agency.location.formattedAddress}}</p>
+                <ion-option-button class="button-positive" ng-click="agencies.agencyDetail(agency._id)">
+                    Details
+                </ion-option-button>
             </ion-item>
             </div>
         </ion-list>

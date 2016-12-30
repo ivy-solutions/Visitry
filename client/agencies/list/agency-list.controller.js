@@ -7,6 +7,7 @@ import {Agencies} from '/model/agencies'
 angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state ) {
   $reactive(this).attach($scope);
 
+  this.canSwipe = true;
   this.perPage = 3;
   this.page = 1;
   this.sort = {

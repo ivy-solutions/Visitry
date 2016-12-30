@@ -3,6 +3,9 @@
          <div class="warning" ng-hide="connectionStatus=='ok'">
              No connection to server. ({{connectionStatus}})
          </div>
+         <div class="warning" ng-hide="browseVisitRequests.hasAgency">
+             You are not yet a member of a group.
+         </div>
          <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
              No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
          </div>
