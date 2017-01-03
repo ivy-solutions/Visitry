@@ -5,13 +5,23 @@ import {Agencies, Agency} from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("allAgencies", function (options) {
-  logger.info("publish agencies " );
+  logger.info("publish allAgencies " );
   var today = new Date();
   today.setHours(0,0,0,0);
   // active agencies
   return Agencies.find({
     activeUntil: { $gt : today}
   },options);
+});
+Meteor.publish("myAgencies", function () {
+  if (this.userId) {
+    logger.info("publish myAgencies ");
+    var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
+    // active agencies
+    return Agencies.find();
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.methods({

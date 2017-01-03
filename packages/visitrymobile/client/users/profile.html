@@ -4,11 +4,16 @@
         <button ng-click="profile.groups()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">Groups&nbsp; </button>
     </ion-nav-buttons>
     <ion-content class="has-header profile">
+        <div class="agency">
+            <div ng-repeat="group in profile.memberOfAgencies">
+                <p>{{group.name}}</p>
+            </div>
+        </div>
         <form name="profile.profileForm" novalidate="" ng-submit="profile.submitUpdate(profile.profileForm)">
-             <div ng-if="profile.isProfileReady && !profile.currentUser.userData.picture">
-                 <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
-                          <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
-                 </div>
+            <div ng-if="profile.isProfileReady && !profile.currentUser.userData.picture">
+                <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
+                   <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
+                </div>
             </div>
             <div ng-if="!profile.isProfileReady || profile.currentUser.userData.picture">
                 <div class="profile-picture has-picture" ng-click="profile.updatePicture()">
@@ -17,8 +22,10 @@
                     </div>
                 </div>
             </div>
-            <div class="username">{{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a></div>
-             <ion-list>
+            <div class="username">
+                {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a>
+           </div>
+              <ion-list>
                 <label class="item item-input">
                     <i class="icon ion-location placeholder-icon"></i>
                     <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack

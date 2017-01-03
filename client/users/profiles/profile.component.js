@@ -3,6 +3,7 @@
  */
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
+import {Agency} from '/model/agencies'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
@@ -15,6 +16,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   }, ()=> {
     this.isProfileReady = true;
   });
+  this.subscribe('myAgencies');
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
@@ -30,13 +32,22 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     isVisitor: () => {
       return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
-     distance: () => {
-       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
-         logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
-         return Meteor.user().userData.visitRange.toString();
-       }
-       return "1";
-     }
+    distance: () => {
+      if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
+        logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
+        return Meteor.user().userData.visitRange.toString();
+      }
+      return "1";
+    },
+    memberOfAgencies: () => {
+      if (this.currentUser && this.currentUser.userData && this.currentUser.userData.agencyIds) {
+        let agencyIds = this.currentUser.userData.agencyIds;
+        console.log(agencyIds);
+        let agencies = Agency.find({_id: {$in: agencyIds}});
+        return agencies;
+      }
+    }
+
   });
 
   this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";

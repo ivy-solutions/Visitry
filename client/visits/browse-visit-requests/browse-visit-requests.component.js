@@ -24,15 +24,15 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.hasAgency = true;
 
   this.autorun( function() {
-    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1}});
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1, 'userData.agencyIds': 1}});
     if ( user && user.userData && user.userData.location) {
       this.fromLocation = user.userData.location.geo;
       this.visitRange = user.userData.visitRange;
-      this.hasAgency = user.hasAgency;
     } else {
       this.visitRange = 3200;
       this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
     }
+    this.hasAgency = user.hasAgency;
   });
 
   this.helpers({
