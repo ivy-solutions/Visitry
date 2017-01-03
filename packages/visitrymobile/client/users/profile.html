@@ -9,67 +9,11 @@
                 <p>{{group.name}}</p>
             </div>
         </div>
-        <form name="profile.profileForm" novalidate="" ng-submit="profile.submitUpdate(profile.profileForm)">
-            <div ng-if="profile.isProfileReady && !profile.currentUser.userData.picture">
-                <div class="profile-picture no-picture" ng-click="profile.updatePicture()">
-                   <img ng-src="{{profile.currentUser.userData.picture}}"/>Add Picture
-                </div>
-            </div>
-            <div ng-if="!profile.isProfileReady || profile.currentUser.userData.picture">
-                <div class="profile-picture has-picture" ng-click="profile.updatePicture()">
-                    <div class="item-avatar">
-                        <img ng-src="{{profile.currentUser.userData.picture}}"/>
-                    </div>
-                </div>
-            </div>
-            <div class="username">
-                {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a>
-           </div>
-              <ion-list>
-                <label class="item item-input">
-                    <i class="icon ion-location placeholder-icon"></i>
-                    <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
-                           ng-model="profile.location.address"
-                           details="profile.location.details" disable-tap
-                           placeholder="{{profile.locationPlaceholder}}"/>
-                </label>
-                <div layout="row">
-                    <span flex></span>
-                    <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
-                </div>
-                 <label class="item item-input item-stacked-label" ng-show="!profile.isVisitor">
-                     <div class="input-label">Location Notes</div>
-                     <textarea ng-model="profile.currentUser.userData.locationInfo" rows="2" placeholder="Apt. number, parking advice, or other info for visitor.">
-                    </textarea>
-                 </label>
-                <label class="item" ng-show="profile.isVisitor">Show visits within {{profile.distance}} miles
-                    <div class="range range-positive">
-                        1
-                        <input type="range" name="distance" min="1" max="50" ng-model="profile.distance">
-                        50
-                    </div>
-                </label>
-                <label class="item item-input">
-                    <input type="tel" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
-                           placeholder="Optional phone number" >
-                    </input>
-                 </label>
-                 <label class="item item-input checkbox-dark" ng-if="profile.currentUser.userData.phoneNumber">
-                      <ion-checkbox ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
-                 </label>
-                <div layout="row">
-                    <span flex></span>
-                    <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
-                </div>
-                <label class="item item-input item-stacked-label">
-                    <div class="input-label">About You</div>
-                    <textarea ng-model="profile.currentUser.userData.about" rows="5" placeholder="Enter info about yourself - interests, background, pets, favorite activites, family, or anything at all.">
-                    </textarea>
-                </label>
-            </ion-list>
-             <button class="button button-block button-clear">
-                Update Profile
-            </button>
-        </form>
+        <div ng-if="visitry.isRequester()"
+             ng-include="'/packages/visitrymobile/client/users/profile-requester.html'">
+        </div>
+        <div ng-if="visitry.isVisitor()"
+             ng-include="'/packages/visitrymobile/client/users/profile-visitor.html'">
+        </div>
     </ion-content>
 </ion-view>

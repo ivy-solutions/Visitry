@@ -50,8 +50,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   });
 
-  this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";
-
   this.location = {
     address: this.currentUser && this.currentUser.userData && this.currentUser.userData.location ? this.currentUser.userData.location.address : "",
     details: ""
