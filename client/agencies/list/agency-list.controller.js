@@ -50,5 +50,8 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
   this.agencyDetail = function (id) {
     $state.go( 'agencyDetails', {groupId: id} );
   };
+  this.home = function () {
+    $state.go( 'login');
+  };
 
 });

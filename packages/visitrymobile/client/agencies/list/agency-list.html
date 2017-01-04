@@ -1,5 +1,9 @@
 <ion-view title="Groups" hide-tabs>
-    <ion-content>
+    <ion-nav-buttons side="right">
+        <button ng-click="agencies.home()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">
+            {{visitry.isVisitor() ? 'Choose to Visit' : 'Requests'}}&nbsp;
+        </button>
+    </ion-nav-buttons>   <ion-content>
         <ion-list can-swipe="agencies.canSwipe">
             <div ng-repeat="agency in agencies.agencies">
             <ion-item>

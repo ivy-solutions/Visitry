@@ -289,7 +289,7 @@ if (Meteor.isServer) {
         });
       });
       afterEach(()=> {
-        Accounts.sendEnrollmentEmail.restore();
+        accountsSendEnrollmentEmailSpy.restore();
       });
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};

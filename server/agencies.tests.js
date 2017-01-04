@@ -121,7 +121,7 @@ if (Meteor.isServer) {
     });
 
     it('sends email when request to join agency made', () => {
-      var mockSend = sinon.mock(Email).expects('send').once();
+      const mockSend = sinon.mock(Email).expects('send').once();
       const invocation = {userId: testUserId};
       sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
       mockSend.verify();

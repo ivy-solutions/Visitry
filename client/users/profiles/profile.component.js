@@ -21,7 +21,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
       username: 1, emails: 1, roles: 1,
-        'userData.agencyIds': 1,
+        'userData.agencyIds': 1, 'userData.prospectiveAgencyIds' : 1,
         'userData.location': 1, 'userData.visitRange': 1,
         'userData.firstName': 1, 'userData.lastName': 1,
         'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}}
@@ -41,10 +41,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     },
     memberOfAgencies: () => {
       if (this.currentUser && this.currentUser.userData && this.currentUser.userData.agencyIds) {
-        let agencyIds = this.currentUser.userData.agencyIds;
-        console.log(agencyIds);
-        let agencies = Agency.find({_id: {$in: agencyIds}});
-        return agencies;
+        return Agency.find({_id: {$in: this.currentUser.userData.agencyIds}});
       }
     }
 
@@ -109,13 +106,17 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
       $ionicHistory.goBack();
     } else {
-      $ionicHistory.nextViewOptions({
-        historyRoot: true
-      });
-      if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
-        $state.go('browseRequests');
+      if (!this.currentUser.hasAgency && !this.currentUser.userData.prospectiveAgencyIds) {
+        $state.go('agencyList');
       } else {
-        $state.go('pendingVisits');
+        $ionicHistory.nextViewOptions({
+          historyRoot: true
+        });
+        if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+          $state.go('browseRequests');
+        } else {
+          $state.go('pendingVisits');
+        }
       }
     }
   };
