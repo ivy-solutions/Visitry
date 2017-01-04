@@ -58,8 +58,8 @@ if (Meteor.isServer) {
       describe('notifications.visitScheduled method', () => {
         const handler = Meteor.server.method_handlers['notifications.visitScheduled'];
         beforeEach(function() {
-          Notifications.remove({}, function(err) { if (err) console.log(err); })
-          findOneUserStub.returns({fullname: "Alphonso Morris"})
+          Notifications.remove({});
+          findOneUserStub.returns({fullname: "Alphonso Morris"});
           addFutureNotificationTask = function(id){};
         });
         it('creates 3 notification records', () => {
@@ -78,7 +78,7 @@ if (Meteor.isServer) {
       describe('notifications.visitCancelled method', () => {
         const handler = Meteor.server.method_handlers['notifications.visitCancelled'];
         beforeEach(function() {
-          Notifications.remove({}, function(err) { if (err) console.log(err); });
+          Notifications.remove({});
           var futureNotificationParty1 = new Notification({
               visitId: visitId,
               notifyDate: new Date(), toUserId: userId, status: NotificationStatus.FUTURE,
