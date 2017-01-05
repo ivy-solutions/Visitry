@@ -63,10 +63,11 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
 
   this.requestMembership = () => {
     ChangeMembership.showModal(this.agency, false);
+    $state.go('agencyList');
   };
-
-  this.goHome = () => {
-    $state.go('login');
-  }
+  this.revokeRequest = () => {
+    ChangeMembership.showModal(this.agency, true);
+    $state.go('agencyList');
+  };
 
 });
