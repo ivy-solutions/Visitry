@@ -103,7 +103,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     this.resetForm(form);
 
     logger.info($ionicHistory.backTitle());
-    if ($ionicHistory.backView() != null && !['Register', 'Join'].includes($ionicHistory.backTitle())) {
+    if ($ionicHistory.backView() != null && !['Register', 'Groups'].includes($ionicHistory.backTitle())) {
       $ionicHistory.goBack();
     } else {
       $ionicHistory.nextViewOptions({
