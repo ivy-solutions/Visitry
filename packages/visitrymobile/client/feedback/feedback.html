@@ -18,7 +18,7 @@
           </div>
         <div class="item item-divider">
           <span ng-if="!feedback.isVisitor">Rate your visitor, {{feedback.visitor.userData.firstName}}</span>
-          <span ng-if="feedback.isVisitor">Rate your host, {{feedback.requester.userData.firstName}}</span>
+          <span ng-if="feedback.isVisitor">How was {{feedback.requester.userData.firstName}}?</span>
         </div>
         <ion-item>
           <ng-md-icon ng-repeat="goodStar in feedback.companionRating.goodStars" icon="star" size="50"
@@ -26,12 +26,10 @@
                       ng-click="feedback.companionRating.selectStar(goodStar.id)"></ng-md-icon>
           <ng-md-icon ng-repeat="badStar in feedback.companionRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.companionRating.selectStar(badStar.id)"></ng-md-icon>
-           <div class="list list-inset">
-            <label class="item item-input">
+            <label class="item item-input-inset">
         <textarea rows="2" ng-model="feedback.companionComments" placeholder="Leave a Comment">
             </textarea>
             </label>
-          </div>
         </ion-item>
           <div layout="row">
               <span flex></span>
@@ -45,31 +43,24 @@
                       ng-click="feedback.visitRating.selectStar(goodStar.id)"></ng-md-icon>
           <ng-md-icon ng-repeat="badStar in feedback.visitRating.badStars" icon="star_border" size="50"
                       style="fill:black" ng-click="feedback.visitRating.selectStar(badStar.id)"></ng-md-icon>
-            <div class="list list-inset">
-            <label class="item item-input">
-                <textarea rows="2" ng-model="feedback.visitComments" placeholder="Leave a Comment">
-                </textarea>
-            </label>
-          </div>
+          <label class="item item-input-inset">
+              <textarea rows="2" ng-model="feedback.visitComments" placeholder="Leave a Comment">
+              </textarea>
+          </label>
         </ion-item>
           <div layout="row">
               <span flex></span>
               <span class="error-message" ng-show="feedback.visitRating.goodStars.length<1 && feedback.userSubmitted">Select 1-5 stars, with 5 stars as highest rating.</span>
           </div>
-          <div class="item item-divider" ng-if="feedback.isVisitor">
-              Estimate time spent - {{feedback.timeSpent | hoursMinutes }}
-          </div>
           <ion-item ng-if="feedback.isVisitor">
-                  <div class="range range-positive">
-                      0 min.
-                      <input type="range" name="volume" min="0" max="300" step="15" ng-model="feedback.timeSpent">
-                      5 hr.
-                  </div>
-              </label>
+              Estimate time spent:  <span class="timeSpent">{{feedback.timeSpent | hoursMinutes }}</span>
+              <div class="range range-positive">
+                  <input type="range" name="volume" min="0" max="300" step="15" ng-model="feedback.timeSpent">
+              </div>
           </ion-item>
       </ion-list>
-      <button class="button button-block button-balanced">
-        Submit
+      <button class="button button-block button-clear">
+        <span class="balanced">Submit</span>
       </button>
     </form>
   </ion-content>
