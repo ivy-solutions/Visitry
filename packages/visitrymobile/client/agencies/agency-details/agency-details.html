@@ -12,6 +12,8 @@
                 </div>
                 <div layout="column" flex="55" layout-align="space-around start" layout-fill>
                     <h4> {{agencyDetails.agency.name}}</h4>
+                    <p ng-show="agencyDetails.isMember()" class="positive">Member</p>
+                    <p ng-show="agencyDetails.isPendingMember()" class="energized">Application Pending</p>
                     <h5 class="item-text-wrap">{{agencyDetails.agency.location.address}}</h5>
                 </div>
             </div>
