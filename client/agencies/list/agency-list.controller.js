@@ -2,9 +2,9 @@
  * Created by sarahcoletti on 7/7/16.
  */
 
-import {Agencies} from '/model/agencies'
+import {Agency} from '/model/agencies'
 
-angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state ) {
+angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership ) {
   $reactive(this).attach($scope);
 
   this.canSwipe = true;
@@ -18,7 +18,7 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
 
   this.helpers({
     agencies: () => {
-      return Agencies.find({}, {sort: this.getReactively('sort')});
+      return Agency.find({}, {sort: this.getReactively('sort')});
     }
   });
 
@@ -50,6 +50,15 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
   this.agencyDetail = function (id) {
     $state.go( 'agencyDetails', {groupId: id} );
   };
+  this.revokeRequest = (id) => {
+    let agency = Agency.findOne(id);
+    ChangeMembership.showModal(agency, true);
+  };
+  this.requestMembership = (id) => {
+    let agency = Agency.findOne(id);
+    ChangeMembership.showModal(agency, false);
+  };
+
   this.home = function () {
     $state.go( 'login');
   };

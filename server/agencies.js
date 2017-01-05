@@ -61,6 +61,24 @@ Meteor.methods({
       subject: subject,
       text: text
     });
+  },
+  revokeJoinRequest(agencyId, notes) {
+    // remove user as prospect
+    Meteor.call('removeProspectiveAgency', agencyId);
+
+    var agency = Agency.findOne(agencyId);
+    var to = agency.contactEmail;
+    var currentUser = User.findOne(this.userId);
+    var from = currentUser.emails[0].address;
+    var subject = "Remove request to join " + agency.name;
+    var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
+    var text = username + " has removed request to join. " + (notes ? "Message: " + notes : "");
+    Email.send({
+      to: to,
+      from: from,
+      subject: subject,
+      text: text
+    });
   }
 });
 

@@ -1,4 +1,5 @@
 import {logger} from '/client/logging'
+import { Agency } from '/model/agencies'
 
 angular.module('visitry').controller('changeMembershipModalCtrl', function ($scope, $reactive, $state, $ionicPopup, ChangeMembership) {
   $reactive(this).attach($scope);
@@ -6,14 +7,8 @@ angular.module('visitry').controller('changeMembershipModalCtrl', function ($sco
   this.notes = "";
 
   this.submit = function (agency) {
-    if (Meteor.myFunctions.membershipStatus(agency._id)==='member' ) {
-      var to = agency.contactEmail;
-      var user = User.findOne(Meteor.userId());
-      var username = user && user.userData ? user.fullName : user.username;
-      var from = Meteor.user().emails[0].address;
-      var subject = "Report Concern";
-      var text = username + " reports: " + this.notes;
-      Meteor.call('sendEmail', to, from, subject, text);
+    if (Meteor.myFunctions.membershipStatus(agency._id)==='pendingMember' ) {
+      Meteor.call('revokeJoinRequest', agency._id, this.notes);
     } else {
       Meteor.call('sendJoinRequest', agency._id, this.notes);
     }

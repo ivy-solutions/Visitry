@@ -1,9 +1,10 @@
-<ion-view title="Groups" hide-tabs>
+<ion-view title="Join" hide-tabs>
     <ion-nav-buttons side="right">
         <button ng-click="agencies.home()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">
             {{visitry.isVisitor() ? 'Choose to Visit' : 'Requests'}}&nbsp;
         </button>
-    </ion-nav-buttons>   <ion-content>
+    </ion-nav-buttons>
+    <ion-content>
         <ion-list can-swipe="agencies.canSwipe">
             <div ng-repeat="agency in agencies.agencies">
             <ion-item>
@@ -15,11 +16,18 @@
                     </h2>
                     <div class="item-text-wrap"><h3>{{agency.description}}</h3></div>
                 </a>
-                <a ng-href="{{agency.website}}">{{agency.website}}</a>
                 <p>{{agency.location.formattedAddress}}</p>
-                <ion-option-button class="button-positive" ng-click="agencies.agencyDetail(agency._id)">
-                    Details
-                </ion-option-button>
+                <ion-item-options side="right">
+                    <ion-option-button class="button-dark" ng-click="agencies.agencyDetail(agency._id)">
+                        Details
+                    </ion-option-button>
+                    <ion-option-button class="button-assertive" ng-if="agencies.isPendingMember(agency._id)" ng-click="agencies.revokeRequest(agency._id)">
+                        Remove Request
+                    </ion-option-button>
+                    <ion-option-button class="button-positive" ng-if="agencies.isNotMember(agency._id)" ng-click="agencies.requestMembership(agency._id)">
+                        Ask to Join
+                    </ion-option-button>
+                </ion-item-options>
             </ion-item>
             </div>
         </ion-list>

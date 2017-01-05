@@ -6,11 +6,11 @@ angular.module('visitry').service('ChangeMembership', function ($rootScope, $ion
   this.showModal = showModal;
   this.hideModal = hideModal;
 
-  function showModal(agency, isMember) {
+  function showModal(agency, isPendingMember) {
     this._scope = $rootScope.$new();
     this._scope.agency = agency;
 
-    $ionicModal.fromTemplateUrl(getModalHtml(isMember), {
+    $ionicModal.fromTemplateUrl(getModalHtml(isPendingMember), {
       scope: this._scope
     }).then((modal) => {
       this._modal = modal;
@@ -24,17 +24,17 @@ angular.module('visitry').service('ChangeMembership', function ($rootScope, $ion
   }
 });
 
-function getModalHtml(isMember) {
+function getModalHtml(isPendingMember) {
   if (Meteor.isCordova) {
-    if (isMember) {
-      return '/packages/visitrymobile/client/agencies/membership/report-modal.html'
+    if (isPendingMember) {
+      return '/packages/visitrymobile/client/agencies/membership/revoke-modal.html'
     } else {
       return '/packages/visitrymobile/client/agencies/membership/join-modal.html'
     }
   }
   else {
-    if (isMember) {
-      return '/packages/vistry-browser/client/agencies/membership/report-modal.html'
+    if (isPendingMember) {
+      return '/packages/vistry-browser/client/agencies/membership/revoke-modal.html'
     } else {
       return '/packages/vistry-browser/client/agencies/membership/join-modal.html'
     }

@@ -283,6 +283,25 @@ Meteor.methods({
       }
     });
     logger.info("addProspectiveAgency for userId: " + this.userId);
+  },
+  removeProspectiveAgency(agencyId) {
+    if (!this.userId) {
+      logger.error("removeProspectiveAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update agencies.');
+    }
+    var currentUser = User.findOne(this.userId);
+    if (currentUser.userData.prospectiveAgencyIds && currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = currentUser.userData.prospectiveAgencyIds.indexOf(agencyId);
+      currentUser.userData.prospectiveAgencyIds.splice(index,1);
+    }
+    currentUser.save(function (err, id) {
+      if (err) {
+        logger.error("removeProspectiveAgency failed to update user. err: " + err);
+        throw err;
+      }
+    });
+    logger.info("removeProspectiveAgency for userId: " + this.userId);
   }
 });
 

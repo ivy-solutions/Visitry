@@ -24,7 +24,7 @@ Package.onUse(function(api) {
     'client/agencies/list/agency-list.html',
     'client/agencies/agency-details/agency-details.html',
     'client/agencies/membership/join-modal.html',
-    'client/agencies/membership/report-modal.html',
+    'client/agencies/membership/revoke-modal.html',
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',
     'client/auth/register/register.component.js',
