@@ -103,20 +103,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     this.resetForm(form);
 
     logger.info($ionicHistory.backTitle());
-    if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
+    if ($ionicHistory.backView() != null && !['Register', 'Join'].includes($ionicHistory.backTitle())) {
       $ionicHistory.goBack();
     } else {
-      if (!this.currentUser.hasAgency && !this.currentUser.userData.prospectiveAgencyIds) {
-        $state.go('agencyList');
+      $ionicHistory.nextViewOptions({
+        historyRoot: true
+      });
+      if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+        $state.go('browseRequests');
       } else {
-        $ionicHistory.nextViewOptions({
-          historyRoot: true
-        });
-        if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
-          $state.go('browseRequests');
-        } else {
-          $state.go('pendingVisits');
-        }
+        $state.go('pendingVisits');
       }
     }
   };

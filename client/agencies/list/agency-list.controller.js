@@ -4,7 +4,7 @@
 
 import {Agency} from '/model/agencies'
 
-angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership ) {
+angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory ) {
   $reactive(this).attach($scope);
 
   this.canSwipe = true;
@@ -59,8 +59,14 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
     ChangeMembership.showModal(agency, false);
   };
 
-  this.home = function () {
-    $state.go( 'login');
+
+  this.profile = function () {
+    if (!$ionicHistory.backView() ) {
+      $state.go('profile');  //if we are registering direct to finish profile
+    }
   };
+  this.registering = function() {
+    return !$ionicHistory.backView()
+  }
 
 });

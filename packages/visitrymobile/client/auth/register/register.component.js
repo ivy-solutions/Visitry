@@ -39,7 +39,7 @@ angular.module("visitry.mobile").directive('register', function() {
                 }
                 else {
                   this.resetForm(form);
-                  $state.go('profile', {reload:true});
+                  $state.go('agencyList');
                 }
               });
             }
