@@ -6,8 +6,11 @@
     </ion-nav-buttons>
     <ion-content>
         <ion-list can-swipe="agencies.canSwipe">
+            <div class="item item-divider">
+                Choose a group to ask to join
+            </div>
             <div ng-repeat="agency in agencies.agencies">
-            <ion-item>
+                <ion-item>
                 <a ng-click="agencies.agencyDetail(agency._id)">
                     <h2>
                         <i class="ion-checkmark-circled" ng-if="!agencies.isNotMember(agency._id)"

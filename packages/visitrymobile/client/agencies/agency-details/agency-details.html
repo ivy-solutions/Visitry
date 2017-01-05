@@ -45,15 +45,15 @@
             </div>
             <div layout="column">
                 <div class="button-bar button-balanced">
-                    <button class="button button-full button-balanced"
+                    <button class="button button-full button-clear"
                             ng-if="agencyDetails.canRequestMembership()"
                             ng-click="agencyDetails.requestMembership()">
-                        {{agencyDetails.isPendingMember() ? "Resend Join Request": "Request Membership"}}
+                        <span class="balanced">{{agencyDetails.isPendingMember() ? "Resend Join Request": "Request Membership"}}</span>
                     </button>
-                    <button class="button button-full button-assertive"
+                    <button class="button button-full button-clear"
                             ng-if="agencyDetails.isPendingMember()"
                             ng-click="agencyDetails.revokeRequest()">
-                        Remove Request
+                        <span class="assertive">Remove Request</span>
                     </button>
                 </div>
             </div>

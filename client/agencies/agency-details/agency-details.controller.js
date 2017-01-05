@@ -57,7 +57,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
       return true;
     } else {
       var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds':1}});
-      return this.isNotMember() && !user.userData.agencyIds && !user.userData.prospectiveAgencyIds;
+      return this.isNotMember() && !user.hasAgency && (!user.userData.prospectiveAgencyIds || user.userData.prospectiveAgencyIds.length==0);
     }
   };
 
