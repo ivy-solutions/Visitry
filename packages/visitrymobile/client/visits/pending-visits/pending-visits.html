@@ -3,7 +3,7 @@
     <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
     </button>
   </ion-nav-buttons>
-  <ion-content class="has-header has-tabs">
+  <ion-content class="has-header has-tabs pending">
       <div class="warning" ng-hide="connectionStatus=='ok'">
           No connection to server. ({{connectionStatus}})
       </div>
@@ -16,6 +16,7 @@
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
       <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
         <div class="item item-divider">
+            <span class="assertive" ng-if="pendingVisits.isToday(dateVisits.date)">Today :</span>
           {{dateVisits.date|date: "EEEE, MMMM d"}}
         </div>
         <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
@@ -27,8 +28,8 @@
                 <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
                 </h4>
                 <h2 ng-if="visit.visitorId">
-                    <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
                     {{pendingVisits.getVisitor(visit) | firstNameLastInitial }}
+                    <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
                 </h2>
                 <span flex></span>
               </div>

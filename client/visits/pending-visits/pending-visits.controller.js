@@ -68,6 +68,12 @@ angular.module('visitry').controller('pendingVisitsCtrl',
     return "";
   };
 
+  this.isToday = function(date) {
+    let today = moment();
+    let dateToCompare = moment(date);
+    return today.isSame(dateToCompare, 'd');
+  };
+
   this.showCancelVisitConfirm = function (visit) {
     Meteor.myFunctions.showCancelVisitConfirm(visit,$filter,$ionicPopup,$ionicListDelegate,$ionicHistory);
   };

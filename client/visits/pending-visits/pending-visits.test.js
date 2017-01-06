@@ -86,4 +86,15 @@ describe('Pending Visit Requests', function () {
     })
   });
 
+  describe('isToday', function () {
+    it('returns true when date passed is today', function () {
+      chai.assert(controller.isToday(new Date()));
+    });
+    it('returns false when date passed is tomorrow', function () {
+      var date = new Date();
+      date.setTime(date.getTime() + ( 24 * 60 * 60 * 1000));
+      chai.assert.equal(controller.isToday(date), false);
+    })
+  });
+
 });
