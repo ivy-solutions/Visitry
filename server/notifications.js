@@ -115,10 +115,12 @@ Meteor.methods({
 
 sendPushNotificationNow = function(notification) {
   var sentNotification = Notification.findOne(notification);
-  Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
-  logger.info( "notification.send " + sentNotification.text);
-  sentNotification.status = NotificationStatus.SENT;
-  sentNotification.save();
+  if (sentNotification) {
+    Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
+    logger.info("notification.send " + sentNotification.text);
+    sentNotification.status = NotificationStatus.SENT;
+    sentNotification.save();
+  }
 };
 
 formattedVisitTime = function(visit) {

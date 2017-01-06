@@ -2,61 +2,29 @@
 * Created by sarahcoletti on 3/2/16.
 */
 <ion-view view-title="Visit Request" hide-back-button=false hide-tabs>
-  <ion-content padding="true" scroll="true" class="has-footer">
+  <ion-content padding="true" scroll="true">
     <div ng-if="visitDetails.isRequester()"
          ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-requester.html'">
     </div>
     <div ng-if="visitDetails.isVisitor()"
          ng-include="'/packages/visitrymobile/client/visits/visit-details/visit-details-visitor.html'">
     </div>
-
-  </ion-content>
-    <div class="bar bar-footer invisible-footer">
-        <ion-subfooter-bar class="bar bar-subfooter bar-light">
-            <div class="button-bar">
-            <button class="button button-balanced"
-                    ng-click="visitDetails.dialCompanion(visitDetails.getVisitor())"
-                    ng-if="visitDetails.canCallVisitor()"
-                    ><i class="ion-ios-telephone"></i> Call
-            </button>
-            <button class="button button-balanced"
-                    ng-click="visitDetails.sendText()"
-                            ng-if="visitDetails.isRequester() && visitDetails.visitorTextLink()"
-            ><i class="ion-android-textsms"></i> Text
-            </button>
-            <button class="button button-balanced"
-                    ng-click="visitDetails.sendMail()"
-                    ng-if="visitDetails.isRequester() && visitDetails.visitorEmailLink()"
-            ><i class="ion-ios-email"></i> Email
-            </button>
-
-            <button class="button button-balanced"
-                    ng-click="visitDetails.dialCompanion(visitDetails.getRequester())"
-                    ng-if="visitDetails.canCallRequester()"
-                    ><i class="ion-ios-telephone"></i> Call
-            </button>
-            <button class="button button-balanced"
-                    ng-click="visitDetails.sendText()"
-                            ng-if="visitDetails.isVisitor() && visitDetails.requesterTextLink()"
-            ><i class="ion-android-textsms"></i> Text
-            </button>
-            <button class="button button-balanced"
-                    ng-click="visitDetails.sendMail()"
-                    ng-if="visitDetails.isVisitor() && visitDetails.requesterEmailLink()"
-            ><i class="ion-ios-email"></i> Email
-            </button>
-            </div>
-        </ion-subfooter-bar>
-        <button class="button button-block button-balanced"
-                ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()"
-                ng-click="visitDetails.scheduleVisit()"
-                >
-            Plan Visit
-        </button>
-        <button class="button button-block button-assertive"
-                ng-if="(visitDetails.visit.visitorId)||(visitDetails.isRequester())"
-                ng-click="visitDetails.cancelVisit()" >
-            Cancel Visit
-        </button>
+    <div>
+      <div layout="column" layout-padding="true">
+          <div class="button-bar">
+              <button class="button button-full button-clear"
+                      ng-if="(!visitDetails.visit.visitorId)&&visitDetails.isVisitor()"
+                      ng-click="visitDetails.scheduleVisit()"
+              >
+                  <span class="balanced">Plan Visit</span>
+              </button>
+              <button class="button button-full button-clear"
+                      ng-if="(visitDetails.visit.visitorId)||(visitDetails.isRequester())"
+                      ng-click="visitDetails.cancelVisit()" >
+                  <span class="assertive">Cancel Visit</span>
+              </button>
+          </div>
+      </div>
     </div>
+  </ion-content>
 </ion-view>
