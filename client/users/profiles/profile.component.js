@@ -149,6 +149,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     $state.go('agencyList');
   };
 
+  this.showNavigationToGroups = () => {
+    //dont show, if we came from groups during registration process
+    return !['Groups'].includes($ionicHistory.backTitle())
+  };
+
   function handleError(err) {
     logger.info('userData save error ', err.reason);
 

@@ -1,7 +1,7 @@
 <ion-view title="{{profile.currentUser.username}}" hide-back-button=false hide-tabs>
 
     <ion-nav-buttons side="right">
-        <button ng-click="profile.groups()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">Groups&nbsp; </button>
+        <button ng-click="profile.groups()" ng-if="profile.showNavigationToGroups()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">Groups&nbsp; </button>
     </ion-nav-buttons>
     <ion-content class="has-header profile">
         <div class="agency">
