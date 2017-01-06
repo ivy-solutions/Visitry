@@ -1,5 +1,5 @@
 <ion-view view-title="Upcoming Visits" hide-back-button=true>
-    <ion-content class="has-header has-tabs">
+    <ion-content class="has-header has-tabs pending">
         <ion-list show-delete="visitorViewUpcoming.showDelete" can-swipe="visitorViewUpcoming.canSwipe">
             <div class="warning" ng-hide="connectionStatus=='ok'">
                 No connection to server. ({{connectionStatus}})
@@ -14,8 +14,10 @@
                 <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
                     <img ng-src="{{visitorViewUpcoming.getRequesterImage(visit)}}" ng-click="visitorViewUpcoming.visitDetails(visit._id)"/>
                     <a ng-click="visitorViewUpcoming.visitDetails(visit._id)">
-                        <h2><span class="timeOfDay">{{visit.visitTime | date: "h:mm"}}</span>
-                        {{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}</h2>
+                        <h2>
+                            {{visitorViewUpcoming.getRequester(visit) | firstNameLastInitial}}
+                            <span class="time">{{visit.visitTime | date: "h:mm"}}</span>
+                        </h2>
                         <h3>{{visit.location | approximateLocation}}</h3>
                         <p style="white-space: nowrap">{{visit.notes}}</p>
                     </a>
