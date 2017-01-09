@@ -65,3 +65,4 @@ percolate:synced-cron
 #other
 brentjanderson:winston-client
 shell-server
+meteorhacks:ssr
