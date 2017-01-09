@@ -20,17 +20,17 @@
             <div layout="column">
                 <div class="button-bar button-block bar-light">
                     <button class="button"
-                            ng-href="{{agencyDetails.agency.website}}"
+                            ng-click="agencyDetails.browseToWebsite()"
                             ng-if="agencyDetails.agency.website"
                     ><i class="ion-earth"></i> Website
                     </button>
                     <button class="button"
-                            ng-click="agencyDetails.agency.dialContact()"
+                            ng-click="agencyDetails.dialContact()"
                             ng-if="agencyDetails.agency.contactPhone"
                     ><i class="ion-ios-telephone"></i> Call
                     </button>
                     <button class="button"
-                            ng-click="agencyDetails.agency.sendMail()"
+                            ng-click="agencyDetails.sendMail()"
                             ng-if="agencyDetails.agency.contactEmail"
                     ><i class="ion-ios-email"></i> Email
                     </button>
