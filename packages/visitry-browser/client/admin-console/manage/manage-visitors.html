@@ -19,7 +19,7 @@
       </md-list-item>
       <md-list-item
           dir-paginate="user in adminManageVisitors.visitors | itemsPerPage: adminManageVisitors.recordPerPage"
-          total-items="adminManageVisitors.visitorCount" ng-click="null">
+          total-items="adminManageVisitors.visitorsCount" ng-click="null">
         <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
           <div flex="20">
             {{user.userData.lastName}}, {{user.userData.firstName}}

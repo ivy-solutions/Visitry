@@ -35,7 +35,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   );
 
   this.helpers({
-    upcomingVisits: ()=> {
+    scheduledVisits: ()=> {
       let selector = {
         'visitTime': {$exists: true, $gt: new Date()},
         'agencyId': {$eq: this.agencyId}

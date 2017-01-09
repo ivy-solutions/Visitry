@@ -1,0 +1,23 @@
+<div layout="row" layout-align="center start" layout-margin layout-padding>
+  <div flex="10"></div>
+  <div layout="column" flex="80">
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="Scheduled">
+        <md-content class="md-padding">
+          <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-scheduled.html'"></div>
+        </md-content>
+      </md-tab>
+      <md-tab label="Requested">
+        <md-content class="md-padding">
+          <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-requested.html'"></div>
+        </md-content>
+      </md-tab>
+      <md-tab label="Completed">
+        <md-content class="md-padding">
+          <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-completed.html'"></div>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </div>
+  <div flex="10"></div>
+</div>

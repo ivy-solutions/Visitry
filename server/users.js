@@ -245,9 +245,27 @@ Meteor.methods({
     }
   },
   createUserFromAdmin(data, callback){
+    if (!this.userId) {
+      logger.error("addUserToAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to add a user to an agency.');
+    }
+    if (!Roles.userIsInRole(this.userId, ['administrator'])) {
+      logger.error('addUserToAgency - unauthorized');
+      throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
+    }
     Accounts.createUser(data, callback);
   },
   sendEnrollmentEmail(userId){
+    if (!this.userId) {
+      logger.error("addUserToAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to add a user to an agency.');
+    }
+    if (!Roles.userIsInRole(this.userId, ['administrator'])) {
+      logger.error('addUserToAgency - unauthorized');
+      throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
+    }
     Accounts.sendEnrollmentEmail(userId);
   },
   addProspectiveAgency(agencyId) {

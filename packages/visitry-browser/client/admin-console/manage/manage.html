@@ -9,7 +9,7 @@
            ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
         <md-progress-circular md-mode="indeterminate"></md-progress-circular>
       </div>
-      <div ng-repeat="visitsByDate in adminManage.upcomingVisits" md-whiteframe="1">
+      <div ng-repeat="visitsByDate in adminManage.scheduledVisits" md-whiteframe="1">
         <div class="item item-divider">
           <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
         </div>

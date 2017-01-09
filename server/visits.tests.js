@@ -7,6 +7,7 @@ import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Visit,Visits } from '/model/visits'
 import { Agency } from '/model/agencies'
+import { Counts } from 'meteor/tmeasday:publish-counts';
 import '/server/visits.js';
 import '/model/users';
 import '/model/visits-methods';
@@ -31,7 +32,11 @@ if (Meteor.isServer) {
 
     beforeEach(() => {
       findUserStub = sinon.stub(User, 'findOne');
-      findUserStub.returns({username: 'Thelma', fullname: "Thelma Smith", userData: { firstName: "Thelma", lastName: "Smith"}});
+      findUserStub.returns({
+        username: 'Thelma',
+        fullname: "Thelma Smith",
+        userData: {firstName: "Thelma", lastName: "Smith"}
+      });
       meteorStub = sinon.stub(Meteor, 'call');
       requesterId = Random.id();
       userId = Random.id();
@@ -507,7 +512,7 @@ if (Meteor.isServer) {
 
   });
 
-  describe('visits Publication', () => {
+  describe('visits Publication', ()=> {
     var findOneUserStub;
     var testVisit;
 
@@ -517,6 +522,7 @@ if (Meteor.isServer) {
     var requesterId;
     var agency2Id;
     var userId;
+    let countsPublishStub;
 
     beforeEach(() => {
       agency1Id = Random.id();
@@ -546,6 +552,7 @@ if (Meteor.isServer) {
           agencyIds: [agency1Id]
         }
       });
+      countsPublishStub = sinon.stub(Counts, 'publish');
     });
 
     afterEach(function () {
@@ -553,9 +560,10 @@ if (Meteor.isServer) {
         if (err) console.log(err);
       });
       Meteor.users.findOne.restore();
+      Counts.publish.restore();
     });
 
-    it('requester gets own future visits in agency1 and past scheduled requests where that have no requester feedback', () => {
+    it('requester gets own future visits in agency1 and past scheduled requests where that have no requester feedback', ()=> {
       const invocation = {userId: requesterId};
       const visitCursor = publication.apply(invocation, []);
       var notesFromVisits = visitCursor.map(function (visit) {

@@ -2,6 +2,8 @@ import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
 import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
+import { Counts } from 'meteor/tmeasday:publish-counts';
+import {Roles} from 'meteor/alanning:roles'
 
 Meteor.publish("visits", function (options) {
   if (this.userId) {
@@ -11,7 +13,7 @@ Meteor.publish("visits", function (options) {
     today.setHours(0, 0, 0, 0);
     // active future visit requests, or past requests for which feedback is needed
     var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
-    return Visits.find({
+    let selector = {
       agencyId: {$in: agencies},
       inactive: {$exists: false},
       $or: [
@@ -21,7 +23,27 @@ Meteor.publish("visits", function (options) {
             {visitorId: this.userId, visitorFeedbackId: null}]
         },
         {requestedDate: {$gt: today}}]
-    }, options);
+    };
+    Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
+      noReady: true
+    });
+    return Visits.find(selector);
+  } else {
+    this.ready();
+  }
+});
+
+Meteor.publish("agencyVisits", function (agencyId, options) {
+  if (this.userId && Roles.userIsInRole(this.userId, ['administrator'])) {
+    logger.verbose("publish agencyVisits to " + this.userid);
+    let selector = {
+      agencyId: {$eq: agencyId},
+      inactive: {$exists: false}
+    };
+    Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
+      noReady: true
+    });
+    return Visits.find(selector, options);
   } else {
     this.ready();
   }
@@ -29,7 +51,7 @@ Meteor.publish("visits", function (options) {
 
 Meteor.publish("userRequests", function (userId) {
   if (this.userId && this.userId === userId) { //for now, only a requester can look at their own requests
-    logger.verbose("publish userRequests of " + userId + " to " + this.userId );
+    logger.verbose("publish userRequests of " + userId + " to " + this.userId);
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     //active requests requested by me for a future date, or for a past date and needing my feedback
@@ -88,7 +110,7 @@ Meteor.publish("availableVisits", function () {
     });
     requesterIds.push(this.userId);
     return [availableRequests,
-      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails:1}})];
+      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails: 1}})];
   } else {
     this.ready();
   }

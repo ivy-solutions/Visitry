@@ -5,6 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
+import {Roles} from 'meteor/alanning:roles'
 import '/server/users.js';
 import '/model/users.js'
 
@@ -249,6 +250,7 @@ if (Meteor.isServer) {
 
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId,['administrator']);
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com'}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(accountsCreateUserSpy.calledOnce);
@@ -275,6 +277,7 @@ if (Meteor.isServer) {
       });
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId,['administrator']);
         sendEnrollmentEmailHandler.apply(invocation, [testUserId]);
         assert.equal(result,true);
       });

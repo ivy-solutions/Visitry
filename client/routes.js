@@ -241,6 +241,18 @@ angular.module('visitry')
         controller: 'adminManageVisitorsCtrl as adminManageVisitors',
         resolve:{authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
       })
+      .state('adminManageVisits',{
+        url: '/admin/manage/visits',
+        templateUrl:()=>{
+          if (Meteor.isCordova) {
+            return 'packages/visitrymobile/client/admin-console/manage/manage-visits.html';
+          } else {
+            return 'packages/visitry-browser/client/admin-console/manage/manage-visits.html';
+          }
+        },
+        controller: 'adminManageVisitsCtrl as adminManageVisits',
+        resolve:{authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+      })
       .state('adminAnalytics', {
         url: '/admin/analytics',
         templateUrl: ()=> {

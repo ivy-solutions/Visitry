@@ -8,7 +8,7 @@ Meteor.startup(function () {
     Accounts.emailTemplates.siteName = "visitry.org";
     Accounts.emailTemplates.from = "Visitry Admin <admin@visitry.org>";
     Accounts.emailTemplates.enrollAccount.subject = function (user) {
-      return "Welcome to Visitry, " + user.userData.fullName;
+      return "Welcome to Visitry, " + user.userData.firstName;
     };
     Accounts.emailTemplates.enrollAccount.text = function (user, url) {
       return "You have been selected to participate in building a better future!"
