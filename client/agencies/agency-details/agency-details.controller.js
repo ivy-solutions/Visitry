@@ -44,10 +44,17 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   };
 
   this.sendMail = function(){
-    var subject= "Note from " + this.isMember() ? "member" : "prospective member";
+    var subject= "Note from " + (this.isMember() ? "member" : "prospective member");
     var to = this.agency.contactEmail;
     if (to) {
-      window.open(to + '?subject=' + subject, '_system');
+      window.open("mailto:" + to + '?subject=' + subject, '_system');
+    }
+  };
+
+  this.browseToWebsite = function(){
+    var page = this.agency.website;
+    if (page) {
+      window.open(page, '_system');
     }
   };
 
@@ -57,16 +64,17 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
       return true;
     } else {
       var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds':1}});
-      return this.isNotMember() && !user.userData.agencyIds && !user.userData.prospectiveAgencyIds;
+      return this.isNotMember() && !user.hasAgency && (!user.userData.prospectiveAgencyIds || user.userData.prospectiveAgencyIds.length==0);
     }
   };
 
   this.requestMembership = () => {
     ChangeMembership.showModal(this.agency, false);
+    $state.go('agencyList');
   };
-
-  this.goHome = () => {
-    $state.go('login');
-  }
+  this.revokeRequest = () => {
+    ChangeMembership.showModal(this.agency, true);
+    $state.go('agencyList');
+  };
 
 });

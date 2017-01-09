@@ -15,6 +15,25 @@
       <h5 class="item-text-wrap" ng-show="!visitDetails.visit.visitorId">Near: {{visitDetails.visit.location | approximateLocation}}</h5>
     </div>
   </div>
+    <div layout="column">
+        <div class="button-bar button-block bar-light">
+            <button class="button"
+                    ng-click="visitDetails.dialCompanion(visitDetails.getRequester())"
+                    ng-if="visitDetails.canCallRequester()"
+            ><i class="ion-ios-telephone"></i> Call
+            </button>
+            <button class="button"
+                    ng-click="visitDetails.sendText()"
+                    ng-if="visitDetails.requesterTextLink()"
+            ><i class="ion-android-textsms"></i> Text
+            </button>
+            <button class="button"
+                    ng-click="visitDetails.sendMail()"
+                    ng-if="visitDetails.requesterEmailLink()"
+            ><i class="ion-ios-email"></i> Email
+            </button>
+        </div>
+    </div>
     <div layout="row">
         <div layout="column">
           <h4>Notes</h4>
@@ -29,7 +48,7 @@
 </div>
 <div layout="row">
   <div layout="column">
-    <h4>About {{visitDetails.getRequester() | firstNameLastInitial}}</h4>
+    <h4>{{visitDetails.getRequester() | firstNameLastInitial}}'s Interests</h4>
     <div class="item-text-wrap">{{visitDetails.userAboutInfo(visitDetails.getRequester())}}</div>
   </div>
 </div>

@@ -5,13 +5,23 @@ import {Agencies, Agency} from '/model/agencies'
 import { logger } from '/server/logging'
 
 Meteor.publish("allAgencies", function (options) {
-  logger.info("publish agencies " );
+  logger.info("publish allAgencies " );
   var today = new Date();
   today.setHours(0,0,0,0);
   // active agencies
   return Agencies.find({
     activeUntil: { $gt : today}
   },options);
+});
+Meteor.publish("myAgencies", function () {
+  if (this.userId) {
+    logger.info("publish myAgencies ");
+    var user = Meteor.users.findOne(this.userId, {fields: {'userData.agencyIds': 1}});
+    // active agencies
+    return Agencies.find();
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.methods({
@@ -45,6 +55,24 @@ Meteor.methods({
     var subject = "Request to join " + agency.name;
     var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
     var text = username + " requests to join. " + (notes ? "Message: " + notes : "");
+    Email.send({
+      to: to,
+      from: from,
+      subject: subject,
+      text: text
+    });
+  },
+  revokeJoinRequest(agencyId, notes) {
+    // remove user as prospect
+    Meteor.call('removeProspectiveAgency', agencyId);
+
+    var agency = Agency.findOne(agencyId);
+    var to = agency.contactEmail;
+    var currentUser = User.findOne(this.userId);
+    var from = currentUser.emails[0].address;
+    var subject = "Remove request to join " + agency.name;
+    var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
+    var text = username + " has removed request to join. " + (notes ? "Message: " + notes : "");
     Email.send({
       to: to,
       from: from,

@@ -78,15 +78,19 @@ Meteor.myFunctions = {
   membershipStatus: function (agencyId) {
     let status = 'noUser';
     if (Meteor.userId()) {
-      const user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
-      const myAgencies = user.userData.agencyIds;
-      const pendingAgencies = user.userData.prospectiveAgencyIds;
-      if (myAgencies && myAgencies.includes(agencyId))
-        status = "member";
-      else if (pendingAgencies && pendingAgencies.includes(agencyId))
-        status = "pendingMember";
-      else
+      const user = User.findOne({_id: Meteor.userId()}, {fields: { 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+      if (user && user.userData) {
+        const myAgencies = user.userData.agencyIds;
+        const pendingAgencies = user.userData.prospectiveAgencyIds;
+        if (myAgencies && myAgencies.includes(agencyId))
+          status = "member";
+        else if (pendingAgencies && pendingAgencies.includes(agencyId))
+          status = "pendingMember";
+        else
+          status = "notMember";
+      } else {
         status = "notMember";
+      }
     }
     return status;
   }

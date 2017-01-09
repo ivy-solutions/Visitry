@@ -33,7 +33,6 @@ User = Class.create({
     username: {type: String, optional:true},
     createdAt: {type: Date},
     userData: {type: UserData, optional: true},
-    //roles: {type: [String]},  //Roles pacakge and astronomy validation don't work well together
     emails: {
       type: [Object],
       default: function () {
@@ -50,7 +49,16 @@ User = Class.create({
         }
       }
     },
-    roles: {type:[String], optional:true}
+    roles: {type:[String], optional:true},
+    hasAgency: {
+      type: Boolean,
+      resolve(doc) {
+        if (doc && doc.userData && doc.userData.agencyIds && doc.userData.agencyIds.length > 0)
+          return true;
+        else
+          return false;
+      }
+    }
   }
 });
 var TopVisitors = new Mongo.Collection('topVisitors');

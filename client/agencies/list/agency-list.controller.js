@@ -2,11 +2,12 @@
  * Created by sarahcoletti on 7/7/16.
  */
 
-import {Agencies} from '/model/agencies'
+import {Agency} from '/model/agencies'
 
-angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state ) {
+angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory ) {
   $reactive(this).attach($scope);
 
+  this.canSwipe = true;
   this.perPage = 3;
   this.page = 1;
   this.sort = {
@@ -17,16 +18,16 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
 
   this.helpers({
     agencies: () => {
-      return Agencies.find({}, {sort: this.getReactively('sort')});
+      return Agency.find({}, {sort: this.getReactively('sort')});
     }
   });
 
-  this.subscribe('userBasics');
+  this.subscribe('userProfile');
   this.subscribe('allAgencies', () => {
     return [
       {
         limit: parseInt(this.perPage),
-        skip: parseInt((this.getReactively('page') - 1) * this.Page),
+        skip: parseInt((this.getReactively('page') - 1) * this.page),
         sort: this.getReactively('sort')
       },
       this.getReactively('searchText')
@@ -49,5 +50,23 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
   this.agencyDetail = function (id) {
     $state.go( 'agencyDetails', {groupId: id} );
   };
+  this.revokeRequest = (id) => {
+    let agency = Agency.findOne(id);
+    ChangeMembership.showModal(agency, true);
+  };
+  this.requestMembership = (id) => {
+    let agency = Agency.findOne(id);
+    ChangeMembership.showModal(agency, false);
+  };
+
+
+  this.profile = function () {
+    if (!$ionicHistory.backView() ) {
+      $state.go('profile');  //if we are registering direct to finish profile
+    }
+  };
+  this.registering = function() {
+    return !$ionicHistory.backView()
+  }
 
 });

@@ -1,11 +1,11 @@
 {
   "name": "visitry",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "visitry connects visit requests and visitors",
   "main": "",
   "scripts": {
     "testtobrowser": "meteor test --driver-package practicalmeteor:mocha --port 3100",
-    "test": "spacejam test --driver-package practicalmeteor:mocha-console-runner"
+    "test": "spacejam test --mocha --driver-package practicalmeteor:mocha-console-runner"
   },
   "repository": {
     "type": "git",

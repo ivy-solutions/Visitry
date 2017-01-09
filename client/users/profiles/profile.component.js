@@ -3,18 +3,25 @@
  */
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
+import {Agency} from '/model/agencies'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
   $reactive(this).attach($scope);
 
   this.currentUser = Meteor.user();
+  this.isProfileReady = false;
 
-  this.subscribe('userProfile');
+  this.subscribe('userProfile', ()=> {
+    return [];
+  }, ()=> {
+    this.isProfileReady = true;
+  });
+  this.subscribe('myAgencies');
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
       username: 1, emails: 1, roles: 1,
-        'userData.agencyIds': 1,
+        'userData.agencyIds': 1, 'userData.prospectiveAgencyIds' : 1,
         'userData.location': 1, 'userData.visitRange': 1,
         'userData.firstName': 1, 'userData.lastName': 1,
         'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}}
@@ -25,16 +32,20 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     isVisitor: () => {
       return Roles.userIsInRole(Meteor.userId(), 'visitor');
     },
-     distance: () => {
-       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
-         logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
-         return Meteor.user().userData.visitRange.toString();
-       }
-       return "1";
-     }
-  });
+    distance: () => {
+      if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
+        logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
+        return Meteor.user().userData.visitRange.toString();
+      }
+      return "1";
+    },
+    memberOfAgencies: () => {
+      if (this.currentUser && this.currentUser.userData && this.currentUser.userData.agencyIds) {
+        return Agency.find({_id: {$in: this.currentUser.userData.agencyIds}});
+      }
+    }
 
-  this.locationPlaceholder = this.isVisitor ? "Location from which you will usually come" : "Usual visit location";
+  });
 
   this.location = {
     address: this.currentUser && this.currentUser.userData && this.currentUser.userData.location ? this.currentUser.userData.location.address : "",
@@ -92,7 +103,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     this.resetForm(form);
 
     logger.info($ionicHistory.backTitle());
-    if ($ionicHistory.backView() != null && $ionicHistory.backTitle() !== 'Register') {
+    if ($ionicHistory.backView() != null && !['Register', 'Groups'].includes($ionicHistory.backTitle())) {
       $ionicHistory.goBack();
     } else {
       $ionicHistory.nextViewOptions({
@@ -136,6 +147,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.groups = () => {
     $state.go('agencyList');
+  };
+
+  this.showNavigationToGroups = () => {
+    //dont show, if we came from groups during registration process
+    return !['Groups'].includes($ionicHistory.backTitle())
   };
 
   function handleError(err) {

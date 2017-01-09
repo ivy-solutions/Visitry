@@ -109,7 +109,6 @@ if (Meteor.isServer) {
     afterEach(() => {
       Agency.findOne.restore();
       User.findOne.restore();
-      Meteor.call.restore();
       meteorStub.restore();
     });
 
@@ -122,10 +121,11 @@ if (Meteor.isServer) {
     });
 
     it('sends email when request to join agency made', () => {
-      var mockSend = sinon.mock(Email).expects('send').once();
+      const sendEmailSpy = sinon.spy(Email, 'send');
       const invocation = {userId: testUserId};
       sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
-      mockSend.verify();
+      sendEmailSpy.restore();
+      sinon.assert.calledOnce(sendEmailSpy);
     });
   });
 }

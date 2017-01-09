@@ -232,17 +232,28 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    var user = User.findOne(userId);
-    if (!user.userData.agencyIds.includes(agencyId)) {
-      user.userData.agencyIds.push(agencyId);
-      user.save((err, id)=> {
-        if (err) {
-          logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
-          throw err;
-        }
-      });
-      logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
+    let agency = Meteor.call('getAgency',agencyId);
+    if (!agency) {
+      logger.error('addUserToAgency - invalid agency')
+      throw new Meteor.Error('invalid-agency', 'Agency missing or can not register new users.');
     }
+    var user = User.findOne(userId);
+    if (!user.userData.agencyIds) {
+      user.userData.agencyIds = [agencyId]
+    } else if (!user.userData.agencyIds.includes(agencyId)) {
+      user.userData.agencyIds.push(agencyId);
+    }
+    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
+      user.userData.prospectiveAgencyIds.splice(index,1);
+    }
+    user.save((err, id)=> {
+      if (err) {
+        logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
+        throw err;
+      }
+    });
+    logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },
   createUserFromAdmin(data, callback){
     if (!this.userId) {
@@ -290,6 +301,25 @@ Meteor.methods({
       }
     });
     logger.info("addProspectiveAgency for userId: " + this.userId);
+  },
+  removeProspectiveAgency(agencyId) {
+    if (!this.userId) {
+      logger.error("removeProspectiveAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update agencies.');
+    }
+    var currentUser = User.findOne(this.userId);
+    if (currentUser.userData.prospectiveAgencyIds && currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = currentUser.userData.prospectiveAgencyIds.indexOf(agencyId);
+      currentUser.userData.prospectiveAgencyIds.splice(index,1);
+    }
+    currentUser.save(function (err, id) {
+      if (err) {
+        logger.error("removeProspectiveAgency failed to update user. err: " + err);
+        throw err;
+      }
+    });
+    logger.info("removeProspectiveAgency for userId: " + this.userId);
   }
 });
 
@@ -297,17 +327,8 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: "", visitRange: 1}
-  }
-  //TODO include real agency in input
-  if (!user.userData.agencyId) {  // use default, if no agency selected
-    logger.error("user has no agency. userId: " + user._id);
-    var agency = Agency.findOne({name: 'IVY Agency'});
-    if (agency) {
-      user.userData.agencyIds = [agency._id];
-    }else{
-      user.userData.agencyIds = [];
-    }
+    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds:[]}
+    user.hasAgency = false;
   }
   user.roles = options.role ? [options.role] : ['requester'];
 

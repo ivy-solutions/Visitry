@@ -26,31 +26,46 @@ Meteor.methods({
     }
     msgText += ".";
 
-    var visitScheduledNotification = new Notification({
+    new Notification({
         visitId: visit._id,
         notifyDate: new Date(), toUserId: visit.requesterId, status: NotificationStatus.SENT,
         title: msgTitle, text: msgText
       }
-    ).save();
-    sendPushNotificationNow(visitScheduledNotification );
+    ).save(function(err, id) {
+      if (err) {
+        logger.error(err);
+      } else {
+        sendPushNotificationNow(id);
+      }
+    });
 
     var oneHourBeforeVisit = moment(visit.visitTime).add(-60, 'm').toDate();
-    var dayOfVisitNotificationForRequester = new Notification({
+    new Notification({
         visitId: visit._id,
         notifyDate: oneHourBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
         title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
       }
-    ).save();
-    console.log(dayOfVisitNotificationForRequester)
-    addFutureNotificationTask(dayOfVisitNotificationForRequester);
+    ).save(function(err, id) {
+      if (err) {
+        logger.error(err);
+      } else {
+        addFutureNotificationTask(id);
+      }
+    });
 
-    var dayOfVisitNotificationForVisitor = new Notification({
+    let requester = User.findOne({_id: visit.requesterId});
+    new Notification({
         visitId: visit._id,
         notifyDate: oneHourBeforeVisit, toUserId: visit.visitorId, status: NotificationStatus.FUTURE,
-        title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
+        title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + requester.fullName
       }
-    ).save();
-    addFutureNotificationTask(dayOfVisitNotificationForVisitor);
+    ).save(function(err, id) {
+      if (err) {
+        logger.error(err);
+      } else {
+        addFutureNotificationTask(id);
+      }
+    });
 
   },
   'notifications.visitCancelled'(visit) {
@@ -60,26 +75,36 @@ Meteor.methods({
       var user = User.findOne(this.userId);
       var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" cancelled by " + user.userData.firstName + ".";
 
-      var visitCancelledNotification = new Notification({
+      new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.visitorId, status: NotificationStatus.SENT,
           title: msgTitle, text: msgText
         }
-      ).save();
-      sendPushNotificationNow( visitCancelledNotification );
-    }
+      ).save(function(err, id) {
+        if (err) {
+          logger.error(err);
+        } else {
+          sendPushNotificationNow(id);
+        }
+      });
+     }
     if ( visit.visitorId === this.userId){
       var user = User.findOne(this.userId);
       var msgText = "Visit on " + formattedVisitTime(visit) + " cancelled by " + user.fullName + ".";
       var msgTitle = "Visit cancelled";
 
-       var visitCancelledNotification = new Notification({
+      new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.requesterId, status: NotificationStatus.SENT,
           title: msgTitle, text: msgText
         }
-      ).save();
-      sendPushNotificationNow(visitCancelledNotification );
+      ).save(function(err, id) {
+         if (err) {
+           logger.error(err);
+         } else {
+           sendPushNotificationNow(id);
+         }
+      });
     }
     var futureNotifications = Notification.find({visitId: visit._id, status: NotificationStatus.FUTURE});
     futureNotifications.forEach((notification)=> {
@@ -90,10 +115,12 @@ Meteor.methods({
 
 sendPushNotificationNow = function(notification) {
   var sentNotification = Notification.findOne(notification);
-  Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
-  logger.info( "notification.send " + sentNotification.text);
-  sentNotification.status = NotificationStatus.SENT;
-  sentNotification.save();
+  if (sentNotification) {
+    Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
+    logger.info("notification.send " + sentNotification.text);
+    sentNotification.status = NotificationStatus.SENT;
+    sentNotification.save();
+  }
 };
 
 formattedVisitTime = function(visit) {

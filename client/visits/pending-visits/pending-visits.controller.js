@@ -16,6 +16,7 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.hasRequests = true;
   this.userId = Meteor.userId();
   this.visits = null;
+  this.hasAgency = true;
 
   this.subscribe('userdata');
 
@@ -26,6 +27,8 @@ angular.module('visitry').controller('pendingVisitsCtrl',
         requestedDate: {$gte: new Date()}
       }, {sort: this.getReactively('listSort')});
       this.hasRequests = this.visits.count() > 0;
+      let currentUser = User.findOne(Meteor.userId())
+      this.hasAgency = currentUser.hasAgency;
     } else {
       feedback.stop()
     }
@@ -63,6 +66,12 @@ angular.module('visitry').controller('pendingVisitsCtrl',
       return visitor.userData.picture;
     }
     return "";
+  };
+
+  this.isToday = function(date) {
+    let today = moment();
+    let dateToCompare = moment(date);
+    return today.isSame(dateToCompare, 'd');
   };
 
   this.showCancelVisitConfirm = function (visit) {
