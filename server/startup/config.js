@@ -10,15 +10,17 @@ Meteor.startup(function () {
     Accounts.emailTemplates.enrollAccount.subject = function (user) {
       return "Welcome to Visitry, " + user.userData.firstName;
     };
-    SSR.compileTemplate('enrollAccountTemplate',Assets.getText('enroll-account-email.html'));
+    SSR.compileTemplate('enrollAccountTemplate', Assets.getText('enroll-account-email.html'));
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
-      return SSR.render('enrollAccountTemplate',{user:user,url:url})
-    }
-/*    Accounts.emailTemplates.enrollAccount.text = function (user, url) {
-      return "You have been selected to participate in building a better future!"
-        + " To activate your account, simply click the link below:\n\n"
-        + url;
-    };*/
+      console.log('PAY ATTENTION');
+      console.log(user);
+      return SSR.render('enrollAccountTemplate', {user: user, url: url, absoluteUrl: Meteor.absoluteUrl('/')})
+    };
+    /*    Accounts.emailTemplates.enrollAccount.text = function (user, url) {
+     return "You have been selected to participate in building a better future!"
+     + " To activate your account, simply click the link below:\n\n"
+     + url;
+     };*/
     Accounts.emailTemplates.resetPassword.from = function () {
       // Overrides value set in Accounts.emailTemplates.from when resetting passwords
       return "Visitry Password Reset <no-reply@visitry.org>";
