@@ -4,9 +4,6 @@ general:
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
     - "/home/ubuntu/build/Visitry/bundle.tar.gz"
     - "/home/ubuntu/build/Visitry/mobile/android/Visitry.apk"
-branches:
-  ignore:
-    - /^(?!master).*$/
 dependencies:
   cache_directories:
     - ~/.meteor
@@ -29,6 +26,16 @@ deployment:
       - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt $HOME/Visitry/.deploy/dev/bundle.crt
       - aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key $HOME/Visitry/.deploy/dev/private.key
       - cd $HOME/Visitry/.deploy/dev && mup deploy
+  staging:
+    branch: master
+    commands:
+      - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
+      - aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem $HOME/Visitry/private/PushKey1216.pem
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt $HOME/Visitry/.deploy/staging/bundle.crt
+      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key $HOME/Visitry/.deploy/staging/private.key
+      - meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
+      - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
+      - cd $HOME/Visitry/.deploy/staging && mup deploy
   production:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: ivy-solutions
@@ -40,14 +47,3 @@ deployment:
       - meteor build $HOME/build/Visitry/mobile --server https://production.visitry.org
       - sh $HOME/Visitry/.deploy/productionmup /android-sign-apk.sh
       - cd $HOME/Visitry/.deploy/production && mup deploy
-  staging:
-    tag: /v[0-9]+(\.[0-9]+)*/
-    owner: ivy-solutions
-    commands:
-      - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
-      - aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem $HOME/Visitry/private/PushKey1216.pem
-      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt $HOME/Visitry/.deploy/staging/bundle.crt
-      - aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key $HOME/Visitry/.deploy/staging/private.key
-      - meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
-      - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
-      - cd $HOME/Visitry/.deploy/staging && mup deploy
