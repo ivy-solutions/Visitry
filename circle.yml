@@ -4,10 +4,9 @@ general:
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
     - "/home/ubuntu/build/Visitry/bundle.tar.gz"
     - "/home/ubuntu/build/Visitry/mobile/android/Visitry.apk"
-  branches:
-    only:
-      - master
-      - dev
+branches:
+  ignore:
+    - /^(?!master).*$/
 dependencies:
   cache_directories:
     - ~/.meteor
