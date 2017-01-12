@@ -36,7 +36,8 @@ deployment:
       - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
       - cd $HOME/Visitry/.deploy/staging && mup deploy
   production:
-    branch: master
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: ivy-solutions
     commands:
       - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
       - aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem $HOME/Visitry/private/PushKey1216.pem
