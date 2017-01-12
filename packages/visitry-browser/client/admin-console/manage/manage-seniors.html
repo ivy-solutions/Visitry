@@ -1,7 +1,7 @@
 <div layout="row" layout-align="center start" layout-margin layout-padding>
   <div flex="10"></div>
   <div layout="column" flex="80">
-    <div layout="row" layout-fill>
+    <div layout="row" layout-fill flex="none">
       <div class="md-title">Requesters</div>
       <span flex></span>
       <md-button class="md-raised md-primary" ng-click="adminManageSeniors.addUser()">+ User</md-button>
@@ -13,8 +13,10 @@
           <md-button style="text-align:left" flex="20" ng-click="adminManageSeniors.toggleSort('userData.lastName')">
             Name
           </md-button>
-          <div class="md-subhead" flex>Principle Visit Location</div>
-          <md-button ng-click="adminManageSeniors.toggleSort('createdAt')">Member Since</md-button>
+          <div class="md-subhead" flex="grow">Location</div>
+          <md-button ng-click="adminManageSeniors.toggleSort('createdAt')" flex="noshrink" style="text-align:right">
+            Member Since
+          </md-button>
         </div>
       </md-list-item>
       <md-list-item
@@ -24,8 +26,8 @@
           <div flex="20">
             {{user.userData.lastName}}, {{user.userData.firstName}}
           </div>
-          <div flex>{{user.userData.location.address}}</div>
-          <div>{{user.createdAt | date:'mediumDate'}}</div>
+          <div flex="grow">{{user.userData.location.address}}</div>
+          <div flex="noshrink" style="text-align:right">{{user.createdAt | date:'mediumDate'}}</div>
         </div>
       </md-list-item>
     </md-list>

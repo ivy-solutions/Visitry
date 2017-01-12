@@ -32,6 +32,7 @@ Package.onUse(function(api) {
     'client/visits/schedule-visit/schedule-visit-modal.html',
     'client/styles/main.less',
     'client/styles/lists.less',
+    'client/styles/manage-lists.less',
     'client/admin-console/admin-home.html',
     'client/admin-console/admin/admin.html',
     'client/admin-console/analytics/analytics.html',
