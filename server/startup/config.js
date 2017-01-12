@@ -12,9 +12,7 @@ Meteor.startup(function () {
     };
     SSR.compileTemplate('enrollAccountTemplate', Assets.getText('enroll-account-email.html'));
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
-      console.log('PAY ATTENTION');
-      console.log(user);
-      return SSR.render('enrollAccountTemplate', {user: user, url: url, absoluteUrl: Meteor.absoluteUrl('/')})
+      return SSR.render('enrollAccountTemplate', {user: user, url: url, absoluteUrl: Meteor.absoluteUrl()})
     };
     /*    Accounts.emailTemplates.enrollAccount.text = function (user, url) {
      return "You have been selected to participate in building a better future!"
