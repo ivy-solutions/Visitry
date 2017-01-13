@@ -18,7 +18,6 @@ dependencies:
     - npm install -g mup # install meteor-up for deployment
     - mkdir $HOME/build/
     - mkdir $HOME/build/Visitry/
-    - git fetch --tags
 deployment:
   dev:
     branch: dev
@@ -38,7 +37,7 @@ deployment:
       - sh $HOME/Visitry/.deploy/staging/android-sign-apk.sh
       - cd $HOME/Visitry/.deploy/staging && mup deploy
   production:
-    tag: /v[0-9]+(\.[0-9]+)*/
+    tag: /.*?/
     owner: ivy-solutions
     commands:
       - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
