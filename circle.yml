@@ -28,6 +28,7 @@ deployment:
       - cd $HOME/Visitry/.deploy/dev && mup deploy
   staging:
     branch: master
+    owner: ivy-solutions
     commands:
       - aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem $HOME/Visitry/private/VisitryPushProd.pem
       - aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem $HOME/Visitry/private/PushKey1216.pem
