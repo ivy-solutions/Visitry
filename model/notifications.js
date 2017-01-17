@@ -31,7 +31,7 @@ const Notification = Class.create({
     notifyDate: {type: Date},
     title: {type: String},
     text: {type: String},
-    toUserId: {type:String},
+    toUserId: {type:String, index: 1},
     status: { type: NotificationStatus },
     createdAt: {type: Date, immutable: true},
     updatedAt: {type: Date},
