@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+</head>
+<body>
+<div style="display: block;overflow: auto;width:100%;background-color: #00A000"><img
+    src="{{absoluteUrl}}assets/images/logoNoBackground.png" width="100px" style="float:left;"/>
+  <h1 style="vertical-align:bottom;margin: 0px;">Welcome to {{agency.name}}</h1></div>
+<p>{{user.userData.firstName}},</p>
+<p>You have succesfully completed the vetting process and been added as a {{user.roles.[0]}} to {{agency.name}}</p>
+
+<a href="{{url}}">Add {{user.userData.firstName}}</a>
+
+<p>
+  Thank you,</p>
+Your Friends at
+
+<div style="text-size-adjust: none !important; -ms-text-size-adjust: none !important; -webkit-text-size-adjust: none !important;
+">
+
+  <p style="font-family: Helvetica, Arial, sans-serif; font-size: 10px; line-height: 12px; margin-bottom: 10px;">
+    <a style="text-decoration:none" href="https://htmlsig.com/t/000001CG9ZVK">
+      <img src="{{absoluteUrl}}assets/images/logoNoBackground.png" alt=""
+           border="0" height="80" width="135">
+    </a>
+  </p>
+  <div style="padding:10px">
+    <p style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;  color: rgb(33, 33, 33);">
+      <span style="font-weight: bold; color: rgb(33, 33, 33); display: inline;">Visitry</span>
+      <span style="color: #212121;"></span>
+      <span style="display: inline;"><br></span>
+    <p style=" text-decoration: none; display: inline;">{{agency.contactPhone}}</p>
+    <span style="display: inline;"><br></span>
+    <a href="mailto:{{agency.contactEmail}}" style="color: rgb(71, 124, 204); text-decoration: none; display: inline;">{{agency.contactEmail}}</a><span
+      style="color: #212121;"></span>
+    <span style="display: inline;"><br></span>
+    <a href="{{agency.website}}"
+       style="color: rgb(71, 124, 204); text-decoration: none; display: inline;">{{agency.website}}</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

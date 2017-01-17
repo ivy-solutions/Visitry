@@ -2,7 +2,8 @@ import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
 import { Counts } from 'meteor/tmeasday:publish-counts';
-import {Roles} from 'meteor/alanning:roles'
+import { Roles } from 'meteor/alanning:roles'
+import { SSR } from 'meteor/meteorhacks:ssr';
 
 Meteor.publish("userdata", function () {
   if (this.userId) {
@@ -16,7 +17,7 @@ Meteor.publish("userdata", function () {
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
           'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1,
-          'userData.prospectiveAgencyIds':1
+          'userData.prospectiveAgencyIds': 1
         }
       });
   } else {
@@ -28,7 +29,7 @@ Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
     return User.find({_id: this.userId},
-      { limit:1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
   } else {
     this.ready();
   }
@@ -232,7 +233,7 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    let agency = Meteor.call('getAgency',agencyId);
+    let agency = Meteor.call('getAgency', agencyId);
     if (!agency) {
       logger.error('addUserToAgency - invalid agency')
       throw new Meteor.Error('invalid-agency', 'Agency missing or can not register new users.');
@@ -242,16 +243,31 @@ Meteor.methods({
       user.userData.agencyIds = [agencyId]
     } else if (!user.userData.agencyIds.includes(agencyId)) {
       user.userData.agencyIds.push(agencyId);
+    }else{
+      logger.error('addUserToAgency - user: '+userId+' already belongs to agency: '+agencyId);
+      throw new Meteor.Error('conflict','User already belongs to agency.');
     }
     if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
       var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
-      user.userData.prospectiveAgencyIds.splice(index,1);
+      user.userData.prospectiveAgencyIds.splice(index, 1);
     }
     user.save((err, id)=> {
       if (err) {
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
+      SSR.compileTemplate('welcomeToAgency', Assets.getText('emails/welcome-to-agency-email.html'));
+      Email.send({
+        to: user.emails[0].address,
+        from: agency.contactEmail,
+        subject: 'Visitry: Welcome to ' + agency.name,
+        html: SSR.render('welcomeToAgency', {
+          user: user,
+          agency: agency,
+          url: 'https://visitry.org',
+          absoluteUrl: Meteor.absoluteUrl()
+        })
+      });
     });
     logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },
@@ -287,7 +303,7 @@ Meteor.methods({
     }
     var currentUser = User.findOne(this.userId);
     var currentProspectiveAgencies = currentUser.userData.prospectiveAgencyIds;
-    if ( !currentProspectiveAgencies) {
+    if (!currentProspectiveAgencies) {
       currentUser.userData.prospectiveAgencyIds = [agencyId];
     } else {
       if (!currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
@@ -311,7 +327,7 @@ Meteor.methods({
     var currentUser = User.findOne(this.userId);
     if (currentUser.userData.prospectiveAgencyIds && currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
       var index = currentUser.userData.prospectiveAgencyIds.indexOf(agencyId);
-      currentUser.userData.prospectiveAgencyIds.splice(index,1);
+      currentUser.userData.prospectiveAgencyIds.splice(index, 1);
     }
     currentUser.save(function (err, id) {
       if (err) {
@@ -327,7 +343,7 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds:[]}
+    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds: []}
     user.hasAgency = false;
   }
   user.roles = options.role ? [options.role] : ['requester'];

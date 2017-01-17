@@ -3,15 +3,16 @@
  */
 import {Agencies, Agency} from '/model/agencies'
 import { logger } from '/server/logging'
+import { SSR } from 'meteor/meteorhacks:ssr';
 
 Meteor.publish("allAgencies", function (options) {
-  logger.info("publish allAgencies " );
+  logger.info("publish allAgencies ");
   var today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
   // active agencies
   return Agencies.find({
-    activeUntil: { $gt : today}
-  },options);
+    activeUntil: {$gt: today}
+  }, options);
 });
 Meteor.publish("myAgencies", function () {
   if (this.userId) {
@@ -32,8 +33,8 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in.');
     }
-    logger.info( "getAgency" + agencyId);
-    return Agencies.findOne({_id: agencyId}, {fields: {name:1, website:1, location:1, contactPhone: 1 }})
+    logger.info("getAgency" + agencyId);
+    return Agencies.findOne({_id: agencyId}, {fields: {name: 1, website: 1, location: 1, contactPhone: 1}})
   },
   sendEmail(to, from, subject, text) {
     logger.info([to, from, subject, text]);
@@ -44,8 +45,7 @@ Meteor.methods({
       text: text
     });
   },
-  sendJoinRequest(agencyId, notes) {
-    // add user as prospect
+  sendJoinRequest(agencyId) {
     Meteor.call('addProspectiveAgency', agencyId);
 
     var agency = Agency.findOne(agencyId);
@@ -53,31 +53,38 @@ Meteor.methods({
     var currentUser = User.findOne(this.userId);
     var from = currentUser.emails[0].address;
     var subject = "Request to join " + agency.name;
-    var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
-    var text = username + " requests to join. " + (notes ? "Message: " + notes : "");
+    SSR.compileTemplate('agencyRequestToJoin', Assets.getText('emails/agency-request-to-join-email.html'));
     Email.send({
       to: to,
       from: from,
       subject: subject,
-      text: text
+      html: SSR.render('agencyRequestToJoin', {
+        user: currentUser,
+        agency: agency,
+        url: Meteor.absoluteUrl + 'admin/manage',
+        absoluteUrl: Meteor.absoluteUrl()
+      })
     });
   },
-  revokeJoinRequest(agencyId, notes) {
-    // remove user as prospect
+  revokeJoinRequest(agencyId) {
     Meteor.call('removeProspectiveAgency', agencyId);
 
     var agency = Agency.findOne(agencyId);
     var to = agency.contactEmail;
     var currentUser = User.findOne(this.userId);
     var from = currentUser.emails[0].address;
-    var subject = "Remove request to join " + agency.name;
-    var username = currentUser && currentUser.userData ? currentUser.fullName : currentUser.username;
-    var text = username + " has removed request to join. " + (notes ? "Message: " + notes : "");
+    var subject = "Request to join " + agency.name + 'cancelled';
+    SSR.compileTemplate('agencyRevokeRequestToJoin', Assets.getText('emails/agency-revoke-request-to-join-email.html'));
     Email.send({
       to: to,
       from: from,
       subject: subject,
-      text: text
+      html: SSR.render('agencyRevokeRequestToJoin', {
+        user: currentUser,
+        agency: agency,
+        url: Meteor.absoluteUrl + 'admin/manage/visitors',
+        absoluteUrl: Meteor.absoluteUrl()
+      })
     });
   }
 });
