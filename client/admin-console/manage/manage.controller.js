@@ -36,6 +36,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
 
   this.helpers({
     scheduledVisits: ()=> {
+      let isAllDataThere = this.getReactively('isVisitDataReady') && this.getReactively('isUserDataReady');
       let selector = {
         'visitTime': {$exists: true, $gt: new Date()},
         'agencyId': {$eq: this.agencyId}
@@ -46,6 +47,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     },
     outstandingRequests: ()=> {
+      let isAllDataThere = this.getReactively('isUserDataReady');
       let selector = {
         'visitTime': {$eq: null},
         'agencyId': {$eq: this.agencyId}
@@ -54,10 +56,11 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     },
     applicants: ()=> {
+      let isDataThere = this.getReactively('isUserDataReady');
       let selector = {
         'userData.prospectiveAgencyIds': this.agencyId
       };
-      var prospectiveUsers =  User.find(selector);
+      var prospectiveUsers =  User.find(selector, {fields:{'userData.firstName':1, 'userData.lastName':1, 'userData.prospectiveAgencyIds':1, 'userData.picture':1 }});
       this.applicantsCount = prospectiveUsers.count();
       return prospectiveUsers;
     },

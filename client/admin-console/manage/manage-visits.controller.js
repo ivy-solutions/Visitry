@@ -18,7 +18,6 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
   this.subscribe('agencyVisits', ()=> {
     return [this.getReactively('agencyId')]
   });
-  this.subscribe('userdata');
 
   this.helpers({
     scheduledVisits: ()=> {

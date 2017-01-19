@@ -4,9 +4,9 @@ module.exports = {
       host: 'production.visitry.org',
       username: 'ubuntu',
       // for CircleCi:
-      //pem: '/home/.ssh/id_staging-server',
+      pem: '/home/.ssh/id_staging-server',
       //for Sarah;s machine
-      pem: '/Users/sarahcoletti/VISITRY.pem',
+      //pem: '/Users/sarahcoletti/VISITRY.pem',
       // password:
       // or leave blank for authenticate from ssh-agent
       opts: {
@@ -18,9 +18,9 @@ module.exports = {
   meteor: {
     name: 'Visitry',
     // For CircleCI
-    //path: '/home/ubuntu/Visitry',
+    path: '/home/ubuntu/Visitry',
     //for Sarah's machine
-    path: '/Users/sarahcoletti/WebstormProjects/Visitry',
+    //path: '/Users/sarahcoletti/WebstormProjects/Visitry',
     docker: {
       image: 'abernix/meteord:base', // use this image if using Meteor 1.4+
     },
@@ -31,8 +31,8 @@ module.exports = {
       serverOnly: true,
       debug: false,
       cleanAfterBuild: true, // default
-      //buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
-      buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
+      buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
+      //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
     },
     env: {
       PORT: 3000,
