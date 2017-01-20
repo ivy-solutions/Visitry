@@ -37,7 +37,7 @@ Meteor.startup(function ()  {
           activeUntil: new Date(2020, 11, 31, 0, 0, 0, 0),
           administratorId: sarahc._id,
           contactEmail: 'sarahcoletti12@gmail.com',
-          contactPhone: '978-264-4171',
+          contactPhone: '(978)-264-4171',
           createdAt: new Date()
         });
       agency1.save();
@@ -56,7 +56,7 @@ Meteor.startup(function ()  {
           activeUntil: new Date(2020, 11, 31, 0, 0, 0, 0),
           administratorId: sarahc._id,
           contactEmail: 'sarahcoletti12@gmail.com',
-          contactPhone: '978-264-4171',
+          contactPhone: '(978)-264-4171',
           createdAt:new Date()
         });
       agency2.save();

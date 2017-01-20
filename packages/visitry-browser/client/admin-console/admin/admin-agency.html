@@ -1,0 +1,52 @@
+<div layout="row" layout-align="center start" layout-margin layout-padding>
+  <div flex></div>
+  <div layout="column" style="width: 600px">
+    <form name="agencyForm" novalidate>
+      <div layout="row">
+        <h1 style="display: inline" flex-none>{{adminAdminAgency.agency.name}}</h1>
+        <span flex></span>
+        <md-button class="md-button md-raised md-primary" ng-if="adminAdminAgency.isEditMode"
+               ng-click="adminAdminAgency.save(agencyForm)" >Save</md-button>
+        <md-button class="md-raised md-warn" ng-hide="adminAdminAgency.isEditMode"
+                   ng-click="adminAdminAgency.editAgency()">Edit
+        </md-button>
+      </div>
+      <md-list>
+        <md-list-item>
+          <label class="md-title" for="phone" layout-margin flex="15">Phone</label>
+          <input type="tel" id="phone" name="phone" ng-model="adminAdminAgency.agency.contactPhone"
+                 ng-readonly="!adminAdminAgency.isEditMode" phone-input
+                 ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" layout-margin flex/>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="email" layout-margin flex="15">Email</label>
+          <input type="email" id="email" name="email" ng-model="adminAdminAgency.agency.contactEmail"
+                 ng-readonly="!adminAdminAgency.isEditMode" required layout-margin flex/>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="website" layout-margin flex="15">Website</label>
+          <input type="url" id="website" name="website" ng-model="adminAdminAgency.agency.website"
+                 ng-readonly="!adminAdminAgency.isEditMode" layout-margin flex/>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="locationInput" layout-margin flex="15">Location</label>
+          <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
+                 ng-model="adminAdminAgency.agency.location.address"
+                 details="adminAdminAgency.agency.location.details" ng-readonly="!adminAdminAgency.isEditMode"
+                 disable-tap layout-margin flex/>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="description" layout-margin="left">Description</label>
+        </md-list-item>
+        <md-list-item>
+          <textarea id="description" ng-model="adminAdminAgency.agency.description" rows="5"
+                    ng-readonly="!adminAdminAgency.isEditMode" layout-margin="left" flex></textarea>
+        </md-list-item>
+      </md-list>
+      <div>
+
+      </div>
+    </form>
+  </div>
+  <div flex></div>
+</div>

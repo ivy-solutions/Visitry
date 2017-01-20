@@ -1,87 +1,85 @@
 /**
  * Created by sarahcoletti on 6/16/16.
  */
-import {chai} from 'meteor/practicalmeteor:chai';
+import { Meteor } from 'meteor/meteor';
+import {assert} from 'meteor/practicalmeteor:chai';
 import '/client/lib/sharedFunctions.js';
 import StubCollections from 'meteor/hwillson:stub-collections';
 import '/model/users.js'
+import { Roles } from 'meteor/alanning:roles'
 
 describe('SharedFunctions', function () {
 
-  var tomorrow = new Date();
+  let tomorrow = new Date();
   tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
-  var yesterday = new Date();
+  let yesterday = new Date();
   yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000));
   const futureVisitRequest = {requestedDate: tomorrow};
   const pastVisitRequest = {requestedDate: yesterday};
   const sameDayFutureVisitRequest = {requestedDate: new Date(futureVisitRequest.requestedDate)};
   var today = new Date();
   const nowVisitRequest = {requestedDate: today};
-  var todayAt9 = new Date(today);
+  let todayAt9 = new Date(today);
   todayAt9.setHours(9, 0, 0, 0);
   const todayAt9VisitRequest = {requestedDate: todayAt9};
 
-  var findOneStub;
-  var user;
-  var userIdStub;
-  var userIsInRoleStub;
+  let user;
+  let testUserId;
+  let userIdStub;
 
   beforeEach(function () {
-    findOneStub = sinon.stub(User, 'findOne', function (selector) {
-      if (selector._id === "123") {
-        return {_id: "123", username: "test", userData: {"picture": "pic"}}
-      }
-      else if (selector._id === "nopic") {
-        return {_id: "123", username: "test", userData: {"picture": ""}}
-      }
-      else {
-        return null
-      }
-    });
+    StubCollections.stub(Meteor.users);
     userIdStub = sinon.stub(Meteor, 'userId');
-    userIsInRoleStub = sinon.stub(Roles, 'userIsInRole');
   });
   afterEach(function () {
-    User.findOne.restore();
     Meteor.userId.restore();
-    Roles.userIsInRole.restore();
+    StubCollections.restore();
   });
 
   describe('groupVisitsByRequestedDate', function () {
     it('groups by requestedDate into 3 groups', function () {
       var dateGroupedArray = Meteor.myFunctions.groupVisitsByRequestedDate([pastVisitRequest, todayAt9VisitRequest, nowVisitRequest, futureVisitRequest, sameDayFutureVisitRequest]);
-      chai.assert.equal(3, dateGroupedArray.length, "Grouped by yesterday, today, tomorrow");
-      chai.assert.equal(1, dateGroupedArray[0].visits.length, "yesterday");
-      chai.assert.equal(pastVisitRequest.requestedDate, dateGroupedArray[0].visits[0].requestedDate, "pastVisitRequest");
-      chai.assert.equal(2, dateGroupedArray[1].visits.length, "Today");
-      chai.assert.equal(2, dateGroupedArray[2].visits.length, "Tomorrow");
+      assert.equal(3, dateGroupedArray.length, "Grouped by yesterday, today, tomorrow");
+      assert.equal(1, dateGroupedArray[0].visits.length, "yesterday");
+      assert.equal(pastVisitRequest.requestedDate, dateGroupedArray[0].visits[0].requestedDate, "pastVisitRequest");
+      assert.equal(2, dateGroupedArray[1].visits.length, "Today");
+      assert.equal(2, dateGroupedArray[2].visits.length, "Tomorrow");
     })
   });
 
   describe('getUser', function () {
-    it('getUser returns userData', function () {
-      var userData = Meteor.myFunctions.getUser("123");
-      chai.assert.isNotNull(userData);
-      chai.assert.equal(userData._id, "123");
+    beforeEach(function(){
+      testUserId = Meteor.users.insert({username:'testUser'});
     });
-    it('getUser returns null when invalid id', function () {
-      var userData = Meteor.myFunctions.getUser("321");
-      chai.assert.isNull(userData);
+    it('getUser returns userData', function () {
+      var userData = Meteor.myFunctions.getUser(testUserId);
+      assert.isNotNull(userData);
+      assert.equal(userData.username, "testUser");
+    });
+    it('getUser returns null when no id', function () {
+      var userData = Meteor.myFunctions.getUser();
+      assert.isNull(userData);
     })
   });
 
   describe('getUserImage', function () {
+    let userWithPictureId;
+    let userWithNoPictureId;
+    beforeEach(function(){
+      userWithPictureId=Meteor.users.insert({username: "test", userData: {"picture": "pic"}});
+      userWithNoPictureId=Meteor.users.insert({_id: "123", username: "test", userData: {"picture": ""}});
+    });
     it('getUserImage returns image', function () {
-      var userImage = Meteor.myFunctions.getUserImage("123");
-      chai.assert.equal(userImage, "pic");
+      var userImage = Meteor.myFunctions.getUserImage(userWithPictureId);
+      assert.equal(userImage, "pic");
     });
     it('getUserImage returns empty string if user is not found', function () {
-      var userImage = Meteor.myFunctions.getUserImage("321");
-      chai.assert.equal(userImage, "");
+      var userImage = Meteor.myFunctions.getUserImage('321');
+      assert.equal(userImage, "");
     });
     it('getUserImage returns empty string if user does not have a picture', function () {
-      var userImage = Meteor.myFunctions.getUserImage("nopic");
-      chai.assert.equal(userImage, "");
+      var userImage = Meteor.myFunctions.getUserImage(userWithNoPictureId);
+      assert.equal(userImage, "");
     });
   });
 
@@ -91,29 +89,54 @@ describe('SharedFunctions', function () {
   });
 
   describe("isVisitor", function () {
+    let userWithVisitorRoleId;
+    let userWithoutVisitorRoleId;
+    beforeEach(function(){
+      userWithVisitorRoleId = Meteor.users.insert({username:'visitorUser',roles:['visitor']});
+      userWithoutVisitorRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['requester']});
+    });
     it("user is visitor", function () {
-      userIdStub.returns("someUserId");
-      userIsInRoleStub.returns(true);
-      chai.assert.isTrue(Meteor.myFunctions.isVisitor());
+      userIdStub.returns(userWithVisitorRoleId);
+      assert.isTrue(Meteor.myFunctions.isVisitor());
     });
     it("user is not visitor", function () {
-      userIdStub.returns('someUserId');
-      userIsInRoleStub.returns(false);
-      chai.assert.isFalse(Meteor.myFunctions.isVisitor());
+      userIdStub.returns(userWithoutVisitorRoleId);
+      assert.isFalse(Meteor.myFunctions.isVisitor());
     });
   });
 
   describe("isRequester", function () {
+    let userWithRequesterRoleId;
+    let userWithoutRequesterRoleId;
+    beforeEach(function(){
+      userWithRequesterRoleId = Meteor.users.insert({username:'visitorUser',roles:['requester']});
+      userWithoutRequesterRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['visitor']});
+    });
     it("user is requester", function () {
-      userIdStub.returns("someUserId");
-      userIsInRoleStub.returns(true);
-      chai.assert.isTrue(Meteor.myFunctions.isRequester());
+      userIdStub.returns(userWithRequesterRoleId);
+      assert.isTrue(Meteor.myFunctions.isRequester());
     });
     it("user is not requester", function () {
-      userIdStub.returns("someUserId");
-      userIsInRoleStub.returns(false);
-      chai.assert.isFalse(Meteor.myFunctions.isRequester());
+      userIdStub.returns(userWithoutRequesterRoleId);
+      assert.isFalse(Meteor.myFunctions.isRequester());
     });
   });
+
+  describe("isAdministrator", ()=> {
+    let userWithAdministratorRoleId;
+    let userWithoutAdministratorRoleId;
+    beforeEach(function(){
+      userWithAdministratorRoleId = Meteor.users.insert({username:'visitorUser',roles:['administrator']});
+      userWithoutAdministratorRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['visitor']});
+    });
+    it("user is administrator", ()=> {
+      userIdStub.returns(userWithAdministratorRoleId);
+      assert.isTrue(Meteor.myFunctions.isAdministrator());
+    });
+    it("user is not administrator", function () {
+      userIdStub.returns(userWithoutAdministratorRoleId);
+      assert.isFalse(Meteor.myFunctions.isAdministrator());
+    });
+  })
 
 });

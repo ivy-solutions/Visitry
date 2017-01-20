@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
+import { Agency,Agencies } from '/model/agencies'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -15,19 +16,24 @@ angular.module('visitry').directive('visitry', function () {
       }
     },
     controllerAs: 'visitry',
-    controller: function ($scope, $reactive, $state,$cookies,$ionicHistory,$ionicActionSheet, $timeout, $ionicTabsDelegate) {
+    controller: function ($scope, $reactive, $state, $cookies, $ionicHistory, $ionicActionSheet, $timeout, $ionicTabsDelegate) {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
+      this.isAgencyDataLoaded = false;
+      this.subscribe('allAgencies', ()=>[], ()=> {
+        this.isAgencyDataLoaded = true;
+      });
+      this.subscribe('visits');
 
-      var visitsSubscription = this.subscribe('visits');
       this.feedbackOutstanding;
-
+      this.agencyId;
       this.autorun(() => {
         var status = Meteor.status();
-        $scope.connectionStatus = (status.connected==true || (status.status!='disconnected' && status.retryCount < 3)) ? 'ok' : status.status;
-        if (status.status!=='connected') {
-          logger.error( "Lost server connection " + JSON.stringify(status) );
+        $scope.connectionStatus = (status.connected == true || (status.status != 'disconnected' && status.retryCount < 3)) ? 'ok' : status.status;
+        if (status.status !== 'connected') {
+          logger.error("Lost server connection " + JSON.stringify(status));
         }
+        this.agencyId = $cookies.get('agencyId');
         var feedback = Visit.find({
           visitorFeedbackId: null,
           visitorId: Meteor.userId(),
@@ -36,40 +42,51 @@ angular.module('visitry').directive('visitry', function () {
         this.feedbackOutstanding = feedback.count();
       });
 
+
       this.helpers({
         userName: ()=> {
-          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1}});
+          return User.findOne({_id: Meteor.userId()}, {fields: {'username': 1, 'userData.agencyIds': 1}});
         },
         isLoggedIn: ()=> {
           logger.info('visitry.isLoggedIn as : ' + Meteor.userId());
           return Meteor.userId() !== null;
+        },
+        getAgency: ()=> {
+          if (Meteor.userId() && this.getReactively('agencyId') && this.getReactively('isAgencyDataLoaded')) {
+            this.call('getAgency', this.getReactively('agencyId'), (error, result) => {
+              if (error)
+                logger.error(error);
+              else {
+                this.agency = result;
+              }
+            });
+          }
         }
       });
 
       this.isRequester = ()=> {
-        return Roles.userIsInRole(Meteor.userId(), 'requester')
+        return Meteor.myFunctions.isRequester();
       };
       this.isVisitor = ()=> {
-        return Roles.userIsInRole(Meteor.userId(), 'visitor')
+        return Meteor.myFunctions.isVisitor();
       };
-
+      this.isAdministrator = ()=> {
+        return Meteor.myFunctions.isAdministrator();
+      };
       this.logout = () => {
         logger.info('visitry.logout userId: ' + Meteor.userId());
         Meteor.logout(function (err) {
           if (err) {
             logger.error('visitry.logout ' + err + ' logging user out userId: ' + Meteor.userId());
           }
-          else{
-            if (visitsSubscription) {
-              visitsSubscription.stop();
-            }
-            if(Meteor.isCordova) {
+          else {
+            if (Meteor.isCordova) {
               $ionicHistory.clearHistory();
               $ionicHistory.clearCache();
-            }else{
+            } else {
               $cookies.remove('agencyId');
             }
-            $state.go('login',{reload: true, notify:false});
+            $state.go('login', {reload: true, notify: false});
           }
         });
       };
@@ -78,15 +95,15 @@ angular.module('visitry').directive('visitry', function () {
         return $ionicHistory.currentStateName() === 'requesterFeedback';
       };
 
-      this.showUserActions = ( ) => {
+      this.showUserActions = () => {
         var profileText = "Profile";
         var notificationsText = "Notifications";
         var signOutText = "Sign Out";
         var cancelText = "Cancel";
         var titleText = "";
         var buttons = [];
-        buttons.push( {text: profileText});
-        buttons.push( {text: notificationsText});
+        buttons.push({text: profileText});
+        buttons.push({text: notificationsText});
         var logout = this.logout;
 
         // Show the action sheet
@@ -96,20 +113,20 @@ angular.module('visitry').directive('visitry', function () {
           destructiveText: signOutText,
           titleText: titleText,
           cancelText: cancelText,
-          cancel: function() { //reselect the current tab
+          cancel: function () { //reselect the current tab
             var tabStatesMap = [
               {state: 'pendingVisits', tabNum: 0},
               {state: 'requesterFeedback', tabNum: 0},
-              {state: 'browseRequests', tabNum:0},
-              {state:'upcoming', tabNum:1},
-              {state:'visitorFeedbackList', tabNum: 2}];
+              {state: 'browseRequests', tabNum: 0},
+              {state: 'upcoming', tabNum: 1},
+              {state: 'visitorFeedbackList', tabNum: 2}];
             var tabIndex = tabStatesMap.find(
               function (tabState) {
                 return (tabState.state === $ionicHistory.currentStateName());
               }
             );
             if (tabIndex) {
-              if (Roles.userIsInRole( Meteor.userId(), 'visitor'))
+              if (Roles.userIsInRole(Meteor.userId(), 'visitor'))
                 $ionicTabsDelegate.$getByHandle('visitorTabs').select(tabIndex.tabNum);
               else {
                 $ionicTabsDelegate.$getByHandle('requesterTabs').select(tabIndex.tabNum);
@@ -119,21 +136,21 @@ angular.module('visitry').directive('visitry', function () {
             }
             return true;
           },
-          buttonClicked: function(index) {
-            if ( buttons[index].text === profileText) {
-               $state.go('profile');
+          buttonClicked: function (index) {
+            if (buttons[index].text === profileText) {
+              $state.go('profile');
             } else if (buttons[index].text === notificationsText) {
               $state.go('notifications');
             }
             return true;
           },
-          destructiveButtonClicked: function() {
+          destructiveButtonClicked: function () {
             logout();
           }
         });
 
         // Hide the sheet after 15 seconds
-        $timeout(function() {
+        $timeout(function () {
           hideSheet();
         }, 15000);
       };
