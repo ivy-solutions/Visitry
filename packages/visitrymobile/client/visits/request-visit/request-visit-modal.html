@@ -22,35 +22,24 @@
           <span class="error-message" ng-hide="requestVisit.isLocationValid()">Oops you forgot a location</span>
         </div>
       </div>
-      <div class="item item-divider">
-        <div layout="row">
-          <strong>Date </strong>
-          <span flex></span>
-          <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
-        </div>
-      </div>
-      <label class="item item-input">
-        <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
-        <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
-      </label>
-      <ion-list>
-        <div class="item item-divider">
-          <div layout="row">
-            <strong>Time </strong>
-            <span flex></span>
-            <div class="error-message" ng-hide="requestVisit.isTimeValid()">Don't forget to pick a time</div>
+      <div class="item">
+        <label class="item item-input">
+            <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
+            <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
+        </label>
+        <span flex></span>
+        <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
+        <div class="list">
+          <div class="button-bar">
+            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
+            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
+            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="16">Evening</ion-radio>
           </div>
-        </div>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="9">Morning</ion-radio>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="13">Afternoon</ion-radio>
-        <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="16">Evening</ion-radio>
-      </ion-list>
-      <div class="item item-divider">
-        <strong>Notes </strong>
       </div>
+          </div>
       <div class="list list-inset">
         <label class="item item-input">
-          <textarea ng-model="requestVisit.visitRequest.notes" rows="3">
+          <textarea ng-model="requestVisit.visitRequest.notes" rows="3" placeholder="Notes">
             </textarea>
         </label>
       </div>
