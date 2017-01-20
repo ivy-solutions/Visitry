@@ -25,20 +25,20 @@ angular.module('visitry')
         },
         controller: 'pendingVisitsCtrl as pendingVisits',
         resolve: {
-          feedback: function ($q,$state) {
+          feedback: function ($q, $state) {
             var deferred = $q.defer();
-            const visits = Meteor.subscribe('userRequests', Meteor.userId(),{
+            const visits = Meteor.subscribe('userRequests', Meteor.userId(), {
               onReady: () => {
                 deferred.resolve(visits);
-                 const visitNeedingFeedback = Visits.findOne({
-                   requesterFeedbackId: null,
-                   requesterId: Meteor.userId(),
-                   visitTime: {$lt: new Date()}
-                 });
-                 if (visitNeedingFeedback) {
-                   logger.info("Yes, lets go to feedbacks" + visitNeedingFeedback._id);
-                   $state.go('requesterFeedback', {visitId: visitNeedingFeedback._id});
-                 }
+                const visitNeedingFeedback = Visits.findOne({
+                  requesterFeedbackId: null,
+                  requesterId: Meteor.userId(),
+                  visitTime: {$lt: new Date()}
+                });
+                if (visitNeedingFeedback) {
+                  logger.info("Yes, lets go to feedbacks" + visitNeedingFeedback._id);
+                  $state.go('requesterFeedback', {visitId: visitNeedingFeedback._id});
+                }
               },
               onStop: deferred.reject
             });
@@ -61,7 +61,9 @@ angular.module('visitry')
             var deferred = $q.defer();
 
             const available = Meteor.subscribe('availableVisits', [], {
-              onReady: () => {deferred.resolve(available)},
+              onReady: () => {
+                deferred.resolve(available)
+              },
               onStop: deferred.reject
             });
 
@@ -105,8 +107,8 @@ angular.module('visitry')
       .state('register', {
         url: '/register',
         template: '<register></register>',
-        params:{
-          role:'visitor'
+        params: {
+          role: 'visitor'
         }
       })
       .state('resetPassword', {
@@ -193,18 +195,20 @@ angular.module('visitry')
           }
         },
         controller: 'adminHomeCtrl as adminHome',
-        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie,
-          currentUser: ['$meteor', '$q', function($meteor, $q) {
-            return $meteor.requireUser().then(function(user) {
-              if(!_.contains(user.roles, 'administrator')) {
+        resolve: {
+          authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie,
+          currentUser: ['$meteor', '$q', function ($meteor, $q) {
+            return $meteor.requireUser().then(function (user) {
+              if (!_.contains(user.roles, 'administrator')) {
                 // fail the promise chain
                 return $q.reject('FORBIDDEN');
               }
               // keep the success promise chain
               return user;
             });
-          }]}
-        })
+          }]
+        }
+      })
       .state('adminManage', {
         url: '/admin/manage',
         templateUrl: ()=> {
@@ -215,11 +219,11 @@ angular.module('visitry')
           }
         },
         controller: 'adminManageCtrl as adminManage',
-        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
-      .state('adminManageSeniors',{
+      .state('adminManageSeniors', {
         url: '/admin/manage/seniors',
-        templateUrl:()=>{
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/manage/manage-seniors.html';
           } else {
@@ -227,11 +231,11 @@ angular.module('visitry')
           }
         },
         controller: 'adminManageSeniorsCtrl as adminManageSeniors',
-        resolve:{authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
-      .state('adminManageVisitors',{
+      .state('adminManageVisitors', {
         url: '/admin/manage/visitors',
-        templateUrl:()=>{
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return 'packages/visitrymobile/client/admin-console/manage/manage-visitors.html';
           } else {
@@ -239,11 +243,11 @@ angular.module('visitry')
           }
         },
         controller: 'adminManageVisitorsCtrl as adminManageVisitors',
-        resolve:{authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
-      .state('adminManageVisits',{
+      .state('adminManageVisits', {
         url: '/admin/manage/visits',
-        templateUrl:()=>{
+        templateUrl: ()=> {
           if (Meteor.isCordova) {
             return 'packages/visitrymobile/client/admin-console/manage/manage-visits.html';
           } else {
@@ -251,7 +255,7 @@ angular.module('visitry')
           }
         },
         controller: 'adminManageVisitsCtrl as adminManageVisits',
-        resolve:{authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
       .state('adminAnalytics', {
         url: '/admin/analytics',
@@ -263,10 +267,10 @@ angular.module('visitry')
           }
         },
         controller: 'adminAnalyticsCtrl as adminAnalytics',
-        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
       .state('adminAdmin', {
-        url: '/admin/admin',
+        url: '/admin/administrate',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/admin/admin.html';
@@ -275,7 +279,19 @@ angular.module('visitry')
           }
         },
         controller: 'adminAdminCtrl as adminAdmin',
-        resolve: {authenticate:authenticate,checkAgencyIdCookie:updateAgencyIdCookie}
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
+      })
+      .state('adminAdminAgency', {
+        url: '/admin/administrate/agency',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/admin/admin-agency.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/admin/admin-agency.html';
+          }
+        },
+        controller: 'adminAdminAgencyCtrl as adminAdminAgency',
+        resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
       .state('adminHelpOverview', {
         url: '/admin/help',
@@ -299,10 +315,10 @@ angular.module('visitry')
         },
         controller: 'adminHelpAboutCtrl as adminHelpAbout'
       })
-     ;
+    ;
     $urlRouterProvider.otherwise("/login");
 
-    function authenticate($q, $state, $timeout, $cookies,$ionicHistory) {
+    function authenticate($q, $state, $timeout, $cookies, $ionicHistory) {
       if (Meteor.userId()) {
         logger.debug('user is logged in');
         // Resolve the promise successfully
@@ -311,28 +327,30 @@ angular.module('visitry')
         // The next bit of code is asynchronously tricky.
         $timeout(function () {
           // This code runs after the authentication promise has been rejected.
-          logUserOut($cookies,$state,$ionicHistory);
+          logUserOut($cookies, $state, $ionicHistory);
         });
         // Reject the authentication promise to prevent the state from loading
         return $q.reject()
       }
     }
-    function updateAgencyIdCookie($q, $timeout,$state, $cookies,$ionicHistory){
-      if(!(Meteor.userId())){
+
+    function updateAgencyIdCookie($q, $timeout, $state, $cookies, $ionicHistory) {
+      if (!(Meteor.userId())) {
         logger.debug('User not logged in');
         $timeout(function () {
           // This code runs after the authentication promise has been rejected.
-          logUserOut($cookies,$state,$ionicHistory);
+          logUserOut($cookies, $state, $ionicHistory);
         });
         return $q.reject();
       }
-      else if(!$cookies.get('agencyId')){
-         var user = User.findOne({_id:Meteor.userId()});
-        $cookies.put('agencyId',user.userData.agencyIds[0]);
+      else if (!$cookies.get('agencyId')) {
+        var user = User.findOne({_id: Meteor.userId()});
+        $cookies.put('agencyId', user.userData.agencyIds[0]);
       }
       return $q.resolve();
     }
-    function logUserOut($cookies,$state,$ionicHistory){
+
+    function logUserOut($cookies, $state, $ionicHistory) {
       Meteor.logout(function (err) {
         logger.info('Logging user out');
         if (err) {
@@ -344,6 +362,7 @@ angular.module('visitry')
           } else {
             $cookies.remove('agencyId');
           }
+          $state.go('login');
         }
       });
     }
@@ -352,29 +371,29 @@ angular.module('visitry')
 
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
-        $state.go('login', {notify:false});
+        $state.go('login', {notify: false});
       }
     });
-    $rootScope.$on( '$stateChangeStart', function ( event, toState, toParams, fromState, fromParams ) {
+    $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
       if (toState.name === 'login') {
-         if (event && Meteor.userId()) {
-           logger.info("redirect from $stateChangeStart");
-           let nextState;
-           if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-             nextState = 'adminManage';
-           }
-           else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-             nextState = 'browseRequests';
-           } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-             nextState = 'pendingVisits';
-           }
-           if (nextState) {
-             logger.info(nextState);
-             event.preventDefault();
-             return $state.go(nextState);
-           } else {
-             logger.error("userId but no user role")
-           }
+        if (event && Meteor.userId()) {
+          logger.info("redirect from $stateChangeStart");
+          let nextState;
+          if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+            nextState = 'adminManage';
+          }
+          else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+            nextState = 'browseRequests';
+          } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+            nextState = 'pendingVisits';
+          }
+          if (nextState) {
+            logger.info(nextState);
+            event.preventDefault();
+            return $state.go(nextState);
+          } else {
+            logger.error("userId but no user role")
+          }
         }
         return;  //go to login page
       }
@@ -385,22 +404,26 @@ angular.module('visitry')
       if ($state.is('login')) {
         if (Meteor.userId()) {
           logger.info("redirect from Accounts.onLogin");
-          const handle = Meteor.subscribe('userBasics');
-          Tracker.autorun(() => {
-            if (Meteor.userId()) {
-              const isReady = handle.ready();
+          const handle = Meteor.subscribe('userBasics', {}, {
+            onReady: ()=> {
               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
                 $state.go('adminManage');
-              } else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                $state.go('browseRequests');
-              }else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-                $state.go('pendingVisits');
-              } else {
-                logger.error("user with no role."  + Meteor.userId())
+              }
+              else {
+                if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                  $state.go('browseRequests');
+                } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+                  $state.go('pendingVisits');
+                } else {
+                  logger.error("user with no role." + Meteor.userId())
+                }
+              }
+              if (Meteor.isCordova) {
+                handle.stop();
               }
             }
           });
-          handle.stop();
+
         }
       }
     });

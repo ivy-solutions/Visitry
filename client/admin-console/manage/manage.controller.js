@@ -1,5 +1,5 @@
 /**
- * Created by n0235626 on 8/9/16.
+ * Created by Daniel Biales on 8/9/16.
  */
 import { Visit } from '/model/visits'
 import {TopVisitors} from '/model/users'

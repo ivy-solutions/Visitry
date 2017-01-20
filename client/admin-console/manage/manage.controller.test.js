@@ -1,9 +1,9 @@
 /**
- * Created by n0235626 on 8/30/16.
+ * Created by Daniel Biales on 8/30/16.
  */
 import 'angular-mocks';
 import { visitry } from '/client/lib/app.js';
-import {chai} from 'meteor/practicalmeteor:chai';
+import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/admin-console/manage/manage.controller';
 
@@ -40,7 +40,7 @@ describe('Admin Manage', function () {
       $cookies.remove('agencyId');
     });
     it('agencyId cookie is not null', function () {
-      chai.assert.isNotNull(controller.agencyId);
+      assert.isNotNull(controller.agencyId);
     })
   })
 

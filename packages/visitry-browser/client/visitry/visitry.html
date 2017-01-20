@@ -1,7 +1,7 @@
 <md-content layout-fill layout="column">
-  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none"><img src="/assets/images/logoNoBackground.png" width="200px"/>
+  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none"><img src="/assets/images/logoNoBackground.png" width="100px"/>
      <md-menu-bar ng-show="visitry.isLoggedIn">
-      <md-menu>
+      <md-menu ng-if="visitry.isAdministrator()">
         <button ng-click="$mdOpenMenu()">
           Manage
         </button>
@@ -29,7 +29,7 @@
           </md-menu-item>
         </md-menu-content>
       </md-menu>
-      <md-menu>
+<!--      <md-menu>
         <button ng-click="$mdOpenMenu()">
           Analytics
         </button>
@@ -56,15 +56,15 @@
             </md-button>
           </md-menu-item>
         </md-menu-content>
-      </md-menu>
-      <md-menu>
+      </md-menu>-->
+      <md-menu ng-if="visitry.isAdministrator()">
         <button ng-click="$mdOpenMenu()">
           Admin
         </button>
         <md-menu-content>
           <md-menu-item>
-            <md-button>
-              Agency
+            <md-button ng-href="/admin/administrate/agency">
+              {{visitry.agency.name}}
             </md-button>
           </md-menu-item>
         </md-menu-content>

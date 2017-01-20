@@ -38,6 +38,9 @@ Meteor.myFunctions = {
   isVisitor: function () {
     return Roles.userIsInRole(Meteor.userId(), ['visitor']);
   },
+  isAdministrator: function(){
+    return Roles.userIsInRole(Meteor.userId(),['administrator']);
+  },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
     let confirmMessage = '';

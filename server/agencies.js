@@ -4,6 +4,7 @@
 import {Agencies, Agency} from '/model/agencies'
 import { logger } from '/server/logging'
 import { SSR } from 'meteor/meteorhacks:ssr';
+import { Roles } from 'meteor/alanning:roles'
 
 Meteor.publish("allAgencies", function (options) {
   logger.info("publish allAgencies ");
@@ -86,6 +87,28 @@ Meteor.methods({
         absoluteUrl: Meteor.absoluteUrl()
       })
     });
+  },
+  updateAgency(agencyId, modifiers){
+    if (!this.userId) {
+      logger.error("updateAgency - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update agency.');
+    } else if (!Roles.userIsInRole(this.userId, ['administrator'])) {
+      logger.error("updateAgency - user unauthorized");
+      throw new Meteor.Error('unauthorized',
+        'User must be an administrator to update agency.');
+    } else {
+      Agencies.update({_id: agencyId}, modifiers, (err)=> {
+        if (err) {
+          logger.error('Error updating agency: ' + agencyId + ' ' + err);
+          throw err;
+        } else {
+          logger.verbose('Updated agency: ' + agencyId);
+          return agencyId;
+        }
+      });
+    }
+
   }
 });
 

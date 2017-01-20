@@ -37,7 +37,12 @@ const Agency = Class.create({
     administratorId: { type: String },  //default mongo id generation is a string (if we want ObjectId, we would have to say so when teh collection is created)
     contactEmail: { type: String,
       validators: [{type: 'email'}]},
-    contactPhone: { type: String },
+    contactPhone: { type: String ,
+      validators: [
+        {type: 'regexp', param: /^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/, message: 'Phone number format should be (nnn) nnn-nnnn'},
+        {type: 'minLength', param: 9},
+        {type: 'maxLength', param: 15}
+      ]},
     logos: {type: [String], optional: true },
     welcomeMessage: {type: String, optional:true},
     createdAt: {type:Date, immutable: true},
