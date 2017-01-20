@@ -34,8 +34,8 @@ Meteor.publish("visits", function (options) {
 });
 
 Meteor.publish("agencyVisits", function (agencyId, options) {
-  if (this.userId && Roles.userIsInRole(this.userId, ['administrator'])) {
-    logger.verbose("publish agencyVisits to " + this.userid);
+  if (this.userId) {
+    logger.verbose("publish agencyVisits to " + this.userId);
     let selector = {
       agencyId: {$eq: agencyId},
       inactive: {$exists: false}
@@ -43,7 +43,21 @@ Meteor.publish("agencyVisits", function (agencyId, options) {
     Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
       noReady: true
     });
-    return Visits.find(selector, options);
+    var visits =  Visits.find(selector, options);
+    var userIds = [];
+    visits.forEach(function (visit) {
+      if ( visit.visitorId ) {
+        if ( userIds.indexOf(visit.visitorId)===-1) {
+          userIds.push(visit.visitorId)
+        }
+      }
+      if (userIds.indexOf(visit.requesterId)===-1) {
+        userIds.push(visit.requesterId);
+      }
+    });
+
+    return [visits,
+      Meteor.users.find({_id: {$in: userIds}}, {fields: {'userData.firstName' : 1, 'userData.lastName': 1, 'userData.picture':1, 'userData.prospectiveAgencyIds':1}})];
   } else {
     this.ready();
   }

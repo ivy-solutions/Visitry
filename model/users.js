@@ -7,7 +7,7 @@ const UserData = Class.create({
   fields: {
     firstName: {type: String, optional: true},
     lastName: {type: String, optional: true},
-    agencyIds: {type: [String], optional: true},  //user can initially be unassigned to an agency
+    agencyIds: {type: [String], optional: true, index: 1},  //user can initially be unassigned to an agency
     prospectiveAgencyIds: {type: [String], optional: true},
     about: {type: String, optional: true},
     location: {type: Address, optional:true},
@@ -49,7 +49,7 @@ User = Class.create({
         }
       }
     },
-    roles: {type:[String], optional:true},
+    roles: {type:[String], optional:true, index:1},
     hasAgency: {
       type: Boolean,
       resolve(doc) {

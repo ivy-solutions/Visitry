@@ -31,7 +31,7 @@ let fileRotate = new winston.transports.DailyRotateFile({
 });
 
 let logger = new winston.Logger({
-  level: 'debug',
+  level: Meteor.settings.logLevel ? Meteor.settings.logLevel : 'debug',
   transports: [
     consoleLog,
     fileRotate
