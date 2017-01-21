@@ -1,7 +1,7 @@
 /**
  * Created by sarahcoletti on 2/17/16.
  */
-
+import { Roles } from 'meteor/alanning:roles'
 angular.module("visitry.browser").directive('register', function () {
   return {
     restrict: 'E',
@@ -42,17 +42,20 @@ angular.module("visitry.browser").directive('register', function () {
               });
             }
             let userWithoutAgencyAffiliation = User.findOne({emails: {$elemMatch: {address: this.credentials.email}}});
-            Meteor.call('addUserToAgency', userWithoutAgencyAffiliation._id, $cookies.get('agencyId'), (err)=> {
-              if (err) {
+            Meteor.call('addUserToAgency', userWithoutAgencyAffiliation._id, $cookies.get('agencyId'),this.credentials.role, (err)=> {
+              if (err && err.reason !== 'User already belongs to agency.') {
                 return handleError(err);
               } else {
                 this.resetForm(form);
                 if ($stateParams.role === 'requester') {
                   $state.go('adminManageSeniors', {reload: true});
-                } else {
+                } else if ($stateParams.role === 'visitor') {
                   $state.go('adminManageVisitors', {reload: true});
+                } else if ($stateParams.role === 'administrator') {
+                  $state.go('adminAdminAgency', {reload: true});
+                } else {
+                  $state.go('/lost');
                 }
-
               }
             });
           });
@@ -63,8 +66,12 @@ angular.module("visitry.browser").directive('register', function () {
         this.resetForm(form);
         if ($stateParams.role === 'requester') {
           $state.go('adminManageSeniors', {reload: true});
-        } else {
+        } else if ($stateParams.role === 'visitor') {
           $state.go('adminManageVisitors', {reload: true});
+        } else if ($stateParams.role === 'administrator') {
+          $state.go('adminAdminAgency', {reload: true});
+        } else {
+          $state.go('/lost');
         }
       };
 

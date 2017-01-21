@@ -223,7 +223,7 @@ Meteor.methods({
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   },
-  addUserToAgency(userId, agencyId){
+  addUserToAgency(userId, agencyId, role){
     if (!this.userId) {
       logger.error("addUserToAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
@@ -235,17 +235,21 @@ Meteor.methods({
     }
     let agency = Meteor.call('getAgency', agencyId);
     if (!agency) {
-      logger.error('addUserToAgency - invalid agency')
+      logger.error('addUserToAgency - invalid agency');
       throw new Meteor.Error('invalid-agency', 'Agency missing or can not register new users.');
+    }
+    if (role && !Roles.userIsInRole(userId, role)) {
+      //TODO: when we add groups we will need to change this to add role and remove all roles they have for that group
+      Roles.setUserRoles(userId, role);
     }
     var user = User.findOne(userId);
     if (!user.userData.agencyIds) {
       user.userData.agencyIds = [agencyId]
     } else if (!user.userData.agencyIds.includes(agencyId)) {
       user.userData.agencyIds.push(agencyId);
-    }else{
-      logger.error('addUserToAgency - user: '+userId+' already belongs to agency: '+agencyId);
-      throw new Meteor.Error('conflict','User already belongs to agency.');
+    } else {
+      logger.error('addUserToAgency - user: ' + userId + ' already belongs to agency: ' + agencyId);
+      throw new Meteor.Error('conflict', 'User already belongs to agency.');
     }
     if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
       var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);

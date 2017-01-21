@@ -7,11 +7,14 @@ import {logger} from '/client/logging'
 angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
   $reactive(this).attach($scope);
   this.subscribe('allAgencies');
+  this.subscribe('userdata');
   this.agency = {};
   this.helpers({
     getAgency: ()=> {
       this.agency = Agency.findOne({_id: $cookies.get('agencyId')});
-
+    },
+    administrators: ()=>{
+      return User.find({roles:"administrator",'userData.agencyIds':$cookies.get('agencyId')})
     }
   });
 
@@ -89,5 +92,9 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     }
     return newLocation;
   }
+
+  this.addAdmin = () => {
+    $state.go('register', {role: 'administrator'});
+  };
 
 });

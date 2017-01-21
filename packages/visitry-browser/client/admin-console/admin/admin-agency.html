@@ -5,6 +5,9 @@
       <div layout="row">
         <h1 style="display: inline" flex-none>{{adminAdminAgency.agency.name}}</h1>
         <span flex></span>
+        <md-button class="md-raised" ng-if="adminAdminAgency.isEditMode"
+                   ng-click="adminAdminAgency.addAdmin()">+ Admin
+        </md-button>
         <md-button class="md-button md-raised md-primary" ng-if="adminAdminAgency.isEditMode"
                ng-click="adminAdminAgency.save(agencyForm)" >Save</md-button>
         <md-button class="md-raised md-warn" ng-hide="adminAdminAgency.isEditMode"
@@ -12,6 +15,14 @@
         </md-button>
       </div>
       <md-list>
+        <md-list-item>
+          <label class="md-title" for="administrators" layout-margin flex="15">Admins</label>
+          <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="true"
+                    md-removable="false" layout-margin flex>
+            <md-chip-template>
+              <strong>{{$chip.fullName}}</strong>
+            </md-chip-template>
+        </md-list-item>
         <md-list-item>
           <label class="md-title" for="phone" layout-margin flex="15">Phone</label>
           <input type="tel" id="phone" name="phone" ng-model="adminAdminAgency.agency.contactPhone"
