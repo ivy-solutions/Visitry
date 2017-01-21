@@ -8,11 +8,11 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyId': 1}});
-    return User.find({agencyId: user.userData.agencyId},
+    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
+    return User.find({'userData.agencyIds': {$in: user.userData.agencyIds}},
       {
         fields: {
-          username: 1, emails: 1, roles: 1,
+          username: 1, emails: 1, roles: 1, fullName: 1,
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
@@ -61,7 +61,7 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
     var visits = Visits.find({
       'visitorId': {$eq: user._id},
       'visitTime': {$exists: true, $lt: new Date(), $gt: dateByDaysBefore(numberOfDays)},
-      'agencyId': {$eq: agency}
+      'agencyIds': {$eq: agency}
     }, {fields: {}});
     user.visitCount = visits.count();
     self.added('topVisitors', user._id, user);

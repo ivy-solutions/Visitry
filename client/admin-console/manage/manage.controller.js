@@ -12,21 +12,22 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.agencyId = $cookies.get('agencyId');
   this.isTopVisitorsReady = false;
   this.isFrequentVisitorsReady = false;
-  this.isUserDataReady = false;
-  this.isVisitDataReady = false;
-  this.applicantsCount =-1;
-  this.freqVisitors=[];
+  this.applicantsCount = -1;
+  this.freqVisitors = [];
 
-  this.subscribe('visits', ()=> {
-    return [];
-  }, ()=> {
+  let visitsSubscription = this.subscribe('visits', ()=>[], ()=> {
     this.isVisitDataReady = true;
   });
-  this.subscribe('userdata', ()=> {
-    return [];
-  }, ()=> {
+  let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
     this.isUserDataReady = true;
   });
+
+  this.autorun(()=> {
+    this.isUserDataReady = userDataSubscription.ready();
+    this.isVisitDataReady = visitsSubscription.ready();
+  });
+
+
   this.subscribe('topVisitors', ()=> {
       return [this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange')]
     }, ()=> {
@@ -60,7 +61,14 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       let selector = {
         'userData.prospectiveAgencyIds': this.agencyId
       };
-      var prospectiveUsers =  User.find(selector, {fields:{'userData.firstName':1, 'userData.lastName':1, 'userData.prospectiveAgencyIds':1, 'userData.picture':1 }});
+      var prospectiveUsers = User.find(selector, {
+        fields: {
+          'userData.firstName': 1,
+          'userData.lastName': 1,
+          'userData.prospectiveAgencyIds': 1,
+          'userData.picture': 1
+        }
+      });
       this.applicantsCount = prospectiveUsers.count();
       return prospectiveUsers;
     },
@@ -72,9 +80,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       var users;
       this.call('visitorsByFrequency', this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange'), (error, visitorFrequency) => {
         if (error)
-          console.log( error );
+          console.log(error);
         else {
-           this.freqVisitors = visitorFrequency.map( function (visitFreq) {
+          this.freqVisitors = visitorFrequency.map(function (visitFreq) {
             var visitor = Meteor.users.findOne({_id: visitFreq._id.visitorId}, {userData: 1});
             visitor.visitCount = visitFreq.numVisits;
             return visitor;
