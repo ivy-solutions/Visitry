@@ -42,7 +42,7 @@ angular.module("visitry.browser").directive('register', function () {
               });
             }
             let userWithoutAgencyAffiliation = User.findOne({emails: {$elemMatch: {address: this.credentials.email}}});
-            Meteor.call('addUserToAgency', userWithoutAgencyAffiliation._id, $cookies.get('agencyId'),this.credentials.role, (err)=> {
+            Meteor.call('addUserToAgency', {userId:userWithoutAgencyAffiliation._id, agencyId:$cookies.get('agencyId'),role:this.credentials.role}, (err)=> {
               if (err && err.reason !== 'User already belongs to agency.') {
                 return handleError(err);
               } else {

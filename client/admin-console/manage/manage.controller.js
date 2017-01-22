@@ -3,9 +3,10 @@
  */
 import { Visit } from '/model/visits'
 import {TopVisitors} from '/model/users'
+import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
@@ -61,7 +62,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       let selector = {
         'userData.prospectiveAgencyIds': this.agencyId
       };
-      var prospectiveUsers = User.find(selector, {
+      return User.find(selector, {
         fields: {
           'userData.firstName': 1,
           'userData.lastName': 1,
@@ -69,8 +70,6 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
           'userData.picture': 1
         }
       });
-      this.applicantsCount = prospectiveUsers.count();
-      return prospectiveUsers;
     },
     topVisitors: ()=> {
       return TopVisitors.find({}, {sort: {visitCount: -1}, limit: 10});
@@ -80,7 +79,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       var users;
       this.call('visitorsByFrequency', this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange'), (error, visitorFrequency) => {
         if (error)
-          console.log(error);
+          logger.error(error);
         else {
           this.freqVisitors = visitorFrequency.map(function (visitFreq) {
             var visitor = Meteor.users.findOne({_id: visitFreq._id.visitorId}, {userData: 1});
@@ -94,6 +93,24 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   });
 
   this.getUser = Meteor.myFunctions.getUser;
-
   this.getUserImage = Meteor.myFunctions.getUserImage;
+
+  this.confirmUser = (userId)=> {
+    this.call('addUserToAgency', {userId: userId, agencyId: this.agencyId}, (err)=> {
+      if (err) {
+        logger.error('Failed to add ' + userId + ' to ' + this.agencyId);
+        return handleError(err);
+      }
+    });
+  };
+  function handleError(err) {
+    let title = (err) ? err.reason : 'Confirmation failed';
+    $mdDialog.show(
+      $mdDialog.alert()
+        .clickOutsideToClose(true)
+        .title(title)
+        .textContent('Please try again')
+        .ok('OK')
+    );
+  }
 });
