@@ -163,6 +163,18 @@ angular.module('visitry')
         url: '/visitor/feedback/:visitId',
         template: '<feedback></feedback>'
       })
+      .state('appFeedback',{
+        url:'/help/feedback',
+        templateUrl:()=>{
+          if(Meteor.isCordova){
+            return '/packages/visitrymobile/client/feedback/app-feedback.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
+          }
+        },
+        controller:'appFeedbackCtrl as appFeedback',
+        resolve: {authenticate: authenticate}
+      })
       .state('agencyList', {
         url: '/groups',
         templateUrl: ()=> {
@@ -406,21 +418,24 @@ angular.module('visitry')
           logger.info("redirect from Accounts.onLogin");
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
+              let location = '/lost';
               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-                $state.go('adminManage');
+                //$state.go('adminManage');
+                location = 'adminManage';
               }
               else {
                 if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                  $state.go('browseRequests');
+                  //$state.go('browseRequests');
+                  location = 'browseRequests'
                 } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-                  $state.go('pendingVisits');
+                  //$state.go('pendingVisits');
+                  location = 'pendingVisits';
                 } else {
                   logger.error("user with no role." + Meteor.userId())
                 }
               }
-              if (Meteor.isCordova) {
-                handle.stop();
-              }
+              handle.stop();
+              $state.go(location);
             }
           });
 

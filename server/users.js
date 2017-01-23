@@ -8,11 +8,11 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyId': 1}});
-    return User.find({agencyId: user.userData.agencyId},
+    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
+    return User.find({$or: [{'userData.agencyIds': {$in: user.userData.agencyIds}}, {'userData.prospectiveAgencyIds': {$in: user.userData.agencyIds}}]},
       {
         fields: {
-          username: 1, emails: 1, roles: 1,
+          username: 1, emails: 1, roles: 1, fullName: 1,
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
@@ -61,7 +61,7 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
     var visits = Visits.find({
       'visitorId': {$eq: user._id},
       'visitTime': {$exists: true, $lt: new Date(), $gt: dateByDaysBefore(numberOfDays)},
-      'agencyId': {$eq: agency}
+      'agencyIds': {$eq: agency}
     }, {fields: {}});
     user.visitCount = visits.count();
     self.added('topVisitors', user._id, user);
@@ -223,7 +223,7 @@ Meteor.methods({
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   },
-  addUserToAgency(userId, agencyId){
+  addUserToAgency(userArgs){
     if (!this.userId) {
       logger.error("addUserToAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
@@ -233,22 +233,30 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    let agency = Meteor.call('getAgency', agencyId);
+    let agency = Meteor.call('getAgency', userArgs.agencyId || '');
     if (!agency) {
-      logger.error('addUserToAgency - invalid agency')
-      throw new Meteor.Error('invalid-agency', 'Agency missing or can not register new users.');
+      logger.error('addUserToAgency - invalid agency');
+      throw new Meteor.Error('invalid-agency', 'Agency missing.');
     }
-    var user = User.findOne(userId);
+    if (userArgs.role && !Roles.userIsInRole(userArgs.userId, userArgs.role)) {
+      //TODO: when we add groups we will need to change this to add role and remove all roles they have for that group
+      Roles.setUserRoles(userArgs.userId, userArgs.role);
+    }
+    var user = User.findOne(userArgs.userId);
+    if (!user) {
+      logger.error('addUserToAgency - invalid user');
+      throw new Meteor.Error('invalid-user', 'User missing.');
+    }
     if (!user.userData.agencyIds) {
-      user.userData.agencyIds = [agencyId]
-    } else if (!user.userData.agencyIds.includes(agencyId)) {
-      user.userData.agencyIds.push(agencyId);
-    }else{
-      logger.error('addUserToAgency - user: '+userId+' already belongs to agency: '+agencyId);
-      throw new Meteor.Error('conflict','User already belongs to agency.');
+      user.userData.agencyIds = [userArgs.agencyId]
+    } else if (!user.userData.agencyIds.includes(userArgs.agencyId)) {
+      user.userData.agencyIds.push(userArgs.agencyId);
+    } else {
+      logger.error('addUserToAgency - user: ' + userArgs.userId + ' already belongs to agency: ' + userArgs.agencyId);
+      throw new Meteor.Error('conflict', 'User already belongs to agency.');
     }
-    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
-      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
+    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(userArgs.agencyId)) {
+      var index = user.userData.prospectiveAgencyIds.indexOf(userArgs.agencyId);
       user.userData.prospectiveAgencyIds.splice(index, 1);
     }
     user.save((err, id)=> {
@@ -269,7 +277,7 @@ Meteor.methods({
         })
       });
     });
-    logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
+    logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },
   createUserFromAdmin(data, callback){
     if (!this.userId) {

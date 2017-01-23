@@ -1,0 +1,29 @@
+<ion-view title="App Feedback" hide-tabs>
+
+  <ion-content class="has-header">
+    <form name="appFeedbackForm" ng-submit="appFeedback.submitFeedback(appFeedbackForm)">
+      <div class="list" layout-padding>
+        <label class="item item-input" ng-class="{ 'assertive-border' : appFeedbackForm.title.$error&&appFeedbackForm.$submitted}" layout-margin >
+          <input type="text" name="title" ng-model="appFeedback.feedback.title" placeholder="Title" required>
+        </label>
+        <label class="item item-input item-select" ng-class="{ 'assertive-border' : appFeedbackForm.type.$error&&appFeedbackForm.$submitted}" layout-margin>
+          <div class="input-label">
+            Type
+          </div>
+          <select ng-model="appFeedback.feedback.type" name="type" required>
+            <option ng-repeat="type in appFeedback.feedbackTypes" ng-value="type.toUpperCase()">{{type}}</option>
+          </select>
+        </label>
+        <label class="item item-input item-floating-label" layout-margin>
+          <span class="input-label">Comments</span>
+          <textarea ng-model="appFeedback.feedback.comments" placeholder="Comments" rows="5"></textarea>
+        </label>
+        <div layout-margin>
+          <button type='submit' class="button button-block button-positive">
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>
