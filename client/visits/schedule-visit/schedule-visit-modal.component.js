@@ -35,8 +35,6 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
       var visitDateTime = new Date( date.getFullYear(), date.getMonth(), date.getDate(),
         selectedTime.getUTCHours(),selectedTime.getUTCMinutes(),0,0);
        if ( visitDateTime > new Date() ) {
-         console.log(visitDateTime);
-         console.log(new Date());
          Meteor.call('visits.scheduleVisit', visit._id, visitDateTime, this.visitorNotes, (err) => {
            if (err) return handleError('Error', err.reason);
          });

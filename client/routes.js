@@ -163,6 +163,18 @@ angular.module('visitry')
         url: '/visitor/feedback/:visitId',
         template: '<feedback></feedback>'
       })
+      .state('appFeedback',{
+        url:'/help/feedback',
+        templateUrl:()=>{
+          if(Meteor.isCordova){
+            return '/packages/visitrymobile/client/feedback/app-feedback.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
+          }
+        },
+        controller:'appFeedbackCtrl as appFeedback',
+        resolve: {authenticate: authenticate}
+      })
       .state('agencyList', {
         url: '/groups',
         templateUrl: ()=> {
