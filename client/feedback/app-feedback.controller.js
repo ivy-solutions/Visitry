@@ -1,7 +1,10 @@
 /**
  * Created by Daniel Biales on 1/22/17.
  */
-angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state, $reactive, appFeedbackTrelloService) {
+
+import { logger } from '/client/logging'
+
+angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state, $reactive) {
   $reactive(this).attach($scope);
   this.feedbackTypes = ['General', 'Bug', 'Improvement'];
   this.feedback = {title: '', type: '', comments: ''};
@@ -17,7 +20,11 @@ angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state
   this.submitFeedback = (form)=> {
     if (form.$valid) {
       let description = this.feedback.comments + '\nAgencies: [' + (this.feedback.agencyIds || '') + ']';
-      appFeedbackTrelloService.addNewQACard(this.feedback.title, description, this.feedback.type);
+      Meteor.call('addNewQACard',this.feedback.title, description, this.feedback.type,(err)=>{
+        if(err){
+          logger.error(err);
+        }
+      });
       $state.go('login');
     }
   };

@@ -5,7 +5,7 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-
+import { HTTP } from 'meteor/http'
 import { Feedback, Feedbacks } from '/model/feedback'
 import '/server/feedback.js';
 
@@ -37,8 +37,10 @@ if (Meteor.isServer) {
 
     describe('feedback.createFeedback method', () => {
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
-      beforeEach(function() {
-        Feedbacks.remove({}, function(err) { if (err) console.log(err); })
+      beforeEach(function () {
+        Feedbacks.remove({}, function (err) {
+          if (err) console.log(err);
+        })
       });
 
       it('creates feedback', () => {
@@ -49,32 +51,63 @@ if (Meteor.isServer) {
       it('fails if no user rating', () => {
         const invocation = {userId: Random.id()};
         testFeedback.companionRating = null;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" is required');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"companionRating" is required');
       });
       it('fails if user rating too low', () => {
         const invocation = {userId: Random.id()};
         testFeedback.companionRating = 0;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" has to be greater than or equal 1');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"companionRating" has to be greater than or equal 1');
       });
       it('fails if user rating too high', () => {
         const invocation = {userId: Random.id()};
         testFeedback.companionRating = 6;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"companionRating" has to be less than or equal 5');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"companionRating" has to be less than or equal 5');
       });
       it('fails if no visit rating', () => {
         const invocation = {userId: Random.id()};
         testFeedback.visitRating = null;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"visitRating" is required');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"visitRating" is required');
       });
       it('fails if user rating too low', () => {
         const invocation = {userId: Random.id()};
         testFeedback.visitRating = 0;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"visitRating" has to be greater than or equal 1');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"visitRating" has to be greater than or equal 1');
       });
       it('fails if user rating too high', () => {
         const invocation = {userId: Random.id()};
         testFeedback.visitRating = 6;
-        assert.throws( function() { createHandler.apply(invocation,[testFeedback]); }, '"visitRating" has to be less than or equal 5');
+        assert.throws(function () {
+          createHandler.apply(invocation, [testFeedback]);
+        }, '"visitRating" has to be less than or equal 5');
+      });
+    });
+
+    describe('feedback.addNewQACard', ()=> {
+      const addNewQACardHandler = Meteor.server.method_handlers['addNewQACard'];
+      let meteorHTTPPostStub;
+      beforeEach(()=> {
+        meteorHTTPPostStub = sinon.stub(HTTP, 'post', (...args)=>args);
+      });
+      afterEach(()=> {
+        HTTP.post.restore();
+      });
+      it('add new QA card has correct body', ()=> {
+        const invocation = {userId: Random.id()};
+        addNewQACardHandler.apply(invocation, ['title', 'description', 'type']);
+        let result = meteorHTTPPostStub.returnValues[0];
+        assert.equal(result[0], 'https://api.trello.com/1/cards');
+        assert.deepPropertyVal(result[1], 'data.name', 'title', 'Error: name value incorrect');
+        assert.deepPropertyVal(result[1], 'data.desc', 'type: description', 'Error: description incorrect');
       });
     });
   });

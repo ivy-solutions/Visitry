@@ -98,12 +98,14 @@ angular.module('visitry').directive('visitry', function () {
       this.showUserActions = () => {
         var profileText = "Profile";
         var notificationsText = "Notifications";
+        var appFeedbackText = "Send App Feedback";
         var signOutText = "Sign Out";
         var cancelText = "Cancel";
         var titleText = "";
         var buttons = [];
         buttons.push({text: profileText});
         buttons.push({text: notificationsText});
+        buttons.push({text:appFeedbackText});
         var logout = this.logout;
 
         // Show the action sheet
@@ -141,6 +143,8 @@ angular.module('visitry').directive('visitry', function () {
               $state.go('profile');
             } else if (buttons[index].text === notificationsText) {
               $state.go('notifications');
+            }else if (buttons[index].text ===appFeedbackText){
+              $state.go('appFeedback');
             }
             return true;
           },

@@ -66,3 +66,4 @@ percolate:synced-cron
 brentjanderson:winston-client
 shell-server
 meteorhacks:ssr
+http

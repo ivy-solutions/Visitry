@@ -18,32 +18,31 @@ describe('App Feedback', function () {
   let controller;
   let scope;
   let stateSpy;
-  let appFeedbackTrelloServiceStub;
+  let meteorCallStub;
 
-  beforeEach(inject(function (_$controller_, _$cookies_, _appFeedbackTrelloService_) {
+  beforeEach(inject(function (_$controller_, _$cookies_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
     $cookies = _$cookies_;
-    appFeedbackTrelloService = _appFeedbackTrelloService_;
   }));
 
 
   beforeEach(()=> {
 
-    inject(function ($rootScope, $state, appFeedbackTrelloService) {
+    inject(function ($rootScope, $state) {
       scope = $rootScope.$new(true);
       controller = $controller('appFeedbackCtrl', {
         $scope: scope,
         $state: $state,
-        appFeedbackTrelloService: appFeedbackTrelloService
       });
       stateSpy = sinon.stub($state, 'go');
-      appFeedbackTrelloServiceStub = sinon.stub(appFeedbackTrelloService, 'addNewQACard',()=>{});
+      meteorCallStub = sinon.stub(Meteor, 'call', ()=> {
+      });
     });
   });
 
   afterEach(function () {
-    appFeedbackTrelloService.addNewQACard.restore();
+    Meteor.call.restore();
     stateSpy.restore();
   });
 
@@ -54,16 +53,16 @@ describe('App Feedback', function () {
       controller.feedback.type = 'BUG';
       controller.feedback.agencyIds = ['agency1'];
       controller.submitFeedback({$valid: true});
-      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: [agency1]', 'BUG'),'bad arguments');
-      assert.isTrue(stateSpy.calledWith('login'),'bad navigation');
+      assert.isTrue(meteorCallStub.calledWith('addNewQACard', 'Test', 'This is a test.\nAgencies: [agency1]', 'BUG'), 'bad arguments');
+      assert.isTrue(stateSpy.calledWith('login'), 'bad navigation');
     });
-    it('submit feedback works without agencyIds',()=>{
+    it('submit feedback works without agencyIds', ()=> {
       controller.feedback.title = 'Test';
       controller.feedback.comments = 'This is a test.';
       controller.feedback.type = 'BUG';
       controller.submitFeedback({$valid: true});
-      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: []', 'BUG'),'bad arguments');
-      assert.isTrue(stateSpy.calledWith('login'),'bad navigation');
+      assert.isTrue(meteorCallStub.calledWith('addNewQACard', 'Test', 'This is a test.\nAgencies: []', 'BUG'), 'bad arguments');
+      assert.isTrue(stateSpy.calledWith('login'), 'bad navigation');
     });
   });
 });
