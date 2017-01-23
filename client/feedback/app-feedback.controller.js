@@ -17,8 +17,8 @@ angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state
   this.submitFeedback = (form)=> {
     if (form.$valid) {
       let description = this.feedback.comments + '\nAgencies: [' + (this.feedback.agencyIds || '') + ']';
-      appFeedbackTrelloService.addNewQACard(this.feedback.title, description, this.feedback.type)
-      $state.go('/');
+      appFeedbackTrelloService.addNewQACard(this.feedback.title, description, this.feedback.type);
+      $state.go('login');
     }
   };
 

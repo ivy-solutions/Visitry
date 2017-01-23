@@ -38,7 +38,7 @@ describe('App Feedback', function () {
         appFeedbackTrelloService: appFeedbackTrelloService
       });
       stateSpy = sinon.stub($state, 'go');
-      appFeedbackTrelloServiceStub = sinon.stub(appFeedbackTrelloService, 'addNewQACard');
+      appFeedbackTrelloServiceStub = sinon.stub(appFeedbackTrelloService, 'addNewQACard',()=>{});
     });
   });
 
@@ -54,16 +54,16 @@ describe('App Feedback', function () {
       controller.feedback.type = 'BUG';
       controller.feedback.agencyIds = ['agency1'];
       controller.submitFeedback({$valid: true});
-      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: [agency1]', 'BUG'));
-      assert.isTrue(stateSpy.calledWith('/'));
+      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: [agency1]', 'BUG'),'bad arguments');
+      assert.isTrue(stateSpy.calledWith('login'),'bad navigation');
     });
     it('submit feedback works without agencyIds',()=>{
       controller.feedback.title = 'Test';
       controller.feedback.comments = 'This is a test.';
       controller.feedback.type = 'BUG';
       controller.submitFeedback({$valid: true});
-      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: []', 'BUG'));
-      assert.isTrue(stateSpy.calledWith('/'));
-    })
+      assert.isTrue(appFeedbackTrelloServiceStub.calledWith('Test', 'This is a test.\nAgencies: []', 'BUG'),'bad arguments');
+      assert.isTrue(stateSpy.calledWith('login'),'bad navigation');
+    });
   });
 });

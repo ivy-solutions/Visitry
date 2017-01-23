@@ -28,6 +28,7 @@ describe('App Feedback Trello Service', function () {
 
 
   afterEach(function () {
+    $http.post.restore();
   });
   describe('add New Card to Customer QA', ()=> {
 

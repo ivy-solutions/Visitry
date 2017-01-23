@@ -12,7 +12,7 @@ angular.module('visitry').factory('appFeedbackTrelloService', function ($http) {
     }, {
       params: {
         key: '22a7c1391a746ca09cc0b4e110cf968d',
-        token: '9bb72411dd4e32eca53b4c6f69bc2c43c149335809b48616a8d36703402b8e5d'
+        token: 'cb7d8bbd76c6448ee22561ed14ac93d9272c5129f13358871639b983af8d96fd'
       }
     });
   };
