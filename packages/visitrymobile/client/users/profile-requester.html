@@ -33,7 +33,7 @@
         </label>
         <label class="item item-input">
             <input type="tel" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
-                   placeholder="Optional phone number" >
+                   placeholder="Optional phone number" ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" >
             </input>
             <div class="checkbox-dark" ng-if="profile.currentUser.userData.phoneNumber">
                 <ion-checkbox ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
@@ -41,7 +41,7 @@
         </label>
         <div layout="row">
             <span flex></span>
-            <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Use format: (888) 555-1212</span>
+            <span class="error-message" ng-show="profile.profileForm.phoneNumber.$invalid && profile.profileForm.phoneNumber.$touched">Phone number should be 10 digits</span>
         </div>
         <label class="item item-input item-stacked-label">
             <div class="input-label">Interests</div>
