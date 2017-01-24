@@ -22,10 +22,6 @@
                    details="profile.location.details" disable-tap
                    placeholder="Location from which you will usually come"/>
         </label>
-        <div layout="row">
-            <span flex></span>
-            <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
-        </div>
         <label class="item">Show visits within {{profile.distance}} miles
             <div class="range range-positive">
                 1

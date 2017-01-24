@@ -22,10 +22,6 @@
                    details="profile.location.details" disable-tap
                    placeholder="Usual visit location"/>
         </label>
-        <div layout="row">
-            <span flex></span>
-            <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Choose a location or clear address</span>
-        </div>
         <label class="item item-input item-stacked-label">
             <div class="input-label">Location Notes for Visitor</div>
             <textarea ng-model="profile.currentUser.userData.locationInfo" rows="2" placeholder="Apt. number, parking advice, or other info for visitor.">
