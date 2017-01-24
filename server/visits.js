@@ -92,8 +92,8 @@ Meteor.publish("availableVisits", function (data) {
   let hasAgency = data[1];
   if (this.userId && hasAgency && Roles.userIsInRole(userId, 'visitor')) {
     logger.verbose("publish availableVisits to " + this.userId);
-    const defaultVisitRange = 3000;
-    const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
+    const defaultVisitRange = 4000;
+    const defaultLocation = {"type": "Point", "coordinates": [-97.415021, 37.716408]};  //default = Wichita, Kansas
     var user = Meteor.users.findOne({_id: userId}, {
       fields: {
         'userData.agencyIds': 1,
@@ -101,7 +101,7 @@ Meteor.publish("availableVisits", function (data) {
         'userData.visitRange': 1
       }
     });
-    var visitRange = user.userData.visitRange ? user.userData.visitRange : defaultVisitRange;
+    var visitRange = (user.userData.visitRange && user.userData.location) ? user.userData.visitRange : defaultVisitRange;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
     var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
     logger.verbose("userAgencies: " + userAgencies)

@@ -34,8 +34,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
         this.visitRange = user.userData.visitRange;
         this.hasLocation = true;
       } else {
-        this.visitRange = 3200;
-        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
+        this.visitRange = 4000;
+        this.fromLocation = { "type": "Point", "coordinates": [-97.415021, 37.716408]};  //default - within 4000 miles of Wichita, Kansas
       }
 
       this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['nosuchagency'];
@@ -77,9 +77,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       }
     },
     openVisitCount(){
-      let num =  Counts.get('numberAvailableVisits');
-      logger.verbose(num);
-      return num
+      return Counts.get('numberAvailableVisits');
     }
   });
 

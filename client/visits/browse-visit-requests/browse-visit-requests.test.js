@@ -31,7 +31,7 @@ describe ( 'BrowseVisitRequests', function() {
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
     var available = {stop: function(){}};
     inject( function ($rootScope) {
-      scope = $rootScope.$new(true)
+      scope = $rootScope.$new(true);
       controller = $controller('browseVisitRequestsCtrl', { $scope: scope, available: available });
     });
   });
