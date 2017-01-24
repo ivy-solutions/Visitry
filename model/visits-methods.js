@@ -11,7 +11,7 @@ Meteor.methods({
     var requester = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
     if (requester.userData.agencyIds==null || requester.userData.agencyIds.length === 0) {
       console.log("user without agency affiliation attempted to create visit request, userId: " + this.userId);
-      throw new Meteor.Error('requires-agency', "User must be affiliated with an agency.")
+      throw new Meteor.Error('requires-agency', "You must be a member of a group to submit a request.")
     }
     visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
 

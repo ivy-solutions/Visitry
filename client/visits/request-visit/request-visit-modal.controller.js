@@ -1,7 +1,7 @@
 import { Visit } from '/model/visits.js'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, RequestVisit) {
+angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, $ionicPopup, RequestVisit) {
   $reactive(this).attach($scope);
 
   this.visitRequest = {
@@ -100,8 +100,8 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     logger.error('new visit request save error ', err);
 
     $ionicPopup.alert({
-      title: err.reason || 'Request failed',
-      template: 'Please try again',
+      title: 'Submit failed',
+      template: err.reason,
       okType: 'button-positive button-clear'
     });
   }
