@@ -37,9 +37,9 @@
             <input type="tel" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
                    placeholder="Optional phone number" >
             </input>
-        </label>
-        <label class="item item-input checkbox-dark" ng-if="profile.currentUser.userData.phoneNumber">
-            <ion-checkbox ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
+            <div class="checkbox-dark" ng-if="profile.currentUser.userData.phoneNumber">
+                <ion-checkbox ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
+            </div>
         </label>
         <div layout="row">
             <span flex></span>
