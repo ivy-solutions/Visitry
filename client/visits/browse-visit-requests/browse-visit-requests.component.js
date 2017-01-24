@@ -36,6 +36,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       } else {
         this.visitRange = 4000;
         this.fromLocation = { "type": "Point", "coordinates": [-97.415021, 37.716408]};  //default - within 4000 miles of Wichita, Kansas
+        this.hasLocation = false;
       }
 
       this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['nosuchagency'];
