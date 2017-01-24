@@ -29,9 +29,10 @@ describe ( 'BrowseVisitRequests', function() {
   beforeEach(function() {
     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
+    var available = {stop: function(){}};
     inject( function ($rootScope) {
       scope = $rootScope.$new(true)
-      controller = $controller('browseVisitRequestsCtrl', { $scope: scope });
+      controller = $controller('browseVisitRequestsCtrl', { $scope: scope, available: available });
     });
   });
 
