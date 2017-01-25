@@ -27,8 +27,11 @@ angular.module('visitry').controller('pendingVisitsCtrl',
         requestedDate: {$gte: new Date()}
       }, {sort: this.getReactively('listSort')});
       this.hasRequests = this.visits.count() > 0;
+
       let currentUser = User.findOne(Meteor.userId(),{fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
-      this.hasAgency = currentUser.hasAgency;
+      if ( typeof currentUser.hasAgency !== 'undefined') {
+        this.hasAgency = currentUser.hasAgency;
+      }
     } else {
       feedback.stop()
     }
@@ -39,7 +42,7 @@ angular.module('visitry').controller('pendingVisitsCtrl',
     pendingVisits: ()=> {
       var hasAgency = this.getReactively('hasAgency');
       if (Meteor.userId()) {
-        return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
+        return Meteor.myFunctions.groupVisitsByRequestedDate(this.getReactively('visits'));
       } else {
         feedback.stop()
       }
