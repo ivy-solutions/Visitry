@@ -82,7 +82,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       // location range or location
       var hasAgency = this.getReactively('hasAgency');
       let visits = this.getReactively('visits');
-      return visits.count();
+      return visits? visits.count() : 0;
     }
   });
 
