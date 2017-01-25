@@ -78,7 +78,10 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       }
     },
     openVisitCount(){
-      return Counts.get('numberAvailableVisits');
+      // Use visits.count() rather than Counts value to accomodate user's changes in profile
+      // location range or location
+      let visits = this.getReactively('visits');
+      return visits.count();
     }
   });
 
