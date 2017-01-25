@@ -80,6 +80,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     openVisitCount(){
       // Use visits.count() rather than Counts value to accomodate user's changes in profile
       // location range or location
+      var hasAgency = this.getReactively('hasAgency');
       let visits = this.getReactively('visits');
       return visits.count();
     }

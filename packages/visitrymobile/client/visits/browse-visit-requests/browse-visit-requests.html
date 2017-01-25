@@ -8,7 +8,12 @@
          </div>
          <div ng-hide="!browseVisitRequests.hasAgency">
              <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
-                 No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
+                 <div ng-if="currentUser.userData.location">
+                    No requests within {{browseVisitRequests.visitRange }} miles of {{currentUser.userData.location | streetAddress }}
+                 </div>
+                 <div ng-if="!currentUser.userData.location">
+                     No requests available near profile location. Please check your profile and try again.
+                 </div>
              </div>
              <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
                 <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
