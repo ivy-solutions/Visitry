@@ -62,5 +62,6 @@ User = Class.create({
   }
 });
 var TopVisitors = new Mongo.Collection('topVisitors');
-
+var VisitorUsers = new Mongo.Collection('visitorUsers');
 export {TopVisitors}
+export {VisitorUsers}

@@ -8,6 +8,7 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import { HTTP } from 'meteor/http'
 import { Feedback, Feedbacks } from '/model/feedback'
 import '/server/feedback.js';
+import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
 
@@ -110,5 +111,37 @@ if (Meteor.isServer) {
         assert.deepPropertyVal(result[1], 'data.desc', 'type: description', 'Error: description incorrect');
       });
     });
+
+    // Currently the aggregate package is untestable
+    /*    describe('feedback.feedbackTotalHours', ()=> {
+     let visitorId;
+     let yesterDayDate;
+     let weekAgoDate;
+     beforeEach(()=> {
+     Meteor.call.restore();
+     yesterDayDate = new Date();
+     yesterDayDate.setDate(yesterDayDate.getDate() - 1);
+     weekAgoDate = new Date();
+     weekAgoDate.setDate(weekAgoDate.getDate() - 7);
+     visitorId = Random.id();
+     StubCollections.stub([Feedbacks]);
+     Feedbacks.insert({visitorId: visitorId, submitterId: visitorId, createdAt: yesterDayDate.getTime(), timeSpent: 3});
+     Feedbacks.insert({visitorId: visitorId, submitterId: visitorId, createdAt: weekAgoDate.getTime(), timeSpent: 2});
+     Feedbacks.insert({visitorId: Random.id(), submitterId: Random.id(), createdAt: yesterDayDate.getTime(), timeSpent: 1})
+     });
+     afterEach(()=> {
+     StubCollections.restore();
+     });
+     it('feedback total hours should be 5 if from date is 0', ()=> {
+     let totalHours = Meteor.call('feedbackTotalHours', visitorId, 0);
+     assert.equal(totalHours, 5);
+     });
+     it('feedback total hours should be 3 if from date is 3 days ago', ()=> {
+     let threeDaysAgoDate = new Date();
+     threeDaysAgoDate.setDate(threeDaysAgoDate.getDate() - 3);
+     let totalHours = Meteor.call('feedbackTotalHours', visitorId, threeDaysAgoDate.getTime());
+     assert.equal(totalHours, 3);
+     });
+     });*/
   });
 }

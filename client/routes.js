@@ -163,16 +163,16 @@ angular.module('visitry')
         url: '/visitor/feedback/:visitId',
         template: '<feedback></feedback>'
       })
-      .state('appFeedback',{
-        url:'/help/feedback',
-        templateUrl:()=>{
-          if(Meteor.isCordova){
+      .state('appFeedback', {
+        url: '/help/feedback',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/feedback/app-feedback.html';
           } else {
             return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
           }
         },
-        controller:'appFeedbackCtrl as appFeedback',
+        controller: 'appFeedbackCtrl as appFeedback',
         resolve: {authenticate: authenticate}
       })
       .state('agencyList', {
@@ -326,6 +326,17 @@ angular.module('visitry')
           }
         },
         controller: 'adminHelpAboutCtrl as adminHelpAbout'
+      })
+      .state('adminHelpHowTo', {
+        url: '/admin/help/howto',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/help/help-how-to.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-how-to.html';
+          }
+        },
+        controller: 'adminHelpHowToCtrl as adminHelpHowTo'
       })
     ;
     $urlRouterProvider.otherwise("/login");

@@ -1,6 +1,7 @@
 import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
+import { Feedbacks } from '/model/feedback'
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Roles } from 'meteor/alanning:roles'
 import { SSR } from 'meteor/meteorhacks:ssr';
@@ -80,6 +81,36 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
   self.ready();
 });
 
+Meteor.publish('visitorUsers', function (agencyId) {
+  var selector = {
+    'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
+    'roles': {$elemMatch: {$eq: 'visitor'}}
+  };
+  var queryOptions = {
+    fields: {
+      createdAt: 1,
+      'userData.agencyIds': 1,
+      'userData.firstName': 1,
+      'userData.lastName': 1,
+      'userData.location.address': 1,
+      'roles': 1
+    }
+  };
+  Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+    noReady: true
+  });
+  let visitors = User.find(selector, queryOptions);
+  visitors.forEach((user)=> {
+    let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
+    let hoursSinceDate = new Date();
+    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1));
+    user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
+    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours : 0;
+    this.added('visitorUsers', user._id, user);
+  }, this);
+  this.ready();
+});
+
 Meteor.publish("seniorUsers", function (agencyId, options) {
   if (this.userId) {
     logger.verbose("publish seniorUsers to " + this.userId);
@@ -106,7 +137,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
   }
 });
 
-Meteor.publish("visitorUsers", function (agencyId, options) {
+/*Meteor.publish("visitorUsers", function (agencyId, options) {
   if (this.userId) {
     logger.verbose("publish visitorUsers to " + this.userId);
     var selector = {
@@ -130,7 +161,7 @@ Meteor.publish("visitorUsers", function (agencyId, options) {
   } else {
     this.ready();
   }
-});
+});*/
 
 
 Meteor.methods({

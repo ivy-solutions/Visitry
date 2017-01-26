@@ -1,0 +1,23 @@
+<div layout="row" layout-align="center start" layout-margin layout-padding>
+  <div flex="20" layout="column">
+    <md-button ng-click="adminHelpHowTo.switchArticle('getting-started')"
+               ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='getting-started' }">Getting Started
+    </md-button>
+    <md-button ng-click="adminHelpHowTo.switchArticle('requester')"
+               ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='requester' }">Requester
+    </md-button>
+    <md-button ng-click="adminHelpHowTo.switchArticle('visitor')"
+               ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='visitor' }">Visitor
+    </md-button>
+    <md-button ng-click="adminHelpHowTo.switchArticle('administrator')"
+               ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='administrator' }">Administrator
+    </md-button>
+    <!--<md-button ng-click="" ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='faq' }">FAQ</md-button>-->
+  </div>
+  <div layout="column" flex="80" layout-padding>
+    <div class="md-display-2">How To: {{adminHelpHowTo.articleName}}</div>
+    <md-divider></md-divider>
+    <div ng-include="adminHelpHowTo.articleHtml"></div>
+  </div>
+  <div flex="20"></div>
+</div>

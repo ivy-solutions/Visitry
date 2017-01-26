@@ -1,4 +1,4 @@
-import { Feedback } from '/model/feedback'
+import { Feedback,Feedbacks } from '/model/feedback'
 import { logger } from '/server/logging'
 import { HTTP } from 'meteor/http'
 
@@ -38,6 +38,39 @@ Meteor.methods({
       }
       logger.verbose('app feedback added');
     })
+  },
+  feedbackTotalHours(userId, fromDate){
+    let group = {
+      _id: '$visitorId',
+      visitorHours: {
+        $sum: '$timeSpent'
+      }
+    };
+    console.log('we got here');
+    console.log('..................................................................../..................')
+    console.log(Feedbacks.find({visitorId:userId}).fetch());
+    return Feedbacks.aggregate({
+        $match: {
+          'visitorId': {$eq: userId},
+          'submitterId': {$eq: userId},
+          'createAt': {$gt: fromDate}
+        }
+      },
+      {$group: group});
+  },
+  feedbackAvgVisitorRatings(userId){
+    let group = {
+      _id: '$visitorId',
+      visitorRating: {
+        $avg: '$companionRating'
+      }
+    };
+    return Feedbacks.aggregate({
+        $match: {
+          'visitorId': {$eq: userId},
+          'submitterId': {$ne: userId}
+        }
+      },
+      {$group: group});
   }
 });
-
