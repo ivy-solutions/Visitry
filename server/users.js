@@ -9,8 +9,9 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
-    return User.find({$or: [{'userData.agencyIds': {$in: user.userData.agencyIds}}, {'userData.prospectiveAgencyIds': {$in: user.userData.agencyIds}}]},
+    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+    let agencyIds = user.hasAgency ? user.userData.agencyIds : user.userData.prospectiveAgencyIds;
+    return User.find({$or: [{'userData.agencyIds': {$in: agencyIds}}, {'userData.prospectiveAgencyIds': {$in: agencyIds}}]},
       {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1,

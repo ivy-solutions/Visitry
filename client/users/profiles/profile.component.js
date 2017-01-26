@@ -48,14 +48,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.location = {
-    address: this.currentUser && this.currentUser.userData && this.currentUser.userData.location ? this.currentUser.userData.location.address : "",
+    address: (this.currentUser && this.currentUser.userData && this.currentUser.userData.location) ? this.currentUser.userData.location.address : "",
     details: ""
   };
 
   /////////
+  // isLocationValid is not used becuase sometimes google places does work well on first try and we do not want
+  // to frustrate users by making them struggle to get teh address in.
   this.isLocationValid = ()=> {
     if ( Meteor.userId() !== null ) {
-      var userHasSelectedLocation = this.location.details != null && this.location.address != null && this.location.address.length > 0;
+      var userHasSelectedLocation = this.location.details.length > 0 && this.location.address != null && this.location.address.length > 0;
       var hasClearAddress =  !this.location.address || this.location.address.length == 0 ;
     return userHasSelectedLocation || hasClearAddress;
     }
@@ -63,7 +65,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.submitUpdate = (form) => {
-    if(form.$valid && (this.isLocationValid() || form.location.$pristine==true )) {
+    if(form.$valid ) {
       //location
       if (form.location.$touched) {
         // location is optional - can be blank or selected

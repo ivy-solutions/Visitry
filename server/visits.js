@@ -87,25 +87,28 @@ Meteor.publish("userRequests", function (userId) {
   }
 });
 
-Meteor.publish("availableVisits", function () {
-  if (this.userId && Roles.userIsInRole(this.userId, 'visitor')) {
+Meteor.publish("availableVisits", function (data) {
+  let userId = data[0];
+  let hasAgency = data[1];
+  if (this.userId && hasAgency && Roles.userIsInRole(userId, 'visitor')) {
     logger.verbose("publish availableVisits to " + this.userId);
-    const defaultVisitRange = 3000;
-    const defaultLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
-    var user = Meteor.users.findOne({_id: this.userId}, {
+    const defaultVisitRange = 4000;
+    const defaultLocation = {"type": "Point", "coordinates": [-97.415021, 37.716408]};  //default = Wichita, Kansas
+    var user = Meteor.users.findOne({_id: userId}, {
       fields: {
         'userData.agencyIds': 1,
         'userData.location': 1,
         'userData.visitRange': 1
       }
     });
-    var visitRange = user.userData.visitRange ? user.userData.visitRange : defaultVisitRange;
+    var visitRange = (user.userData.visitRange && user.userData.location) ? user.userData.visitRange : defaultVisitRange;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
     var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
+    logger.verbose("userAgencies: " + userAgencies)
+    //active unfilled future visit requests in agencies where I am a member
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    //active unfilled future visit requests
-    var availableRequests = Visits.find({
+    let selector = {
       agencyId: {$in: userAgencies},
       visitorId: null,
       inactive: {$exists: false},
@@ -116,15 +119,19 @@ Meteor.publish("availableVisits", function () {
           $maxDistance: visitRange * 1609
         }
       }
-    }, {
+    };
+    Counts.publish(this, 'numberAvailableVisits', Visits.find(selector), {
+      noReady: true
+    });
+    var availableRequests = Visits.find(selector, {
       fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1, "agencyId": 1}
     });
     var requesterIds = availableRequests.map(function (visit) {
       return visit.requesterId
     });
-    requesterIds.push(this.userId);
+    requesterIds.push(userId);
     return [availableRequests,
-      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails: 1}})];
+       Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails: 1}})];
   } else {
     this.ready();
   }
