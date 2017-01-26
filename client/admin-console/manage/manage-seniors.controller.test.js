@@ -32,6 +32,7 @@ describe('Admin Manage Seniors', function () {
   });
 
   afterEach(function () {
+    stateSpy.restore();
   });
 
   describe('AgencyId Cookie', function () {

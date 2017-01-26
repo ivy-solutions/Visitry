@@ -60,7 +60,8 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            const available = Meteor.subscribe('availableVisits', [], {
+            let currentUser = User.findOne({_id: Meteor.userId()}, {fields: { 'userData.agencyIds': 1}});
+            const available = Meteor.subscribe('availableVisits', [Meteor.userId(),currentUser.hasAgency], {
               onReady: () => {
                 deferred.resolve(available)
               },
@@ -162,6 +163,18 @@ angular.module('visitry')
       .state('visitorFeedback', {
         url: '/visitor/feedback/:visitId',
         template: '<feedback></feedback>'
+      })
+      .state('appFeedback', {
+        url: '/help/feedback',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/feedback/app-feedback.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
+          }
+        },
+        controller: 'appFeedbackCtrl as appFeedback',
+        resolve: {authenticate: authenticate}
       })
       .state('agencyList', {
         url: '/groups',
@@ -315,6 +328,17 @@ angular.module('visitry')
         },
         controller: 'adminHelpAboutCtrl as adminHelpAbout'
       })
+      .state('adminHelpHowTo', {
+        url: '/admin/help/howto',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/admin-console/help/help-how-to.html';
+          } else {
+            return '/packages/visitry-browser/client/admin-console/help/help-how-to.html';
+          }
+        },
+        controller: 'adminHelpHowToCtrl as adminHelpHowTo'
+      })
     ;
     $urlRouterProvider.otherwise("/login");
 
@@ -406,21 +430,24 @@ angular.module('visitry')
           logger.info("redirect from Accounts.onLogin");
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
+              let location = '/lost';
               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-                $state.go('adminManage');
+                //$state.go('adminManage');
+                location = 'adminManage';
               }
               else {
                 if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                  $state.go('browseRequests');
+                  //$state.go('browseRequests');
+                  location = 'browseRequests'
                 } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-                  $state.go('pendingVisits');
+                  //$state.go('pendingVisits');
+                  location = 'pendingVisits';
                 } else {
                   logger.error("user with no role." + Meteor.userId())
                 }
               }
-              if (Meteor.isCordova) {
-                handle.stop();
-              }
+              handle.stop();
+              $state.go(location);
             }
           });
 

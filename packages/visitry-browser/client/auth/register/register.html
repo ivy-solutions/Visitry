@@ -3,7 +3,7 @@
 
     <md-toolbar class="md-primary" layout="column" layout-align="end" layout-fill>
       <div layout="row" class="md-toolbar-tools md-toolbar-tools-bottom">
-        <h3 class="md-display-1"> Register a new requester</h3>
+        <h3 class="md-display-1"> Register a new user</h3>
       </div>
     </md-toolbar>
 
@@ -43,19 +43,10 @@
           </div>
         </md-input-container>
         <div layout="row">
-<!--          <md-input-container flex>
-            <label>Password</label>
-            <input type="password" name="password" ng-model="register.credentials.password" placeholder="Password"
-                   ng-minlength="5" ng-maxlength="20" required>
-            <div
-                ng-messages="registrationForm.password.$error">
-              <div ng-message="required">Required</div>
-            </div>
-          </md-input-container>-->
-
           <md-radio-group ng-model="register.credentials.role" flex layout-padding>
-            <md-radio-button value="requester" class="md-primary">Requester</md-radio-button>
-            <md-radio-button value="visitor" class="md-primary">Visitor</md-radio-button>
+            <md-radio-button ng-hide="register.credentials.role==='administrator'" value="requester" class="md-primary">Requester</md-radio-button>
+            <md-radio-button ng-hide="register.credentials.role==='administrator'" value="visitor" class="md-primary">Visitor</md-radio-button>
+            <md-radio-button ng-if="register.credentials.role==='administrator'" value="administrator" class="md-primary">Administrator</md-radio-button>
           </md-radio-group>
         </div>
         <div class="padding" layout="row" layout-align="space-around center">

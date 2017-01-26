@@ -146,7 +146,7 @@ describe ( 'Profile', function() {
     });
     it ( 'false when location details is blank but location has text', function() {
       controller.currentUser = user;
-      controller.location.details = null;
+      controller.location.details = "";
       controller.location.address = "text";
       chai.assert.isFalse(controller.isLocationValid());
     });

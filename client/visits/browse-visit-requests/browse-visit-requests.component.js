@@ -4,7 +4,7 @@
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, ScheduleVisit) {
+angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, ScheduleVisit, available) {
   $reactive(this).attach($scope);
 
   $scope.Math = window.Math;
@@ -15,12 +15,15 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     requestedDate: 1
   };
 
+  this.subscribe('userdata'); //userdata for self and all requesters and potention requesters
+
   this.visitRange = 3000;
 
   this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
 
   this.hasLocation = this.visitRange < 3000;
-  this.openVisitCount = -1;
+  this.visits;
+  this.agencyIds;
   this.hasAgency = true;
 
   this.autorun( function() {
@@ -29,50 +32,57 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
       if ( user.userData && user.userData.location) {
         this.fromLocation = user.userData.location.geo;
         this.visitRange = user.userData.visitRange;
+        this.hasLocation = true;
       } else {
-        this.visitRange = 3200;
-        this.fromLocation = { "type": "Point", "coordinates": [-71.0589, 42.3601] };  //default = within 3000 mi of Boston;
+        this.visitRange = 4000;
+        this.fromLocation = { "type": "Point", "coordinates": [-97.415021, 37.716408]};  //default - within 4000 miles of Wichita, Kansas
+        this.hasLocation = false;
       }
+
+      this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['nosuchagency'];
       this.hasAgency = user.hasAgency;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      this.visits = Visit.find({
+        agencyId: {$in: this.agencyIds},
+        visitorId: null,
+        "location.geo": {
+          $near: {
+            $geometry: this.fromLocation,
+            $maxDistance: this.visitRange * 1609
+          }
+        },
+        requestedDate: {$gt: today},
+        'requesterId': {$ne: user._id},
+        inactive: {$exists: false}
+      }, {
+        sort: this.getReactively('listSort'),
+        fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1}
+      });
     }
   });
 
   this.helpers({
     openVisits: () => {
-      var today = new Date();
-      today.setHours(0,0,0,0);
+      // make sure list gets updated if user is added to an agency
+      var userAgencies = this.getReactively('agencyIds');
+      var hasAgency = this.getReactively('hasAgency');
 
-      var userId = Meteor.userId();
-      if (userId) {
-        var user = User.findOne({_id: userId}, {fields: {'userData.location': 1, 'userData.visitRange': 1}});
-        if (user && user.userData && user.userData.location) {
-          this.visitRange = user.userData.visitRange;
-          this.fromLocation = user.userData.location.geo;
-          this.hasLocation = true;
-        } else {
-          this.visitRange = 3000;
-          this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston;
-          this.hasLocation = false;
+      if (Meteor.userId()) {
+        if (this.visits) {
+          logger.info("openVisits in agencies: " + userAgencies + " within " + this.visitRange + " miles of " + JSON.stringify(this.fromLocation));
+          return Meteor.myFunctions.groupVisitsByRequestedDate(this.getReactively('visits'));
         }
-        logger.info("openVisits within " + this.visitRange + " miles of " + JSON.stringify(this.fromLocation));
-        var visits = Visit.find({
-          visitorId: null,
-          "location.geo": {
-            $near: {
-              $geometry: this.fromLocation,
-              $maxDistance: this.visitRange * 1609
-            }
-          },
-          requestedDate: {$gt: today},
-          'requesterId': {$ne: userId},
-          inactive: {$exists: false}
-        }, {
-          sort: this.getReactively('listSort'),
-          fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1}
-        });
-        this.openVisitCount = visits.count();
-        return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
+      } else {
+        available.stop();
       }
+    },
+    openVisitCount(){
+      // Use visits.count() rather than Counts value to accomodate user's changes in profile
+      // location range or location
+      var hasAgency = this.getReactively('hasAgency');
+      let visits = this.getReactively('visits');
+      return visits? visits.count() : 0;
     }
   });
 

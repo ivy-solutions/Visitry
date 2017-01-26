@@ -3,30 +3,32 @@
  */
 import { Visit } from '/model/visits'
 import {TopVisitors} from '/model/users'
+import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
   this.agencyId = $cookies.get('agencyId');
   this.isTopVisitorsReady = false;
   this.isFrequentVisitorsReady = false;
-  this.isUserDataReady = false;
-  this.isVisitDataReady = false;
-  this.applicantsCount =-1;
-  this.freqVisitors=[];
+  this.applicantsCount = -1;
+  this.freqVisitors = [];
 
-  this.subscribe('visits', ()=> {
-    return [];
-  }, ()=> {
+  let visitsSubscription = this.subscribe('visits', ()=>[], ()=> {
     this.isVisitDataReady = true;
   });
-  this.subscribe('userdata', ()=> {
-    return [];
-  }, ()=> {
+  let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
     this.isUserDataReady = true;
   });
+
+  this.autorun(()=> {
+    this.isUserDataReady = userDataSubscription.ready();
+    this.isVisitDataReady = visitsSubscription.ready();
+  });
+
+
   this.subscribe('topVisitors', ()=> {
       return [this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange')]
     }, ()=> {
@@ -60,9 +62,14 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       let selector = {
         'userData.prospectiveAgencyIds': this.agencyId
       };
-      var prospectiveUsers =  User.find(selector, {fields:{'userData.firstName':1, 'userData.lastName':1, 'userData.prospectiveAgencyIds':1, 'userData.picture':1 }});
-      this.applicantsCount = prospectiveUsers.count();
-      return prospectiveUsers;
+      return User.find(selector, {
+        fields: {
+          'userData.firstName': 1,
+          'userData.lastName': 1,
+          'userData.prospectiveAgencyIds': 1,
+          'userData.picture': 1
+        }
+      });
     },
     topVisitors: ()=> {
       return TopVisitors.find({}, {sort: {visitCount: -1}, limit: 10});
@@ -72,9 +79,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       var users;
       this.call('visitorsByFrequency', this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange'), (error, visitorFrequency) => {
         if (error)
-          console.log( error );
+          logger.error(error);
         else {
-           this.freqVisitors = visitorFrequency.map( function (visitFreq) {
+          this.freqVisitors = visitorFrequency.map(function (visitFreq) {
             var visitor = Meteor.users.findOne({_id: visitFreq._id.visitorId}, {userData: 1});
             visitor.visitCount = visitFreq.numVisits;
             return visitor;
@@ -86,6 +93,24 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   });
 
   this.getUser = Meteor.myFunctions.getUser;
-
   this.getUserImage = Meteor.myFunctions.getUserImage;
+
+  this.confirmUser = (userId)=> {
+    this.call('addUserToAgency', {userId: userId, agencyId: this.agencyId}, (err)=> {
+      if (err) {
+        logger.error('Failed to add ' + userId + ' to ' + this.agencyId);
+        return handleError(err);
+      }
+    });
+  };
+  function handleError(err) {
+    let title = (err) ? err.reason : 'Confirmation failed';
+    $mdDialog.show(
+      $mdDialog.alert()
+        .clickOutsideToClose(true)
+        .title(title)
+        .textContent('Please try again')
+        .ok('OK')
+    );
+  }
 });

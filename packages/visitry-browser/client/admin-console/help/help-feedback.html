@@ -1,0 +1,37 @@
+<div layout="row" layout-align="center start" layout-margin layout-padding>
+  <div flex="20"></div>
+  <div layout="column" flex="80" layout-padding>
+    <div class="md-display-2">Feedback</div>
+    <md-divider></md-divider>
+    <form name="appFeedbackForm" layout-margin layout-padding ng-submit="appFeedback.submitFeedback(appFeedbackForm)">
+      <md-input-container class="md-block">
+        <label>Title</label>
+        <input type="text" ng-model="appFeedback.feedback.title" name="title" required/>
+        <div ng-messages="appFeedbackForm.title.$error">
+          <div ng-message="required">Required.</div>
+        </div>
+      </md-input-container>
+      <md-input-container style="height:80px">
+        <label>Type</label>
+        <md-select name="type" ng-model="appFeedback.feedback.type" required>
+          <md-option ng-repeat="type in appFeedback.feedbackTypes" ng-value="type.toUpperCase()">
+            {{type}}
+          </md-option>
+        </md-select>
+        <div class="errors" ng-messages="appFeedbackForm.type.$error"
+             ng-show="appFeedbackForm.$submitted&&!appFeedbackForm.$valid">
+          <div ng-message="required">Required</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Comments</label>
+        <textarea ng-model="appFeedback.feedback.comments" md-maxlength="1000"></textarea>
+      </md-input-container>
+      <div layout="row" class="md-block" layout-margin layout-padding>
+        <span flex></span>
+        <md-button type="submit" class="md-primary" layout-padding>Submit</md-button>
+      </div>
+    </form>
+  </div>
+  <div flex="20"></div>
+</div>

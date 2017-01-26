@@ -35,9 +35,18 @@ Package.onUse(function(api) {
     'client/styles/manage-lists.less',
     'client/admin-console/admin-home.html',
     'client/admin-console/admin/admin.html',
+    'client/admin-console/admin/admin-agency.html',
     'client/admin-console/analytics/analytics.html',
     'client/admin-console/help/help-overview.html',
-    'client/admin-console/manage/manage.html'
+    'client/admin-console/help/help-about.html',
+    'client/admin-console/help/help-feedback.html',
+    'client/admin-console/manage/manage.html',
+    'client/admin-console/manage/manage-seniors.html',
+    'client/admin-console/manage/manage-visitors.html',
+    'client/admin-console/manage/manage-visits.html',
+    'client/admin-console/manage/manage-visits-completed.html',
+    'client/admin-console/manage/manage-visits-requested.html',
+    'client/admin-console/manage/manage-visits-scheduled.html'
   ], 'client')
 });
 

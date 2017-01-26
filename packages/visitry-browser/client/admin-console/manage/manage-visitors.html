@@ -1,6 +1,6 @@
 <div layout="row" layout-align="center start" layout-margin layout-padding>
   <div flex="10"></div>
-  <div layout="column" flex="80">
+  <div layout="column" flex="grow">
     <div layout="row" flex="none">
       <div class="md-title">Visitors</div>
       <span flex></span>
@@ -9,25 +9,37 @@
     <md-divider></md-divider>
     <md-list>
       <md-list-item>
-        <div layout="row" layout-align="space-between center" layout-fill>
-          <md-button style="text-align:left" flex="20" ng-click="adminManageVisitors.toggleSort('userData.lastName')">
+        <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
+          <md-button style="text-align:left" flex="35" ng-click="adminManageVisitors.toggleSort('userData.lastName')">
             Name
           </md-button>
-          <div class="md-subhead" flex="grow">Location</div>
-          <md-button ng-click="adminManageVisitors.toggleSort('createdAt')" flex="noshrink" style="text-align:right">
-            Member Since
+          <md-button style="text-align: left" flex="10" ng-click="adminManageVisitors.toggleSort('visitorRating')">
+            Rating
+          </md-button>
+          <md-button style="text-align: left" flex="10" ng-click="adminManageVisitors.toggleSort('visitorHours')">
+            Hours
+          </md-button>
+          <md-button flex="grow" style="text-align:left"
+                     ng-click="adminManageVisitors.toggleSort('userData.location.address')">Location
+          </md-button>
+          <md-button ng-click="adminManageVisitors.toggleSort('createdAt')" flex="35" style="text-align:right">
+            Joined
           </md-button>
         </div>
       </md-list-item>
       <md-list-item
           dir-paginate="user in adminManageVisitors.visitors | itemsPerPage: adminManageVisitors.recordPerPage"
           total-items="adminManageVisitors.visitorsCount" ng-click="null">
-        <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
-          <div flex="20">
+        <div layout="row" layout-align="none center" layout-fill class="md-list-item-text">
+          <div flex="35" style="min-width: 88px" layout-margin layout-padding>
             {{user.userData.lastName}}, {{user.userData.firstName}}
           </div>
-          <div flex="grow">{{user.userData.location.address}}</div>
-          <div flex="noshrink" style="text-align:right">{{user.createdAt | date:'mediumDate'}}</div>
+          <div flex="10" style="min-width: 88px" layout-margin layout-padding>{{user.visitorRating}}</div>
+          <div flex="10" style="min-width: 88px" layout-margin layout-padding>{{user.visitorHours}}</div>
+          <div flex="grow" style="min-width: 88px" layout-margin layout-padding>{{user.userData.location.address}}</div>
+          <div flex="35" style="min-width: 88px;text-align:right" layout-margin layout-padding>{{user.createdAt |
+            date:'mediumDate'}}
+          </div>
         </div>
       </md-list-item>
     </md-list>

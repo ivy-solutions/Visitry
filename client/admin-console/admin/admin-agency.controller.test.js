@@ -26,6 +26,7 @@ describe('Admin Admin Agency', function () {
   var controller;
   var scope;
   let agencyId;
+  let stateSpy;
   let agency = {
     name: 'testAgency',
     contactPhone: '1234567890',
@@ -38,14 +39,16 @@ describe('Admin Admin Agency', function () {
     StubCollections.stub(Agencies);
     agencyId = Agencies.insert(agency);
     $cookies.put('agencyId', agencyId);
-    inject(function ($rootScope) {
+    inject(function ($rootScope,$state) {
       scope = $rootScope.$new(true);
-      controller = $controller('adminAdminAgencyCtrl', {$scope: scope});
+      controller = $controller('adminAdminAgencyCtrl', {$scope: scope,$state:$state});
+      stateSpy = sinon.stub($state, 'go');
     });
   });
 
   afterEach(function () {
     StubCollections.restore();
+    stateSpy.restore();
   });
 
   describe('editAgency', ()=> {
@@ -84,5 +87,11 @@ describe('Admin Admin Agency', function () {
     });
   });
 
+  describe('addAdmin', function () {
+    it('navigate to the register screen', ()=> {
+      controller.addAdmin();
+      assert(stateSpy.withArgs('register', {role: "administrator"}).calledOnce);
+    });
+  });
 
 });

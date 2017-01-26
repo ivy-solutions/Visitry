@@ -209,62 +209,84 @@ if (Meteor.isServer) {
         meteorCallStub = sinon.stub(Meteor, 'call', () => { //calls getAgency
           return {name: 'fakeAgency', contactEmail: 'fake@email.com', contactPhone: '1234567890'};
         });
-        emailSpy = sinon.spy(Email,'send');
+        emailSpy = sinon.spy(Email, 'send');
       });
       afterEach(()=> {
         Meteor.users.remove(adminTestUser, function (err) {
           if (err) console.log(err);
         });
-        meteorCallStub.restore();
+        Meteor.call.restore();
         emailSpy.reset();
         Email.send.restore();
       });
 
       it('adds a user to an agency', ()=> {
         const invocation = {userId: adminTestUser};
-        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1'}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.equal(emailSpy.args[0][0].from,'fake@email.com');
-        assert.equal(emailSpy.args[0][0].to,updatedUser.emails[0].address);
-        assert.equal(emailSpy.args[0][0].subject,'Visitry: Welcome to fakeAgency');
-
+        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
+        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
+      });
+      it('add a user to an agency fails if no user is provided', ()=> {
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{agencyId: 'agency1'}]),'User missing. [invalid-user]');
+      });
+      it('add a user to an agency fails if no agency is provided', ()=> {
+        Meteor.call.restore();
+        meteorCallStub = sinon.stub(Meteor, 'call', () => { //calls getAgency
+          return;
+        });
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{userId: testUserId}]),'Agency missing. [invalid-agency]');
       });
       it('adds a user to an agency they already belong to does not double enter', ()=> {
         const invocation = {userId: adminTestUser};
-        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1'}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']),'User already belongs to agency. [conflict]');
+        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1'}]), 'User already belongs to agency. [conflict]');
         updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.equal(emailSpy.callCount,1);
+        assert.equal(emailSpy.callCount, 1);
       });
       it('add a user to an agency when they already have an agency', ()=> {
         const invocation = {userId: adminTestUser};
-        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
-        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency2']);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1'}]);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency2'}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.userData.agencyIds[1], 'agency2');
-        assert.equal(emailSpy.args[0][0].from,'fake@email.com');
-        assert.equal(emailSpy.args[0][0].to,updatedUser.emails[0].address);
-        assert.equal(emailSpy.args[0][0].subject,'Visitry: Welcome to fakeAgency');
+        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
+        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
       it('add a user to an agency and remove the agency from prospective', ()=> {
         const invocation = {userId: adminTestUser};
         let originalUser = User.findOne({_id: testUserId});
         originalUser.userData = {prospectiveAgencyIds: ['agency1']};
         originalUser.save();
-        addUserToAgencyHandler.apply(invocation, [testUserId, 'agency1']);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1'}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 0);
+      });
+      it('add a user to an agency changes their role to what is set', ()=> {
+        const invocation = {userId: adminTestUser};
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: 'agency1', role: 'visitor'}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.agencyIds.length, 1);
+        assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
+        assert.equal(updatedUser.roles[0], 'visitor');
+        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
+        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
     });
 

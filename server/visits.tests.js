@@ -308,6 +308,7 @@ if (Meteor.isServer) {
     const publication = Meteor.server.publish_handlers["availableVisits"];
     Visits._ensureIndex({"location.geo.coordinates": '2dsphere'});
     var findOneUserStub;
+    var countsPublishStub;
     var testVisit;
     var agency1Id;
     var agency2Id;
@@ -327,6 +328,7 @@ if (Meteor.isServer) {
           agencyIds: [agency2Id]
         }
       });
+      countsPublishStub = sinon.stub(Counts, 'publish');
       testVisit = {
         notes: 'test visit',
         requestedDate: getTomorrowDate(),
@@ -351,11 +353,12 @@ if (Meteor.isServer) {
         if (err) console.log(err);
       });
       Meteor.users.findOne.restore();
+      Counts.publish.restore();
     });
 
     it('returns needed fields [notes, requesterId, requestedDate, location]', () => {
-      const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const invocation = {userId: userId };
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
@@ -367,7 +370,7 @@ if (Meteor.isServer) {
 
     it('user of agency2 should see only agency2 visits', () => {
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
@@ -377,7 +380,7 @@ if (Meteor.isServer) {
     it('user associated with no agency should see no visits', () => {
       findOneUserStub.returns({username: 'UnaffiliatedUser', userData: {}});
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, false]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 0);
     });
@@ -385,7 +388,7 @@ if (Meteor.isServer) {
     it('agency1 user sees only future unscheduled visits', () => {
       findOneUserStub.returns({username: 'agency1user', userData: {agencyIds: [agency1Id]}});
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
@@ -395,7 +398,7 @@ if (Meteor.isServer) {
     it('user associated with multiple agencies should see visits from all', () => {
       findOneUserStub.returns({username: 'MultiAgency', userData: {agencyIds: [agency1Id, agency2Id]}});
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 2);
       const notesFromVisits = visitCursor.map(function (visit) {
@@ -422,7 +425,7 @@ if (Meteor.isServer) {
       });
 
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 0);
     });
@@ -445,7 +448,7 @@ if (Meteor.isServer) {
       });
 
       const invocation = {userId: userId};
-      const cursors = publication.apply(invocation);
+      const cursors = publication.apply(invocation, [userId, true]);
       const visitCursor = cursors[0];
       assert.equal(visitCursor.count(), 1);
     });

@@ -63,7 +63,7 @@
         </button>
         <md-menu-content>
           <md-menu-item>
-            <md-button ng-href="/admin/administrate/agency">
+            <md-button ng-href="/admin/administrate/agency" aria-label="administrate agency">
               {{visitry.agency.name}}
             </md-button>
           </md-menu-item>
@@ -80,19 +80,19 @@
             </md-button>
           </md-menu-item>
           <md-menu-item>
+            <md-button ng-href="/admin/help/howto">
+              How To...
+            </md-button>
+          </md-menu-item>
+          <md-menu-item>
             <md-button ng-href="/admin/help/about">
               About
             </md-button>
           </md-menu-item>
           <md-menu-divider></md-menu-divider>
           <md-menu-item>
-            <md-button>
+            <md-button ng-href="/help/feedback">
               Support
-            </md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button>
-              Feedback
             </md-button>
           </md-menu-item>
         </md-menu-content>

@@ -71,6 +71,7 @@ App.accessRule( 'sms:*',{type:'intent'});
 App.setPreference("WebAppStartupTimeout", 60000);
 App.setPreference("LoadUrlTimeoutValue", 60000);
 App.setPreference("BackupWebStorage", "local");
+App.setPreference("Orientation", "portrait");
 //id for android push notifications
 App.configurePlugin('phonegap-plugin-push', {
   SENDER_ID: '822210685703'

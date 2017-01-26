@@ -2,6 +2,7 @@
  * Created by josiah on 9/7/16.
  */
 import { Counts } from 'meteor/tmeasday:publish-counts';
+import {VisitorUsers} from '/model/users'
 
 angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function ($scope, $state, $reactive, $cookies) {
   $reactive(this).attach($scope);
@@ -24,7 +25,7 @@ angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function
         'userData.agencyIds': {$elemMatch: {$eq: this.agencyId}},
         'roles': {$elemMatch: {$eq: 'visitor'}}
       };
-      return Meteor.users.find(selector,
+      return VisitorUsers.find(selector,
         {
           limit: parseInt(this.getReactively('recordPerPage')),
           skip: parseInt((this.getReactively('page') - 1) * this.recordPerPage),

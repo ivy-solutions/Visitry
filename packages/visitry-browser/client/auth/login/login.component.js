@@ -6,9 +6,7 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
   $reactive(this).attach($scope);
 
   this.isUserDataReady = false;
-  const handle = this.subscribe('userBasics', ()=>[], ()=> {
-    this.isUserDataReady = true;
-  });
+
 
   this.credentials = {
     email: '',
@@ -19,19 +17,19 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
 
 
   this.login = () => {
-    if (this.getReactively('isUserDataReady')) {
-      Meteor.loginWithPassword(this.credentials.email, this.credentials.password, (err) => {
-        if (err) {
-          console.log(err);
-          this.error = err;
-        }
-        else {
+    Meteor.loginWithPassword(this.credentials.email, this.credentials.password, (err) => {
+      if (err) {
+        console.log(err);
+        this.error = err;
+      }
+      else {
+        const handle = this.subscribe('userBasics', ()=>[], ()=> {
           var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
-          $cookies.put('agencyId', user.userData.agencyIds[0]);
           handle.stop();
+          $cookies.put('agencyId', user.userData.agencyIds[0]);
           console.log('Login success ' + this.credentials.email + ' agency: ' + $cookies.get('agencyId'));
-        }
-      });
-    }
+        });
+      }
+    });
   };
 });

@@ -31,7 +31,7 @@
     <md-list flex="33">
       <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
         <md-subheader style="background-color: #0086b3">Outstanding Requests</md-subheader>
-        <a style="color: ghostwhite" ng-href="/admin/manage/seniors" layout-padding>See More >></a>
+        <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
       </div>
       <div layout="row" layout-align="center center"
            ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
@@ -64,7 +64,7 @@
             <div layout="row" layout-align="center center" ng-hide="adminManage.isUserDataReady">
                 <md-progress-circular md-mode="indeterminate"></md-progress-circular>
             </div>
-            <div layout="row" layout-align="center center" ng-hide="adminManage.applicantsCount>0">
+            <div layout="row" layout-align="center center" ng-hide="adminManage.applicants.length>0">
                 <h4>No pending applicants</h4>
             </div>
             <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants">
@@ -72,6 +72,7 @@
                 <div class="md-list-item-text" layout="row" layout-align="space-between center">
                     <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
                 </div>
+              <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
             </md-list-item>
         </div>
         <div md-whiteframe="1">
