@@ -2,6 +2,7 @@
 
     <ion-nav-buttons side="right">
         <button ng-click="profile.groups()" ng-if="profile.showNavigationToGroups()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">Groups&nbsp; </button>
+        <button ng-click="profile.submitUpdate(profile.profileForm)" ng-if="!profile.showNavigationToGroups()" class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">Continue&nbsp; </button>
     </ion-nav-buttons>
     <ion-content class="has-header profile">
         <div class="agency">
