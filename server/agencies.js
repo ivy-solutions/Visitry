@@ -35,7 +35,7 @@ Meteor.methods({
         'Must be logged in.');
     }
     logger.info("getAgency" + agencyId);
-    return Agencies.findOne({_id: agencyId}, {fields: {name: 1, website: 1, location: 1, contactPhone: 1}})
+    return Agencies.findOne({_id: agencyId}, {fields: {name: 1, website: 1, location: 1, contactPhone: 1, contactEmail:1 }})
   },
   sendEmail(to, from, subject, text) {
     logger.info([to, from, subject, text]);
