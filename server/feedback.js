@@ -46,14 +46,11 @@ Meteor.methods({
         $sum: '$timeSpent'
       }
     };
-    console.log('we got here');
-    console.log('..................................................................../..................')
-    console.log(Feedbacks.find({visitorId:userId}).fetch());
     return Feedbacks.aggregate({
         $match: {
           'visitorId': {$eq: userId},
           'submitterId': {$eq: userId},
-          'createAt': {$gt: fromDate}
+          'createdAt': {$gt: new Date(fromDate)}
         }
       },
       {$group: group});

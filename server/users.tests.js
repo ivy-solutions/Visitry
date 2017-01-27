@@ -8,6 +8,7 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import {Roles} from 'meteor/alanning:roles'
 import '/server/users.js';
 import '/model/users.js'
+import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
   describe('Users', () => {
@@ -315,6 +316,13 @@ if (Meteor.isServer) {
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(accountsCreateUserSpy.calledOnce);
       });
+
+      it('Accounts.createUser returns id',()=>{
+        const invocation = {userId:testUserId};
+        Roles.addUsersToRoles(testUserId, ['administrator']);
+        testNewUserId =createUserFromAdminHandler.apply(invocation,[{email:'test@email.com'}]);
+        assert.equal(testNewUserId,Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id)
+      })
     });
 
     describe('users.sendEnrollmentEmail', ()=> {
@@ -356,7 +364,7 @@ if (Meteor.isServer) {
       });
       it('succeeds when user adding two prospective agencies', () => {
         const invocation = {userId: testUserId};
-        var agency2 = Random.id()
+        var agency2 = Random.id();
         addProspectiveAgencyHandler.apply(invocation, [agencyId]);
         addProspectiveAgencyHandler.apply(invocation, [agency2]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
