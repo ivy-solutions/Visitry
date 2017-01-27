@@ -310,14 +310,13 @@ Meteor.methods({
         html: SSR.render('welcomeToAgency', {
           user: user,
           agency: agency,
-          url: 'https://visitry.org',
           absoluteUrl: Meteor.absoluteUrl()
         })
       });
     });
     logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },
-  createUserFromAdmin(data, callback){
+  createUserFromAdmin(data){
     if (!this.userId) {
       logger.error("addUserToAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
