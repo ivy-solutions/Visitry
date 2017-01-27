@@ -9,7 +9,12 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+    var user = User.findOne({_id: this.userId}, {
+      fields: {
+        'userData.agencyIds': 1,
+        'userData.prospectiveAgencyIds': 1
+      }
+    });
     let agencyIds = user.hasAgency ? user.userData.agencyIds : user.userData.prospectiveAgencyIds;
     return User.find({$or: [{'userData.agencyIds': {$in: agencyIds}}, {'userData.prospectiveAgencyIds': {$in: agencyIds}}]},
       {
@@ -104,9 +109,10 @@ Meteor.publish('visitorUsers', function (agencyId) {
   visitors.forEach((user)=> {
     let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
     let hoursSinceDate = new Date();
-    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1));
+    hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
+    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate);
     user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
-    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours : 0;
+    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours/60 : 0;
     this.added('visitorUsers', user._id, user);
   }, this);
   this.ready();
@@ -139,30 +145,30 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
 });
 
 /*Meteor.publish("visitorUsers", function (agencyId, options) {
-  if (this.userId) {
-    logger.verbose("publish visitorUsers to " + this.userId);
-    var selector = {
-      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-      'roles': {$elemMatch: {$eq: 'visitor'}}
-    };
-    var queryOptions = {
-      fields: {
-        createdAt: 1,
-        'userData.agencyIds': 1,
-        'userData.firstName': 1,
-        'userData.lastName': 1,
-        'userData.location.address': 1,
-        'roles': 1
-      }
-    };
-    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
-      noReady: true
-    });
-    return User.find(selector, queryOptions);
-  } else {
-    this.ready();
-  }
-});*/
+ if (this.userId) {
+ logger.verbose("publish visitorUsers to " + this.userId);
+ var selector = {
+ 'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
+ 'roles': {$elemMatch: {$eq: 'visitor'}}
+ };
+ var queryOptions = {
+ fields: {
+ createdAt: 1,
+ 'userData.agencyIds': 1,
+ 'userData.firstName': 1,
+ 'userData.lastName': 1,
+ 'userData.location.address': 1,
+ 'roles': 1
+ }
+ };
+ Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+ noReady: true
+ });
+ return User.find(selector, queryOptions);
+ } else {
+ this.ready();
+ }
+ });*/
 
 
 Meteor.methods({
@@ -321,7 +327,7 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    Accounts.createUser(data, callback);
+    return Accounts.createUser(data);
   },
   sendEnrollmentEmail(userId){
     if (!this.userId) {

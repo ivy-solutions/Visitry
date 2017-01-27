@@ -24,7 +24,7 @@ angular.module("visitry.browser").directive('register', function () {
 
       this.createAccount = (form) => {
         if (form.$valid) {
-          Meteor.call('createUserFromAdmin', this.credentials, (err) => {
+          Meteor.call('createUserFromAdmin', this.credentials, (err,result) => {
             if (err && err.reason !== 'Email already exists.') {
               return handleError(err);
             }
@@ -35,14 +35,13 @@ angular.module("visitry.browser").directive('register', function () {
                   return handleError(err);
                 }
               });
-              Meteor.call('sendEnrollmentEmail', User.findOne({emails: {$elemMatch: {address: this.credentials.email}}})._id, (err)=> {
+              Meteor.call('sendEnrollmentEmail', result, (err)=> {
                 if (err) {
                   return handleError(err);
                 }
               });
             }
-            let userWithoutAgencyAffiliation = User.findOne({emails: {$elemMatch: {address: this.credentials.email}}});
-            Meteor.call('addUserToAgency', {userId:userWithoutAgencyAffiliation._id, agencyId:$cookies.get('agencyId'),role:this.credentials.role}, (err)=> {
+            Meteor.call('addUserToAgency', {userId:result, agencyId:$cookies.get('agencyId'),role:this.credentials.role}, (err)=> {
               if (err && err.reason !== 'User already belongs to agency.') {
                 return handleError(err);
               } else {
