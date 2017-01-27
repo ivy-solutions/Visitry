@@ -15,9 +15,6 @@ angular.module('visitry').directive('disableTap', function($timeout) {
 
         var backdrop = document.getElementsByClassName('backdrop');
         angular.element(backdrop).attr('data-tap-disabled', 'true');
-        angular.element(container).on("click", function() {
-          document.getElementById('locationInput').blur();
-        });
 
        },1000);
 

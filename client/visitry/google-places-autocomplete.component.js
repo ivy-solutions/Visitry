@@ -40,7 +40,7 @@ angular.module("visitry")
 
       link: function (scope, element, attrs, controller) {
 
-        var watchEnter = false;
+        var watchEnter = true;
         var opts = {};
         if (scope.options !=null) {
           logger.verbose(scope.options)
@@ -86,7 +86,7 @@ angular.module("visitry")
                 } else {
                   var placesService = new google.maps.places.PlacesService(element[0]);
                   placesService.getDetails(
-                    {'reference': list[0].reference},
+                    {'placeId': list[0].reference},
                     function detailsresult(detailsResult, placesServiceStatus) {
 
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
@@ -103,12 +103,11 @@ angular.module("visitry")
               });
           }
           e.stopPropagation();
-          document.getElementById('locationInput').blur();
         });
 
 
         var listener = (scope.gPlace).addListener('place_changed', function () {
-          logger.verbose('place_changed')
+          logger.verbose('place_changed');
           var result = scope.gPlace.getPlace();
           if (result !== undefined) {
             if (result.address_components !== undefined) {
@@ -144,7 +143,7 @@ angular.module("visitry")
                 } else {
                   var placesService = new google.maps.places.PlacesService(element[0]);
                   placesService.getDetails(
-                    {'reference': list[0].reference},
+                    {'placeId': list[0].reference},
                     function detailsresult(detailsResult, placesServiceStatus) {
 
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
