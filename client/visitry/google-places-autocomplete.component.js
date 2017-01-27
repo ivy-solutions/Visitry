@@ -86,7 +86,7 @@ angular.module("visitry")
                 } else {
                   var placesService = new google.maps.places.PlacesService(element[0]);
                   placesService.getDetails(
-                    {'placeId': list[0].reference},
+                    {'placeId': list[0].place_id},
                     function detailsresult(detailsResult, placesServiceStatus) {
 
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
@@ -96,11 +96,15 @@ angular.module("visitry")
                           scope.details = detailsResult;
 
                          });
+                      } else {
+                        logger.error("from PlacesService:" + placesServiceStatus);
                       }
                     }
                   );
                 }
               });
+          } else {
+            logger.error("pac-conatiner - no text in location field ");
           }
           e.stopPropagation();
         });
@@ -143,7 +147,7 @@ angular.module("visitry")
                 } else {
                   var placesService = new google.maps.places.PlacesService(element[0]);
                   placesService.getDetails(
-                    {'placeId': list[0].reference},
+                    {'placeId': list[0].place_id},
                     function detailsresult(detailsResult, placesServiceStatus) {
 
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
