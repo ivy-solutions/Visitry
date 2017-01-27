@@ -16,7 +16,14 @@ Meteor.publish("userdata", function () {
       }
     });
     let agencyIds = user.hasAgency ? user.userData.agencyIds : user.userData.prospectiveAgencyIds;
-    return User.find({$or: [{'userData.agencyIds': {$in: agencyIds}}, {'userData.prospectiveAgencyIds': {$in: agencyIds}}]},
+    if (!agencyIds) {
+      agencyIds = [];
+    }
+    return User.find({$or:
+        [ {_id: this.userId},
+          {'userData.agencyIds': {$in: agencyIds}},
+          {'userData.prospectiveAgencyIds': {$in: agencyIds}},
+        ]},
       {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1,
