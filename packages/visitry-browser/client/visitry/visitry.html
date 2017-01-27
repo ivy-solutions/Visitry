@@ -1,6 +1,7 @@
 <md-content layout-fill layout="column">
-  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none"><img src="/assets/images/logoNoBackground.png" width="100px"/>
-     <md-menu-bar ng-show="visitry.isLoggedIn">
+  <md-toolbar layout="row" layout-align="start center" layout-padding flex="none">
+    <img src="/assets/images/logoNoBackground.png" width="100px"/>
+    <md-menu-bar ng-show="visitry.isLoggedIn">
       <md-menu ng-if="visitry.isAdministrator()">
         <button ng-click="$mdOpenMenu()">
           Manage
@@ -14,7 +15,7 @@
           <md-menu-divider></md-menu-divider>
           <md-menu-item>
             <md-button ng-href="/admin/manage/seniors">
-              Seniors
+              Requesters
             </md-button>
           </md-menu-item>
           <md-menu-item>
@@ -29,34 +30,34 @@
           </md-menu-item>
         </md-menu-content>
       </md-menu>
-<!--      <md-menu>
-        <button ng-click="$mdOpenMenu()">
-          Analytics
-        </button>
-        <md-menu-content>
-          <md-menu-item>
-            <md-button ng-href="/admin/analytics">
-              Overview
-            </md-button>
-          </md-menu-item>
-          <md-menu-divider></md-menu-divider>
-          <md-menu-item>
-            <md-button>
-              Analytics 1
-            </md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button>
-              Analytics 2
-            </md-button>
-          </md-menu-item>
-          <md-menu-item>
-            <md-button>
-              Analytics 3
-            </md-button>
-          </md-menu-item>
-        </md-menu-content>
-      </md-menu>-->
+      <!--      <md-menu>
+              <button ng-click="$mdOpenMenu()">
+                Analytics
+              </button>
+              <md-menu-content>
+                <md-menu-item>
+                  <md-button ng-href="/admin/analytics">
+                    Overview
+                  </md-button>
+                </md-menu-item>
+                <md-menu-divider></md-menu-divider>
+                <md-menu-item>
+                  <md-button>
+                    Analytics 1
+                  </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                  <md-button>
+                    Analytics 2
+                  </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                  <md-button>
+                    Analytics 3
+                  </md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>-->
       <md-menu ng-if="visitry.isAdministrator()">
         <button ng-click="$mdOpenMenu()">
           Admin
@@ -104,5 +105,5 @@
       <md-button ng-show="visitry.isLoggedIn" ng-click="visitry.logout()">Logout</md-button>
     </div>
   </md-toolbar>
-  <div ui-view layout="row" flex></div>
+  <md-content ui-view layout="row" flex></md-content>
 </md-content>
