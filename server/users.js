@@ -309,18 +309,26 @@ Meteor.methods({
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
-      SSR.compileTemplate('welcomeToAgency', Assets.getText('emails/welcome-to-agency-email.html'));
-      Email.send({
-        to: user.emails[0].address,
-        from: agency.contactEmail,
-        subject: 'Visitry: Welcome to ' + agency.name,
-        html: SSR.render('welcomeToAgency', {
-          user: user,
-          agency: agency,
-          url: 'https://visitry.org',
-          absoluteUrl: Meteor.absoluteUrl()
-        })
-      });
+      if (agency.contactEmail) {
+        SSR.compileTemplate('welcomeToAgency', Assets.getText('emails/welcome-to-agency-email.html'));
+        try {
+          Email.send({
+            to: user.emails[0].address,
+            from: agency.contactEmail,
+            subject: 'Visitry: Welcome to ' + agency.name,
+            html: SSR.render('welcomeToAgency', {
+              user: user,
+              agency: agency,
+              url: 'https://visitry.org',
+              absoluteUrl: Meteor.absoluteUrl()
+            })
+          });
+        } catch (err) {
+          logger.error("Failed to send email to user with username:" + user.username + " using email:" + user.emails[0].address);
+          logger.error("Error sending email: " + err.message);
+          throw( "Email notification failed. Error:" + err.message);
+        }
+      }
     });
     logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },
