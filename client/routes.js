@@ -179,8 +179,7 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
           }
         },
-        controller: 'appFeedbackCtrl as appFeedback',
-        resolve: {authenticate: authenticate}
+        controller: 'appFeedbackCtrl as appFeedback'
       })
       .state('agencyList', {
         url: '/groups',
