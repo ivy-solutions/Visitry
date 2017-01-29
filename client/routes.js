@@ -107,7 +107,13 @@ angular.module('visitry')
       })
       .state('register', {
         url: '/register',
-        template: '<register></register>',
+        template: ()=> {
+          if (Meteor.isCordova) {
+            return '<register></register>';
+          } else {
+            return '<register layout-fill layout-margin></register>';
+          }
+        },
         params: {
           role: 'visitor'
         }
