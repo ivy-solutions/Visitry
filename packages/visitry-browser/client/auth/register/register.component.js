@@ -31,7 +31,7 @@ angular.module("visitry.browser").directive('register', function () {
             } else {
               if (result) {
                 var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
-                Meteor.call('updatePicture', avatarWithInitials, (err) => {
+                Meteor.call('updatePicture',result, avatarWithInitials, (err) => {
                   if (err) {
                     return handleError(err);
                   } else {

@@ -136,7 +136,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
           template: 'Updating picture...'
         });
 
-        Meteor.call('updatePicture', data, (err) => {
+        Meteor.call('updatePicture',Meteor.userId(), data, (err) => {
           logger.info("picture updated");
           $ionicLoading.hide();
           if (err) {
