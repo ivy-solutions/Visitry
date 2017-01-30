@@ -9,9 +9,22 @@ import { SSR } from 'meteor/meteorhacks:ssr';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+    var user = User.findOne({_id: this.userId}, {
+      fields: {
+        'userData.agencyIds': 1,
+        'userData.prospectiveAgencyIds': 1
+      }
+    });
     let agencyIds = user.hasAgency ? user.userData.agencyIds : user.userData.prospectiveAgencyIds;
-    return User.find({$or: [{'userData.agencyIds': {$in: agencyIds}}, {'userData.prospectiveAgencyIds': {$in: agencyIds}}]},
+    if (!agencyIds) {
+      agencyIds = [];
+    }
+    return User.find({
+        $or: [{_id: this.userId},
+          {'userData.agencyIds': {$in: agencyIds}},
+          {'userData.prospectiveAgencyIds': {$in: agencyIds}},
+        ]
+      },
       {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1,
@@ -104,9 +117,10 @@ Meteor.publish('visitorUsers', function (agencyId) {
   visitors.forEach((user)=> {
     let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
     let hoursSinceDate = new Date();
-    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1));
+    hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
+    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate);
     user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
-    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours : 0;
+    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours / 60 : 0;
     this.added('visitorUsers', user._id, user);
   }, this);
   this.ready();
@@ -139,30 +153,30 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
 });
 
 /*Meteor.publish("visitorUsers", function (agencyId, options) {
-  if (this.userId) {
-    logger.verbose("publish visitorUsers to " + this.userId);
-    var selector = {
-      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-      'roles': {$elemMatch: {$eq: 'visitor'}}
-    };
-    var queryOptions = {
-      fields: {
-        createdAt: 1,
-        'userData.agencyIds': 1,
-        'userData.firstName': 1,
-        'userData.lastName': 1,
-        'userData.location.address': 1,
-        'roles': 1
-      }
-    };
-    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
-      noReady: true
-    });
-    return User.find(selector, queryOptions);
-  } else {
-    this.ready();
-  }
-});*/
+ if (this.userId) {
+ logger.verbose("publish visitorUsers to " + this.userId);
+ var selector = {
+ 'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
+ 'roles': {$elemMatch: {$eq: 'visitor'}}
+ };
+ var queryOptions = {
+ fields: {
+ createdAt: 1,
+ 'userData.agencyIds': 1,
+ 'userData.firstName': 1,
+ 'userData.lastName': 1,
+ 'userData.location.address': 1,
+ 'roles': 1
+ }
+ };
+ Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+ noReady: true
+ });
+ return User.find(selector, queryOptions);
+ } else {
+ this.ready();
+ }
+ });*/
 
 
 Meteor.methods({
@@ -296,22 +310,30 @@ Meteor.methods({
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
-      SSR.compileTemplate('welcomeToAgency', Assets.getText('emails/welcome-to-agency-email.html'));
-      Email.send({
-        to: user.emails[0].address,
-        from: agency.contactEmail,
-        subject: 'Visitry: Welcome to ' + agency.name,
-        html: SSR.render('welcomeToAgency', {
-          user: user,
-          agency: agency,
-          url: 'https://visitry.org',
-          absoluteUrl: Meteor.absoluteUrl()
-        })
-      });
+      if (agency.contactEmail) {
+        SSR.compileTemplate('welcomeToAgency', Assets.getText('emails/welcome-to-agency-email.html'));
+        try {
+          Email.send({
+            to: user.emails[0].address,
+            from: agency.contactEmail,
+            subject: 'Visitry: Welcome to ' + agency.name,
+            html: SSR.render('welcomeToAgency', {
+              user: user,
+              agency: agency,
+              url: 'https://visitry.org',
+              absoluteUrl: Meteor.absoluteUrl()
+            })
+          });
+        } catch (err) {
+          logger.error("Failed to send email to user with username:" + user.username + " using email:" + user.emails[0].address);
+          logger.error("Error sending email: " + err.message);
+          throw( "Email notification failed. Error:" + err.message);
+        }
+      }
     });
     logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },
-  createUserFromAdmin(data, callback){
+  createUserFromAdmin(data){
     if (!this.userId) {
       logger.error("addUserToAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
@@ -321,7 +343,31 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    Accounts.createUser(data, callback);
+    let newUserId;
+    try {
+      newUserId = Accounts.createUser(data);
+      Meteor.call('sendEnrollmentEmail', newUserId, (err)=> {
+        if (err) {
+          logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err);
+        }
+      });
+    } catch (err) {
+      if (err.reason !== 'Email already exists.') {
+        throw err;
+      }
+    }
+    try {
+      Meteor.call('addUserToAgency', {
+        userId: newUserId ||Accounts.findUserByEmail(data.email)._id,
+        agencyId: data.userData.agencyIds[0],
+        role: data.role
+      });
+    } catch (err) {
+      if (err.reason !== 'User already belongs to agency.') {
+        throw err;
+      }
+    }
+    return newUserId||null;
   },
   sendEnrollmentEmail(userId){
     if (!this.userId) {

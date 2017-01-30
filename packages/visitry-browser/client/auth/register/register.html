@@ -1,63 +1,72 @@
-<md-content layout="row" layout-align="center start" layout-fill layout-margin>
-  <md-whiteframe layout="column" flex flex-md="50" flex-lg="50" flex-gt-lg="33" class="md-whiteframe-z2">
+<div layout-margin layout-fill>
+  <div layout="row" layout-align="center start" layout-fill layout-margin>
+    <md-whiteframe layout="column" flex flex-md="50" flex-lg="50" flex-gt-lg="33" class="md-whiteframe-z2">
 
-    <md-toolbar class="md-primary" layout="column" layout-align="end" layout-fill>
-      <div layout="row" class="md-toolbar-tools md-toolbar-tools-bottom">
-        <h3 class="md-display-1"> Register a new user</h3>
-      </div>
-    </md-toolbar>
-
-    <div layout="column" layout-fill layout-margin layout-padding>
-
-      <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
-        <div layout="row">
-          <md-input-container class="md-block" flex>
-            <label>First Name</label>
-            <input ng-model="register.credentials.userData.firstName" name="firstName" type="text"
-                   placeholder="First name" required autocomplete="off">
-            <div
-                ng-messages="registrationForm.firstName.$error">
-              <div ng-message="required">Required</div>
-            </div>
-          </md-input-container>
-
-          <md-input-container class="md-block" flex>
-            <label>Last Name</label>
-            <input ng-model="register.credentials.userData.lastName" name="lastName" type="text" placeholder="Last name"
-                   required autocomplete="off">
-            <div
-                ng-messages="registrationForm.lastName.$error">
-              <div ng-message="required">Required</div>
-            </div>
-          </md-input-container>
+      <md-toolbar class="md-primary" layout="column" layout-align="end" layout-fill>
+        <div layout="row" class="md-toolbar-tools md-toolbar-tools-bottom">
+          <h3 class="md-display-1"> Register a new user</h3>
         </div>
-        <md-input-container class="md-block">
-          <label>Email</label>
-          <input ng-model="register.credentials.email" name="email" type="email" placeholder="Email" required
-                 minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/"/>
-          <div
-              ng-messages="registrationForm.email.$error" role="alert">
-            <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">Your email must be between 10 and
-              100 characters long and look like an e-mail address.
-            </div>
+      </md-toolbar>
+
+      <div layout="column" layout-fill layout-margin layout-padding>
+
+        <form name="registrationForm" novalidate="" ng-submit="register.createAccount(registrationForm)">
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+              <label>First Name</label>
+              <input ng-model="register.credentials.userData.firstName" name="firstName" type="text"
+                     placeholder="First name" required autocomplete="off">
+              <div
+                  ng-messages="registrationForm.firstName.$error">
+                <div ng-message="required">Required</div>
+              </div>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex>
+              <label>Last Name</label>
+              <input ng-model="register.credentials.userData.lastName" name="lastName" type="text"
+                     placeholder="Last name"
+                     required autocomplete="off">
+              <div
+                  ng-messages="registrationForm.lastName.$error">
+                <div ng-message="required">Required</div>
+              </div>
+            </md-input-container>
           </div>
-        </md-input-container>
-        <div layout="row">
-          <md-radio-group ng-model="register.credentials.role" flex layout-padding>
-            <md-radio-button ng-hide="register.credentials.role==='administrator'" value="requester" class="md-primary">Requester</md-radio-button>
-            <md-radio-button ng-hide="register.credentials.role==='administrator'" value="visitor" class="md-primary">Visitor</md-radio-button>
-            <md-radio-button ng-if="register.credentials.role==='administrator'" value="administrator" class="md-primary">Administrator</md-radio-button>
-          </md-radio-group>
-        </div>
-        <div class="padding" layout="row" layout-align="space-around center">
+          <md-input-container class="md-block">
+            <label>Email</label>
+            <input ng-model="register.credentials.email" name="email" type="email" placeholder="Email" required
+                   minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/"/>
+            <div
+                ng-messages="registrationForm.email.$error" role="alert">
+              <div ng-message-exp="['required', 'minlength', 'maxlength', 'pattern']">Your email must be between 10 and
+                100 characters long and look like an e-mail address.
+              </div>
+            </div>
+          </md-input-container>
+          <div layout="row">
+            <md-radio-group ng-model="register.credentials.role" flex layout-padding>
+              <md-radio-button ng-hide="register.credentials.role==='administrator'" value="requester"
+                               class="md-primary">Requester
+              </md-radio-button>
+              <md-radio-button ng-hide="register.credentials.role==='administrator'" value="visitor" class="md-primary">
+                Visitor
+              </md-radio-button>
+              <md-radio-button ng-if="register.credentials.role==='administrator'" value="administrator"
+                               class="md-primary">Administrator
+              </md-radio-button>
+            </md-radio-group>
+          </div>
+          <div class="padding" layout="row" layout-align="space-around center">
 
-          <md-button class="md-warn" type="button" ng-click="register.cancel(registrationForm)">
-            Cancel
-          </md-button>
-          <md-button class="md-raised md-primary" type="submit">Submit</md-button>
-        </div>
-      </form>
-    </div>
+            <md-button class="md-warn" type="button" ng-click="register.cancel(registrationForm)">
+              Cancel
+            </md-button>
+            <md-button class="md-raised md-primary" type="submit">Submit</md-button>
+          </div>
+        </form>
+      </div>
 
-  </md-whiteframe>
-</md-content>
+    </md-whiteframe>
+  </div>
+</div>

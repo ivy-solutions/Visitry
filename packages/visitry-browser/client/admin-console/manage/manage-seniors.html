@@ -1,6 +1,6 @@
-<div layout="row" layout-align="center start" layout-margin layout-padding>
+<div layout="row" layout-align="center start" layout-margin layout-padding layout-fill>
   <div flex="10"></div>
-  <div layout="column" flex="80">
+  <div layout="column" flex="grow">
     <div layout="row" layout-fill flex="none">
       <div class="md-title">Requesters</div>
       <span flex></span>
@@ -9,11 +9,13 @@
     <md-divider></md-divider>
     <md-list>
       <md-list-item>
-        <div layout="row" layout-align="space-between center" layout-fill>
+        <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
           <md-button style="text-align:left" flex="20" ng-click="adminManageSeniors.toggleSort('userData.lastName')">
             Name
           </md-button>
-          <div class="md-subhead" flex="grow">Location</div>
+          <md-button flex="grow" style="text-align:left"
+                     ng-click="adminManageSeniors.toggleSort('userData.location.address')">Location
+          </md-button>
           <md-button ng-click="adminManageSeniors.toggleSort('createdAt')" flex="noshrink" style="text-align:right">
             Member Since
           </md-button>
@@ -22,12 +24,12 @@
       <md-list-item
           dir-paginate="user in adminManageSeniors.seniors | itemsPerPage: adminManageSeniors.recordPerPage"
           total-items="adminManageSeniors.seniorsCount" ng-click="null">
-        <div layout="row" layout-align="space-between center" layout-fill class="md-list-item-text">
-          <div flex="20">
+        <div layout="row" layout-align="none center" layout-fill class="md-list-item-text">
+          <div flex="20" style="min-width: 88px" layout-margin layout-padding>
             {{user.userData.lastName}}, {{user.userData.firstName}}
           </div>
-          <div flex="grow">{{user.userData.location.address}}</div>
-          <div flex="noshrink" style="text-align:right">{{user.createdAt | date:'mediumDate'}}</div>
+          <div flex="grow" style="min-width: 88px" layout-margin layout-padding>{{user.userData.location.address}}</div>
+          <div flex="noshrink" style="min-width: 88px;text-align:right" layout-margin layout-padding>{{user.createdAt | date:'mediumDate'}}</div>
         </div>
       </md-list-item>
     </md-list>

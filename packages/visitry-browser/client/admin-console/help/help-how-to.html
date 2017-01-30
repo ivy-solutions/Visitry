@@ -1,5 +1,5 @@
-<div layout="row" layout-align="center start" layout-margin layout-padding>
-  <div flex="20" layout="column">
+<div layout="row" layout-align="start start" layout-margin layout-padding layout-fill>
+  <div layout="column">
     <md-button ng-click="adminHelpHowTo.switchArticle('getting-started')"
                ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='getting-started' }">Getting Started
     </md-button>
@@ -14,10 +14,10 @@
     </md-button>
     <!--<md-button ng-click="" ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='faq' }">FAQ</md-button>-->
   </div>
-  <div layout="column" flex="80" layout-padding>
+  <div layout="column" flex layout-padding>
     <div class="md-display-2">How To: {{adminHelpHowTo.articleName}}</div>
     <md-divider></md-divider>
     <div ng-include="adminHelpHowTo.articleHtml"></div>
   </div>
-  <div flex="20"></div>
+  <div flex="10"></div>
 </div>

@@ -18,46 +18,30 @@ angular.module("visitry.browser").directive('register', function () {
         role: $stateParams.role,
         userData: {
           firstName: "",
-          lastName: ""
+          lastName: "",
+          agencyIds: [this.agencyId]
         }
       };
 
       this.createAccount = (form) => {
         if (form.$valid) {
-          Meteor.call('createUserFromAdmin', this.credentials, (err) => {
-            if (err && err.reason !== 'Email already exists.') {
+          Meteor.call('createUserFromAdmin', this.credentials, (err, result) => {
+            if (err) {
               return handleError(err);
-            }
-            else if (!err) {
-              var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
-              Meteor.call('updatePicture', avatarWithInitials, (err) => {
-                if (err) {
-                  return handleError(err);
-                }
-              });
-              Meteor.call('sendEnrollmentEmail', User.findOne({emails: {$elemMatch: {address: this.credentials.email}}})._id, (err)=> {
-                if (err) {
-                  return handleError(err);
-                }
-              });
-            }
-            let userWithoutAgencyAffiliation = User.findOne({emails: {$elemMatch: {address: this.credentials.email}}});
-            Meteor.call('addUserToAgency', {userId:userWithoutAgencyAffiliation._id, agencyId:$cookies.get('agencyId'),role:this.credentials.role}, (err)=> {
-              if (err && err.reason !== 'User already belongs to agency.') {
-                return handleError(err);
+            } else {
+              if (result) {
+                var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
+                Meteor.call('updatePicture',result, avatarWithInitials, (err) => {
+                  if (err) {
+                    return handleError(err);
+                  } else {
+                    this.cancel(form);
+                  }
+                });
               } else {
-                this.resetForm(form);
-                if ($stateParams.role === 'requester') {
-                  $state.go('adminManageSeniors', {reload: true});
-                } else if ($stateParams.role === 'visitor') {
-                  $state.go('adminManageVisitors', {reload: true});
-                } else if ($stateParams.role === 'administrator') {
-                  $state.go('adminAdminAgency', {reload: true});
-                } else {
-                  $state.go('/lost');
-                }
+                this.cancel(form);
               }
-            });
+            }
           });
         }
       };
@@ -127,4 +111,4 @@ angular.module("visitry.browser").directive('register', function () {
     }
 
   }
-})
+});

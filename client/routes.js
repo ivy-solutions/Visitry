@@ -107,7 +107,13 @@ angular.module('visitry')
       })
       .state('register', {
         url: '/register',
-        template: '<register></register>',
+        template: ()=> {
+          if (Meteor.isCordova) {
+            return '<register></register>';
+          } else {
+            return '<register layout-fill layout-margin></register>';
+          }
+        },
         params: {
           role: 'visitor'
         }
@@ -173,8 +179,7 @@ angular.module('visitry')
             return '/packages/visitry-browser/client/admin-console/help/help-feedback.html';
           }
         },
-        controller: 'appFeedbackCtrl as appFeedback',
-        resolve: {authenticate: authenticate}
+        controller: 'appFeedbackCtrl as appFeedback'
       })
       .state('agencyList', {
         url: '/groups',
