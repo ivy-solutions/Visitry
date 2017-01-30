@@ -19,11 +19,12 @@ Meteor.publish("userdata", function () {
     if (!agencyIds) {
       agencyIds = [];
     }
-    return User.find({$or:
-        [ {_id: this.userId},
+    return User.find({
+        $or: [{_id: this.userId},
           {'userData.agencyIds': {$in: agencyIds}},
           {'userData.prospectiveAgencyIds': {$in: agencyIds}},
-        ]},
+        ]
+      },
       {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1,
@@ -119,7 +120,7 @@ Meteor.publish('visitorUsers', function (agencyId) {
     hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
     let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate);
     user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
-    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours/60 : 0;
+    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours / 60 : 0;
     this.added('visitorUsers', user._id, user);
   }, this);
   this.ready();
@@ -332,7 +333,7 @@ Meteor.methods({
     });
     logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },
-  createUserFromAdmin(data, callback){
+  createUserFromAdmin(data){
     if (!this.userId) {
       logger.error("addUserToAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
@@ -342,7 +343,31 @@ Meteor.methods({
       logger.error('addUserToAgency - unauthorized');
       throw new Meteor.Error('unauthorized', 'Must be an agency administrator to add users to an agency.');
     }
-    return Accounts.createUser(data);
+    let newUserId;
+    try {
+      newUserId = Accounts.createUser(data);
+      Meteor.call('sendEnrollmentEmail', newUserId, (err)=> {
+        if (err) {
+          logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err);
+        }
+      });
+    } catch (err) {
+      if (err.reason !== 'Email already exists.') {
+        throw err;
+      }
+    }
+    try {
+      Meteor.call('addUserToAgency', {
+        userId: newUserId ||Accounts.findUserByEmail(data.email)._id,
+        agencyId: data.userData.agencyIds[0],
+        role: data.role
+      });
+    } catch (err) {
+      if (err.reason !== 'User already belongs to agency.') {
+        throw err;
+      }
+    }
+    return newUserId||null;
   },
   sendEnrollmentEmail(userId){
     if (!this.userId) {
