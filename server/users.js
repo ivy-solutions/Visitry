@@ -315,7 +315,7 @@ Meteor.methods({
         try {
           Email.send({
             to: user.emails[0].address,
-            from: agency.contactEmail,
+            from: "Visitry Admin <admin@visitry.org>",
             subject: 'Visitry: Welcome to ' + agency.name,
             html: SSR.render('welcomeToAgency', {
               user: user,

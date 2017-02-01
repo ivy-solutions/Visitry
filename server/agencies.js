@@ -46,13 +46,13 @@ Meteor.methods({
       text: text
     });
   },
-  sendJoinRequest(agencyId) {
+  sendJoinRequest(agencyId, userNotes) {
     Meteor.call('addProspectiveAgency', agencyId);
 
     var agency = Agency.findOne(agencyId);
     var to = agency.contactEmail;
     var currentUser = User.findOne(this.userId);
-    var from = currentUser.emails[0].address;
+    var from = "Visitry Admin <admin@visitry.org>";
     var subject = "Request to join " + agency.name;
     SSR.compileTemplate('agencyRequestToJoin', Assets.getText('emails/agency-request-to-join-email.html'));
     Email.send({
@@ -61,20 +61,22 @@ Meteor.methods({
       subject: subject,
       html: SSR.render('agencyRequestToJoin', {
         user: currentUser,
+        userEmail: currentUser.emails[0].address,
+        note: userNotes,
         agency: agency,
         url: Meteor.absoluteUrl + 'admin/manage',
         absoluteUrl: Meteor.absoluteUrl()
       })
     });
   },
-  revokeJoinRequest(agencyId) {
+  revokeJoinRequest(agencyId, userNotes) {
     Meteor.call('removeProspectiveAgency', agencyId);
 
     var agency = Agency.findOne(agencyId);
     var to = agency.contactEmail;
     var currentUser = User.findOne(this.userId);
-    var from = currentUser.emails[0].address;
-    var subject = "Request to join " + agency.name + 'cancelled';
+    var from = "Visitry Admin <admin@visitry.org>";
+    var subject = "Request to join " + agency.name + ' cancelled';
     SSR.compileTemplate('agencyRevokeRequestToJoin', Assets.getText('emails/agency-revoke-request-to-join-email.html'));
     Email.send({
       to: to,
@@ -82,6 +84,8 @@ Meteor.methods({
       subject: subject,
       html: SSR.render('agencyRevokeRequestToJoin', {
         user: currentUser,
+        userEmail: currentUser.emails[0].address,
+        note: userNotes,
         agency: agency,
         url: Meteor.absoluteUrl + 'admin/manage/visitors',
         absoluteUrl: Meteor.absoluteUrl()

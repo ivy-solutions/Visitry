@@ -5,8 +5,10 @@
 <div style="display: block;overflow: auto;width:100%;background-color: #00A000"><img
     src="{{absoluteUrl}}assets/images/logoNoBackground.png" width="100px" style="float:left;"/>
   <h1 style="vertical-align:bottom;margin: 0px;">Request to join {{agency.name}}</h1></div>
-<p>{{user.userData.firstName}} {{user.uesrData.lastName}} has requested to join {{agency.name}} as a {{user.roles.[0]}}.
+<p>{{user.userData.firstName}} {{user.userData.lastName}} has requested to join {{agency.name}} as a {{user.roles.[0]}}.
   Please make sure they have completed the required vetting process and then accept them as a member.</p>
+<p>Note from {{user.userData.firstName}}: {{note}}</p>
+<p>Contact Email: <a href="{{userEmail}}">{{userEmail}}</a></p>
 
 <a href="{{url}}">Add {{user.userData.firstName}}</a>
 
