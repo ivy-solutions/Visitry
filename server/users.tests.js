@@ -227,7 +227,7 @@ if (Meteor.isServer) {
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
         assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
         assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
@@ -266,7 +266,7 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.userData.agencyIds[1], 'agency2');
-        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
         assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
         assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
@@ -288,7 +288,7 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.roles[0], 'visitor');
-        assert.equal(emailSpy.args[0][0].from, 'fake@email.com');
+        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
         assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
         assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });

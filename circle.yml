@@ -18,6 +18,9 @@ dependencies:
     - npm install -g mup # install meteor-up for deployment
     - mkdir $HOME/build/
     - mkdir $HOME/build/Visitry/
+test:
+  override:
+    - npm test
 deployment:
   dev:
     branch: dev
