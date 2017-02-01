@@ -1,4 +1,4 @@
-<ion-modal-view ng-controller="requestVisitModalCtrl as requestVisit">
+<ion-modal-view ng-controller="requestVisitModalCtrl as requestVisit" xmlns="http://www.w3.org/1999/html">
   <ion-header-bar>
     <div class="buttons" side="primary">
       <button class="button button-clear button-balanced" ng-click="requestVisit.cancel()">Cancel</button>
@@ -22,25 +22,24 @@
           <span class="error-message" ng-hide="requestVisit.isLocationValid()">Oops you forgot a location</span>
         </div>
       </div>
-      <div class="item">
+      <div class="list list-inset">
         <label class="item item-input">
-            <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
-            <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
+          <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
+          <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
         </label>
         <span flex></span>
         <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
-        <div class="list">
-          <div class="button-bar">
-            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
-            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
-            <ion-radio ng-model="requestVisit.visitRequest.time" ng-value="16">Evening</ion-radio>
-          </div>
+        <label class="button-bar">
+          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
+          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
+          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="16">Eve. </ion-radio>
+        </label>
+        <span flex></span>
       </div>
-          </div>
       <div class="list list-inset">
         <label class="item item-input">
           <textarea ng-model="requestVisit.visitRequest.notes" rows="3" placeholder="Notes">
-            </textarea>
+          </textarea>
         </label>
       </div>
     </form>
