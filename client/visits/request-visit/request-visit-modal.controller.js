@@ -9,7 +9,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       name: '',
       details: {}
     },
-    date: '',
+    date: moment().add(1,'days').toDate(),
     time: 0,
     notes: ''
   };

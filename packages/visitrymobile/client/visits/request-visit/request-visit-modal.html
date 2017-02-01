@@ -24,8 +24,8 @@
       </div>
       <div class="list list-inset">
         <label class="item item-input">
-          <div ng-hide="requestVisit.visitRequest.date">Select a Date</div>
-          <input type="date" placeholder="select a date" ng-model="requestVisit.visitRequest.date">
+          <span class="input-label">Date</span>
+          <input type="date" ng-model="requestVisit.visitRequest.date">
         </label>
         <span flex></span>
         <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
