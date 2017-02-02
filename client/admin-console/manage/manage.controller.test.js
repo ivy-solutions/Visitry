@@ -6,6 +6,7 @@ import { visitry } from '/client/lib/app.js';
 import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/admin-console/manage/manage.controller';
+import { Random } from 'meteor/random';
 
 describe('Admin Manage', function () {
 
@@ -34,7 +35,7 @@ describe('Admin Manage', function () {
 
   describe('AgencyId Cookie', () => {
     beforeEach(()=> {
-      $cookies.put('agencyId', Random.id)
+      $cookies.put('agencyId', Random.id())
     });
     afterEach(()=> {
       $cookies.remove('agencyId');

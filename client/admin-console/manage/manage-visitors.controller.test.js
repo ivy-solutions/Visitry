@@ -5,6 +5,7 @@ import 'angular-mocks';
 import { visitry } from '/client/lib/app.js';
 import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
+import { Random } from 'meteor/random';
 import '/client/admin-console/manage/manage-visitors.controller';
 
 describe('Admin Manage Visitors', function () {
@@ -43,7 +44,7 @@ describe('Admin Manage Visitors', function () {
 
   describe('AgencyId Cookie', function () {
     beforeEach(function () {
-      $cookies.put('agencyId', Random.id)
+      $cookies.put('agencyId', Random.id())
     });
     afterEach(function () {
       $cookies.remove('agencyId');
