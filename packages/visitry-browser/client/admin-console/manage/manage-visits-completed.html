@@ -1,7 +1,7 @@
 <md-list>
   <md-list-item>
     <div layout="row" class="manageList" layout-align="space-between center" layout-fill flex="noshrink">
-        <md-button  ng-click="adminManageVisits.toggleSort('visitTime')" flex="20">Date</md-button>
+      <md-button ng-click="adminManageVisits.toggleSort('visitTime')" flex="20">Date</md-button>
       <div class="md-subhead" flex="25">Requester</div>
       <div class="md-subhead" flex="25">Visitor</div>
       <md-button ng-click="adminManageVisits.toggleSort('location.address')" flex>Location</md-button>
@@ -9,7 +9,7 @@
   </md-list-item>
   <md-list-item
       dir-paginate="visit in adminManageVisits.completedVisits | itemsPerPage: adminManageVisits.recordPerPage"
-      total-items="adminManageVisits.visitsCount" ng-click="null">
+      pagination-id="completed-visits" total-items="adminManageVisits.visitsCount" ng-click="null">
     <div layout="row" class="manageList" layout-align="space-between center" layout-fill class="md-list-item-text">
       <div flex="20">
         {{visit.visitTime| date:'short'}}
@@ -20,4 +20,5 @@
     </div>
   </md-list-item>
 </md-list>
-<dir-pagination-controls on-page-change="adminManageVisits.pageChanged(newPageNumber)"></dir-pagination-controls>
+<dir-pagination-controls on-page-change="adminManageVisits.pageChanged(newPageNumber)"
+                         pagination-id="completed-visits"></dir-pagination-controls>

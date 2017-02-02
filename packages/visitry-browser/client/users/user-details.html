@@ -76,7 +76,7 @@
         </div>
       </md-list-item>
       <md-list-item
-          dir-paginate="visit in userDetails.visits | itemsPerPage: userDetails.recordPerPage"
+          dir-paginate="visit in userDetails.visits | itemsPerPage: userDetails.recordPerPage" pagination-id="userDetailsVisits"
           total-items="userDetails.visitsCount" ng-click="null" aria-label="users visits">
         <div layout="row" layout-align="start center" layout-fill
              class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-available-visit.html'"
@@ -99,6 +99,6 @@
         </div>
       </md-list-item>
     </md-list>
-    <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)"></dir-pagination-controls>
+    <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)" pagination-id="userDetailsVisits"></dir-pagination-controls>
   </div>
 </md-dialog>

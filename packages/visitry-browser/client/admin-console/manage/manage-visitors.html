@@ -29,7 +29,8 @@
       </md-list-item>
       <md-list-item
           dir-paginate="user in adminManageVisitors.visitors | itemsPerPage: adminManageVisitors.recordPerPage"
-          total-items="adminManageVisitors.visitorsCount" ng-click="adminManageVisitors.getUserDetails(user._id)">
+          pagination-id="visitors" total-items="adminManageVisitors.visitorsCount"
+          ng-click="adminManageVisitors.getUserDetails(user._id)">
         <div layout="row" layout-align="none center" layout-fill class="md-list-item-text">
           <div flex="35" style="min-width: 88px" layout-margin layout-padding>
             {{user.userData.lastName}}, {{user.userData.firstName}}
@@ -44,7 +45,8 @@
         </div>
       </md-list-item>
     </md-list>
-    <dir-pagination-controls on-page-change="adminManageVisitors.pageChanged(newPageNumber)"></dir-pagination-controls>
+    <dir-pagination-controls on-page-change="adminManageVisitors.pageChanged(newPageNumber)"
+                             pagination-id="visitors"></dir-pagination-controls>
   </div>
   <div flex="10"></div>
 </div>

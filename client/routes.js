@@ -60,8 +60,8 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            let currentUser = User.findOne({_id: Meteor.userId()}, {fields: { 'userData.agencyIds': 1}});
-            const available = Meteor.subscribe('availableVisits', [Meteor.userId(),currentUser.hasAgency], {
+            let currentUser = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
+            const available = Meteor.subscribe('availableVisits', [Meteor.userId(), currentUser.hasAgency], {
               onReady: () => {
                 deferred.resolve(available)
               },
@@ -375,8 +375,11 @@ angular.module('visitry')
       else if (!$cookies.get('agencyId')) {
         var user = User.findOne({_id: Meteor.userId()});
         $cookies.put('agencyId', user.userData.agencyIds[0]);
+        return $q.resolve();
+      } else {
+        return $q.resolve();
       }
-      return $q.resolve();
+
     }
 
     function logUserOut($cookies, $state, $ionicHistory) {
@@ -397,7 +400,6 @@ angular.module('visitry')
     }
   })
   .run(function ($rootScope, $state) {
-
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
         $state.go('login', {notify: false});
@@ -437,15 +439,12 @@ angular.module('visitry')
             onReady: ()=> {
               let location = '/lost';
               if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
-                //$state.go('adminManage');
                 location = 'adminManage';
               }
               else {
                 if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
-                  //$state.go('browseRequests');
                   location = 'browseRequests'
                 } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
-                  //$state.go('pendingVisits');
                   location = 'pendingVisits';
                 } else {
                   logger.error("user with no role." + Meteor.userId())

@@ -7,7 +7,6 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
 
   this.isUserDataReady = false;
 
-
   this.credentials = {
     email: '',
     password: ''
@@ -17,6 +16,7 @@ angular.module('visitry.browser').controller('loginCtrl', function ($scope, $sta
 
 
   this.login = () => {
+
     Meteor.loginWithPassword(this.credentials.email, this.credentials.password, (err) => {
       if (err) {
         console.log(err);

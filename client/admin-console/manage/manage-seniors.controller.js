@@ -13,9 +13,10 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.sort = {
     'userData.lastName': this.order
   };
-    this.subscribe('seniorUsers', ()=> {
-      return [this.getReactively('agencyId')]
-    });
+  this.subscribe('seniorUsers', ()=> {
+    return [this.getReactively('agencyId')]
+  });
+
 
   this.helpers({
     seniors: ()=> {

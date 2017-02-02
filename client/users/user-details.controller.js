@@ -11,18 +11,18 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.userId = this.locals.userId;
   this.agencyId = $cookies.get('agencyId');
 
-  this.subscribe('agencyVisits', ()=> {
-    return [this.getReactively('agencyId')]
-  });
-  this.subscribe('visitorUsers', ()=> {
-    return [this.getReactively('agencyId')]
-  });
   this.isVisitor = Roles.userIsInRole(this.getReactively('userId'), ['visitor']);
   let userdataSubscription = this.subscribe('userdata', ()=>[], ()=> {
     this.isVisitor = Roles.userIsInRole(this.getReactively('userId'), ['visitor']);
     userdataSubscription.stop();
   });
   this.subscribe('feedback');
+  this.subscribe('agencyVisits', ()=> {
+    return [this.getReactively('agencyId')]
+  });
+  this.subscribe('visitorUsers', ()=> {
+    return [this.getReactively('agencyId')]
+  });
 
   this.visitsCount = 0;
   this.recordPerPage = 5;
@@ -68,7 +68,7 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
           username: 1, emails: 1, fullName: 1, createdAt: 1, roles: 1,
           'userData.location': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'visitorHours':1,'visitorRating':1
+          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber':1, 'visitorHours':1,'visitorRating':1
         }
       };
 

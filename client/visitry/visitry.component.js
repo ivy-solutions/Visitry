@@ -20,26 +20,33 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
       this.isAgencyDataLoaded = false;
-      this.subscribe('allAgencies', ()=>[], ()=> {
+      let allAgencySubscription = this.subscribe('allAgencies', ()=>[], ()=> {
         this.isAgencyDataLoaded = true;
       });
       this.subscribe('visits');
 
       this.feedbackOutstanding;
-      this.agencyId;
       this.autorun(() => {
         var status = Meteor.status();
         $scope.connectionStatus = (status.connected == true || (status.status != 'disconnected' && status.retryCount < 3)) ? 'ok' : status.status;
         if (status.status !== 'connected') {
           logger.error("Lost server connection " + JSON.stringify(status));
         }
-        this.agencyId = $cookies.get('agencyId');
+        if (Meteor.userId()) {
+          if ($cookies.get('agencyId')) {
+            this.agencyId = $cookies.get('agencyId');
+          }
+          else if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.agencyIds) {
+            this.agencyId = Meteor.user().userData.agencyIds;
+          }
+        }
         var feedback = Visit.find({
           visitorFeedbackId: null,
           visitorId: Meteor.userId(),
           visitTime: {$lt: new Date()}
         });
         this.feedbackOutstanding = feedback.count();
+        this.isAgencyDataLoaded = allAgencySubscription.ready();
       });
 
 
@@ -54,8 +61,9 @@ angular.module('visitry').directive('visitry', function () {
         getAgency: ()=> {
           if (Meteor.userId() && this.getReactively('agencyId') && this.getReactively('isAgencyDataLoaded')) {
             this.call('getAgency', this.getReactively('agencyId'), (error, result) => {
-              if (error)
+              if (error) {
                 logger.error(error);
+              }
               else {
                 this.agency = result;
               }
@@ -105,7 +113,7 @@ angular.module('visitry').directive('visitry', function () {
         var buttons = [];
         buttons.push({text: profileText});
         buttons.push({text: notificationsText});
-        buttons.push({text:appFeedbackText});
+        buttons.push({text: appFeedbackText});
         var logout = this.logout;
 
         // Show the action sheet
@@ -143,7 +151,7 @@ angular.module('visitry').directive('visitry', function () {
               $state.go('profile');
             } else if (buttons[index].text === notificationsText) {
               $state.go('notifications');
-            }else if (buttons[index].text ===appFeedbackText){
+            } else if (buttons[index].text === appFeedbackText) {
               $state.go('appFeedback');
             }
             return true;
