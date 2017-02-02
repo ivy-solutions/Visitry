@@ -21,7 +21,7 @@ describe('UserDetails', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_,_$cookies_) {
+  beforeEach(inject(function (_$controller_, _$cookies_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
     $cookies = _$cookies_;
@@ -36,9 +36,9 @@ describe('UserDetails', function () {
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   let twoMonthsAgo = new Date();
-  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth()-2);
+  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
   let completedVisit = {
-    _id:completedVisitId,
+    _id: completedVisitId,
     requesterId: 'something',
     requestedDate: yesterday,
     visitorId: testUserId,
@@ -67,22 +67,21 @@ describe('UserDetails', function () {
     updatedAt: yesterday
   };
   let feedbackTwoHours = {
-    visitId:completedVisitId,
-    createdAt:yesterday,
-    submitterId:testUserId,
-    timeSpent:2*60
+    visitId: completedVisitId,
+    createdAt: yesterday,
+    submitterId: testUserId,
+    timeSpent: 2 * 60
   };
   let feedbackThreeHours = {
     createdAt: yesterday,
-    submitterId:testUserId,
-    timeSpent:3*60
+    submitterId: testUserId,
+    timeSpent: 3 * 60
   };
   let feedbackLongAgo = {
-    createdAt:twoMonthsAgo,
-    submitterId:testUserId,
-    timeSpent:5*60
+    createdAt: twoMonthsAgo,
+    submitterId: testUserId,
+    timeSpent: 5 * 60
   };
-
 
 
   beforeEach(function () {
@@ -107,7 +106,7 @@ describe('UserDetails', function () {
 
   describe('AgencyId Cookie', () => {
     beforeEach(function () {
-      $cookies.put('agencyId', Random.id)
+      $cookies.put('agencyId', Random.id);
     });
     afterEach(function () {
       $cookies.remove('agencyId');
@@ -142,17 +141,17 @@ describe('UserDetails', function () {
     });
   });
 
-  describe('hoursCount',()=>{
-    it('counts hours in the last month',()=>{
-      assert.equal(controller.hoursCount,5);
+  describe('hoursCount', ()=> {
+    it('counts hours in the last month', ()=> {
+      assert.equal(controller.hoursCount, 5);
     });
   });
 
-  describe('getUserVisitFeedback',()=>{
-    it('getUserVisitFeedback returns feedback of id that was passed',()=>{
+  describe('getUserVisitFeedback', ()=> {
+    it('getUserVisitFeedback returns feedback of id that was passed', ()=> {
       let result = controller.getUserVisitFeedback(completedVisitId);
-      assert.equal(result.visitId,completedVisitId);
-      assert.equal(result.timeSpent/60,2);
+      assert.equal(result.visitId, completedVisitId);
+      assert.equal(result.timeSpent / 60, 2);
     });
   });
 

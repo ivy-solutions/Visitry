@@ -47,13 +47,13 @@ describe('Admin Manage', function () {
   describe('confirm user calls addUserToAgency', ()=> {
     let meteorCallSpy;
     beforeEach(()=> {
-      meteorCallSpy = sinon.spy(Meteor,'call');
+      meteorCallSpy = sinon.spy(Meteor, 'call');
     });
-    afterEach(()=>{
+    afterEach(()=> {
       meteorCallSpy.reset();
       Meteor.call.restore();
     });
-    it('confirm user calls addUserToAgency',()=>{
+    it('confirm user calls addUserToAgency', ()=> {
       controller.confirmUser('userId');
       assert.isTrue(meteorCallSpy.calledWith('addUserToAgency'));
     })
