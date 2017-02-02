@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "testtobrowser": "meteor test --driver-package practicalmeteor:mocha --port 3100",
-    "test": "spacejam test --mocha --driver-package practicalmeteor:mocha-console-runner"
+    "test": "spacejam test --mocha --use-system-phantomjs=true  --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml"
   },
   "repository": {
     "type": "git",
@@ -42,6 +42,8 @@
     "winston-daily-rotate-file": "^1.2.0"
   },
   "devDependencies": {
-    "angular-mocks": "^1.5.6"
+    "angular-mocks": "^1.5.6",
+    "mocha": "^3.2.0",
+    "mocha-circleci-reporter": "0.0.2"
   }
 }

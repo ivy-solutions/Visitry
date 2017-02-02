@@ -9,7 +9,7 @@ dependencies:
     - ~/.meteor
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
-    - npm -g install spacejam@rc
+    - npm install -g spacejam
     - meteor npm install
     - meteor npm install --save babel-runtime
     - meteor npm install --save bcrypt
@@ -18,6 +18,11 @@ dependencies:
     - npm install -g mup # install meteor-up for deployment
     - mkdir $HOME/build/
     - mkdir $HOME/build/Visitry/
+test:
+  override:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit
+    - npm test
+    - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
 deployment:
   dev:
     branch: dev
