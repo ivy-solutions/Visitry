@@ -5,7 +5,7 @@
   "main": "",
   "scripts": {
     "testtobrowser": "meteor test --driver-package practicalmeteor:mocha --port 3100",
-    "test": "spacejam test --mocha --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml"
+    "test": "spacejam test --mocha --use-system-phantomjs=true  --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml"
   },
   "repository": {
     "type": "git",

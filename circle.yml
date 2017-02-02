@@ -9,7 +9,6 @@ dependencies:
     - ~/.meteor
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
-    - npm -g install spacejam@rc
     - meteor npm install
     - meteor npm install --save babel-runtime
     - meteor npm install --save bcrypt
@@ -21,7 +20,7 @@ dependencies:
 test:
   override:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit
-    - spacejam test --mocha --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml
+    - npm test
     - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
 deployment:
   dev:
