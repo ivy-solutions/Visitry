@@ -9,6 +9,7 @@ dependencies:
     - ~/.meteor
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
+    - npm install -g spacejam
     - meteor npm install
     - meteor npm install --save babel-runtime
     - meteor npm install --save bcrypt
