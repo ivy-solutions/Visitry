@@ -23,7 +23,8 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
     scheduledVisits: ()=> {
       let selector = {
         'visitTime': {$exists: true, $gt: new Date()},
-        'agencyId': {$eq: this.agencyId}
+        'agencyId': {$eq: this.agencyId},
+        'inactive': {$exists: false}
       };
       return Visits.find(selector,
         {
@@ -36,7 +37,8 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
     completedVisits: ()=> {
       let selector = {
         'visitTime': {$exists: true, $lt: new Date()},
-        'agencyId': {$eq: this.agencyId}
+        'agencyId': {$eq: this.agencyId},
+        'inactive': {$exists: false}
       };
       return Visits.find(selector,
         {
@@ -49,8 +51,9 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
     requestedVisits: ()=> {
       let selector = {
         'visitTime': {$eq: null},
-        'requestedDate':{$gt:new Date()},
-        'agencyId': {$eq: this.agencyId}
+        'requestedDate': {$gt: new Date()},
+        'agencyId': {$eq: this.agencyId},
+        'inactive': {$exists: false}
       };
       return Visits.find(selector,
         {

@@ -1,0 +1,14 @@
+<div class="info-badge complete" style="width:106px">
+  Complete
+</div>
+<div flex="20">
+  {{visit.visitTime| date:'MM/dd/yy h:mm a'}}
+</div>
+<div flex="30">{{visit.location.address}}</div>
+<div flex="20" ng-if="userDetails.userId!==visit.requesterId">
+  {{userDetails.getUser(visit.requesterId).fullName}}
+</div>
+<div flex ng-if="userDetails.userId!==visit.visitorId">{{userDetails.getUser(visit.visitorId).fullName}}
+</div>
+<ng-md-icon ng-repeat="item in [1,2,3,4,5]|limitTo:userDetails.getUserVisitFeedback(visit._id).visitRating"
+            icon="star" style="padding: 2px"></ng-md-icon>

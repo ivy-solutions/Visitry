@@ -31,8 +31,8 @@
             <input type="tel" name="phoneNumber" ng-model="profile.currentUser.userData.phoneNumber"
                    placeholder="Optional phone number" ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" >
             </input>
-            <div class="checkbox-dark" ng-if="profile.currentUser.userData.phoneNumber">
-                <ion-checkbox ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
+            <div class="checkbox-dark"  style="background:transparent;border:0" ng-if="profile.currentUser.userData.phoneNumber">
+                <ion-checkbox style="background:transparent;border:0" ng-model="profile.currentUser.userData.acceptSMS" > Allow Text Messages?</ion-checkbox>
             </div>
         </label>
         <div layout="row">

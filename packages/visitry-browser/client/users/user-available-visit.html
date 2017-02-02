@@ -1,0 +1,11 @@
+<div class="info-badge pending" style="width:106px" ng-if="!(visit.requestedDate<userDetails.today)">
+Available
+</div>
+<div class="info-badge incomplete" style="width:106px" ng-if="visit.requestedDate<userDetails.today">
+  Unfilled
+</div>
+<div flex="20">
+  {{visit.requestedDate| date:'MM/dd/yy'}} {{visit.requestedDate|timeOfDay}}
+</div>
+<div flex="30">{{visit.location.address}}</div>
+<div flex="25">{{visit.notes}}</div>

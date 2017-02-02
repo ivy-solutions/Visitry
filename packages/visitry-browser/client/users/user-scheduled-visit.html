@@ -1,0 +1,12 @@
+<div class="info-badge pending" style="width:106px">
+  Scheduled
+</div>
+<div flex="20">
+  {{visit.visitTime| date:'MM/dd/yy h:mm a'}}
+</div>
+<div flex="30">{{visit.location.address}}</div>
+<div flex="25" ng-if="userDetails.userId!==visit.requesterId">
+  {{userDetails.getUser(visit.requesterId).fullName}}
+</div>
+<div flex="25" ng-if="userDetails.userId!==visit.visitorId">{{userDetails.getUser(visit.visitorId).fullName}}
+</div>

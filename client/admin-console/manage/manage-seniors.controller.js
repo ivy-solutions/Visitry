@@ -3,7 +3,7 @@
  */
 import { Counts } from 'meteor/tmeasday:publish-counts';
 
-angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function ($scope, $state, $reactive, $cookies) {
+angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function ($scope, $state, $reactive, $cookies, UserDetailsDialog) {
   $reactive(this).attach($scope);
 
   this.agencyId = $cookies.get('agencyId');
@@ -13,21 +13,20 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.sort = {
     'userData.lastName': this.order
   };
-
-  this.subscribe('seniorUsers', ()=> {
-    return [this.getReactively('agencyId')]
-  });
+    this.subscribe('seniorUsers', ()=> {
+      return [this.getReactively('agencyId')]
+    });
 
   this.helpers({
     seniors: ()=> {
       let selector = {
-        'userData.agencyIds': {$elemMatch: {$eq: this.agencyId}},
+        'userData.agencyIds': {$elemMatch: {$eq: this.getReactively('agencyId')}},
         'roles': {$elemMatch: {$eq: 'requester'}}
       };
       return Meteor.users.find(selector,
         {
           limit: parseInt(this.getReactively('recordPerPage')),
-          skip: parseInt((this.getReactively('page') - 1) * this.recordPerPage),
+          skip: parseInt((this.getReactively('page') - 1) * this.getReactively('recordPerPage')),
           sort: this.getReactively('sort')
         }
       );
@@ -51,5 +50,9 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
   this.addUser = () => {
     $state.go('register', {role: 'requester'});
   };
+
+  this.getUserDetails = (userId)=> {
+    UserDetailsDialog.open(userId);
+  }
 });
 

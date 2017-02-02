@@ -4,7 +4,7 @@
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import {VisitorUsers} from '/model/users'
 
-angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function ($scope, $state, $reactive, $cookies) {
+angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function ($scope, $state, $reactive, $cookies, UserDetailsDialog) {
   $reactive(this).attach($scope);
 
   this.agencyId = $cookies.get('agencyId');
@@ -51,6 +51,10 @@ angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function
 
   this.addUser = () => {
     $state.go('register', {role: 'visitor'});
+  };
+
+  this.getUserDetails = (userId)=> {
+    UserDetailsDialog.open(userId);
   };
 });
 

@@ -37,8 +37,7 @@ Meteor.publish("agencyVisits", function (agencyId, options) {
   if (this.userId) {
     logger.verbose("publish agencyVisits to " + this.userId);
     let selector = {
-      agencyId: {$eq: agencyId},
-      inactive: {$exists: false}
+      agencyId: {$eq: agencyId}
     };
     Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
       noReady: true

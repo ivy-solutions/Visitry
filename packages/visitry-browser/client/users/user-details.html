@@ -1,0 +1,104 @@
+<md-dialog flex="80">
+  <div layout="row" flex="none">
+    <div layout="column">
+      <md-list flex>
+        <md-list-item class="md-2-line">
+          <img class="md-avatar" style="height:100px;width:100px"
+               ng-src="{{userDetails.getUserImage(userDetails.userId)}}">
+          <div class="md-list-item-text">
+            <div class="md-display-3">{{userDetails.user.fullName}}</div>
+            <div layout-padding><span ng-show="userDetails.user.roles[0]==='visitor'"
+                                      style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px"><ng-md-icon
+                style="vertical-align: -webkit-baseline-middle;"
+                icon="star"></ng-md-icon>{{userDetails.user.visitorRating|number:1}}</span>Member since
+              {{userDetails.user.createdAt | date:'mediumDate'}} <a
+                  href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></div>
+          </div>
+        </md-list-item>
+        <div layout-padding>
+          <div ng-show="userDetails.user.roles[0]"><strong>Role:</strong> {{userDetails.user.roles[0] |capitalize}}
+          </div>
+          <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
+            {{userDetails.user.userData.location.address}}
+          </div>
+          <div ng-show="userDetails.user.userData.phoneNumber"><strong>Phone:</strong>
+            {{userDetails.user.userData.phoneNumber}}
+          </div>
+          <div layout="row" layout-align="start start" ng-show="userDetails.user.userData.about">
+            <div><strong>About:</strong></div>
+            <div style="padding-left:4px">{{userDetails.user.userData.about}}</div>
+          </div>
+        </div>
+      </md-list>
+    </div>
+    <span flex></span>
+    <div layout="column" flex="none">
+      <div layout="column" layout-align="center end" style="border: 1px solid; border-radius: 5px" layout-margin>
+        <div layout-margin class="md-subhead" style="padding-right: 30px;padding-left: 10px">Visits Last Month</div>
+        <div layout="row" layout-align="end center">
+          <div layout-padding>Completed</div>
+          <div class="info-badge complete">
+            {{userDetails.completedVisitsCount}}
+          </div>
+        </div>
+        <div layout="row" layout-align="end center">
+          <div layout-padding>Upcoming</div>
+          <div class="info-badge pending">
+            {{userDetails.pendingVisitsCount}}
+          </div>
+        </div>
+        <div layout="row" layout-align="end center" ng-show="userDetails.user.roles[0]==='requester'">
+          <div layout-padding>Unfilled</div>
+          <div class="info-badge incomplete">
+            {{userDetails.unfilledVisitsCount}}
+          </div>
+        </div>
+        <div layout="row" layout-align="end center" ng-show="userDetails.user.roles[0]==='visitor'">
+          <div layout-padding>Hours</div>
+          <div class="info-badge">
+            {{userDetails.hoursCount}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <md-divider></md-divider>
+  <div ng-hide="userDetails.visitsCount===0">
+    <md-list>
+      <md-list-item>
+        <div layout="row" layout-align="start center" layout-fill flex="noshrink">
+          <div class="md-subhead" style="width:106px">Status
+          </div>
+          <div class="md-subhead" flex="20">Date</div>
+          <div class="md-subhead" flex>
+            Location
+          </div>
+        </div>
+      </md-list-item>
+      <md-list-item
+          dir-paginate="visit in userDetails.visits | itemsPerPage: userDetails.recordPerPage"
+          total-items="userDetails.visitsCount" ng-click="null" aria-label="users visits">
+        <div layout="row" layout-align="start center" layout-fill
+             class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-available-visit.html'"
+             ng-if="!visit.visitorId&&!visit.inactive" layout-padding>
+        </div>
+        <div layout="row" layout-align="start center" layout-fill
+             class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-scheduled-visit.html'"
+             ng-if="visit.visitorId&&visit.visitTime&&visit.visitTime>userDetails.today&&!visit.inactive"
+             layout-padding>
+        </div>
+        <div layout="row" layout-align="start center" layout-fill
+             class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-incomplete-visit.html'"
+             ng-if="visit.inactive"
+             layout-padding>
+        </div>
+        <div layout="row" layout-align="start center" layout-fill
+             class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-complete-visit.html'"
+             ng-if="visit.visitorId&&visit.visitTime&&!visit.inactive&&visit.visitTime<userDetails.today"
+             layout-padding>
+        </div>
+      </md-list-item>
+    </md-list>
+    <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)"></dir-pagination-controls>
+  </div>
+</md-dialog>

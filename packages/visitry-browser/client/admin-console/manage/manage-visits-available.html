@@ -1,0 +1,26 @@
+<md-list>
+  <md-list-item>
+    <div layout="row" class="manageList" layout-align="space-between center" layout-fill flex="noshrink">
+      <md-button ng-click="adminManageVisits.toggleSort('requestedDate')" flex>Date
+      </md-button>
+      <div class="md-subhead" flex="25">Requester</div>
+      <md-button flex="35" ng-click="adminManageVisits.toggleSort('location.address')">
+        Location
+      </md-button>
+      <div class="md-subhead" flex="20">Days Pending</div>
+    </div>
+  </md-list-item>
+  <md-list-item
+      dir-paginate="visit in adminManageVisits.requestedVisits | itemsPerPage: adminManageVisits.recordPerPage"
+      total-items="adminManageVisits.visitsCount" ng-click="null">
+    <div layout="row" class="manageList" layout-align="space-between center" layout-fill class="md-list-item-text">
+      <div flex="20">
+        {{visit.requestedDate| date:'MM/dd/yy'}} {{visit.requestedDate|timeOfDay}}
+      </div>
+      <div flex="25">{{adminManageVisits.getUser(visit.requesterId).fullName}}</div>
+      <div flex="35">{{visit.location.address}}</div>
+      <div flex="20">{{ visit.requestedDate | amDifference : visit.createdAt : 'days' }}</div>
+    </div>
+  </md-list-item>
+</md-list>
+<dir-pagination-controls on-page-change="adminManageVisits.pageChanged(newPageNumber)"></dir-pagination-controls>

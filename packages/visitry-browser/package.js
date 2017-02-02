@@ -45,7 +45,7 @@ Package.onUse(function(api) {
     'client/admin-console/manage/manage-visitors.html',
     'client/admin-console/manage/manage-visits.html',
     'client/admin-console/manage/manage-visits-completed.html',
-    'client/admin-console/manage/manage-visits-requested.html',
+    'client/admin-console/manage/manage-visits-available.html',
     'client/admin-console/manage/manage-visits-scheduled.html'
   ], 'client')
 });

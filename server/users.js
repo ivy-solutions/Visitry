@@ -96,37 +96,57 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
 });
 
 Meteor.publish('visitorUsers', function (agencyId) {
-  var selector = {
-    'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-    'roles': {$elemMatch: {$eq: 'visitor'}}
-  };
-  var queryOptions = {
-    fields: {
-      createdAt: 1,
-      'userData.agencyIds': 1,
-      'userData.firstName': 1,
-      'userData.lastName': 1,
-      'userData.location.address': 1,
-      'roles': 1
-    }
-  };
-  Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
-    noReady: true
-  });
-  let visitors = User.find(selector, queryOptions);
-  visitors.forEach((user)=> {
-    let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
-    let hoursSinceDate = new Date();
-    hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
-    let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate);
-    user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
-    user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours / 60 : 0;
-    this.added('visitorUsers', user._id, user);
-  }, this);
-  this.ready();
+  if (this.userId) {
+    logger.verbose("publish visitorUsers to " + this.userId);
+    var selector = {
+      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
+      'roles': {$elemMatch: {$eq: 'visitor'}}
+    };
+    var queryOptions = {
+      fields: {
+        createdAt: 1,
+        'userData.agencyIds': 1,
+        'userData.firstName': 1,
+        'userData.lastName': 1,
+        'userData.location': 1,
+        'userData.picture': 1,
+        'userData.about': 1,
+        'roles': 1,
+        'emails': 1
+      }
+    };
+    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+      noReady: true
+    });
+    let visitors = User.find(selector, queryOptions);
+    visitors.forEach((user)=> {
+      let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
+      let hoursSinceDate = new Date();
+      hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
+      let feedbackHours = Meteor.call('feedbackTotalHours', user._id, hoursSinceDate);
+      user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
+      user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours / 60 : 0;
+      this.added('visitorUsers', user._id, user);
+      visitors.observeChanges({
+        added: (id, fields)=> {
+          this.added('visitorUsers', id, fields);
+        },
+        changed: (id, fields)=> {
+          this.changed('visitorUsers', id, fields);
+        },
+        removed: (id)=> {
+          this.removed('visitorUsers', id)
+        }
+      });
+    }, this);
+    this.ready();
+  } else {
+    this.ready();
+  }
 });
 
 Meteor.publish("seniorUsers", function (agencyId, options) {
+  logger.verbose("publish seniorUsers to " + this.userId);
   if (this.userId) {
     logger.verbose("publish seniorUsers to " + this.userId);
     var selector = {
@@ -139,8 +159,11 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.agencyIds': 1,
         'userData.firstName': 1,
         'userData.lastName': 1,
-        'userData.location.address': 1,
-        'roles': 1
+        'userData.location': 1,
+        'userData.picture': 1,
+        'userData.about': 1,
+        'roles': 1,
+        'emails': 1
       }
     };
     Counts.publish(this, 'numberSeniorUsers', User.find(selector), {
@@ -151,33 +174,6 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
     this.ready();
   }
 });
-
-/*Meteor.publish("visitorUsers", function (agencyId, options) {
- if (this.userId) {
- logger.verbose("publish visitorUsers to " + this.userId);
- var selector = {
- 'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
- 'roles': {$elemMatch: {$eq: 'visitor'}}
- };
- var queryOptions = {
- fields: {
- createdAt: 1,
- 'userData.agencyIds': 1,
- 'userData.firstName': 1,
- 'userData.lastName': 1,
- 'userData.location.address': 1,
- 'roles': 1
- }
- };
- Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
- noReady: true
- });
- return User.find(selector, queryOptions);
- } else {
- this.ready();
- }
- });*/
-
 
 Meteor.methods({
   updateName(firstName, lastName)
@@ -358,7 +354,7 @@ Meteor.methods({
     }
     try {
       Meteor.call('addUserToAgency', {
-        userId: newUserId ||Accounts.findUserByEmail(data.email)._id,
+        userId: newUserId || Accounts.findUserByEmail(data.email)._id,
         agencyId: data.userData.agencyIds[0],
         role: data.role
       });
@@ -367,7 +363,7 @@ Meteor.methods({
         throw err;
       }
     }
-    return newUserId||null;
+    return newUserId || null;
   },
   sendEnrollmentEmail(userId){
     if (!this.userId) {
