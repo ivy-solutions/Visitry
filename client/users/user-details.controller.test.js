@@ -100,18 +100,18 @@ describe('UserDetails', function () {
     });
   });
 
-  afterEach(function () {
+  afterEach(()=> {
     StubCollections.restore();
   });
 
   describe('AgencyId Cookie', () => {
-    beforeEach(function () {
+    beforeEach(()=> {
       $cookies.put('agencyId', Random.id);
     });
-    afterEach(function () {
+    afterEach(()=> {
       $cookies.remove('agencyId');
     });
-    it('agencyId cookie is not null', function () {
+    it('agencyId cookie is not null', ()=> {
       assert.isNotNull(controller.agencyId);
     });
   });
