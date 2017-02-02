@@ -106,7 +106,7 @@ describe('UserDetails', function () {
 
   describe('AgencyId Cookie', () => {
     beforeEach(()=> {
-      $cookies.put('agencyId', Random.id);
+      $cookies.put('agencyId', Random.id());
     });
     afterEach(()=> {
       $cookies.remove('agencyId');
