@@ -35,7 +35,6 @@ describe('Admin Admin Agency', function () {
   };
 
   beforeEach(function () {
-
     StubCollections.stub(Agencies);
     agencyId = Agencies.insert(agency);
     $cookies.put('agencyId', agencyId);
@@ -47,6 +46,7 @@ describe('Admin Admin Agency', function () {
   });
 
   afterEach(function () {
+    $cookies.remove('agencyId');
     StubCollections.restore();
     stateSpy.restore();
   });
