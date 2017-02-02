@@ -22,7 +22,7 @@ test:
   override:
     - npm run test
     - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
- deployment:
+deployment:
   dev:
     branch: dev
     commands:
