@@ -20,8 +20,8 @@ angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state
   this.submitFeedback = (form)=> {
     if (form.$valid) {
       let description = this.feedback.comments + '\nAgencies: [' + (this.feedback.agencyIds || '') + ']';
-      Meteor.call('addNewQACard',this.feedback.title, description, this.feedback.type,(err)=>{
-        if(err){
+      Meteor.call('addNewQACard', this.feedback.title, description, this.feedback.type, (err)=> {
+        if (err) {
           logger.error(err);
         }
       });
@@ -31,7 +31,7 @@ angular.module('visitry').controller('appFeedbackCtrl', function ($scope, $state
 
   let setAgencyIds = ()=> {
     let user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
-    if (user && user.userData.agencyIds) {
+    if (user && user.userData && user.userData.agencyIds) {
       this.feedback.agencyIds = user.userData.agencyIds;
     }
   }

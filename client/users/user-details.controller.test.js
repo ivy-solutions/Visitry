@@ -84,7 +84,7 @@ describe('UserDetails', function () {
   };
 
 
-  beforeEach(function () {
+  beforeEach(()=> {
     StubCollections.stub([Meteor.users, Visits, Feedbacks, VisitorUsers]);
     Visits.insert(completedVisit);
     Visits.insert(scheduledVisit);
