@@ -67,3 +67,4 @@ brentjanderson:winston-client
 shell-server
 meteorhacks:ssr
 http
+practicalmeteor:mocha-xunit-reporter
