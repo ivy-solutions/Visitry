@@ -20,8 +20,9 @@ dependencies:
     - mkdir $HOME/build/Visitry/
 test:
   override:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit
     - npm run test
-    - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/test-results.xml; fi
+    - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
 deployment:
   dev:
     branch: dev
