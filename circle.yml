@@ -21,7 +21,7 @@ dependencies:
 test:
   override:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit
-    - npm run test
+    - spacejam test --mocha --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml
     - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
 deployment:
   dev:
