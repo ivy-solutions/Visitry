@@ -4,9 +4,6 @@ general:
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
     - "/home/ubuntu/build/Visitry/bundle.tar.gz"
     - "/home/ubuntu/build/Visitry/mobile/android/Visitry.apk"
-machine:
-  environment:
-      MOCHA_FILE: "$CIRCLE_TEST_REPORTS/test-results.xml"
 dependencies:
   cache_directories:
     - ~/.meteor
@@ -24,7 +21,8 @@ dependencies:
 test:
   override:
     - npm run test
-deployment:
+    - if [[ -e test-results.xml ]]; then cp test-results.xml $CIRCLE_TEST_REPORTS/junit/test-results.xml; fi
+ deployment:
   dev:
     branch: dev
     commands:
