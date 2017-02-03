@@ -17,8 +17,6 @@ describe('App Feedback', function () {
 
   let controller;
   let scope;
-  let stateSpy;
-  let meteorCallStub;
 
   beforeEach(inject(function (_$controller_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
@@ -31,22 +29,26 @@ describe('App Feedback', function () {
     inject(function ($rootScope, $state) {
       scope = $rootScope.$new(true);
       controller = $controller('appFeedbackCtrl', {
-        $scope: scope,
+        $scope: $rootScope.$new(true),
         $state: $state},
         {locals: setAgencyIds = () => {}}
       );
-      stateSpy = sinon.stub($state, 'go');
-      meteorCallStub = sinon.stub(Meteor, 'call', ()=> {
       });
     });
-  });
-
-  afterEach(function () {
-    meteorCallStub.restore();
-    stateSpy.restore();
-  });
 
   describe('submitFeedback', ()=> {
+    let stateSpy;
+    let meteorCallStub;
+
+    beforeEach(()=> {
+      stateSpy = sinon.stub($state, 'go');
+      meteorCallStub = sinon.stub(Meteor, 'call');
+    });
+    afterEach(()=> {
+      Meteor.call.restore();
+      stateSpy.restore();
+    });
+
     it('submit feedback calls trello create card service', ()=> {
       controller.feedback.title = 'Test';
       controller.feedback.comments = 'This is a test.';
