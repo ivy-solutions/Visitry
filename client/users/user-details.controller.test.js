@@ -83,7 +83,7 @@ describe('UserDetails', function () {
   };
 
 
-  beforeEach(()=> {
+  beforeEach(function () {
     StubCollections.stub([Meteor.users, Visits, Feedbacks, VisitorUsers]);
     Visits.insert(completedVisit);
     Visits.insert(scheduledVisit);
@@ -99,7 +99,7 @@ describe('UserDetails', function () {
     });
   });
 
-  afterEach(()=> {
+  afterEach(function() {
     StubCollections.restore();
   });
 

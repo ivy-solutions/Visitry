@@ -26,7 +26,7 @@ describe('App Feedback', function () {
   }));
 
 
-  beforeEach(()=> {
+  beforeEach(function () {
 
     inject(function ($rootScope, $state) {
       scope = $rootScope.$new(true);
