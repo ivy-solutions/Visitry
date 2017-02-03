@@ -41,7 +41,7 @@ describe('App Feedback', function () {
   });
 
   afterEach(function () {
-    Meteor.call.restore();
+    meteorCallStub.restore();
     stateSpy.restore();
   });
 
