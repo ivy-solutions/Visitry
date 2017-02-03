@@ -32,8 +32,9 @@ describe('App Feedback', function () {
       scope = $rootScope.$new(true);
       controller = $controller('appFeedbackCtrl', {
         $scope: scope,
-        $state: $state
-      });
+        $state: $state},
+        {locals: setAgencyIds = () => {}}
+      );
       stateSpy = sinon.stub($state, 'go');
       meteorCallStub = sinon.stub(Meteor, 'call', ()=> {
       });

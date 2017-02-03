@@ -21,10 +21,9 @@ describe('UserDetails', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_, _$cookies_) {
+  beforeEach(inject(function (_$controller_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
-    $cookies = _$cookies_;
   }));
 
   var controller;

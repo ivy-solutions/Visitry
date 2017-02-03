@@ -122,18 +122,20 @@ if (Meteor.isServer) {
 
     const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
 
-    it('updates user when request to join agency made', () => {
+    it('updates user when request to join agency made', function(done) {
       const invocation = {userId: testUserId};
       sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
       assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
+      done();
     });
 
-    it('sends email when request to join agency made', () => {
+    it('sends email when request to join agency made', function(done) {
       const sendEmailSpy = sinon.spy(Email, 'send');
       const invocation = {userId: testUserId};
       sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
       sendEmailSpy.restore();
       sinon.assert.calledOnce(sendEmailSpy);
+      done();
     });
   });
 
