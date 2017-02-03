@@ -42,7 +42,6 @@ describe('Admin Manage Seniors', function () {
   });
 
   afterEach(function () {
-    stateSpy.reset();
     stateSpy.restore();
   });
 

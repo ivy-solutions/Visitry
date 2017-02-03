@@ -38,7 +38,6 @@ describe('Admin Manage Visitors', function () {
   });
 
   afterEach(function () {
-    stateSpy.reset();
     stateSpy.restore();
   });
 
