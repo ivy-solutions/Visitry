@@ -96,7 +96,7 @@ describe('UserDetails', function () {
 
     inject(function ($rootScope) {
       scope = $rootScope.$new(true);
-      controller = $controller('userDetailsCtrl', {$scope: scope}, {locals: {userId: testUserId}});
+      controller = $controller('userDetailsCtrl', {$scope: scope, $cookies: $cookies}, {locals: {userId: testUserId}});
     });
   });
 
