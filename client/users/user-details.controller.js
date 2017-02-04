@@ -47,9 +47,8 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
       'updatedAt': {$gt: new Date(lastMonth)}
     }).count();
     this.unfilledVisitsCount = Visits.find({
-      'requestedDate': {$lt: this.today}, visitTime: {$exists: false}, 'inactive': {$exists: false},
-      $or: [{requesterId: this.userId}, {visitorId: this.userId}],
-      'updatedAt': {$gt: new Date(lastMonth)}
+      'requestedDate': {$lt: this.today,$gt: new Date(lastMonth)}, visitTime: {$exists: false}, 'inactive': {$exists: false},
+      $or: [{requesterId: this.userId}, {visitorId: this.userId}]
     }).count();
     this.hoursCount = 0;
     Feedbacks.find({
