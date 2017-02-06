@@ -92,7 +92,7 @@ Meteor.methods({
       })
     });
   },
-  updateAgency(agencyId, modifiers){
+  updateAgency(agencyId, fields){
     if (!this.userId) {
       logger.error("updateAgency - user not logged in");
       throw new Meteor.Error('not-logged-in',
@@ -101,16 +101,28 @@ Meteor.methods({
       logger.error("updateAgency - user unauthorized");
       throw new Meteor.Error('unauthorized',
         'User must be an administrator to update agency.');
-    } else {
-      Agencies.update({_id: agencyId}, modifiers, (err)=> {
+    } else if (agencyId){
+      Agencies.update({_id: agencyId}, {$set: fields}, (err, result)=> {
         if (err) {
           logger.error('Error updating agency: ' + agencyId + ' ' + err);
           throw err;
         } else {
           logger.verbose('Updated agency: ' + agencyId);
-          return agencyId;
         }
       });
+      return agencyId;
+    } else {
+      let agency = new Agency(fields);
+      agency.activeUntil = new Date(2020, 12,12);
+      agency.administratorId = this.userId;
+      agency.save(function (err, id) {
+        if (err) {
+          logger.error("failed to create agency. err: " + err);
+          throw err;
+        }
+      });
+      logger.verbose("created agency for " + this.userId);
+      return agency._id;
     }
 
   }

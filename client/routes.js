@@ -300,7 +300,7 @@ angular.module('visitry')
         resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
       .state('adminAdminAgency', {
-        url: '/admin/administrate/agency',
+        url: '/admin/administrate/agency/:agencyId',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
             return '/packages/visitrymobile/client/admin-console/admin/admin-agency.html';

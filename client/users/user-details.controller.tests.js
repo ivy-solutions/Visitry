@@ -104,7 +104,7 @@ describe('UserDetails', function () {
   });
 
 // fails in CircleCI running phantomjs for unknown reason
-  describe.skip('AgencyId Cookie', () => {
+  describe('AgencyId Cookie', () => {
     beforeEach(()=> {
       $cookies.put('agencyId', Random.id());
     });
@@ -117,20 +117,20 @@ describe('UserDetails', function () {
   });
 
 
-  describe.skip('pageChanged', function () {
+  describe('pageChanged', function () {
     it('changing the page changes the page variable', ()=> {
       controller.pageChanged(1);
       assert.equal(controller.page, 1);
     });
   });
 
-  describe.skip('completedVisitsCount', ()=> {
+  describe('completedVisitsCount', ()=> {
     it('comletedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
   });
 
-  describe.skip('pendingVisitsCount', ()=> {
+  describe('pendingVisitsCount', ()=> {
     it('pendingVisitsCount should include available and scheduled', ()=> {
       assert.equal(controller.pendingVisitsCount, 2);
     });

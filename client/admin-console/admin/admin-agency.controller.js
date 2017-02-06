@@ -4,21 +4,23 @@
 import { Agency,Agencies } from '/model/agencies'
 import {logger} from '/client/logging'
 
-angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
+angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($scope, $state, $stateParams, $reactive, $mdDialog) {
   $reactive(this).attach($scope);
+
   this.subscribe('allAgencies');
   this.subscribe('userdata');
+  this.agencyId = $stateParams.agencyId;
   this.agency = {};
   this.helpers({
     getAgency: ()=> {
-      this.agency = Agency.findOne({_id: $cookies.get('agencyId')});
+      this.agency = Agency.findOne({_id: this.getReactively('agencyId')});
     },
     administrators: ()=> {
-      return User.find({roles: "administrator", 'userData.agencyIds': $cookies.get('agencyId')})
+      return User.find({roles: "administrator", 'userData.agencyIds': $stateParams.agencyId})
     }
   });
 
-  this.isEditMode = false;
+  this.isEditMode = !$stateParams.agencyId;
 
   this.editAgency = ()=> {
     this.isEditMode = true;
@@ -27,23 +29,26 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
   this.save = (form)=> {
     if (form.$valid) {
       Meteor.call('updateAgency', this.agency._id, {
-        $set: {
-          contactPhone: this.agency.contactPhone,
-          contactEmail: this.agency.contactEmail,
-          description: this.agency.description,
-          location: addNewLocation(this.agency.location)
-        }
-      }, (err)=> {
+        name: this.agency.name,
+        contactPhone: this.agency.contactPhone,
+        contactEmail: this.agency.contactEmail,
+        description: this.agency.description,
+        location: addNewLocation(this.agency.location),
+        welcomeMessage: this.agency.welcomeMessage
+      }, (err, result)=> {
         if (err) {
           logger.error('Error updating ' + this.agency.name + ' ' + err);
           handleError(err);
         } else {
+          logger.error('Editing ' + this.agency.name + " with id:" + result);
           this.isEditMode = false;
+          this.agencyId = result;
         }
       })
     } else {
       let errors = '';
       for (key of Object.keys(form.$error)) {
+        console.log(form.$error);
         switch (form.$error[key][0].$name) {
           case 'email':
             errors += '<div>Email must look like an email.</div>';
@@ -55,7 +60,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
             errors += '<div>Phone number must be 9 digits.</div>';
             break;
           default:
-            errors += '<div>The Agency information is invalid.</div>';
+            errors += '<div>Invalid ' + form.$error[key][0].$name + '</div>';
             break;
         }
       }
