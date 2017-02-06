@@ -117,20 +117,20 @@ describe('UserDetails', function () {
   });
 
 
-  describe('pageChanged', function () {
+  describe.skip('pageChanged', function () {
     it('changing the page changes the page variable', ()=> {
       controller.pageChanged(1);
       assert.equal(controller.page, 1);
     });
   });
 
-  describe('completedVisitsCount', ()=> {
+  describe.skip('completedVisitsCount', ()=> {
     it('completedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
   });
 
-  describe('pendingVisitsCount', ()=> {
+  describe.skip('pendingVisitsCount', ()=> {
     it('pendingVisitsCount should include available and scheduled', ()=> {
       assert.equal(controller.pendingVisitsCount, 2);
     });
