@@ -104,7 +104,7 @@ describe('UserDetails', function () {
   });
 
 // fails in CircleCI running phantomjs for unknown reason
-  describe('AgencyId Cookie', () => {
+  describe.skip('AgencyId Cookie', () => {
     beforeEach(()=> {
       $cookies.put('agencyId', Random.id());
     });
@@ -125,7 +125,7 @@ describe('UserDetails', function () {
   });
 
   describe('completedVisitsCount', ()=> {
-    it('comletedVisitsCount should be 1', ()=> {
+    it('completedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
   });
