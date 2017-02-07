@@ -98,6 +98,8 @@ if (Meteor.isServer) {
     var meteorStub;
     var findAgencyStub;
     var findUserStub;
+    const sendEmailSpy = sinon.spy(Email, 'send');
+
     beforeEach(() => {
       findAgencyStub = sinon.stub(Agency, 'findOne');
       findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
@@ -112,6 +114,7 @@ if (Meteor.isServer) {
       Agency.findOne.restore();
       User.findOne.restore();
       meteorStub.restore();
+      sendEmailSpy.restore();
     });
 
     const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
@@ -124,10 +127,8 @@ if (Meteor.isServer) {
     });
 
     it('sends email when request to join agency made', function(done) {
-      const sendEmailSpy = sinon.spy(Email, 'send');
       const invocation = {userId: testUserId};
       sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
-      sendEmailSpy.restore();
       sinon.assert.calledOnce(sendEmailSpy);
       done();
     });
