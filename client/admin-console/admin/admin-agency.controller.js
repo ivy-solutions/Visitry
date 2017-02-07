@@ -48,7 +48,6 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     } else {
       let errors = '';
       for (key of Object.keys(form.$error)) {
-        console.log(form.$error);
         switch (form.$error[key][0].$name) {
           case 'email':
             errors += '<div>Email must look like an email.</div>';
