@@ -27,27 +27,28 @@ describe('App Feedback', function () {
   }));
 
 
-  beforeEach(function () {
+  beforeEach(()=> {
     meteorCallStub = sinon.stub(Meteor, 'call');
 
     inject(function ($rootScope, $state) {
       scope = $rootScope.$new(true);
       controller = $controller('appFeedbackCtrl', {
         $scope: scope,
-        $state: $state},
-       {locals: setAgencyIds = function() {}}
+        $state: $state}
       );
       stateSpy = sinon.stub($state, 'go');
+      controller.setAgencyIds = function() {};
     });
   });
 
   afterEach(()=> {
     Meteor.call.restore();
-    stateSpy.restore();
+    if (stateSpy) {
+      stateSpy.restore();
+    }
   });
 
-// fails in CircleCI running phantomjs for unknown reason
-  describe.skip('submitFeedback', ()=> {
+  describe('submitFeedback', ()=> {
 
     it('submit feedback calls trello create card service', ()=> {
       controller.feedback.title = 'Test';

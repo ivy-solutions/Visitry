@@ -1,9 +1,6 @@
 /**
  * Created by sarahcoletti on 6/10/16.
  */
-/**
- * Created by n0235626 on 6/6/16.
- */
 import 'angular-mocks';
 import { Meteor } from 'meteor/meteor';
 import { visitry } from '/client/lib/app.js';
@@ -48,6 +45,7 @@ describe('Schedule Visit', function () {
   afterEach(function () {
     spyOnAlert.reset(true);
     meteorStub.restore();
+    if (stateSpy) stateSpy.restore();
   });
 
 
@@ -62,7 +60,7 @@ describe('Schedule Visit', function () {
     afterEach(()=> {
       controller.handleError.restore();
       controller.hideScheduleVisitModal.restore();
-    })
+    });
 
     it('message if no time selected', function () {
       var visitWithNoDate = {};

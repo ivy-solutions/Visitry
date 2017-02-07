@@ -77,6 +77,7 @@ describe ( 'Profile', function() {
   afterEach(function () {
     meteorStub.restore();
     userIdStub.restore();
+    if (stateSpy) stateSpy.restore();
   });
 
 

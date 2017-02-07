@@ -43,6 +43,7 @@ describe('View Upcoming Visits Visit', function () {
 
   afterEach(function () {
     spyOnConfirm.reset(true);
+    stateSpy.restore();
   });
 
   describe('Cancel Visit', function () {
