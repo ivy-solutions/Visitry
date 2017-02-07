@@ -46,12 +46,6 @@ if (Meteor.isServer) {
           assert.equal(err.error, 'validation-error');
         });
       });
-      it('fails missing required field: administratorId ', () => {
-        invalidAgency.validate({fields: ['administratorId']}, function (err, id) {
-          assert.equal(err.reason, '"administratorId" is required');
-          assert.equal(err.error, 'validation-error');
-        });
-      });
       it('fails missing required field: contactPhone ', () => {
         invalidAgency.validate({fields: ['contactPhone']}, function (err, id) {
           assert.equal(err.reason, '"contactPhone" is required');
@@ -165,23 +159,28 @@ if (Meteor.isServer) {
     it('fails if user is not logged in', ()=> {
       const invocation = {userId: null};
       let newName = 'testAgencyNewName';
-      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {$set: {name: newName}}]),'Must be logged in to update agency. [not-logged-in]');
+      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]),'Must be logged in to update agency. [not-logged-in]');
       let agency = Agencies.findOne({_id: agencyId});
       assert.notEqual(agency.name, newName);
     });
     it('fails if user is not administrator', ()=> {
       const invocation = {userId: nonAdminUserId};
       let newName = 'testAgencyNewName';
-      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {$set: {name: newName}}]),'User must be an administrator to update agency. [unauthorized]');
+      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]),'User must be an administrator to update agency. [unauthorized]');
       let agency = Agencies.findOne({_id: agencyId});
       assert.notEqual(agency.name, newName);
     });
     it('it updates the agency', ()=> {
       const invocation = {userId: adminUserId};
       let newName = 'testAgencyNewName';
-      updateAgency.apply(invocation, [agencyId, {$set: {name: newName}}]);
+      updateAgency.apply(invocation, [agencyId, {name: newName}]);
       let agency = Agencies.findOne({_id: agencyId});
       assert.equal(agency.name, newName);
     });
+    it('it tries to create a new agency when no agency Id passed', ()=> {
+      const invocation = {userId: adminUserId};
+      assert.throws(()=>updateAgency.apply(invocation, [ null, {name:"Fun for Fogies"}]), '"location" is required [validation-error]');
+    });
+
   })
 }

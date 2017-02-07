@@ -69,6 +69,11 @@ angular.module('visitry').directive('visitry', function () {
               }
             });
           }
+        },
+        agenciesCreatedByMe: () => {
+          if (Meteor.userId() && Meteor.myFunctions.isAdministrator()) {
+            return Agency.find({administratorId: Meteor.userId()});
+          }
         }
       });
 
@@ -80,6 +85,10 @@ angular.module('visitry').directive('visitry', function () {
       };
       this.isAdministrator = ()=> {
         return Meteor.myFunctions.isAdministrator();
+      };
+      this.isSuperUser = () => {
+        //TODO: for now, use admin - later we will have a separate role
+        return this.isAdministrator();
       };
       this.logout = () => {
         logger.info('visitry.logout userId: ' + Meteor.userId());

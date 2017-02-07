@@ -125,7 +125,7 @@ describe('UserDetails', function () {
   });
 
   describe.skip('completedVisitsCount', ()=> {
-    it('comletedVisitsCount should be 1', ()=> {
+    it('completedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
   });

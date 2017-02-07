@@ -34,7 +34,7 @@ const Agency = Class.create({
     location: { type: Address },  // Note: 2dsphere index is added in startup
     timezone: { type: String, default: 'America/New_York'},
     activeUntil: {type: Date, optional: true },
-    administratorId: { type: String },  //default mongo id generation is a string (if we want ObjectId, we would have to say so when teh collection is created)
+    administratorId: { type: String, optional: true  },  //default mongo id generation is a string (if we want ObjectId, we would have to say so when teh collection is created)
     contactEmail: { type: String,
       validators: [{type: 'email'}]},
     contactPhone: { type: String ,

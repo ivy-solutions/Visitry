@@ -17,10 +17,9 @@ describe('Admin Admin Agency', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_, _$cookies_) {
+  beforeEach(inject(function (_$controller_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
-    $cookies = _$cookies_;
   }));
 
   var controller;
@@ -33,64 +32,101 @@ describe('Admin Admin Agency', function () {
     contactEmail: 'contact@email.com',
     description: 'this is a description'
   };
+  describe('Editing An Agency', function() {
 
-  beforeEach(function () {
-    StubCollections.stub(Agencies);
-    agencyId = Agencies.insert(agency);
-    $cookies.put('agencyId', agencyId);
-    inject(function ($rootScope,$state) {
-      scope = $rootScope.$new(true);
-      controller = $controller('adminAdminAgencyCtrl', {$scope: scope,$state:$state});
-      stateSpy = sinon.stub($state, 'go');
+    beforeEach(function () {
+      StubCollections.stub(Agencies);
+      agencyId = Agencies.insert(agency);
+      inject(function ($rootScope, $state, $stateParams) {
+        scope = $rootScope.$new(true);
+        controller = $controller('adminAdminAgencyCtrl', {
+          $scope: scope,
+          $state: $state,
+          $stateParams: {'agencyId': agencyId}
+        });
+        stateSpy = sinon.stub($state, 'go');
+      });
+    });
+
+    afterEach(function () {
+      StubCollections.restore();
+      stateSpy.restore();
+    });
+
+    describe('editAgency', ()=> {
+      it('editAgency enables editMode', ()=> {
+        controller.editAgency();
+        assert.isTrue(controller.isEditMode);
+      });
+    });
+
+    describe('this.agency', ()=> {
+      it('this.agency exists if $stateParam is set', ()=> {
+        assert.equal(controller.agency.name, agency.name);
+      })
+    });
+
+    describe('save', ()=> {
+      let form;
+      let meteorCallStub;
+
+      beforeEach(()=> {
+        form = {$valid: true};
+        meteorCallStub = sinon.stub(Meteor, 'call');
+      });
+      afterEach(()=> {
+        Meteor.call.restore();
+      });
+      it('update Agency with valid form', ()=> {
+        controller.save(form);
+        assert.isTrue(Meteor.call.calledWith('updateAgency'));
+      });
+      it('update Agency not called ', ()=> {
+        form.$valid = false;
+        form.$error = {};
+        controller.save(form);
+        assert.isFalse(Meteor.call.calledWith('updateAgency'));
+      });
+    });
+
+    describe('addAdmin', function () {
+      it('navigate to the register screen', ()=> {
+        controller.addAdmin();
+        assert(stateSpy.withArgs('register', {role: "administrator"}).calledOnce);
+      });
     });
   });
 
-  afterEach(function () {
-    $cookies.remove('agencyId');
-    StubCollections.restore();
-    stateSpy.restore();
-  });
+  describe('Creating An Agency - no agencyId is passed', function() {
 
-  describe('editAgency', ()=> {
-    it('editAgency enables editMode', ()=> {
-      controller.editAgency();
-      assert.isTrue(controller.isEditMode);
+    beforeEach(function () {
+      StubCollections.stub(Agencies);
+      inject(function ($rootScope, $state, $stateParams) {
+        scope = $rootScope.$new(true);
+        controller = $controller('adminAdminAgencyCtrl', {
+          $scope: scope,
+          $state: $state,
+          $stateParams: {}
+        });
+        stateSpy = sinon.stub($state, 'go');
+      });
     });
-  });
 
-  describe('this.agency', ()=> {
-    it('this.agency exists if cookie is set', ()=> {
-      assert.equal(controller.agency.name, agency.name);
-    })
-  });
+    afterEach(function () {
+      StubCollections.restore();
+      stateSpy.restore();
+    });
 
-  describe('save', ()=> {
-    let form;
-    let meteorCallStub;
+    describe('editMode by default', ()=> {
+      it('editMode by default is true', ()=> {
+        assert.isTrue(controller.isEditMode);
+      });
+    });
 
-    beforeEach(()=> {
-      form = {$valid: true};
-      meteorCallStub = sinon.stub(Meteor,'call');
-    });
-    afterEach(()=>{
-      Meteor.call.restore();
-    });
-    it('update Agency with valid form', ()=> {
-      controller.save(form);
-      assert.isTrue(Meteor.call.calledWith('updateAgency'));
-    });
-    it('update Agency not called ', ()=> {
-      form.$valid=false;
-      form.$error={};
-      controller.save(form);
-      assert.isFalse(Meteor.call.calledWith('updateAgency'));
-    });
-  });
-
-  describe('addAdmin', function () {
-    it('navigate to the register screen', ()=> {
-      controller.addAdmin();
-      assert(stateSpy.withArgs('register', {role: "administrator"}).calledOnce);
+    describe('this.agency', ()=> {
+      it('this.agency does not exist', ()=> {
+        assert.equal(controller.agency, undefined);
+      })
     });
   });
 

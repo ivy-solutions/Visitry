@@ -5,7 +5,7 @@
       <div layout="row">
         <h1 style="display: inline" flex-none>{{adminAdminAgency.agency.name}}</h1>
         <span flex></span>
-        <md-button class="md-raised" ng-if="adminAdminAgency.isEditMode"
+        <md-button class="md-raised" ng-if="adminAdminAgency.isEditMode && adminAdminAgency.agency._id"
                    ng-click="adminAdminAgency.addAdmin()">+ Admin
         </md-button>
         <md-button class="md-button md-raised md-primary" ng-if="adminAdminAgency.isEditMode"
@@ -15,13 +15,18 @@
         </md-button>
       </div>
       <md-list>
-        <md-list-item>
+        <md-list-item ng-hide="!adminAdminAgency.agency">
           <label class="md-title" for="administrators" layout-margin flex="15">Admins</label>
           <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="true"
                     md-removable="false" layout-margin flex>
             <md-chip-template>
               <strong>{{$chip.fullName}}</strong>
             </md-chip-template>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="name" layout-margin flex="15">Name</label>
+            <input type="text" id="name" name="name" ng-model="adminAdminAgency.agency.name"
+                 ng-readonly="!adminAdminAgency.isEditMode" required layout-margin flex/>
         </md-list-item>
         <md-list-item>
           <label class="md-title" for="phone" layout-margin flex="15">Phone</label>
@@ -44,7 +49,7 @@
           <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
                  ng-model="adminAdminAgency.agency.location.address"
                  details="adminAdminAgency.agency.location.details" ng-readonly="!adminAdminAgency.isEditMode"
-                 disable-tap layout-margin flex/>
+                 disable-tap layout-margin flex required/>
         </md-list-item>
         <md-list-item>
           <label class="md-title" for="description" layout-margin="left">Description</label>
@@ -53,6 +58,13 @@
           <textarea id="description" ng-model="adminAdminAgency.agency.description" rows="5"
                     ng-readonly="!adminAdminAgency.isEditMode" layout-margin="left" flex></textarea>
         </md-list-item>
+          <md-list-item>
+              <label class="md-title" for="welcomeMessage" layout-margin="left">Welcome Message to New Users</label>
+          </md-list-item>
+          <md-list-item>
+          <textarea id="description" ng-model="adminAdminAgency.agency.welcomeMessage" rows="5"
+                    ng-readonly="!adminAdminAgency.isEditMode" layout-margin="left" flex></textarea>
+          </md-list-item>
       </md-list>
       <div>
 
