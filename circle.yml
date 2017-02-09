@@ -15,7 +15,7 @@ dependencies:
     - meteor npm install --save bcrypt
   pre:
     - npm -g install ssh2
-    - npm install -g mup # install meteor-up for deployment
+    - npm install -g mup@1.1.2 # install meteor-up for deployment
     - mkdir $HOME/build/
     - mkdir $HOME/build/Visitry/
 test:
