@@ -7,7 +7,6 @@ import {logger} from '/client/logging'
 angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($scope, $state, $stateParams, $reactive, $mdDialog) {
   $reactive(this).attach($scope);
 
-  this.subscribe('allAgencies');
   this.subscribe('userdata');
   this.agencyId = $stateParams.agencyId;
   this.agency = {};
