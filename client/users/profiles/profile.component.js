@@ -10,6 +10,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.currentUser = Meteor.user();
   this.isProfileReady = false;
+  this.locationOptions = {
+    country:"us",
+    watchEnter: false
+  };
 
   this.subscribe('userProfile', ()=> {
     return [];

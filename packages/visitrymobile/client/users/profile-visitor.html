@@ -19,8 +19,8 @@
             <i class="icon ion-location placeholder-icon"></i>
             <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
                    ng-model="profile.location.address"
-                   details="profile.location.details" disable-tap data-tap-disabled="true"
-                   placeholder="Location from which you will usually come"/>
+                   details="profile.location.details" data-tap-disabled="true"
+                   placeholder="Location from which you will usually come" options="profile.locationOptions"/>
         </label>
         <label class="item">Show visits within {{profile.distance}} miles
             <div class="range range-positive">
