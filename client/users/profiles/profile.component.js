@@ -5,7 +5,7 @@ import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 import {Agency} from '/model/agencies'
 
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
+angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory, EditRegistration) {
   $reactive(this).attach($scope);
 
   this.currentUser = Meteor.user();
@@ -158,6 +158,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.showNavigationToGroups = () => {
     //dont show, if we came from groups during registration process
     return !['Groups'].includes($ionicHistory.backTitle())
+  };
+
+  this.showEditRegistrationModal = function () {
+    EditRegistration.showModal();
   };
 
   function handleError(err) {

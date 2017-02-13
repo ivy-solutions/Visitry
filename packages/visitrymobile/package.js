@@ -32,6 +32,8 @@ Package.onUse(function(api) {
     'client/auth/reset-password/reset-password.component.js',
     'client/auth/reset-password/reset-password.html',
     'client/users/profile.html',
+    'client/users/edit-registration-modal.html',
+    'client/users/notifications.html',
     'client/visitry/visitry.html',
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/pending-visits/pending-visits.html',

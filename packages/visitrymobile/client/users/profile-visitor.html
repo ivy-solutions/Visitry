@@ -12,7 +12,8 @@
         </div>
     </div>
     <div class="username">
-        {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a>
+        {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}
+        <a class="icon ion-edit dark button-small" ng-click="profile.showEditRegistrationModal()"></a>
     </div>
     <ion-list>
         <label class="item item-input">

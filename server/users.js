@@ -418,6 +418,31 @@ Meteor.methods({
       }
     });
     logger.info("removeProspectiveAgency for userId: " + this.userId);
+  },
+  updateRegistrationInfo(userId, data) {
+    if (!this.userId) {
+      logger.error("updateRegistrationInfo - user not logged in");
+      throw new Meteor.Error('not-logged-in',
+        'Must be logged in to update user info.');
+    }
+    var currentUser = User.findOne({_id: userId}, {fields: {username:1, emails:1, userData:1}});
+    logger.verbose(data);
+    currentUser.userData = data.userData;
+    currentUser.username = data.username;
+    if ( currentUser.emails[0].address !== data.email) {
+      currentUser.emails[0].address = data.email;
+      currentUser.emails[0].verified = false;
+    }
+    currentUser.save({fields: ['userData.firstName', 'userData.lastName', 'username', 'emails']}, function (err) {
+      if (err) {
+        logger.error("updateRegistrationInfo failed to update user. err: " + err);
+        throw err;
+      }
+    });
+    if ( !currentUser.emails[0].verified ) {
+      Accounts.sendVerificationEmail(userId);
+    }
+    logger.verbose("updateRegistrationInfo for userId: " + this.userId);
   }
 });
 
