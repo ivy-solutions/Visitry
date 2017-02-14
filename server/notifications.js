@@ -115,7 +115,11 @@ sendPushNotificationNow = function(notification) {
     Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
     logger.info("notification.send " + sentNotification.text);
     sentNotification.status = NotificationStatus.SENT;
-    sentNotification.save();
+    sentNotification.save(function(err,id) {
+      if (err) {
+        logger.error(err);
+      }
+    });
   } else {
     logger.error( "Notification not found: " + notification );
   }
