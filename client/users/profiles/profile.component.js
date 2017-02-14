@@ -24,12 +24,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
-      username: 1, emails: 1, roles: 1,
-        'userData.agencyIds': 1, 'userData.prospectiveAgencyIds' : 1,
-        'userData.location': 1, 'userData.visitRange': 1,
-        'userData.firstName': 1, 'userData.lastName': 1,
-        'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}}
-        );
+      username: 1, emails: 1, roles: 1, 'userData':1}}
+    );
   });
 
   this.helpers({

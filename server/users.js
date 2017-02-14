@@ -29,7 +29,7 @@ Meteor.publish("userdata", function () {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1,
           'userData.agencyIds': 1,
-          'userData.location': 1, 'userData.visitRange': 1,
+          'userData.location': 1, 'userData.locationInfo': 1,'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
           'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1,
           'userData.prospectiveAgencyIds': 1
@@ -229,7 +229,7 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user data.');
     }
-
+    logger.verbose(data);
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
