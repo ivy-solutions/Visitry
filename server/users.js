@@ -259,19 +259,20 @@ Meteor.methods({
     if (email) {
       if (!currentEmails || currentEmails.length == 0) {
         Accounts.addEmail(userId, email);
+        Accounts.sendVerificationEmail(userId);
       }
       else {
         let oldEmail = currentUser.emails[0].address;
         if (oldEmail !== email) {
           // NOTE: if the email differs only in case the add email will replace it
           Accounts.addEmail(userId, email);
+          Accounts.sendVerificationEmail(userId);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
             Accounts.removeEmail(oldEmail);
           }
         }
       }
-      Accounts.sendVerificationEmail(userId);
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   },
@@ -437,14 +438,16 @@ Meteor.methods({
     }
     var currentUser = User.findOne({_id: userId}, {fields: {username:1, emails:1, userData:1}});
     currentUser.userData = data.userData;
-    // Note: will fail if username is not unique
-    currentUser.username = data.username;
     currentUser.save({fields: ['userData.firstName', 'userData.lastName', 'username', 'emails']}, function (err) {
       if (err) {
         logger.error("updateRegistrationInfo failed to update user. err: " + err);
         throw err;
       }
     });
+    if (data.username) {
+      // Note: will fail if username is not unique
+      Accounts.setUsername(userId, data.username);
+    }
     // update email - Note: will fail if another user has the email
     if (data.email) {
       Meteor.call('updateUserEmail', data.email);

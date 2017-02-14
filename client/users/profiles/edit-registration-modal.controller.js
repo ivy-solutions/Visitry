@@ -21,8 +21,8 @@ angular.module('visitry').controller('editRegistrationCtrl', function ($scope, $
       if (err) {
         return handleError(err);
       }
+      hideEditRegistrationModal();
     });
-    hideEditRegistrationModal();
  };
 
   this.cancel = function () {
