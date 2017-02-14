@@ -39,31 +39,27 @@ Meteor.methods({
       }
     });
 
-    var oneHourBeforeVisit = moment(visit.visitTime).add(-60, 'm').toDate();
+    var twoHoursBeforeVisit = moment(visit.visitTime).add(-120, 'm').toDate();
     new Notification({
         visitId: visit._id,
-        notifyDate: oneHourBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
+        notifyDate: twoHoursBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
         title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
       }
     ).save(function(err, id) {
       if (err) {
         logger.error(err);
-      } else {
-        addFutureNotificationTask(id);
       }
     });
 
     let requester = User.findOne({_id: visit.requesterId});
     new Notification({
         visitId: visit._id,
-        notifyDate: oneHourBeforeVisit, toUserId: visit.visitorId, status: NotificationStatus.FUTURE,
+        notifyDate: twoHoursBeforeVisit, toUserId: visit.visitorId, status: NotificationStatus.FUTURE,
         title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + requester.fullName
       }
     ).save(function(err, id) {
       if (err) {
         logger.error(err);
-      } else {
-        addFutureNotificationTask(id);
       }
     });
 
@@ -120,6 +116,8 @@ sendPushNotificationNow = function(notification) {
     logger.info("notification.send " + sentNotification.text);
     sentNotification.status = NotificationStatus.SENT;
     sentNotification.save();
+  } else {
+    logger.error( "Notification not found: " + notification );
   }
 };
 
