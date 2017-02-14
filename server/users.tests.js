@@ -191,6 +191,19 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.emails.length, 1);
         assert.equal(updatedUser.emails[0].address, 'new.test@email.com');
       })
+      it('replaces user email if differs only in case', ()=> {
+        testUserId = Accounts.createUser({
+          username: 'testUserWithEmail',
+          password: 'Visitry99',
+          role: "requester",
+          emails: [{address: 'email@address.com', verified: true}]
+        });
+        const invocation = {userId: testUserId};
+        updateUserEmailHandler.apply(invocation, ["EMAIL@address.com"]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.emails.length, 1);
+        assert.equal(updatedUser.emails[0].address, 'EMAIL@address.com');
+      })
     });
 
     describe('users.addUserToAgency', ()=> {
@@ -477,5 +490,36 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.prospectiveAgencyIds[1], agency2);
       });
     });
+
+    describe('users.updateRegistrationInfo', () => {
+      const updateRegistrationInfoHandler = Meteor.server.method_handlers['updateRegistrationInfo'];
+      let meteorCallStub;
+      beforeEach(()=> {
+        meteorCallStub = sinon.stub(Meteor, 'call');
+      });
+      afterEach(()=> {
+        meteorCallStub.restore();
+      });
+
+      it ('succeeds in updating name fields', () => {
+        const invocation = {userId: testUserId};
+        let data = {userData: { firstName: "Cornelius", lastName: "Clodhopper"}, username:"Corny"};
+        updateRegistrationInfoHandler.apply(invocation, [testUserId, data] );
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.firstName, "Cornelius");
+        assert.equal(updatedUser.userData.lastName, "Clodhopper");
+        assert.equal(updatedUser.username, "Corny");
+        assert.isFalse(meteorCallStub.withArgs('updateUserEmail').calledOnce);
+      });
+
+      it ('calls updateUserEmail if email passed', () => {
+        const invocation = {userId: testUserId};
+        let data = {userData: { firstName: "Sylvester", lastName: "Sunshine"}, username:"Sunny", email:"sunny@someplace.com"};
+        updateRegistrationInfoHandler.apply(invocation, [testUserId, data] );
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.isTrue(meteorCallStub.withArgs('updateUserEmail').calledOnce);
+      });
+    })
+
   });
 }

@@ -7,6 +7,8 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/users/profiles/profile.component.js';
+import '/client/users/profiles/edit-registration-modal.controller';
+import '/client/users/profiles/edit-registration-modal.service';
 
 describe ( 'Profile', function() {
 

@@ -251,17 +251,27 @@ Meteor.methods({
       throw new Meteor.Error('not-logged-in',
         'Must be logged in to update user email.');
     }
-    var currentUser = Meteor.users.findOne(this.userId, {emails: 1});
+    let userId = this.userId;
+    var currentUser = Meteor.users.findOne(userId, {emails: 1});
     var currentEmails = currentUser.emails;
     logger.info("currentEmails" + JSON.stringify(currentUser));
-    if (currentEmails != null) {
-      logger.info("removeEmail for userId: " + this.userId);
-      Accounts.removeEmail(currentUser._id, currentUser.emails[0].address)
-    }
+
     if (email) {
-      logger.info("addEmail for userId: " + this.userId + " email:" + email);
-      Accounts.addEmail(currentUser._id, email);
-      //Accounts.sendVerificationEmail(currentUser._id);
+      if (!currentEmails || currentEmails.length == 0) {
+        Accounts.addEmail(userId, email);
+      }
+      else {
+        let oldEmail = currentUser.emails[0].address;
+        if (oldEmail !== email) {
+          // NOTE: if the email differs only in case the add email will replace it
+          Accounts.addEmail(userId, email);
+          currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
+          if (currentUser.emails.length > 1) {
+            Accounts.removeEmail(oldEmail);
+          }
+        }
+      }
+      Accounts.sendVerificationEmail(userId);
     }
     logger.info("updateUserEmail for userId: " + this.userId + " emails:" + JSON.stringify(currentUser.emails));
   },
@@ -426,21 +436,18 @@ Meteor.methods({
         'Must be logged in to update user info.');
     }
     var currentUser = User.findOne({_id: userId}, {fields: {username:1, emails:1, userData:1}});
-    logger.verbose(data);
     currentUser.userData = data.userData;
+    // Note: will fail if username is not unique
     currentUser.username = data.username;
-    if ( currentUser.emails[0].address !== data.email) {
-      currentUser.emails[0].address = data.email;
-      currentUser.emails[0].verified = false;
-    }
     currentUser.save({fields: ['userData.firstName', 'userData.lastName', 'username', 'emails']}, function (err) {
       if (err) {
         logger.error("updateRegistrationInfo failed to update user. err: " + err);
         throw err;
       }
     });
-    if ( !currentUser.emails[0].verified ) {
-      Accounts.sendVerificationEmail(userId);
+    // update email - Note: will fail if another user has the email
+    if (data.email) {
+      Meteor.call('updateUserEmail', data.email);
     }
     logger.verbose("updateRegistrationInfo for userId: " + this.userId);
   }
