@@ -22,6 +22,7 @@ describe('UserDetails', function () {
   beforeEach(inject(function (_$controller_, _$cookies_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
+    $cookies = _$cookies_;
   }));
 
   var controller;
