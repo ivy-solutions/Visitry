@@ -171,6 +171,21 @@ if (Meteor.isServer) {
     });
     describe('users.updateUserEmail', ()=> {
       const updateUserEmailHandler = Meteor.server.method_handlers['updateUserEmail'];
+      var testUserWithEmailId;
+      beforeEach(() => {
+        testUserWithEmailId = Accounts.createUser({
+          username: 'testUserWithEmail',
+          password: 'Visitry99',
+          role: "requester",
+          emails: [{address: 'email@address.com', verified: true}]
+        });
+      });
+      afterEach(() => {
+        Meteor.users.remove(testUserWithEmailId, function (err) {
+          if (err) console.log(err);
+        });
+      });
+
       it('adds a user email when one does not exist', ()=> {
         const invocation = {userId: testUserId};
         updateUserEmailHandler.apply(invocation, ["new.test@email.com"]);
@@ -179,28 +194,16 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.emails[0].address, 'new.test@email.com');
       });
       it('adds a user email when one already exists but overwrites that one', ()=> {
-        testUserId = Accounts.createUser({
-          username: 'testUserWithEmail',
-          password: 'Visitry99',
-          role: "requester",
-          emails: [{address: 'email@address.com', verified: true}]
-        });
-        const invocation = {userId: testUserId};
+        const invocation = {userId: testUserWithEmailId};
         updateUserEmailHandler.apply(invocation, ["new.test@email.com"]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        var updatedUser = Meteor.users.findOne({_id: testUserWithEmailId});
         assert.equal(updatedUser.emails.length, 1);
         assert.equal(updatedUser.emails[0].address, 'new.test@email.com');
       })
       it('replaces user email if differs only in case', ()=> {
-        testUserId = Accounts.createUser({
-          username: 'testUserWithEmail',
-          password: 'Visitry99',
-          role: "requester",
-          emails: [{address: 'email@address.com', verified: true}]
-        });
-        const invocation = {userId: testUserId};
+         const invocation = {userId: testUserWithEmailId};
         updateUserEmailHandler.apply(invocation, ["EMAIL@address.com"]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        var updatedUser = Meteor.users.findOne({_id: testUserWithEmailId});
         assert.equal(updatedUser.emails.length, 1);
         assert.equal(updatedUser.emails[0].address, 'EMAIL@address.com');
       })

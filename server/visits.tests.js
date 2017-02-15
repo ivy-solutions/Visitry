@@ -71,9 +71,7 @@ if (Meteor.isServer) {
         visitId = Visits.insert(testVisit);
       });
       afterEach(()=> {
-        Visits.remove({}, function (err) {
-          if (err) console.log(err);
-        });
+        Visits.remove({});
       });
 
       it('can not deactivate requests of another requester', () => {
@@ -129,9 +127,7 @@ if (Meteor.isServer) {
         visitId = Visits.insert(testVisit);
       });
       afterEach(()=> {
-        Visits.remove({}, function (err) {
-          if (err) console.log(err);
-        });
+        Visits.remove({});
       });
 
       it('cannot cancel visits of another visitor', () => {
@@ -176,9 +172,7 @@ if (Meteor.isServer) {
       });
 
       afterEach(()=> {
-        Visits.remove({}, function (err) {
-          if (err) console.log(err);
-        });
+        Visits.remove({});
       });
 
       it('schedule visit success', () => {
@@ -208,9 +202,7 @@ if (Meteor.isServer) {
         visitId = Visits.insert(testVisit);
       });
       afterEach(()=> {
-        Visits.remove({}, function (err) {
-          if (err) console.log(err);
-        });
+        Visits.remove({});
       });
 
       it('attach requester feedback success', () => {
@@ -266,9 +258,7 @@ if (Meteor.isServer) {
 
       afterEach(function () {
         Meteor.users.findOne.restore();
-        Visits.remove({}, function (err) {
-          if (err) console.log(err);
-        });
+        Visits.remove({});
       });
 
       it('fails if no location in request', () => {
@@ -349,9 +339,7 @@ if (Meteor.isServer) {
 
 
     afterEach(function () {
-      Visits.remove({}, function (err) {
-        if (err) console.log(err);
-      });
+      Visits.remove({});
       Meteor.users.findOne.restore();
       Counts.publish.restore();
     });
@@ -489,9 +477,7 @@ if (Meteor.isServer) {
     });
 
     afterEach(function () {
-      Visits.remove({}, function (err) {
-        if (err) console.log(err);
-      });
+      Visits.remove({});
     });
 
     it('user with no visit requests', () => {
@@ -559,9 +545,7 @@ if (Meteor.isServer) {
     });
 
     afterEach(function () {
-      Visits.remove({}, function (err) {
-        if (err) console.log(err);
-      });
+      Visits.remove({});
       Meteor.users.findOne.restore();
       Counts.publish.restore();
     });
