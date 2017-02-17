@@ -15,6 +15,7 @@ if (Meteor.isServer) {
 
     var testUserId;
     beforeEach(() => {
+      //TODO: convert this to use StubCollections
       var user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
         testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99', role: "requester"});
@@ -201,7 +202,7 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.emails[0].address, 'new.test@email.com');
       })
       it('replaces user email if differs only in case', ()=> {
-         const invocation = {userId: testUserWithEmailId};
+        const invocation = {userId: testUserWithEmailId};
         updateUserEmailHandler.apply(invocation, ["EMAIL@address.com"]);
         var updatedUser = Meteor.users.findOne({_id: testUserWithEmailId});
         assert.equal(updatedUser.emails.length, 1);
@@ -214,7 +215,6 @@ if (Meteor.isServer) {
       const addUserToAgencyHandler = Meteor.server.method_handlers['addUserToAgency'];
       var adminTestUser;
       let meteorCallStub;
-      let emailSpy;
       beforeEach(()=> {
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
@@ -223,18 +223,18 @@ if (Meteor.isServer) {
           email: 'email@address.com'
         });
         adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99', role: "administrator"});
-        meteorCallStub = sinon.stub(Meteor, 'call', () => { //calls getAgency
-          return {name: 'fakeAgency', contactEmail: 'fake@email.com', contactPhone: '1234567890'};
+        meteorCallStub = sinon.stub(Meteor, 'call');
+        meteorCallStub.withArgs('getAgency').returns({
+          name: 'fakeAgency',
+          contactEmail: 'fake@email.com',
+          contactPhone: '1234567890'
         });
-        emailSpy = sinon.spy(Email, 'send');
       });
       afterEach(()=> {
         Meteor.users.remove(adminTestUser, function (err) {
           if (err) console.log(err);
         });
         Meteor.call.restore();
-        emailSpy.reset();
-        Email.send.restore();
       });
 
       it('adds a user to an agency', ()=> {
@@ -243,19 +243,13 @@ if (Meteor.isServer) {
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
-        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
-        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
       it('add a user to an agency fails if no user is provided', ()=> {
         const invocation = {userId: adminTestUser};
         assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{agencyId: 'agency1'}]), 'User missing. [invalid-user]');
       });
       it('add a user to an agency fails if no agency is provided', ()=> {
-        Meteor.call.restore();
-        meteorCallStub = sinon.stub(Meteor, 'call', () => { //calls getAgency
-          return;
-        });
+        meteorCallStub.withArgs('getAgency').returns('');
         const invocation = {userId: adminTestUser};
         assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{userId: testUserId}]), 'Agency missing. [invalid-agency]');
       });
@@ -272,7 +266,6 @@ if (Meteor.isServer) {
         updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
-        assert.equal(emailSpy.callCount, 1);
       });
       it('add a user to an agency when they already have an agency', ()=> {
         const invocation = {userId: adminTestUser};
@@ -282,9 +275,6 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.userData.agencyIds[1], 'agency2');
-        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
-        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
-        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
       it('add a user to an agency and remove the agency from prospective', ()=> {
         const invocation = {userId: adminTestUser};
@@ -304,9 +294,6 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], 'agency1');
         assert.equal(updatedUser.roles[0], 'visitor');
-        assert.equal(emailSpy.args[0][0].from, 'Visitry Admin <admin@visitry.org>');
-        assert.equal(emailSpy.args[0][0].to, updatedUser.emails[0].address);
-        assert.equal(emailSpy.args[0][0].subject, 'Visitry: Welcome to fakeAgency');
       });
     });
 
@@ -363,6 +350,15 @@ if (Meteor.isServer) {
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [Random.id()]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(meteorCallStub.calledWith('sendEnrollmentEmail', testNewUserId));
+      });
+
+      it('If user doesn\'t exist send welcome to agency email',()=>{
+        let agencyId = Random.id();
+        const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId, ['administrator']);
+        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
+        testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
+        assert(meteorCallStub.calledWith('sendAgencyWelcomeEmail', testNewUserId,agencyId));
       });
 
       it('Accounts.createUser returns id', ()=> {
@@ -441,34 +437,6 @@ if (Meteor.isServer) {
         testNewUserId = null;
         Accounts.findUserByEmail.restore();
       });
-
-
-    });
-
-    describe('users.sendEnrollmentEmail', ()=> {
-      const sendEnrollmentEmailHandler = Meteor.server.method_handlers['sendEnrollmentEmail'];
-      let accountsSendEnrollmentEmailSpy;
-      let result;
-      beforeEach(()=> {
-        accountsSendEnrollmentEmailSpy = sinon.stub(Accounts, 'sendEnrollmentEmail', ()=> {
-          result = true;
-        });
-        testUserId = Accounts.createUser({
-          username: 'testUserWithEmail',
-          password: 'Visitry99',
-          role: "requester",
-          email: 'email@address.com'
-        });
-      });
-      afterEach(()=> {
-        accountsSendEnrollmentEmailSpy.restore();
-      });
-      it('Accounts.createUser is called', ()=> {
-        const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
-        sendEnrollmentEmailHandler.apply(invocation, [testUserId]);
-        assert.equal(result, true);
-      });
     });
 
     describe('users.addProspectiveAgency method', () => {
@@ -504,10 +472,10 @@ if (Meteor.isServer) {
         meteorCallStub.restore();
       });
 
-      it ('succeeds in updating name fields', () => {
+      it('succeeds in updating name fields', () => {
         const invocation = {userId: testUserId};
-        let data = {userData: { firstName: "Cornelius", lastName: "Clodhopper"}, username:"Corny"};
-        updateRegistrationInfoHandler.apply(invocation, [testUserId, data] );
+        let data = {userData: {firstName: "Cornelius", lastName: "Clodhopper"}, username: "Corny"};
+        updateRegistrationInfoHandler.apply(invocation, [testUserId, data]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.firstName, "Cornelius");
         assert.equal(updatedUser.userData.lastName, "Clodhopper");
@@ -515,10 +483,14 @@ if (Meteor.isServer) {
         assert.isFalse(meteorCallStub.withArgs('updateUserEmail').calledOnce);
       });
 
-      it ('calls updateUserEmail if email passed', () => {
+      it('calls updateUserEmail if email passed', () => {
         const invocation = {userId: testUserId};
-        let data = {userData: { firstName: "Sylvester", lastName: "Sunshine"}, username:"Sunny", email:"sunny@someplace.com"};
-        updateRegistrationInfoHandler.apply(invocation, [testUserId, data] );
+        let data = {
+          userData: {firstName: "Sylvester", lastName: "Sunshine"},
+          username: "Sunny",
+          email: "sunny@someplace.com"
+        };
+        updateRegistrationInfoHandler.apply(invocation, [testUserId, data]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.isTrue(meteorCallStub.withArgs('updateUserEmail').calledOnce);
       });
