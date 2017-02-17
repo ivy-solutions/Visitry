@@ -266,11 +266,11 @@ Meteor.methods({
         if (oldEmail !== email) {
           // NOTE: if the email differs only in case the add email will replace it
           Accounts.addEmail(userId, email);
-          Accounts.sendVerificationEmail(userId);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
-            Accounts.removeEmail(oldEmail);
+            Accounts.removeEmail(userId,oldEmail);
           }
+          Accounts.sendVerificationEmail(userId);
         }
       }
     }

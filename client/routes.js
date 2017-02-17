@@ -129,6 +129,20 @@ angular.module('visitry')
         },
         controller: 'resetPasswordCtrl as resetpw'
       })
+      .state('replacePassword', {
+        url: '/replace-password/:token',
+        templateUrl: ()=> {
+          return '/packages/visitry-browser/client/auth/reset-password/replace-password.html';
+        },
+        controller: 'replacePasswordCtrl as replacePassword'
+      })
+      .state('verifyEmail', {
+        url: '/verify-email/:token',
+        templateUrl: ()=> {
+          return '/packages/visitry-browser/client/auth/register/verify-email.html';
+        },
+        controller: 'verifyEmailCtrl as verifyEmail'
+      })
       .state('profile', {
         url: '/profile',
         templateUrl: ()=> {
