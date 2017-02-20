@@ -39,9 +39,7 @@ if (Meteor.isServer) {
     describe('feedback.createFeedback method', () => {
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
       beforeEach(function () {
-        Feedbacks.remove({}, function (err) {
-          if (err) console.log(err);
-        })
+        Feedbacks.remove({});
       });
 
       it('creates feedback', () => {

@@ -7,6 +7,8 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/users/profiles/profile.component.js';
+import '/client/users/profiles/edit-registration-modal.controller';
+import '/client/users/profiles/edit-registration-modal.service';
 
 describe ( 'Profile', function() {
 
@@ -28,8 +30,8 @@ describe ( 'Profile', function() {
 
   beforeEach(function () {
     form = { $valid: true,
-      location : {$pristine: true, $touched: false},
-      phoneNumber : {$pristine: true, $touched: false},
+      location : {$pristine: true, $dirty: false},
+      phoneNumber : {$pristine: true, $dirty: false},
       $setUntouched: function(){},
       $setPristine: function(){}
     };
@@ -77,6 +79,7 @@ describe ( 'Profile', function() {
   afterEach(function () {
     meteorStub.restore();
     userIdStub.restore();
+    if (stateSpy) stateSpy.restore();
   });
 
 
@@ -90,7 +93,7 @@ describe ( 'Profile', function() {
     });
     it('update location visitorLocation when a location is selected', function () {
       controller.currentUser = user;
-      form.location.$touched = true;
+      form.location.$dirty = true;
       controller.location.details = {
         name: "Boston",
         geometry: {
@@ -144,9 +147,9 @@ describe ( 'Profile', function() {
       user.userData.location.address = null;
       chai.assert.isTrue(controller.isLocationValid());
     });
-    it ( 'false when location details is blank but location has text', function() {
+    it ( 'false when no location details but location has text', function() {
       controller.currentUser = user;
-      controller.location.details = "";
+      controller.location.details = null;
       controller.location.address = "text";
       chai.assert.isFalse(controller.isLocationValid());
     });

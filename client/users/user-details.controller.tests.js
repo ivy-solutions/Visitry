@@ -9,11 +9,9 @@ import { visitry } from '/client/lib/app.js';
 import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/users/user-details.controller.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
 import { Roles } from 'meteor/alanning:roles'
 import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
-import {VisitorUsers} from '/model/users'
 
 describe('UserDetails', function () {
 
@@ -21,9 +19,10 @@ describe('UserDetails', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_) {
+  beforeEach(inject(function (_$controller_, _$cookies_) {
     // The injector unwraps the underscores (_) from around the parameter names when matching
     $controller = _$controller_;
+    $cookies = _$cookies_;
   }));
 
   var controller;
@@ -82,25 +81,28 @@ describe('UserDetails', function () {
     timeSpent: 5 * 60
   };
 
+  let visitIds = [];
+  let feedbackIds = [];
 
   beforeEach(function () {
-    StubCollections.stub([Meteor.users, Visits, Feedbacks, VisitorUsers]);
-    Visits.insert(completedVisit);
-    Visits.insert(scheduledVisit);
-    Visits.insert(availableVisit);
-    Visits.insert(incompleteVisit);
-    Feedbacks.insert(feedbackTwoHours);
-    Feedbacks.insert(feedbackThreeHours);
-    Feedbacks.insert(feedbackLongAgo);
+    visitIds.push(Visits.insert(completedVisit));
+    visitIds.push(Visits.insert(scheduledVisit));
+    visitIds.push(Visits.insert(availableVisit));
+    visitIds.push(Visits.insert(incompleteVisit));
+    feedbackIds.push(Feedbacks.insert(feedbackTwoHours));
+    feedbackIds.push(Feedbacks.insert(feedbackThreeHours));
+    feedbackIds.push(Feedbacks.insert(feedbackLongAgo));
 
     inject(function ($rootScope) {
       scope = $rootScope.$new(true);
+      // FIXME - The version of angular that meteor-angular uses (1.3.11) does not support the locals binding
       controller = $controller('userDetailsCtrl', {$scope: scope}, {locals: {userId: testUserId}});
     });
   });
 
   afterEach(function() {
-    StubCollections.restore();
+    visitIds.forEach( function(id) { Visits.remove(id)});
+    feedbackIds.forEach( function(id) {Feedbacks.remove(id)});
   });
 
 // fails in CircleCI running phantomjs for unknown reason
@@ -112,10 +114,10 @@ describe('UserDetails', function () {
       $cookies.remove('agencyId');
     });
     it('agencyId cookie is not null', ()=> {
+      controller = $controller('userDetailsCtrl', {$scope: scope}, {locals: {userId: testUserId}});
       assert.isNotNull(controller.agencyId);
     });
   });
-
 
   describe.skip('pageChanged', function () {
     it('changing the page changes the page variable', ()=> {
@@ -124,31 +126,23 @@ describe('UserDetails', function () {
     });
   });
 
-  describe.skip('completedVisitsCount', ()=> {
+  describe.skip('Visit counts and feedback sums', ()=> {
     it('completedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
-  });
 
-  describe.skip('pendingVisitsCount', ()=> {
     it('pendingVisitsCount should include available and scheduled', ()=> {
       assert.equal(controller.pendingVisitsCount, 2);
     });
-  });
 
-  describe.skip('unfilledVisitsCount', ()=> {
     it('unfilledVisitsCount should be 1', ()=> {
       assert.equal(controller.unfilledVisitsCount, 1);
     });
-  });
 
-  describe.skip('hoursCount', ()=> {
     it('counts hours in the last month', ()=> {
       assert.equal(controller.hoursCount, 5);
     });
-  });
 
-  describe.skip('getUserVisitFeedback', ()=> {
     it('getUserVisitFeedback returns feedback of id that was passed', ()=> {
       let result = controller.getUserVisitFeedback(completedVisitId);
       assert.equal(result.visitId, completedVisitId);

@@ -12,16 +12,21 @@
         </div>
     </div>
     <div class="username">
-        {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}} <a class="icon ion-edit dark button-small"></a>
+        {{profile.currentUser.userData.firstName}} {{profile.currentUser.userData.lastName}}
+        <a class="icon ion-edit dark button-small" ng-click="profile.showEditRegistrationModal()"></a>
     </div>
     <ion-list>
         <label class="item item-input">
             <i class="icon ion-location placeholder-icon"></i>
             <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
                    ng-model="profile.location.address"
-                   details="profile.location.details" disable-tap data-tap-disabled="true"
-                   placeholder="Location from which you will usually come"/>
+                   details="profile.location.details" data-tap-disabled="true"
+                   placeholder="Location from which you will usually come" options="profile.locationOptions"/>
         </label>
+        <div layout="row">
+            <span flex></span>
+            <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Type address or place name and select location</span>
+        </div>
         <label class="item">Show visits within {{profile.distance}} miles
             <div class="range range-positive">
                 1
@@ -48,6 +53,6 @@
         </label>
     </ion-list>
     <button class="button button-full button-clear">
-        <span class="balanced">Update Profile</span>
+        <span class="balanced">Save</span>
     </button>
 </form>

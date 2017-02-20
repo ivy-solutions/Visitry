@@ -146,6 +146,7 @@ describe('Client Feedback', function () {
         errorMsg=null;
         Meteor.call.restore();
         Meteor.userId.restore();
+        if (stateSpy) stateSpy.restore();
       });
 
       var form = {$valid:true, $setUntouched: function(){}, $setPristine:function(){} };

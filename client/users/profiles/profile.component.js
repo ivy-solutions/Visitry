@@ -5,11 +5,15 @@ import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 import {Agency} from '/model/agencies'
 
-angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory) {
+angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory, EditRegistration) {
   $reactive(this).attach($scope);
 
   this.currentUser = Meteor.user();
   this.isProfileReady = false;
+  this.locationOptions = {
+    country:"us",
+    watchEnter: false
+  };
 
   this.subscribe('userProfile', ()=> {
     return [];
@@ -20,12 +24,8 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
-      username: 1, emails: 1, roles: 1,
-        'userData.agencyIds': 1, 'userData.prospectiveAgencyIds' : 1,
-        'userData.location': 1, 'userData.visitRange': 1,
-        'userData.firstName': 1, 'userData.lastName': 1,
-        'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1}}
-        );
+      username: 1, emails: 1, roles: 1, 'userData':1}}
+    );
   });
 
   this.helpers({
@@ -34,7 +34,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     },
     distance: () => {
       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
-        logger.verbose( "user visitRange:" + Meteor.user().userData.visitRange);
         return Meteor.user().userData.visitRange.toString();
       }
       return "1";
@@ -49,37 +48,40 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
 
   this.location = {
     address: (this.currentUser && this.currentUser.userData && this.currentUser.userData.location) ? this.currentUser.userData.location.address : "",
-    details: ""
+    details: null
   };
 
-  /////////
-  // isLocationValid is not used becuase sometimes google places does work well on first try and we do not want
-  // to frustrate users by making them struggle to get teh address in.
   this.isLocationValid = ()=> {
     if ( Meteor.userId() !== null ) {
-      var userHasSelectedLocation = this.location.details.length > 0 && this.location.address != null && this.location.address.length > 0;
       var hasClearAddress =  !this.location.address || this.location.address.length == 0 ;
-    return userHasSelectedLocation || hasClearAddress;
+      if (hasClearAddress) {
+        this.location.details = null;
+        return true;
+      } else {
+        var userHasSelectedLocation = this.location.details != null && this.location.address != null && this.location.address.length > 0;
+        return userHasSelectedLocation;
+      }
     }
     return false;
   };
 
   this.submitUpdate = (form) => {
-    if(form.$valid ) {
+    if(form.$valid && (form.location.$pristine || this.isLocationValid())) {
       //location
-      if (form.location.$touched) {
+       if (form.location.$dirty) {
         // location is optional - can be blank or selected
         var newLocation = null;
-        if (this.location.details) {
-          newLocation = {
-            name: this.location.details.name + ", " + this.location.details.vicinity,
-            formattedAddress: this.location.details.formatted_address,
-            latitude: this.location.details.geometry.location.lat(),
-            longitude: this.location.details.geometry.location.lng()
-          };
+        if (this.location.address != null && this.location.address.length > 0 ) {
+          if (this.location.details) {
+            newLocation = {
+              name: this.location.details.name + ", " + this.location.details.vicinity,
+              formattedAddress: this.location.details.formatted_address,
+              latitude: this.location.details.geometry.location.lat(),
+              longitude: this.location.details.geometry.location.lng()
+            };
+          }
         }
 
-        logger.info("profile.submitUpdate update location: " + this.location.address + " " + JSON.stringify(this.location.details));
         Meteor.call('updateLocation', newLocation, (err) => {
           if (err) {
             return handleError(err);
@@ -104,7 +106,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     //clear form
     this.resetForm(form);
 
-    logger.info($ionicHistory.backTitle());
     if ($ionicHistory.backView() != null && !['Register', 'Groups'].includes($ionicHistory.backTitle())) {
       $ionicHistory.goBack();
     } else {
@@ -154,6 +155,10 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   this.showNavigationToGroups = () => {
     //dont show, if we came from groups during registration process
     return !['Groups'].includes($ionicHistory.backTitle())
+  };
+
+  this.showEditRegistrationModal = function () {
+    EditRegistration.showModal();
   };
 
   function handleError(err) {

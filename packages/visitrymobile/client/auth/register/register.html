@@ -18,7 +18,8 @@
                         <span class="error-message" ng-messages-include="error-list.html"></span>
                     </div>
                     <label class="item item-input">
-                        <input ng-model="register.credentials.email" name="email" type="text" placeholder="Email" required ng-minlength="5" autocorrect="off" autocapitalize="off"/>
+                        <input ng-model="register.credentials.email" name="email" type="text" placeholder="Email" required ng-minlength="5" ng-pattern="/^.+@.+\..+$/"
+                               autocorrect="off" autocapitalize="off"/>
                     </label>
                     <div layout="row" ng-show="registrationForm.email.$error && (registrationForm.email.$touched || registrationForm.$submitted)" ng-messages="registrationForm.email.$error">
                         <span flex></span>
@@ -53,6 +54,9 @@
 </ion-view>
 
 <script id="error-list.html" type="text/ng-template">
+    <div class="error-message" ng-message="pattern">
+        This field is must be a valid e-mail address.
+    </div>
     <div class="error-message" ng-message="required">
         This field is required.
     </div>
