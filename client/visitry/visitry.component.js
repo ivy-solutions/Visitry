@@ -36,8 +36,12 @@ angular.module('visitry').directive('visitry', function () {
           if ($cookies.get('agencyId')) {
             this.agencyId = $cookies.get('agencyId');
           }
-          else if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.agencyIds) {
-            this.agencyId = Meteor.user().userData.agencyIds;
+          else {
+            if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.agencyIds) {
+              this.agencyId = Meteor.user().userData.agencyIds[0];
+            } else {
+              this.agencyId = null;
+            }
           }
         }
         var feedback = Visit.find({
@@ -100,9 +104,8 @@ angular.module('visitry').directive('visitry', function () {
             if (Meteor.isCordova) {
               $ionicHistory.clearHistory();
               $ionicHistory.clearCache();
-            } else {
-              $cookies.remove('agencyId');
             }
+            $cookies.remove('agencyId');
             $state.go('login', {reload: true, notify: false});
           }
         });

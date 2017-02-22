@@ -10,41 +10,38 @@ angular.module('visitry').controller('pendingVisitsCtrl',
 
   this.showDelete = false;
   this.canSwipe = true;
-  this.listSort = {
-    requestedDate: 1
-  };
+
   this.hasRequests = true;
-  this.userId = Meteor.userId();
   this.visits = null;
   this.hasAgency = true;
 
   this.subscribe('userdata');
 
   this.autorun( function() {
+    var user = Meteor.user();
     if ( Meteor.userId()) {
-      this.visits = Visit.find({
-        requesterId: Meteor.userId(),
-        requestedDate: {$gte: new Date()}
-      }, {sort: this.getReactively('listSort')});
-      this.hasRequests = this.visits.count() > 0;
-
-      let currentUser = User.findOne(Meteor.userId(),{fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
-      if ( typeof currentUser.hasAgency !== 'undefined') {
-        this.hasAgency = currentUser.hasAgency;
+      logger.info(user);
+      if ( user && user.userData ) {
+        this.hasAgency = user.userData.agencyIds && user.userData.agencyIds.length > 0 ;
       }
-    } else {
+      if (this.hasAgency) {
+        this.visits = Visit.find({
+          requesterId: Meteor.userId(),
+          requestedDate: {$gte: new Date()}
+        }, {sort: {requestedDate: 1} });
+        this.hasRequests = this.visits.count() > 0;
+      }
+
+     } else {
       feedback.stop()
     }
   });
 
-
   this.helpers({
     pendingVisits: ()=> {
       var hasAgency = this.getReactively('hasAgency');
-      if (Meteor.userId()) {
+      if (Meteor.userId() && this.visits) {
         return Meteor.myFunctions.groupVisitsByRequestedDate(this.getReactively('visits'));
-      } else {
-        feedback.stop()
       }
     }
   });
