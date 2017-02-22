@@ -311,13 +311,11 @@ Meteor.methods({
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
-      if (agency.contactEmail) {
-        Meteor.call('sendAgencyWelcomeEmail', user, agency, (error)=> {
-          if (error) {
-            logger.error(error);
-          }
-        });
-      }
+      Meteor.call('sendAgencyWelcomeEmail', userArgs.userId, userArgs.agencyId, (error)=> {
+        if (error) {
+          logger.error(error);
+        }
+      });
     });
     logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
   },

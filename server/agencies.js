@@ -64,7 +64,7 @@ Meteor.methods({
         userEmail: currentUser.emails[0].address,
         note: userNotes,
         agency: agency,
-        url: Meteor.absoluteUrl + 'admin/manage',
+        url: Meteor.absoluteUrl() + 'admin/manage',
         absoluteUrl: Meteor.absoluteUrl()
       })
     });
@@ -87,7 +87,7 @@ Meteor.methods({
         userEmail: currentUser.emails[0].address,
         note: userNotes,
         agency: agency,
-        url: Meteor.absoluteUrl + 'admin/manage/visitors',
+        url: Meteor.absoluteUrl() + 'admin/manage/visitors',
         absoluteUrl: Meteor.absoluteUrl()
       })
     });
