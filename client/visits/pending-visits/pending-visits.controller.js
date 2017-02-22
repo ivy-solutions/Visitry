@@ -18,10 +18,9 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.subscribe('userdata');
 
   this.autorun( function() {
-    var user = Meteor.user();
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
     if ( Meteor.userId()) {
-      logger.info(user);
-      if ( user && user.userData ) {
+       if ( user && user.userData ) {
         this.hasAgency = user.userData.agencyIds && user.userData.agencyIds.length > 0 ;
       }
       if (this.hasAgency) {
