@@ -1,4 +1,5 @@
 /**
+/**
  * Created by n0235626 on 6/6/16.
  */
 import 'angular-mocks';
@@ -53,9 +54,6 @@ describe('Pending Visit Requests', function () {
     it('can swipe to delete', function () {
       chai.assert.equal(controller.canSwipe, true);
     });
-    it('list sorted descending by request day', function () {
-      chai.assert.equal(controller.listSort.requestedDate, 1);
-    })
   });
 
   describe('date since requested', function () {
