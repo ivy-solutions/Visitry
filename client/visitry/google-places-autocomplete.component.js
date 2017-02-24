@@ -63,7 +63,6 @@ angular.module("visitry")
 
         //handle place-changed fired by AutoComplete
         var listener = (scope.gPlace).addListener('place_changed', function () {
-          console.log("place_Changed");
           scope.ngProgress = false;
           var result = scope.gPlace.getPlace();
           if (result !== undefined) {
@@ -84,7 +83,6 @@ angular.module("visitry")
         var getPlace = function (result) {
           var autocompleteService = new google.maps.places.AutocompleteService();
           if (result.name.length > 0) {
-            console.log("autocompleteService");
             scope.ngProgress = true;
             autocompleteService.getPlacePredictions(
               {
@@ -110,7 +108,6 @@ angular.module("visitry")
                     }
                   );
                 }
-                console.log("end listentoresult");
                 scope.ngProgress = false;
               }
             );
@@ -148,7 +145,6 @@ angular.module("visitry")
         var getPlaceDetails = function (e) {
           var selectedPlaceName = e.target.textContent;
           e.target.blur();
-          console.log("getPlaceDetails");
           scope.ngProgress = true;
           var autocompleteService = new google.maps.places.AutocompleteService();
           if (e.target.textContent.length > 0) {
@@ -180,7 +176,6 @@ angular.module("visitry")
                     }
                   );
                 }
-                console.log("getPlaceDetails - listentoresult");
                 scope.ngProgress = false;
               });
           } else {
