@@ -52,6 +52,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
             errors += '<div>Email must look like an email.</div>';
             break;
           case 'website':
+            console.log(form.$error[key])
             errors += '<div>Website must be a valid web address.</div>';
             break;
           case 'phone':
