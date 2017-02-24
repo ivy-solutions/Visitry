@@ -19,13 +19,14 @@
         <label class="item item-input">
             <i class="icon ion-location placeholder-icon"></i>
             <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
-                   ng-model="profile.location.address"
+                   ng-model="profile.location.address" ng-progress="profile.loadingPlaces" ng-change="profile.changeLocation()" ng-blur="profile.loadingPlaces=false"
                    details="profile.location.details" data-tap-disabled="true"
                    placeholder="Usual visit location" options="profile.locationOptions"/>
+            <span ng-hide="!profile.loadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
         </label>
         <div layout="row">
             <span flex></span>
-            <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid()">Type address or place name and select location</span>
+            <span class="error-message" ng-hide="profile.profileForm.location.$pristine  || profile.isLocationValid() || profile.loadingPlaces">Type address or place name and select location</span>
         </div>
         <label class="item item-input item-stacked-label">
             <div class="input-label">Location Notes for Visitor</div>

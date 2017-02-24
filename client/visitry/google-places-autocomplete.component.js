@@ -28,13 +28,14 @@ import {logger} from '/client/logging'
  **/
 
 angular.module("visitry")
-  .directive('ngGooglePlacesAutocompleteHack', function ($timeout) {
+  .directive('ngGooglePlacesAutocompleteHack', function ($timeout, $ionicLoading) {
     return {
       require: 'ngModel',
       scope: {
         ngModel: '=',
         options: '=?',
-        details: '='
+        details: '=',
+        ngProgress: '='
       },
 
       link: function (scope, element, attrs, controller) {
@@ -62,6 +63,8 @@ angular.module("visitry")
 
         //handle place-changed fired by AutoComplete
         var listener = (scope.gPlace).addListener('place_changed', function () {
+          console.log("place_Changed");
+          scope.ngProgress = false;
           var result = scope.gPlace.getPlace();
           if (result !== undefined) {
             if (result.address_components !== undefined) {
@@ -81,6 +84,8 @@ angular.module("visitry")
         var getPlace = function (result) {
           var autocompleteService = new google.maps.places.AutocompleteService();
           if (result.name.length > 0) {
+            console.log("autocompleteService");
+            scope.ngProgress = true;
             autocompleteService.getPlacePredictions(
               {
                 input: result.name,
@@ -105,6 +110,8 @@ angular.module("visitry")
                     }
                   );
                 }
+                console.log("end listentoresult");
+                scope.ngProgress = false;
               }
             );
           }
@@ -134,12 +141,15 @@ angular.module("visitry")
           var backdrop = document.getElementsByClassName('backdrop');
           angular.element(backdrop).attr('data-tap-disabled', 'true');
 
+
         },500);
 
 
         var getPlaceDetails = function (e) {
           var selectedPlaceName = e.target.textContent;
           e.target.blur();
+          console.log("getPlaceDetails");
+          scope.ngProgress = true;
           var autocompleteService = new google.maps.places.AutocompleteService();
           if (e.target.textContent.length > 0) {
             autocompleteService.getPlacePredictions(
@@ -170,6 +180,8 @@ angular.module("visitry")
                     }
                   );
                 }
+                console.log("getPlaceDetails - listentoresult");
+                scope.ngProgress = false;
               });
           } else {
             logger.error("pac-container - no text in location field ");
@@ -181,6 +193,7 @@ angular.module("visitry")
           scope.gPlace.unbindAll();
           google.maps.event.clearInstanceListeners(scope.gPlace);
           google.maps.event.clearInstanceListeners(element);
+          scope.ngProgress = false;
         });
       }
     };
