@@ -14,7 +14,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     country:"us",
     watchEnter: false
   };
-  this.loadingPlaces = false; //true when retrieving info from Google Places
+  this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.subscribe('userProfile', ()=> {
     return [];
@@ -66,7 +66,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.changeLocation = () => {
-    this.loadingPlaces = this.location.address && this.location.address.length > 0;
+    this.isLoadingPlaces = this.location.address && this.location.address.length > 0;
     this.location.details = null;
   };
 
@@ -177,7 +177,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   }
 
   this.resetForm= function(form) {
-    this.loadingPlaces = false;
+    this.isLoadingPlaces = false;
     form.$setUntouched();
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');
