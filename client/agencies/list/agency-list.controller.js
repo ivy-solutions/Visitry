@@ -3,36 +3,44 @@
  */
 
 import {Agency} from '/model/agencies'
+import {logger} from '/client/logging'
 
 angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory ) {
   $reactive(this).attach($scope);
 
   this.canSwipe = true;
-  this.perPage = 3;
-  this.page = 1;
-  this.sort = {
-    name: 1
-  };
-  this.orderProperty = '1';
-  this.searchText = '';
+  this.coordinates = [];
 
   this.helpers({
     agencies: () => {
-      return Agency.find({}, {sort: this.getReactively('sort')});
+      let user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1}});
+      if ( user && user.userData && user.userData.location) {
+        this.coordinates = user.userData.location.geo.coordinates;
+      } else {
+        var latLng = Geolocation.latLng();
+        if (latLng ) {
+          this.coordinates = [latLng.lng, latLng.lat]
+        } else {
+          logger.error("Error getting current location: " + Geolocation.error());
+          this.coordinates = [-71.0589, 42.3601]; //default location: Boston
+        }
+      }
+      logger.verbose(this.coordinates);
+      return Agency.find({
+        'location.geo': {
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: this.coordinates
+            }
+          }
+        }
+      });
     }
   });
 
   this.subscribe('userProfile');
-  this.subscribe('allAgencies', () => {
-    return [
-      {
-        limit: parseInt(this.perPage),
-        skip: parseInt((this.getReactively('page') - 1) * this.page),
-        sort: this.getReactively('sort')
-      },
-      this.getReactively('searchText')
-    ]
-  });
+  this.subscribe('allAgencies', () => { return [ {reactive:false}] });
 
   this.isMember = (agencyId) => {
     return Meteor.myFunctions.membershipStatus(agencyId) === 'member';

@@ -20,7 +20,8 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
       this.isAgencyDataLoaded = false;
-      let allAgencySubscription = this.subscribe('allAgencies', ()=>[], ()=> {
+      let allAgencySubscription = this.subscribe('allAgencies', ()=> {
+        return [ {reactive:false}] }, ()=> {
         this.isAgencyDataLoaded = true;
       });
       this.subscribe('visits');
