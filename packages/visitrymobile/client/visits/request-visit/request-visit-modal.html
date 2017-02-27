@@ -15,13 +15,13 @@
           <i class="icon ion-location placeholder-icon"></i>
           <input type="text" id="locationInput" ng-google-places-autocomplete-hack options="requestVisit.autoCompleteOptions"
                  ng-model="requestVisit.visitRequest.location.name"
-                 ng-progress="requestVisit.loadingPlaces" ng-change="requestVisit.changeLocation()" ng-blur="requestVisit.loadingPlaces=false"
+                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()" ng-blur="requestVisit.isLoadingPlaces=false"
                  details="requestVisit.visitRequest.location.details"/>
-            <span ng-hide="!requestVisit.loadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
+            <span ng-hide="!requestVisit.isLoadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
         </label>
         <div layout="row">
           <span flex></span>
-          <span class="error-message" ng-hide="requestVisit.isLocationValid() || requestVisit.loadingPlaces">Type address or place name and select location</span>
+          <span class="error-message" ng-hide="requestVisit.isLocationValid() || requestVisit.isLoadingPlaces">Type address or place name and select location</span>
         </div>
       </div>
       <div class="list list-inset date-time-input">
