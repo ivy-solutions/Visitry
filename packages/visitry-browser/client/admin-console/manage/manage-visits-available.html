@@ -12,7 +12,7 @@
   </md-list-item>
   <md-list-item
       dir-paginate="visit in adminManageVisits.requestedVisits | itemsPerPage: adminManageVisits.recordPerPage"
-      pagination-id="available-visits" total-items="adminManageVisits.visitsCount" ng-click="null">
+      pagination-id="available-visits" total-items="adminManageVisits.visitsCount" ng-click="adminManageVisits.getVisitDetails(visit._id)">
     <div layout="row" class="manageList" layout-align="space-between center" layout-fill class="md-list-item-text">
       <div flex="20">
         {{visit.requestedDate| date:'MM/dd/yy'}} {{visit.requestedDate|timeOfDay}}

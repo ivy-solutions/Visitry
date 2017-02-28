@@ -38,14 +38,22 @@ div[ui-view] > * {
   position: relative;
 }
 
-.info-badge.pending {
+.info-badge.pending, .info-badge.available, .info-badge.scheduled, md-toolbar.available, md-toolbar.scheduled{
   background: #F6C342
 }
 
-.info-badge.complete {
+.info-badge.complete, md-toolbar.complete {
   background: #4caf50
 }
 
-.info-badge.incomplete {
+.info-badge.incomplete, .info-badge.cancelled, .info-badge.unfilled, .md-toolbar.cancelled, .md-toolbar.unfilled  {
   background: lightcoral
+}
+
+.text-warn {
+  color: red
+}
+
+.text-success {
+  color: green;
 }

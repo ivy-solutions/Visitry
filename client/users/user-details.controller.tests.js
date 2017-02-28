@@ -84,6 +84,12 @@ describe('UserDetails', function () {
   let visitIds = [];
   let feedbackIds = [];
 
+  let AdminVisitDetailsDialogMock = {
+    open: (visitId)=> {
+      return visitId;
+    }
+  };
+
   beforeEach(function () {
     visitIds.push(Visits.insert(completedVisit));
     visitIds.push(Visits.insert(scheduledVisit));
@@ -100,9 +106,13 @@ describe('UserDetails', function () {
     });
   });
 
-  afterEach(function() {
-    visitIds.forEach( function(id) { Visits.remove(id)});
-    feedbackIds.forEach( function(id) {Feedbacks.remove(id)});
+  afterEach(function () {
+    visitIds.forEach(function (id) {
+      Visits.remove(id)
+    });
+    feedbackIds.forEach(function (id) {
+      Feedbacks.remove(id)
+    });
   });
 
 // fails in CircleCI running phantomjs for unknown reason
@@ -114,7 +124,7 @@ describe('UserDetails', function () {
       $cookies.remove('agencyId');
     });
     it('agencyId cookie is not null', ()=> {
-      controller = $controller('userDetailsCtrl', {$scope: scope}, {locals: {userId: testUserId}});
+      controller = $controller('userDetailsCtrl', {$scope: scope,}, {locals: {userId: testUserId}});
       assert.isNotNull(controller.agencyId);
     });
   });
@@ -147,6 +157,21 @@ describe('UserDetails', function () {
       let result = controller.getUserVisitFeedback(completedVisitId);
       assert.equal(result.visitId, completedVisitId);
       assert.equal(result.timeSpent / 60, 2);
+    });
+  });
+
+  describe.skip('getVisitDetails',()=>{
+    let AdminVisitDetailsDialogSpy;
+    beforeEach(()=>{
+      AdminVisitDetailsDialogSpy = sinon.spy(AdminVisitDetailsDialog,'open');
+    });
+    afterEach(()=>{
+      AdminVisitDetailsDialog.open.restore();
+    });
+    it('getVisitDetails opens AdminVisitDetailsDialog',()=>{
+      let visitId = Random.id();
+      controller.getVisitDetails(visitId);
+      assert(AdminVisitDetailsDialogSpy.calledWith(visitId));
     });
   });
 

@@ -269,7 +269,7 @@ Meteor.methods({
           Accounts.addEmail(userId, email);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
-            Accounts.removeEmail(userId,oldEmail);
+            Accounts.removeEmail(userId, oldEmail);
           }
           Accounts.sendVerificationEmail(userId);
         }
@@ -407,6 +407,11 @@ Meteor.methods({
       Meteor.call('updateUserEmail', data.email);
     }
     logger.verbose("updateRegistrationInfo for userId: " + this.userId);
+  },
+  getUserPicture(userId){
+    Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to view user picture.');
+    let user = User.findOne({_id: userId}, {fields: {'userData.picture': 1}});
+    return user.userData.picture;
   }
 });
 
