@@ -17,7 +17,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     watchEnter: true,
     country: 'us'
   };
-  this.loadingPlaces = false; //true when retrieving info from Google Places
+  this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.userSubmitted = false;
   var currentUser;
@@ -33,7 +33,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   });
 
   this.changeLocation = () => {
-    this.loadingPlaces = this.visitRequest.location.name.length > 0;
+    this.isLoadingPlaces = this.visitRequest.location.name.length > 0;
     this.visitRequest.location.details.geometry = null;
   };
 

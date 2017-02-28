@@ -67,3 +67,4 @@ shell-server
 meteorhacks:ssr
 http
 practicalmeteor:mocha-xunit-reporter
+mdg:geolocation

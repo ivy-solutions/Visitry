@@ -76,6 +76,7 @@ localstorage@1.0.12
 logging@1.1.16
 mbanting:cordova-accounts-resume@1.1.0
 mdg:camera@1.4.1
+mdg:geolocation@1.3.0
 mdg:validation-error@0.5.1
 meteor@1.6.0
 meteor-base@1.0.4
