@@ -43,7 +43,7 @@
         <md-list-item>
           <label class="md-title" for="website" layout-margin flex="15">Website</label>
           <input type="text" id="website" name="website" ng-model="adminAdminAgency.agency.website"
-                 ng-pattern="/^(?:(ftp|http|https):\/\/)?(?:[\w-]+\.)+[a-z]{3,6}(?:[\/|\?].*)?$/"
+                 ng-pattern="/^(?:(http|https):\/\/)?(?:[\w-]+\.)+[a-z]{3,6}(?:[\/|\?].*)?$/"
                  ng-readonly="!adminAdminAgency.isEditMode" layout-margin flex/>
         </md-list-item>
         <md-list-item>

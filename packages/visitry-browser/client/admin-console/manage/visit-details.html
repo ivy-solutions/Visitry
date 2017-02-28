@@ -1,0 +1,149 @@
+<md-dialog flex-gt-md="70" flex-gt-sm="80" flex-sm="100">
+  <md-toolbar ng-class="adminVisitDetails.visitStatus">
+    <div class="md-toolbar-tools">
+      <div class="info-badge" ng-class="adminVisitDetails.visitStatus"
+           style="margin-right: 10px">
+        {{adminVisitDetails.visitStatus|capitalize}}
+      </div>
+      <div>{{adminVisitDetails.visit.location.formattedAddress}}</div>
+      <span flex></span>
+
+      <div>{{adminVisitDetails.visit.visitTime||adminVisitDetails.visit.requestedDate |date:
+        'EEE M/d/yy h:mm a'}}
+      </div>
+    </div>
+  </md-toolbar>
+
+  <div layout="row" flex="none" layout-align="center" layout-margin>
+    <!--REQUESTER-->
+    <div layout="column" flex="50" layout-padding>
+      <div layout="row" layout-align="start">
+        <div class="md-subheader">Requester</div>
+        <span flex></span>
+        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">Days Pending: {{
+          adminVisitDetails.visit.requestedDate
+          | amDifference : adminVisitDetails.visit.createdAt : 'days' }}
+        </div>
+      </div>
+      <div md-whiteframe="3">
+        <md-list>
+          <md-list-item>
+            <img ng-src="{{adminVisitDetails.requesterPicture}}" class="md-avatar"/>
+            <div class="md-list-item-text">
+              <h4>{{adminVisitDetails.requester.fullName}}</h4>
+              <div>{{adminVisitDetails.visit.notes}}</div>
+            </div>
+            <a class="md-secondary" href="mailto:{{adminVisitDetails.requester.emails[0].address}}">
+              <ng-md-icon icon="email" aria-label="Send Email" style="fill: #e6c300" size="32"></ng-md-icon>
+            </a>
+          </md-list-item>
+        </md-list>
+        <!--REQUESTER FEEDBACK-->
+        <md-list ng-if="!adminVisitDetails.requesterFeedback">
+          <md-divider layout-margin></md-divider>
+          <md-list-item class="md-3-line md-long-text">
+            <div class="md-list-item-text">
+              <div layout="row" layout-align="center center">
+                <h3>...waiting on requester feedback</h3>
+              </div>
+            </div>
+          </md-list-item>
+        </md-list>
+
+        <div ng-if="adminVisitDetails.requesterFeedback" style="margin-top:32px">
+          <md-divider layout-margin></md-divider>
+          <div class="md-subheader" style="padding-left: 8px;padding-top:8px">Feedback</div>
+          <md-list>
+            <md-list-item class="md-2-line">
+              <div class="md-list-item-text">
+                <div layout="row">
+                  <div class="md-subhead">Companion</div>
+                  <span flex></span>
+                  <div class="md-subhead"><strong><span
+                      ng-class="{'text-warn':adminVisitDetails.requesterFeedback.companionRating<3,'text-success':adminVisitDetails.requesterFeedback.companionRating>4}">{{adminVisitDetails.requesterFeedback.companionRating}}</span></strong>/5
+                  </div>
+                </div>
+                <div style="padding-left: 40px">{{adminVisitDetails.requesterFeedback.companionComments}}</div>
+              </div>
+            </md-list-item>
+            <md-list-item class="md-2-line">
+              <div class="md-list-item-text">
+                <div layout="row">
+                  <div class="md-subhead">Overall</div>
+                  <span flex></span>
+                  <div class="md-subhead"><strong><span
+                      ng-class="{'text-warn':adminVisitDetails.requesterFeedback.visitRating<3,'text-success':adminVisitDetails.requesterFeedback.visitRating>4}">{{adminVisitDetails.requesterFeedback.visitRating}}</span></strong>/5
+                  </div>
+                </div>
+                <div style="padding-left: 40px">{{adminVisitDetails.requesterFeedback.visitComments}}</div>
+              </div>
+            </md-list-item>
+          </md-list>
+        </div>
+      </div>
+    </div>
+    <!--VISITOR-->
+    <div layout="column" flex="50" ng-if="adminVisitDetails.visit.visitorId" layout-padding>
+      <div layout="row" layout-align="start">
+        <div class="md-subheader">Visitor</div>
+      </div>
+      <div md-whiteframe="3">
+        <md-list>
+          <md-list-item>
+            <img ng-src="{{adminVisitDetails.visitorPicture}}" class="md-avatar"/>
+            <div class="md-list-item-text">
+              <h4>{{adminVisitDetails.visitor.fullName}}</h4>
+              <div>{{adminVisitDetails.visit.visitorNotes}}</div>
+            </div>
+            <a class="md-secondary" href="mailto:{{adminVisitDetails.visitor.emails[0].address}}">
+              <ng-md-icon icon="email" aria-label="Send Email" style="fill: #e6c300" size="32"></ng-md-icon>
+            </a>
+          </md-list-item>
+        </md-list>
+        <!--VISITOR FEEDBACK-->
+        <md-list ng-if="!adminVisitDetails.visitorFeedback">
+          <md-divider layout-margin></md-divider>
+          <md-list-item class="md-3-line md-long-text">
+            <div class="md-list-item-text">
+              <div layout="row" layout-align="center center">
+                <h3>...waiting on requester feedback</h3>
+              </div>
+            </div>
+          </md-list-item>
+        </md-list>
+
+        <div ng-if="adminVisitDetails.visitorFeedback" style="margin-top:32px">
+          <md-divider layout-margin></md-divider>
+          <div class="md-subheader" style="padding-left: 8px;padding-top:8px">Feedback</div>
+          <md-list>
+            <md-list-item class="md-2-line">
+              <div class="md-list-item-text">
+                <div layout="row">
+                  <div class="md-subhead">Companion</div>
+                  <span flex></span>
+                  <div class="md-subhead"><strong><span
+                      ng-class="{'text-warn':adminVisitDetails.visitorFeedback.companionRating<3,'text-success':adminVisitDetails.visitorFeedback.companionRating>4}">{{adminVisitDetails.visitorFeedback.companionRating}}</span></strong>/5
+                  </div>
+                </div>
+                <div style="padding-left: 40px">{{adminVisitDetails.visitorFeedback.companionComments}}</div>
+              </div>
+            </md-list-item>
+            <md-list-item class="md-2-line">
+              <div class="md-list-item-text">
+                <div layout="row">
+                  <div class="md-subhead">Overall</div>
+                  <span flex></span>
+                  <div class="md-subhead">
+                    <strong><span
+                        ng-class="{'text-warn':adminVisitDetails.visitorFeedback.visitRating<3,'text-success':adminVisitDetails.visitorFeedback.visitRating>4}">{{adminVisitDetails.visitorFeedback.visitRating}}</span></strong>/5
+                  </div>
+                </div>
+                <div style="padding-left: 40px">{{adminVisitDetails.visitorFeedback.visitComments}}</div>
+              </div>
+            </md-list-item>
+          </md-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</md-dialog>

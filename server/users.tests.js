@@ -352,13 +352,13 @@ if (Meteor.isServer) {
         assert(meteorCallStub.calledWith('sendEnrollmentEmail', testNewUserId));
       });
 
-      it('If user doesn\'t exist send welcome to agency email',()=>{
+      it('If user doesn\'t exist send welcome to agency email', ()=> {
         let agencyId = Random.id();
         const invocation = {userId: testUserId};
         Roles.addUsersToRoles(testUserId, ['administrator']);
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
-        assert(meteorCallStub.calledWith('sendAgencyWelcomeEmail', testNewUserId,agencyId));
+        assert(meteorCallStub.calledWith('sendAgencyWelcomeEmail', testNewUserId, agencyId));
       });
 
       it('Accounts.createUser returns id', ()=> {
@@ -494,7 +494,35 @@ if (Meteor.isServer) {
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.isTrue(meteorCallStub.withArgs('updateUserEmail').calledOnce);
       });
-    })
+    });
+
+    describe('users.getUserPicture', ()=> {
+      const getUserPictureHandler = Meteor.server.method_handlers['getUserPicture'];
+      beforeEach(()=> {
+        StubCollections.stub(Meteor.users);
+      });
+      afterEach(()=> {
+        StubCollections.restore();
+      });
+
+      it('succeeds returns user picture', ()=> {
+        const invocation = {userId: testUserId};
+        let userWithPictureId = Meteor.users.insert({email: "test@email.com", userData: {picture: "Picture"}});
+        let result = getUserPictureHandler.apply(invocation, [userWithPictureId]);
+        assert.equal(result, "Picture");
+      });
+      it('user does not have picture, return undefined', ()=> {
+        const invocation = {userId: testUserId};
+        let userWithPictureId = Meteor.users.insert({email: "test@email.com", userData: {}});
+        let result = getUserPictureHandler.apply(invocation, [userWithPictureId]);
+        assert.equal(result, undefined);
+      });
+      it('user must be logged in to get picture', ()=> {
+        const invocation = {userId: null};
+        let userWithPictureId = Meteor.users.insert({email: "test@email.com", userData: {picture: "Picture"}});
+        assert.throws(()=>getUserPictureHandler.apply(invocation, [userWithPictureId]), 'Must be logged in to view user picture.', 'not-logged-in');
+      });
+    });
 
   });
 }
