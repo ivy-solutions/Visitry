@@ -28,7 +28,7 @@ import {logger} from '/client/logging'
  **/
 
 angular.module("visitry")
-  .directive('ngGooglePlacesAutocompleteHack', function ($timeout, $ionicLoading) {
+  .directive('ngGooglePlacesAutocompleteHack', function ($timeout) {
     return {
       require: 'ngModel',
       scope: {
