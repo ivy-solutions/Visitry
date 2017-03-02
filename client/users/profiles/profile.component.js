@@ -30,9 +30,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.helpers({
-    isVisitor: () => {
-      return Roles.userIsInRole(Meteor.userId(), 'visitor');
-    },
     distance: () => {
       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
         return Meteor.user().userData.visitRange.toString();
@@ -117,7 +114,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       $ionicHistory.nextViewOptions({
         historyRoot: true
       });
-      if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+      if (Meteor.myFunctions.isVisitor()) {
         $state.go('browseRequests');
       } else {
         $state.go('pendingVisits');

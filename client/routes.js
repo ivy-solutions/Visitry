@@ -424,12 +424,12 @@ angular.module('visitry')
         if (event && Meteor.userId()) {
           logger.info("redirect from $stateChangeStart");
           let nextState;
-          if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+          if (Meteor.myFunctions.isAdministrator()) {
             nextState = 'adminManage';
           }
-          else if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+          else if (Meteor.myFunctions.isVisitor()) {
             nextState = 'browseRequests';
-          } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+          } else if (Meteor.myFunctions.isRequester()) {
             nextState = 'pendingVisits';
           }
           if (nextState) {
@@ -452,13 +452,13 @@ angular.module('visitry')
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
               let location = '/lost';
-              if (Roles.userIsInRole(Meteor.userId(), ['administrator'])) {
+              if (Meteor.myFunctions.isAdministrator()) {
                 location = 'adminManage';
               }
               else {
-                if (Roles.userIsInRole(Meteor.userId(), ['visitor'])) {
+                if (Meteor.myFunctions.isVisitor()) {
                   location = 'browseRequests'
-                } else if (Roles.userIsInRole(Meteor.userId(), ['requester'])) {
+                } else if (Meteor.myFunctions.isRequester()) {
                   location = 'pendingVisits';
                 } else {
                   logger.error("user with no role." + Meteor.userId())

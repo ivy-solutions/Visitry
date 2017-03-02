@@ -88,55 +88,135 @@ describe('SharedFunctions', function () {
     // $ionicHistory. I know I can mock $ionicPopup but I don't know how to mock the other things
   });
 
-  describe("isVisitor", function () {
-    let userWithVisitorRoleId;
-    let userWithoutVisitorRoleId;
-    beforeEach(function(){
-      userWithVisitorRoleId = Meteor.users.insert({username:'visitorUser',roles:['visitor']});
-      userWithoutVisitorRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['requester']});
+  describe("Roles", function () {
+    let requesterUserAgency1Id;
+    let requesterUserAgency2Id;
+    let visitorUserAgency1Id;
+    let visitorUserAgency2Id;
+    let adminUserAgency1Id;
+    let adminUserAgency2Id;
+    let agency1Id = Random.id();
+    let agency2Id = Random.id();
+
+    beforeEach(function () {
+      requesterUserAgency1Id = Meteor.users.insert({username: 'requesterUserAgency1'});
+      Roles.setUserRoles(requesterUserAgency1Id, ['requester'], agency1Id);
+      requesterUserAgency2Id = Meteor.users.insert({username: 'requesterUserAgency2'});
+      Roles.setUserRoles(requesterUserAgency2Id, ['requester'], agency2Id);
+      visitorUserAgency1Id = Meteor.users.insert({username: 'visitorUserAgency1'});
+      Roles.setUserRoles(visitorUserAgency1Id, ['visitor'], agency1Id);
+      visitorUserAgency2Id = Meteor.users.insert({username: 'visitorUserAgency2'});
+      Roles.setUserRoles(visitorUserAgency2Id, ['visitor'], agency2Id);
+      adminUserAgency1Id = Meteor.users.insert({username: 'adminUserAgency1'});
+      Roles.setUserRoles(adminUserAgency1Id, ['administrator'], agency1Id);
+      adminUserAgency2Id = Meteor.users.insert({username: 'adminUserAgency2'});
+      Roles.setUserRoles(adminUserAgency2Id, ['administrtor'], agency2Id);
     });
-    it("user is visitor", function () {
-      userIdStub.returns(userWithVisitorRoleId);
-      assert.isTrue(Meteor.myFunctions.isVisitor());
+
+    describe("isVisitor", function () {
+      let userWithVisitorRoleId;
+      let userWithoutVisitorRoleId;
+      beforeEach(function () {
+        userWithVisitorRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['visitor']});
+        userWithoutVisitorRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['requester']});
+      });
+      it("user with no agency is visitor", function () {
+        userIdStub.returns(userWithVisitorRoleId);
+        assert.isTrue(Meteor.myFunctions.isVisitor());
+      });
+      it("user with agency is visitor", function () {
+        userIdStub.returns(visitorUserAgency1Id);
+        assert.isTrue(Meteor.myFunctions.isVisitor());
+      });
+      it("user is not visitor", function () {
+        userIdStub.returns(userWithoutVisitorRoleId);
+        assert.isFalse(Meteor.myFunctions.isVisitor());
+      });
     });
-    it("user is not visitor", function () {
-      userIdStub.returns(userWithoutVisitorRoleId);
-      assert.isFalse(Meteor.myFunctions.isVisitor());
+
+    describe("isRequester", function () {
+      let userWithRequesterRoleId;
+      let userWithoutRequesterRoleId;
+      beforeEach(function () {
+        userWithRequesterRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['requester']});
+        userWithoutRequesterRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['visitor']});
+      });
+      it("user with no agency is requester", function () {
+        userIdStub.returns(userWithRequesterRoleId);
+        assert.isTrue(Meteor.myFunctions.isRequester());
+      });
+      it("user with agency is requester", function () {
+        userIdStub.returns(requesterUserAgency1Id);
+        assert.isTrue(Meteor.myFunctions.isRequester());
+      });
+      it("user is not requester", function () {
+        userIdStub.returns(userWithoutRequesterRoleId);
+        assert.isFalse(Meteor.myFunctions.isRequester());
+      });
+    });
+
+    describe("isAdministrator", ()=> {
+      let userWithAdministratorRoleId;
+      let userWithoutAdministratorRoleId;
+      beforeEach(function () {
+        userWithAdministratorRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['administrator']});
+        userWithoutAdministratorRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['visitor']});
+      });
+      it("user is administrator", ()=> {
+        userIdStub.returns(userWithAdministratorRoleId);
+        assert.isTrue(Meteor.myFunctions.isAdministrator());
+      });
+      it("user with agency is administrator", ()=> {
+        userIdStub.returns(adminUserAgency1Id);
+        assert.isTrue(Meteor.myFunctions.isAdministrator());
+      });
+      it("user is not administrator", function () {
+        userIdStub.returns(userWithoutAdministratorRoleId);
+        assert.isFalse(Meteor.myFunctions.isAdministrator());
+      });
+    });
+
+    describe("isRequesterInAgency", function () {
+      it("user is requester in agency1", function () {
+        assert.isTrue(Meteor.myFunctions.isRequesterInAgency(requesterUserAgency1Id, agency1Id));
+      });
+      it("user is not requester in agency2", function () {
+        assert.isFalse(Meteor.myFunctions.isRequesterInAgency(requesterUserAgency1Id, agency2Id));
+      });
+      it("user is not requester in agency1", function () {
+        assert.isFalse(Meteor.myFunctions.isRequesterInAgency(requesterUserAgency2Id, agency1Id));
+      });
+      it("user is not requester", function () {
+        assert.isFalse(Meteor.myFunctions.isRequesterInAgency(visitorUserAgency1Id, agency1Id));
+      });
+    });
+    describe("isVisitorInAgency", function () {
+      it("user is visitor in agency1", function () {
+        assert.isTrue(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency1Id, agency1Id));
+      });
+      it("user is not requester in agency2", function () {
+        assert.isFalse(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency1Id, agency2Id));
+      });
+      it("user is not requester in agency1", function () {
+        assert.isFalse(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency2Id, agency1Id));
+      });
+      it("user is not requester", function () {
+        assert.isFalse(Meteor.myFunctions.isVisitorInAgency(requesterUserAgency1Id, agency1Id));
+      });
+    });
+    describe("isAdministratorInAgency", function () {
+      it("user is administrator in agency1", function () {
+        assert.isTrue(Meteor.myFunctions.isAdministratorInAgency(adminUserAgency1Id, agency1Id));
+      });
+      it("user is not administrator in agency2", function () {
+        assert.isFalse(Meteor.myFunctions.isAdministratorInAgency(adminUserAgency1Id, agency2Id));
+      });
+      it("user is not administrator in agency1", function () {
+        assert.isFalse(Meteor.myFunctions.isAdministratorInAgency(adminUserAgency2Id, agency1Id));
+      });
+      it("user is not administrator", function () {
+        assert.isFalse(Meteor.myFunctions.isAdministratorInAgency(requesterUserAgency1Id, agency1Id));
+      });
     });
   });
-
-  describe("isRequester", function () {
-    let userWithRequesterRoleId;
-    let userWithoutRequesterRoleId;
-    beforeEach(function(){
-      userWithRequesterRoleId = Meteor.users.insert({username:'visitorUser',roles:['requester']});
-      userWithoutRequesterRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['visitor']});
-    });
-    it("user is requester", function () {
-      userIdStub.returns(userWithRequesterRoleId);
-      assert.isTrue(Meteor.myFunctions.isRequester());
-    });
-    it("user is not requester", function () {
-      userIdStub.returns(userWithoutRequesterRoleId);
-      assert.isFalse(Meteor.myFunctions.isRequester());
-    });
-  });
-
-  describe("isAdministrator", ()=> {
-    let userWithAdministratorRoleId;
-    let userWithoutAdministratorRoleId;
-    beforeEach(function(){
-      userWithAdministratorRoleId = Meteor.users.insert({username:'visitorUser',roles:['administrator']});
-      userWithoutAdministratorRoleId = Meteor.users.insert({username:'nonVisitorUser',roles:['visitor']});
-    });
-    it("user is administrator", ()=> {
-      userIdStub.returns(userWithAdministratorRoleId);
-      assert.isTrue(Meteor.myFunctions.isAdministrator());
-    });
-    it("user is not administrator", function () {
-      userIdStub.returns(userWithoutAdministratorRoleId);
-      assert.isFalse(Meteor.myFunctions.isAdministrator());
-    });
-  })
-
 });

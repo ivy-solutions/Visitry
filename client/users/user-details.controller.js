@@ -11,9 +11,9 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.userId = this.locals.userId;
   this.agencyId = $cookies.get('agencyId');
 
-  this.isVisitor = Roles.userIsInRole(this.getReactively('userId'), ['visitor']);
+  this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), ['visitor'], this.agencyId);
   let userdataSubscription = this.subscribe('userdata', ()=>[], ()=> {
-    this.isVisitor = Roles.userIsInRole(this.getReactively('userId'), ['visitor']);
+    this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), ['visitor'], this.agencyId);
     userdataSubscription.stop();
   });
   this.subscribe('feedback');

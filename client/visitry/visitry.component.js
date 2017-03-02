@@ -149,7 +149,7 @@ angular.module('visitry').directive('visitry', function () {
               }
             );
             if (tabIndex) {
-              if (Roles.userIsInRole(Meteor.userId(), 'visitor'))
+              if (Meteor.myFunctions.isVisitor())
                 $ionicTabsDelegate.$getByHandle('visitorTabs').select(tabIndex.tabNum);
               else {
                 $ionicTabsDelegate.$getByHandle('requesterTabs').select(tabIndex.tabNum);

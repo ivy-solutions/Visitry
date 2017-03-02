@@ -31,9 +31,9 @@ let emailMethods = {
       throw( "Email notification failed. Error:" + err.message);
     }
   },
-  sendEnrollmentEmail(userId){
+  sendEnrollmentEmail(userId, agencyId){
     Errors.checkUserLoggedIn(this.userId, 'sendEnrollmentEmail', 'Must be logged in to send enrollment email.');
-    Errors.checkUserIsAdministrator(this.userId, 'sendEnrollmentEmail', 'Must be an agency administrator to send enrollment email.');
+    Errors.checkUserIsAdministrator(this.userId, agencyId, 'sendEnrollmentEmail', 'Must be an agency administrator to send enrollment email.');
     Accounts.sendEnrollmentEmail(userId);
   }
 };
