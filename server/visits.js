@@ -89,7 +89,8 @@ Meteor.publish("userRequests", function (userId) {
 Meteor.publish("availableVisits", function (data) {
   let userId = data[0];
   let hasAgency = data[1];
-  if (this.userId && hasAgency && Roles.userIsInRole(userId, 'visitor')) {
+  let userAgencies = Roles.getGroupsForUser(userId, 'visitor');
+  if (this.userId && hasAgency && userAgencies.length > 0 ) {
     logger.verbose("publish availableVisits to " + this.userId);
     const defaultVisitRange = 4000;
     const defaultLocation = {"type": "Point", "coordinates": [-97.415021, 37.716408]};  //default = Wichita, Kansas
@@ -102,7 +103,6 @@ Meteor.publish("availableVisits", function (data) {
     });
     var visitRange = (user.userData.visitRange && user.userData.location) ? user.userData.visitRange : defaultVisitRange;
     var fromLocation = user.userData.location ? user.userData.location.geo : defaultLocation;
-    var userAgencies = user.userData.agencyIds && user.userData.agencyIds.length > 0 ? user.userData.agencyIds : [];
     logger.verbose("userAgencies: " + userAgencies)
     //active unfilled future visit requests in agencies where I am a member
     var today = new Date();

@@ -279,31 +279,39 @@ Meteor.methods({
   },
   addUserToAgency(userArgs){
     Errors.checkUserLoggedIn(this.userId, 'addUserToAgency', 'Must be logged in to add a user to an agency.');
-    Errors.checkUserIsAdministrator(this.userId, 'addUserToAgency', 'Must be an agency administrator to add users to an agency.');
-    let agency = Meteor.call('getAgency', userArgs.agencyId || '');
+    Errors.checkUserIsAdministrator(this.userId, userArgs.agencyId, 'addUserToAgency', 'Must be an agency administrator to add users to an agency.');
+    let agencyId = userArgs.agencyId;
+    let userId = userArgs.userId;
+    let role = userArgs.role;
+    let agency = Meteor.call('getAgency', agencyId || '');
     if (!agency) {
       logger.error('addUserToAgency - invalid agency');
       throw new Meteor.Error('invalid-agency', 'Agency missing.');
     }
-    if (userArgs.role && !Roles.userIsInRole(userArgs.userId, userArgs.role)) {
-      //TODO: when we add groups we will need to change this to add role and remove all roles they have for that group
-      Roles.setUserRoles(userArgs.userId, userArgs.role);
+    if (role && !Roles.userIsInRole(userId, role, agencyId)) {
+      //TODO: someday we may support multiple roles in which case we need not remove old roles
+      let existingRoles = Roles.getRolesForUser(userId, agencyId);
+      if (existingRoles.length > 0 ) {
+        Roles.removeUsersFromRole(userId, existingRoles, agencyId)
+      }
+      Roles.setUserRoles(userId, role);
     }
-    var user = User.findOne(userArgs.userId);
+    var user = User.findOne(userId);
     if (!user) {
       logger.error('addUserToAgency - invalid user');
       throw new Meteor.Error('invalid-user', 'User missing.');
     }
+    //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
     if (!user.userData.agencyIds) {
-      user.userData.agencyIds = [userArgs.agencyId]
-    } else if (!user.userData.agencyIds.includes(userArgs.agencyId)) {
-      user.userData.agencyIds.push(userArgs.agencyId);
+      user.userData.agencyIds = [agencyId]
+    } else if (!user.userData.agencyIds.includes(agencyId)) {
+      user.userData.agencyIds.push(agencyId);
     } else {
-      logger.error('addUserToAgency - user: ' + userArgs.userId + ' already belongs to agency: ' + userArgs.agencyId);
+      logger.error('addUserToAgency - user: ' + userId + ' already belongs to agency: ' + agencyId);
       throw new Meteor.Error('conflict', 'User already belongs to agency.');
     }
-    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(userArgs.agencyId)) {
-      var index = user.userData.prospectiveAgencyIds.indexOf(userArgs.agencyId);
+    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
       user.userData.prospectiveAgencyIds.splice(index, 1);
     }
     user.save((err, id)=> {
@@ -311,21 +319,23 @@ Meteor.methods({
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
-      Meteor.call('sendAgencyWelcomeEmail', userArgs.userId, userArgs.agencyId, (error)=> {
+      Meteor.call('sendAgencyWelcomeEmail', userId, agencyId, (error)=> {
         if (error) {
           logger.error(error);
         }
       });
     });
-    logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
+    logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },
   createUserFromAdmin(data){
     Errors.checkUserLoggedIn(this.userId, 'createUserFromAdmin', 'Must be logged in to add a user to an agency.');
-    Errors.checkUserIsAdministrator(this.userId, 'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
+    //TODO agencyId should be sent as separate argument
+    let agencyId = data.userData.agencyIds[0]
+    Errors.checkUserIsAdministrator(this.userId, agencyId,'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
-      Meteor.call('sendEnrollmentEmail', newUserId, (err)=> {
+      Meteor.call('sendEnrollmentEmail', newUserId, agencyId, (err)=> {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err);
         }
@@ -340,7 +350,7 @@ Meteor.methods({
         try {
           Meteor.call('addUserToAgency', {
             userId: newUserId || Accounts.findUserByEmail(data.email)._id,
-            agencyId: data.userData.agencyIds[0],
+            agencyId: agencyId,
             role: data.role
           });
         } catch (e) {
