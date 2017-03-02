@@ -21,7 +21,7 @@ angular.module('visitry').directive('visitry', function () {
       $scope.platform = ionic.Platform.platform();
       this.isAgencyDataLoaded = false;
       let allAgencySubscription = this.subscribe('allAgencies', ()=> {
-        return [ {reactive:false}] }, ()=> {
+        return [ {reactive: Meteor.myFunctions.isAdministrator()}] }, ()=> {
         this.isAgencyDataLoaded = true;
       });
       this.subscribe('visits');
