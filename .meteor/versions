@@ -17,7 +17,6 @@ angular:angular@1.5.3_1
 angular:angular-animate@1.5.3_1
 angular:angular-aria@1.5.3_1
 angular:angular-material@1.0.6
-angular:angular-mocks@1.5.3_1
 angular:angular-sanitize@1.5.3_1
 angularui:angular-ui-router@0.2.15
 angularutils:pagination@0.9.1_2
