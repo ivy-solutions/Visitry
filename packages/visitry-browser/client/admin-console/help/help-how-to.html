@@ -15,9 +15,9 @@
     <!--<md-button ng-click="" ng-class="{ 'md-primary': adminHelpHowTo.articlePath==='faq' }">FAQ</md-button>-->
   </div>
   <div layout="column" flex layout-padding>
-    <div class="md-display-2">How To: {{adminHelpHowTo.articleName}}</div>
+    <div class="md-display-1">How To: {{adminHelpHowTo.articleName}}</div>
     <md-divider></md-divider>
     <div ng-include="adminHelpHowTo.articleHtml"></div>
   </div>
-  <div flex="10"></div>
+  <div flex="0" flex-gt-sm="10"></div>
 </div>
