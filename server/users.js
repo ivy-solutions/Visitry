@@ -179,11 +179,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
 Meteor.methods({
   updateName(firstName, lastName)
   {
-    if (!this.userId) {
-      logger.error("updateName - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update name.');
-    }
+    Errors.checkUserLoggedIn(this.userId,"updateName","Must be logged in to update name.");
     var currentUser = User.findOne(this.userId);
     currentUser.userData.firstName = firstName;
     currentUser.userData.lastName = lastName;
@@ -197,12 +193,7 @@ Meteor.methods({
     logger.info("updateName for userId: " + this.userId);
   },
   updateLocation(loc) {
-    if (!this.userId) {
-      logger.error("updateLocation - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update location.');
-    }
-
+    Errors.checkUserLoggedIn(this.userId,"updateLocation","Must be logged in to update location.");
     var currentUser = User.findOne(this.userId);
     if (loc) {
       currentUser.userData.location = {
@@ -225,11 +216,7 @@ Meteor.methods({
     logger.info("updateLocation for userId: " + this.userId);
   },
   updateUserData(data) {
-    if (!this.userId) {
-      logger.error("updateUserData - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update user data.');
-    }
+    Errors.checkUserLoggedIn(this.userId,"updateUserData","Must be logged in to update user data.");
     logger.verbose(data);
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
@@ -247,11 +234,7 @@ Meteor.methods({
     logger.info("updateUserData for userId: " + this.userId);
   },
   updateUserEmail(email) {
-    if (!this.userId) {
-      logger.error("updateUserEmail - user not logged in");
-      throw new Meteor.Error('not-logged-in',
-        'Must be logged in to update user email.');
-    }
+    Errors.checkUserLoggedIn(this.userId,"updateUserEmail","Must be logged in to update email.");
     let userId = this.userId;
     var currentUser = Meteor.users.findOne(userId, {emails: 1});
     var currentEmails = currentUser.emails;
@@ -269,7 +252,7 @@ Meteor.methods({
           Accounts.addEmail(userId, email);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
-            Accounts.removeEmail(userId, oldEmail);
+            Accounts.removeEmail(userId,oldEmail);
           }
           Accounts.sendVerificationEmail(userId);
         }

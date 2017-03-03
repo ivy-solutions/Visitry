@@ -14,21 +14,17 @@ describe('Admin Manage', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_, _$cookies_) {
-    // The injector unwraps the underscores (_) from around the parameter names when matching
-    $controller = _$controller_;
+  let controller;
+  let AdminVisitDetailsDialogMock = {
+    open: (visitId)=> {
+      return visitId;
+    }
+  };
+
+  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
+    controller = _$controller_('adminManageCtrl', {$scope: $rootScope.$new(true),AdminVisitDetailsDialog:AdminVisitDetailsDialogMock});
     $cookies = _$cookies_;
   }));
-
-  var controller;
-  var scope;
-
-  beforeEach(()=> {
-    inject(function ($rootScope) {
-      scope = $rootScope.$new(true);
-      controller = $controller('adminManageCtrl', {$scope: scope});
-    });
-  });
 
   afterEach(()=> {
   });
@@ -57,7 +53,22 @@ describe('Admin Manage', function () {
     it('confirm user calls addUserToAgency', ()=> {
       controller.confirmUser('userId');
       assert.isTrue(meteorCallSpy.calledWith('addUserToAgency'));
-    })
-  })
+    });
+  });
+
+  describe('getVisitDetails', ()=> {
+    let AdminVisitDetailsDialogSpy;
+    beforeEach(()=> {
+      AdminVisitDetailsDialogSpy = sinon.spy(AdminVisitDetailsDialogMock, 'open');
+    });
+    afterEach(()=> {
+      AdminVisitDetailsDialogMock.open.restore();
+    });
+    it('getVisitDetails opens AdminVisitDetailsDialog', ()=> {
+      let visitId = Random.id();
+      controller.getVisitDetails(visitId);
+      assert(AdminVisitDetailsDialogSpy.calledWith(visitId));
+    });
+  });
 
 });

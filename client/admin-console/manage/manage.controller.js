@@ -6,7 +6,7 @@ import {TopVisitors} from '/model/users'
 import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
@@ -103,6 +103,11 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       }
     });
   };
+
+  this.getVisitDetails = (visitId)=> {
+    AdminVisitDetailsDialog.open(visitId);
+  };
+
   function handleError(err) {
     let title = (err) ? err.reason : 'Confirmation failed';
     $mdDialog.show(

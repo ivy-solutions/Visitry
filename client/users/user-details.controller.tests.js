@@ -12,6 +12,7 @@ import '/client/users/user-details.controller.js';
 import { Roles } from 'meteor/alanning:roles'
 import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
+import StubCollections from 'meteor/hwillson:stub-collections';
 
 describe('UserDetails', function () {
 
@@ -19,22 +20,16 @@ describe('UserDetails', function () {
     angular.mock.module('visitry');
   });
 
-  beforeEach(inject(function (_$controller_, _$cookies_) {
-    // The injector unwraps the underscores (_) from around the parameter names when matching
-    $controller = _$controller_;
-    $cookies = _$cookies_;
-  }));
-
-  var controller;
-  var scope;
   let testUserId = Random.id();
   let completedVisitId = Random.id();
+  let today = new Date();
   let yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setDate(today.getDate() - 1);
   let tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  let twoMonthsAgo = new Date();
-  twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+  tomorrow.setDate(today.getDate() + 1);
+  let oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+
   let completedVisit = {
     _id: completedVisitId,
     requesterId: 'something',
@@ -76,7 +71,7 @@ describe('UserDetails', function () {
     timeSpent: 3 * 60
   };
   let feedbackLongAgo = {
-    createdAt: twoMonthsAgo,
+    createdAt: oneMonthAgo,
     submitterId: testUserId,
     timeSpent: 5 * 60
   };
@@ -91,32 +86,30 @@ describe('UserDetails', function () {
   };
 
   beforeEach(function () {
-    visitIds.push(Visits.insert(completedVisit));
-    visitIds.push(Visits.insert(scheduledVisit));
-    visitIds.push(Visits.insert(availableVisit));
-    visitIds.push(Visits.insert(incompleteVisit));
-    feedbackIds.push(Feedbacks.insert(feedbackTwoHours));
-    feedbackIds.push(Feedbacks.insert(feedbackThreeHours));
-    feedbackIds.push(Feedbacks.insert(feedbackLongAgo));
-
-    inject(function ($rootScope) {
-      scope = $rootScope.$new(true);
-      // FIXME - The version of angular that meteor-angular uses (1.3.11) does not support the locals binding
-      controller = $controller('userDetailsCtrl', {$scope: scope}, {locals: {userId: testUserId}});
-    });
+    StubCollections.stub([Visits,Feedbacks]);
+    Visits.insert(completedVisit);
+    Visits.insert(scheduledVisit);
+    Visits.insert(availableVisit);
+    Visits.insert(incompleteVisit);
+     Feedbacks.insert(feedbackTwoHours);
+    Feedbacks.insert(feedbackThreeHours);
+    Feedbacks.insert(feedbackLongAgo);
   });
+
+  let controller;
+  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
+    controller = _$controller_('userDetailsCtrl', {
+      $scope: $rootScope.$new(true),
+      AdminVisitDetailsDialog: AdminVisitDetailsDialogMock
+    }, {locals: {userId: testUserId}});
+    $cookies = _$cookies_;
+  }));
 
   afterEach(function () {
-    visitIds.forEach(function (id) {
-      Visits.remove(id)
-    });
-    feedbackIds.forEach(function (id) {
-      Feedbacks.remove(id)
-    });
+    StubCollections.restore();
   });
 
-// fails in CircleCI running phantomjs for unknown reason
-  describe.skip('AgencyId Cookie', () => {
+  describe('AgencyId Cookie', () => {
     beforeEach(()=> {
       $cookies.put('agencyId', Random.id());
     });
@@ -124,19 +117,19 @@ describe('UserDetails', function () {
       $cookies.remove('agencyId');
     });
     it('agencyId cookie is not null', ()=> {
-      controller = $controller('userDetailsCtrl', {$scope: scope,}, {locals: {userId: testUserId}});
       assert.isNotNull(controller.agencyId);
     });
   });
 
-  describe.skip('pageChanged', function () {
+  describe('pageChanged', function () {
     it('changing the page changes the page variable', ()=> {
       controller.pageChanged(1);
       assert.equal(controller.page, 1);
     });
   });
 
-  describe.skip('Visit counts and feedback sums', ()=> {
+  describe('Visit counts and feedback sums', ()=> {
+
     it('completedVisitsCount should be 1', ()=> {
       assert.equal(controller.completedVisitsCount, 1);
     });
@@ -160,15 +153,15 @@ describe('UserDetails', function () {
     });
   });
 
-  describe.skip('getVisitDetails',()=>{
+  describe('getVisitDetails', ()=> {
     let AdminVisitDetailsDialogSpy;
-    beforeEach(()=>{
-      AdminVisitDetailsDialogSpy = sinon.spy(AdminVisitDetailsDialog,'open');
+    beforeEach(()=> {
+      AdminVisitDetailsDialogSpy = sinon.spy(AdminVisitDetailsDialogMock, 'open');
     });
-    afterEach(()=>{
-      AdminVisitDetailsDialog.open.restore();
+    afterEach(()=> {
+      AdminVisitDetailsDialogMock.open.restore();
     });
-    it('getVisitDetails opens AdminVisitDetailsDialog',()=>{
+    it('getVisitDetails opens AdminVisitDetailsDialog', ()=> {
       let visitId = Random.id();
       controller.getVisitDetails(visitId);
       assert(AdminVisitDetailsDialogSpy.calledWith(visitId));

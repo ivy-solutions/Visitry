@@ -13,7 +13,8 @@
         <div class="item item-divider">
           <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
         </div>
-        <md-list-item class="md-3-line" ng-repeat="visit in visitsByDate.visits">
+        <md-list-item class="md-3-line" ng-repeat="visit in visitsByDate.visits"
+                      ng-click="adminManage.getVisitDetails(visit._id)">
           <img ng-src="{{adminManage.getUserImage(visit.visitorId)}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="row" layout-align="space-between center">
             <h3>{{adminManage.getUser(visit.visitorId)| firstNameLastInitial}}</h3>
@@ -24,7 +25,7 @@
             </div>
             <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
           </div>
-          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
+          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar" style="margin-left: 16px;margin-right:0px"/>
         </md-list-item>
       </div>
     </md-list>
@@ -41,7 +42,8 @@
         <div class="item item-divider">
           <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
         </div>
-        <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits">
+        <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits"
+                      ng-click="adminManage.getVisitDetails(visit._id)">
           <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="column" flex>
             <div layout="row" layout-align="space-between center">
@@ -57,40 +59,40 @@
       </div>
     </md-list>
     <md-list flex="33">
-        <div md-whiteframe="1">
-            <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-                <md-subheader style="background-color: #0086b3">Applicants</md-subheader>
-            </div>
-            <div layout="row" layout-align="center center" ng-hide="adminManage.isUserDataReady">
-                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-            </div>
-            <div layout="row" layout-align="center center" ng-hide="adminManage.applicants.length>0">
-                <h4>No pending applicants</h4>
-            </div>
-            <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants">
-                <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>
-                <div class="md-list-item-text" layout="row" layout-align="space-between center">
-                    <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
-                </div>
-              <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
-            </md-list-item>
+      <div md-whiteframe="1">
+        <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+          <md-subheader style="background-color: #0086b3">Applicants</md-subheader>
         </div>
+        <div layout="row" layout-align="center center" ng-hide="adminManage.isUserDataReady">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+        <div layout="row" layout-align="center center" ng-hide="adminManage.applicants.length>0">
+          <h4>No pending applicants</h4>
+        </div>
+        <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants">
+          <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="row" layout-align="space-between center">
+            <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
+          </div>
+          <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
+        </md-list-item>
+      </div>
       <div layout-padding></div>
-        <div md-whiteframe="1">
-            <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-                <md-subheader style="background-color: #0086b3">Frequent Visitors</md-subheader>
-            </div>
-            <div layout="row" layout-align="center center" ng-hide="adminManage.isFrequentVisitorsReady">
-                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-            </div>
-            <md-list-item class="md-2-line" ng-repeat="visitor in adminManage.freqVisitors">
-                <img ng-src="{{visitor.userData.picture}}" class="md-avatar"/>
-                <div class="md-list-item-text" layout="row" layout-align="space-between center">
-                    <h3>{{visitor.userData.firstName}} {{visitor.userData.lastName}}</h3>
-                    <h3>{{visitor.visitCount}}</h3>
-                </div>
-            </md-list-item>
+      <div md-whiteframe="1">
+        <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
+          <md-subheader style="background-color: #0086b3">Frequent Visitors</md-subheader>
         </div>
-  </md-list>
+        <div layout="row" layout-align="center center" ng-hide="adminManage.isFrequentVisitorsReady">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+        <md-list-item class="md-2-line" ng-repeat="visitor in adminManage.freqVisitors">
+          <img ng-src="{{visitor.userData.picture}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="row" layout-align="space-between center">
+            <h3>{{visitor.userData.firstName}} {{visitor.userData.lastName}}</h3>
+            <h3>{{visitor.visitCount}}</h3>
+          </div>
+        </md-list-item>
+      </div>
+    </md-list>
   </div>
 </div>
