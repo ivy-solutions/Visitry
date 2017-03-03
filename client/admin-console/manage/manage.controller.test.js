@@ -20,9 +20,14 @@ describe('Admin Manage', function () {
       return visitId;
     }
   };
+  let UserDetailsDialogMock = {
+    open: (userId)=>{
+      return userId;
+    }
+  };
 
   beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
-    controller = _$controller_('adminManageCtrl', {$scope: $rootScope.$new(true),AdminVisitDetailsDialog:AdminVisitDetailsDialogMock});
+    controller = _$controller_('adminManageCtrl', {$scope: $rootScope.$new(true),AdminVisitDetailsDialog:AdminVisitDetailsDialogMock,UserDetailsDialog:UserDetailsDialogMock});
     $cookies = _$cookies_;
   }));
 
@@ -68,6 +73,21 @@ describe('Admin Manage', function () {
       let visitId = Random.id();
       controller.getVisitDetails(visitId);
       assert(AdminVisitDetailsDialogSpy.calledWith(visitId));
+    });
+  });
+
+  describe('getUserDetails', ()=> {
+    let UserDetailsDialogSpy;
+    beforeEach(()=> {
+      UserDetailsDialogSpy = sinon.spy(UserDetailsDialogMock, 'open');
+    });
+    afterEach(()=> {
+      UserDetailsDialogMock.open.restore();
+    });
+    it('getVisitDetails opens AdminVisitDetailsDialog', ()=> {
+      let userId = Random.id();
+      controller.getUserDetails(userId);
+      assert(UserDetailsDialogSpy.calledWith(userId));
     });
   });
 

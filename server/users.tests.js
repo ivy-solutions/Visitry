@@ -323,6 +323,7 @@ if (Meteor.isServer) {
         if (findUserByEmailStub) {
           Accounts.findUserByEmail.restore();
         }
+        findUserByEmailStub = null;
         testNewUserId = null;
       });
 
