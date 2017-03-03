@@ -28,7 +28,7 @@ Meteor.publish("userdata", function () {
       },
       {
         fields: {
-          username: 1, emails: 1, roles: 1, fullName: 1,
+          username: 1, emails: 1, roles: 1, fullName: 1, 'createdAt':1,
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.locationInfo': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,

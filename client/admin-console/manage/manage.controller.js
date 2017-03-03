@@ -6,7 +6,7 @@ import {TopVisitors} from '/model/users'
 import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog, UserDetailsDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
@@ -67,7 +67,11 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
           'userData.firstName': 1,
           'userData.lastName': 1,
           'userData.prospectiveAgencyIds': 1,
-          'userData.picture': 1
+          'userData.picture': 1,
+          'createdAt': 1,
+          'userData.about': 1,
+          'userData.location': 1,
+          'emails': 1
         }
       });
     },
@@ -106,6 +110,10 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
 
   this.getVisitDetails = (visitId)=> {
     AdminVisitDetailsDialog.open(visitId);
+  };
+
+  this.getUserDetails = (userId)=> {
+    UserDetailsDialog.open(userId);
   };
 
   function handleError(err) {

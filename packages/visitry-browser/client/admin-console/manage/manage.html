@@ -1,5 +1,6 @@
 <div layout-margin layout-fill>
   <div layout="row" layout-padding>
+    <!-- Upcoming Visits-->
     <md-list flex="33">
       <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
         <md-subheader style="background-color: #0086b3">Upcoming Visits</md-subheader>
@@ -25,13 +26,15 @@
             </div>
             <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
           </div>
-          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar" style="margin-left: 16px;margin-right:0px"/>
+          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"
+               style="margin-left: 16px;margin-right:0px"/>
         </md-list-item>
       </div>
     </md-list>
+    <!-- Available Visits-->
     <md-list flex="33">
       <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-        <md-subheader style="background-color: #0086b3">Outstanding Requests</md-subheader>
+        <md-subheader style="background-color: #0086b3">Available Visits</md-subheader>
         <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
       </div>
       <div layout="row" layout-align="center center"
@@ -58,6 +61,7 @@
         </md-list-item>
       </div>
     </md-list>
+    <!-- Applicants-->
     <md-list flex="33">
       <div md-whiteframe="1">
         <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
@@ -69,7 +73,7 @@
         <div layout="row" layout-align="center center" ng-hide="adminManage.applicants.length>0">
           <h4>No pending applicants</h4>
         </div>
-        <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants">
+        <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants" ng-click="adminManage.getUserDetails(applicant._id)">
           <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="row" layout-align="space-between center">
             <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
@@ -78,6 +82,7 @@
         </md-list-item>
       </div>
       <div layout-padding></div>
+      <!--Frequent Visitors-->
       <div md-whiteframe="1">
         <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
           <md-subheader style="background-color: #0086b3">Frequent Visitors</md-subheader>
