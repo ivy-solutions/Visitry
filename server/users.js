@@ -68,8 +68,7 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
     'userData.agencyIds': {$elemMatch: {$eq: agency}}
   }, {
     fields: {
-      username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1,
-      'userData.picture': 1
+      username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1, 'userData.picture':1
     }
   });
   visitors.forEach((user)=> {
@@ -110,7 +109,6 @@ Meteor.publish('visitorUsers', function (agencyId) {
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location': 1,
-        'userData.picture': 1,
         'userData.about': 1,
         'roles': 1,
         'emails': 1
@@ -161,7 +159,6 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location': 1,
-        'userData.picture': 1,
         'userData.about': 1,
         'roles': 1,
         'emails': 1
