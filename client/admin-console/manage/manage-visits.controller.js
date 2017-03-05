@@ -4,7 +4,7 @@
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Visit,Visits } from '/model/visits'
 
-angular.module('visitry.browser').controller('adminManageVisitsCtrl', function ($scope, $state, $reactive, $cookies) {
+angular.module('visitry.browser').controller('adminManageVisitsCtrl', function ($scope, $state, $reactive, $cookies, AdminVisitDetailsDialog) {
   $reactive(this).attach($scope);
 
   this.agencyId = $cookies.get('agencyId');
@@ -80,5 +80,9 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
   };
 
   this.getUser = Meteor.myFunctions.getUser;
+
+  this.getVisitDetails= (visitId)=>{
+    AdminVisitDetailsDialog.open(visitId);
+  }
 
 });

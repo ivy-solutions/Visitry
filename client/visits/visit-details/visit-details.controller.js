@@ -11,7 +11,6 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.visit;
   this.requester;
 
-
   this.helpers({
     theVisit: () => {
       var visit = Visit.findOne({_id: $stateParams.visitId});

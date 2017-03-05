@@ -33,13 +33,22 @@ Meteor.myFunctions = {
       return "";
   },
   isRequester: function () {
-    return Roles.userIsInRole(Meteor.userId(), ['requester']);
+    return hasRoleAnywhere('requester');
   },
   isVisitor: function () {
-    return Roles.userIsInRole(Meteor.userId(), ['visitor']);
+    return hasRoleAnywhere('visitor');
   },
   isAdministrator: function(){
-    return Roles.userIsInRole(Meteor.userId(),['administrator']);
+    return hasRoleAnywhere('administrator');
+  },
+  isRequesterInAgency: function( userId, agencyId) {
+    return Roles.userIsInRole(userId, ['requester'], agencyId);
+  },
+  isVisitorInAgency: function( userId, agencyId) {
+    return Roles.userIsInRole(userId, ['visitor'], agencyId);
+  },
+  isAdministratorInAgency: function( userId, agencyId) {
+    return Roles.userIsInRole(userId, ['administrator'], agencyId);
   },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
@@ -106,4 +115,21 @@ function handleError(err, $ionicPopup) {
     template: 'Please try again',
     okType: 'button-positive button-clear'
   });
+}
+
+function hasRoleAnywhere( role ) {
+  let isRoleAnywhere = false;
+  let groups = Roles.getGroupsForUser(Meteor.userId());
+  if ( groups.length == 0) {
+    //user does not have a group yet
+    isRoleAnywhere = Roles.userIsInRole(Meteor.userId(), role);
+  } else {
+    // true if is a visitor anywhere
+    groups.forEach( function (group) {
+      if ( Roles.userIsInRole(Meteor.userId(), role, group)) {
+        isRoleAnywhere  = true;
+      }
+    })
+  }
+  return isRoleAnywhere;
 }

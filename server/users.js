@@ -269,7 +269,7 @@ Meteor.methods({
           Accounts.addEmail(userId, email);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
-            Accounts.removeEmail(userId,oldEmail);
+            Accounts.removeEmail(userId, oldEmail);
           }
           Accounts.sendVerificationEmail(userId);
         }
@@ -279,31 +279,51 @@ Meteor.methods({
   },
   addUserToAgency(userArgs){
     Errors.checkUserLoggedIn(this.userId, 'addUserToAgency', 'Must be logged in to add a user to an agency.');
-    Errors.checkUserIsAdministrator(this.userId, 'addUserToAgency', 'Must be an agency administrator to add users to an agency.');
-    let agency = Meteor.call('getAgency', userArgs.agencyId || '');
+    Errors.checkUserIsAdministrator(this.userId, userArgs.agencyId, 'addUserToAgency', 'Must be an agency administrator to add users to an agency.');
+    let agencyId = userArgs.agencyId;
+    let userId = userArgs.userId;
+    let agency = Meteor.call('getAgency', agencyId || '');
     if (!agency) {
       logger.error('addUserToAgency - invalid agency');
       throw new Meteor.Error('invalid-agency', 'Agency missing.');
     }
-    if (userArgs.role && !Roles.userIsInRole(userArgs.userId, userArgs.role)) {
-      //TODO: when we add groups we will need to change this to add role and remove all roles they have for that group
-      Roles.setUserRoles(userArgs.userId, userArgs.role);
-    }
-    var user = User.findOne(userArgs.userId);
+    let user = User.findOne(userId);
     if (!user) {
       logger.error('addUserToAgency - invalid user');
       throw new Meteor.Error('invalid-user', 'User missing.');
     }
-    if (!user.userData.agencyIds) {
-      user.userData.agencyIds = [userArgs.agencyId]
-    } else if (!user.userData.agencyIds.includes(userArgs.agencyId)) {
-      user.userData.agencyIds.push(userArgs.agencyId);
+    // validate that a role for user can be found and is not in conflict with other roles
+    let existingRole;
+    let groups = Roles.getGroupsForUser(userId);
+    groups.forEach( function (group) {
+      role = Roles.getRolesForUser(userId, group );
+      if (role.length) {
+        existingRole = role;
+      }
+    });
+    let role = userArgs.role ? userArgs.role : existingRole;
+    if (!role) {
+        throw new Meteor.Error('invalid-role', 'User role is missing.');
     } else {
-      logger.error('addUserToAgency - user: ' + userArgs.userId + ' already belongs to agency: ' + userArgs.agencyId);
-      throw new Meteor.Error('conflict', 'User already belongs to agency.');
+      if (existingRole.valueOf() != role.valueOf()) {
+        throw new Meteor.Error('invalid-role', 'Can not have multiple roles.');
+      }
     }
-    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(userArgs.agencyId)) {
-      var index = user.userData.prospectiveAgencyIds.indexOf(userArgs.agencyId);
+    if (!Roles.userIsInRole(userId, role, agencyId)) {
+      Roles.addUsersToRoles(userId, role, agencyId);
+    }
+    console.log(Roles.getGroupsForUser(userId));
+    console.log(Roles.getRolesForUser(userId, 'noagency'));
+    console.log(Roles.getRolesForUser(userId, agencyId));
+
+    //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
+    if (!user.userData.agencyIds) {
+      user.userData.agencyIds = [agencyId]
+    } else if (!user.userData.agencyIds.includes(agencyId)) {
+      user.userData.agencyIds.push(agencyId);
+    }
+    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
+      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
       user.userData.prospectiveAgencyIds.splice(index, 1);
     }
     user.save((err, id)=> {
@@ -311,21 +331,23 @@ Meteor.methods({
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
         throw err;
       }
-      Meteor.call('sendAgencyWelcomeEmail', userArgs.userId, userArgs.agencyId, (error)=> {
+      Meteor.call('sendAgencyWelcomeEmail', userId, agencyId, (error)=> {
         if (error) {
           logger.error(error);
         }
       });
     });
-    logger.info('addUserToAgency for user: ' + userArgs.userId + ' and agency: ' + userArgs.agencyId);
+    logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },
   createUserFromAdmin(data){
     Errors.checkUserLoggedIn(this.userId, 'createUserFromAdmin', 'Must be logged in to add a user to an agency.');
-    Errors.checkUserIsAdministrator(this.userId, 'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
+    //TODO agencyId should be sent as separate argument
+    let agencyId = data.userData.agencyIds[0]
+    Errors.checkUserIsAdministrator(this.userId, agencyId,'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
-      Meteor.call('sendEnrollmentEmail', newUserId, (err)=> {
+      Meteor.call('sendEnrollmentEmail', newUserId, agencyId, (err)=> {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err);
         }
@@ -340,7 +362,7 @@ Meteor.methods({
         try {
           Meteor.call('addUserToAgency', {
             userId: newUserId || Accounts.findUserByEmail(data.email)._id,
-            agencyId: data.userData.agencyIds[0],
+            agencyId: agencyId,
             role: data.role
           });
         } catch (e) {
@@ -407,6 +429,11 @@ Meteor.methods({
       Meteor.call('updateUserEmail', data.email);
     }
     logger.verbose("updateRegistrationInfo for userId: " + this.userId);
+  },
+  getUserPicture(userId){
+    Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to view user picture.');
+    let user = User.findOne({_id: userId}, {fields: {'userData.picture': 1}});
+    return user.userData.picture;
   }
 });
 
@@ -417,7 +444,8 @@ Accounts.onCreateUser(function (options, user) {
     user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds: []}
     user.hasAgency = false;
   }
-  user.roles = options.role ? [options.role] : ['requester'];
+  let role = options.role ? [options.role] : ['requester'];
+  Roles.addUsersToRoles(user, role, 'noagency');
 
   logger.info("onCreateUser for userId: " + user._id + " roles: " + user.roles);
   return user;

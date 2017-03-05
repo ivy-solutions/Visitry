@@ -14,6 +14,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     country:"us",
     watchEnter: false
   };
+  this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.subscribe('userProfile', ()=> {
     return [];
@@ -29,9 +30,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.helpers({
-    isVisitor: () => {
-      return Roles.userIsInRole(Meteor.userId(), 'visitor');
-    },
     distance: () => {
       if (Meteor.user() && Meteor.user().userData && Meteor.user().userData.visitRange != null) {
         return Meteor.user().userData.visitRange.toString();
@@ -55,7 +53,6 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     if ( Meteor.userId() !== null ) {
       var hasClearAddress =  !this.location.address || this.location.address.length == 0 ;
       if (hasClearAddress) {
-        this.location.details = null;
         return true;
       } else {
         var userHasSelectedLocation = this.location.details != null && this.location.address != null && this.location.address.length > 0;
@@ -63,6 +60,11 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       }
     }
     return false;
+  };
+
+  this.changeLocation = () => {
+    this.isLoadingPlaces = this.location.address && this.location.address.length > 0;
+    this.location.details = null;
   };
 
   this.submitUpdate = (form) => {
@@ -112,7 +114,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
       $ionicHistory.nextViewOptions({
         historyRoot: true
       });
-      if (Roles.userIsInRole(Meteor.userId(), 'visitor')) {
+      if (Meteor.myFunctions.isVisitor()) {
         $state.go('browseRequests');
       } else {
         $state.go('pendingVisits');
@@ -172,6 +174,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   }
 
   this.resetForm= function(form) {
+    this.isLoadingPlaces = false;
     form.$setUntouched();
     form.$setPristine();
     container = document.getElementsByClassName('pac-container');

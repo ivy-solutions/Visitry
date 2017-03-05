@@ -90,94 +90,94 @@ if (Meteor.isServer) {
       });
 
     });
+    describe('agencies.sendJoinRequest', () => {
+      var testUserId = Random.id();
+      var testAgencyId = Random.id();
+      var meteorStub;
+      var findAgencyStub;
+      var findUserStub;
+      let sendEmailSpy;
+
+      beforeEach(() => {
+        findAgencyStub = sinon.stub(Agency, 'findOne');
+        findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
+        findUserStub = sinon.stub(User, 'findOne');
+        findUserStub.returns({
+          username: 'Louisa', fullName: 'Louisa Jones',
+          emails: [{address: 'abc@someplace.com', verified: false}],
+        });
+        meteorStub = sinon.stub(Meteor, 'call');
+        sendEmailSpy = sinon.spy(Email, 'send');
+      });
+      afterEach(() => {
+        Agency.findOne.restore();
+        User.findOne.restore();
+        Meteor.call.restore();
+        Email.send.restore();
+      });
+
+      const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
+
+      it('updates user and sends mail when request to join agency made', function (done) {
+        const invocation = {userId: testUserId};
+        sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
+        assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
+        sinon.assert.calledOnce(sendEmailSpy);
+        done();
+      });
+
+    });
+
+    describe('updateAgency', ()=> {
+      const updateAgency = Meteor.server.method_handlers['updateAgency'];
+      let agencyId;
+      let adminUserId;
+      let nonAdminUserId;
+      beforeEach(()=> {
+        StubCollections.stub(Agencies);
+        agencyId = Agencies.insert({name: 'testAgency', createdAt: new Date()});
+        StubCollections.stub(Meteor.users);
+        adminUserId = Meteor.users.insert({
+          username: 'adminTestUser',
+          password: 'password'
+        });
+        Roles.addUsersToRoles(adminUserId, 'administrator', agencyId);
+        nonAdminUserId = Meteor.users.insert({
+          username: 'nonAdminTestUser',
+          password: 'password'
+        });
+        Roles.addUsersToRoles(nonAdminUserId, 'requester', agencyId);
+      });
+      afterEach(()=> {
+        StubCollections.restore();
+      });
+      it('fails if user is not logged in', ()=> {
+        const invocation = {userId: null};
+        let newName = 'testAgencyNewName';
+        assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]), 'Must be logged in to update agency. [not-logged-in]');
+        let agency = Agencies.findOne({_id: agencyId});
+        assert.notEqual(agency.name, newName);
+      });
+      it('fails if user is not administrator', ()=> {
+        const invocation = {userId: nonAdminUserId};
+        let newName = 'testAgencyNewName';
+        assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]), 'Must be an agency administrator to update agency. [unauthorized]');
+        let agency = Agencies.findOne({_id: agencyId});
+        assert.notEqual(agency.name, newName);
+      });
+      it('it updates the agency', ()=> {
+        const invocation = {userId: adminUserId};
+        let newName = 'testAgencyNewName';
+        updateAgency.apply(invocation, [agencyId, {name: newName}]);
+        let agency = Agencies.findOne({_id: agencyId});
+        assert.equal(agency.name, newName);
+      });
+      it('it tries to create a new agency when no agency Id passed', ()=> {
+        const invocation = {userId: adminUserId};
+        assert.throws(()=>updateAgency.apply(invocation, [null, {name: "Fun for Fogies"}]), '"location" is required [validation-error]');
+      });
+
+    })
   });
 
-  describe('agencies.sendJoinRequest', () => {
-    var testUserId = Random.id();
-    var testAgencyId = Random.id();
-    var meteorStub;
-    var findAgencyStub;
-    var findUserStub;
-    let sendEmailSpy;
-
-    beforeEach(() => {
-      findAgencyStub = sinon.stub(Agency, 'findOne');
-      findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
-      findUserStub = sinon.stub(User, 'findOne');
-      findUserStub.returns({
-        username: 'Louisa', fullName: 'Louisa Jones',
-        emails: [{address: 'abc@someplace.com', verified: false}],
-      });
-      meteorStub = sinon.stub(Meteor, 'call');
-      sendEmailSpy = sinon.spy(Email, 'send');
-    });
-    afterEach(() => {
-      Agency.findOne.restore();
-      User.findOne.restore();
-      Meteor.call.restore();
-      Email.send.restore();
-    });
-
-    const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
-
-    it('updates user and sends mail when request to join agency made', function (done) {
-      const invocation = {userId: testUserId};
-      sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
-      assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
-      sinon.assert.calledOnce(sendEmailSpy);
-      done();
-    });
-
-  });
-
-  describe('updateAgency', ()=> {
-    const updateAgency = Meteor.server.method_handlers['updateAgency'];
-    let agencyId;
-    let adminUserId;
-    let nonAdminUserId;
-    beforeEach(()=> {
-      StubCollections.stub(Agencies);
-      agencyId = Agencies.insert({name: 'testAgency', createdAt: new Date()});
-      StubCollections.stub(Meteor.users);
-      adminUserId = Meteor.users.insert({
-        username: 'adminTestUser',
-        password: 'password',
-        roles: ['administrator']
-      });
-      nonAdminUserId = Meteor.users.insert({
-        username: 'nonAdminTestUser',
-        password: 'password',
-        roles: ['requester']
-      });
-    });
-    afterEach(()=> {
-      StubCollections.restore();
-    });
-    it('fails if user is not logged in', ()=> {
-      const invocation = {userId: null};
-      let newName = 'testAgencyNewName';
-      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]), 'Must be logged in to update agency. [not-logged-in]');
-      let agency = Agencies.findOne({_id: agencyId});
-      assert.notEqual(agency.name, newName);
-    });
-    it('fails if user is not administrator', ()=> {
-      const invocation = {userId: nonAdminUserId};
-      let newName = 'testAgencyNewName';
-      assert.throws(()=>updateAgency.apply(invocation, [agencyId, {name: newName}]), 'User must be an administrator to update agency. [unauthorized]');
-      let agency = Agencies.findOne({_id: agencyId});
-      assert.notEqual(agency.name, newName);
-    });
-    it('it updates the agency', ()=> {
-      const invocation = {userId: adminUserId};
-      let newName = 'testAgencyNewName';
-      updateAgency.apply(invocation, [agencyId, {name: newName}]);
-      let agency = Agencies.findOne({_id: agencyId});
-      assert.equal(agency.name, newName);
-    });
-    it('it tries to create a new agency when no agency Id passed', ()=> {
-      const invocation = {userId: adminUserId};
-      assert.throws(()=>updateAgency.apply(invocation, [null, {name: "Fun for Fogies"}]), '"location" is required [validation-error]');
-    });
-
-  })
 }

@@ -20,7 +20,8 @@ angular.module('visitry').directive('visitry', function () {
       $reactive(this).attach($scope);
       $scope.platform = ionic.Platform.platform();
       this.isAgencyDataLoaded = false;
-      let allAgencySubscription = this.subscribe('allAgencies', ()=>[], ()=> {
+      let allAgencySubscription = this.subscribe('allAgencies', ()=> {
+        return [ {reactive: Meteor.myFunctions.isAdministrator()}] }, ()=> {
         this.isAgencyDataLoaded = true;
       });
       this.subscribe('visits');
@@ -148,7 +149,7 @@ angular.module('visitry').directive('visitry', function () {
               }
             );
             if (tabIndex) {
-              if (Roles.userIsInRole(Meteor.userId(), 'visitor'))
+              if (Meteor.myFunctions.isVisitor())
                 $ionicTabsDelegate.$getByHandle('visitorTabs').select(tabIndex.tabNum);
               else {
                 $ionicTabsDelegate.$getByHandle('requesterTabs').select(tabIndex.tabNum);

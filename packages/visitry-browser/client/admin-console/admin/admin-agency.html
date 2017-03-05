@@ -9,7 +9,8 @@
                    ng-click="adminAdminAgency.addAdmin()">+ Admin
         </md-button>
         <md-button class="md-button md-raised md-primary" ng-if="adminAdminAgency.isEditMode"
-               ng-click="adminAdminAgency.save(agencyForm)" >Save</md-button>
+                   ng-click="adminAdminAgency.save(agencyForm)">Save
+        </md-button>
         <md-button class="md-raised md-warn" ng-hide="adminAdminAgency.isEditMode"
                    ng-click="adminAdminAgency.editAgency()">Edit
         </md-button>
@@ -25,7 +26,7 @@
         </md-list-item>
         <md-list-item>
           <label class="md-title" for="name" layout-margin flex="15">Name</label>
-            <input type="text" id="name" name="name" ng-model="adminAdminAgency.agency.name"
+          <input type="text" id="name" name="name" ng-model="adminAdminAgency.agency.name"
                  ng-readonly="!adminAdminAgency.isEditMode" required layout-margin flex/>
         </md-list-item>
         <md-list-item>
@@ -41,7 +42,8 @@
         </md-list-item>
         <md-list-item>
           <label class="md-title" for="website" layout-margin flex="15">Website</label>
-          <input type="url" id="website" name="website" ng-model="adminAdminAgency.agency.website"
+          <input type="text" id="website" name="website" ng-model="adminAdminAgency.agency.website"
+                 ng-pattern="/^(?:(http|https):\/\/)?(?:[\w-]+\.)+[a-z]{3,6}(?:[\/|\?].*)?$/"
                  ng-readonly="!adminAdminAgency.isEditMode" layout-margin flex/>
         </md-list-item>
         <md-list-item>
@@ -58,13 +60,13 @@
           <textarea id="description" ng-model="adminAdminAgency.agency.description" rows="5"
                     ng-readonly="!adminAdminAgency.isEditMode" layout-margin="left" flex></textarea>
         </md-list-item>
-          <md-list-item>
-              <label class="md-title" for="welcomeMessage" layout-margin="left">Welcome Message to New Users</label>
-          </md-list-item>
-          <md-list-item>
-          <textarea id="description" ng-model="adminAdminAgency.agency.welcomeMessage" rows="5"
+        <md-list-item>
+          <label class="md-title" for="welcomeMessage" layout-margin="left">Welcome Message to New Users</label>
+        </md-list-item>
+        <md-list-item>
+          <textarea id="welcomeMessage" ng-model="adminAdminAgency.agency.welcomeMessage" rows="5"
                     ng-readonly="!adminAdminAgency.isEditMode" layout-margin="left" flex></textarea>
-          </md-list-item>
+        </md-list-item>
       </md-list>
       <div>
 

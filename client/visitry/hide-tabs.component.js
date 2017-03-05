@@ -10,7 +10,7 @@ angular.module('visitry').directive('hideTabs', function($rootScope, $ionicTabsD
         $ionicTabsDelegate.$getByHandle('requesterTabs').showBar(false)
       });
       $scope.$on("$ionicView.beforeLeave", function () {
-        var isVisitor = Roles.userIsInRole(Meteor.userId(), 'visitor');
+        var isVisitor = Meteor.myFunctions.isVisitor();
         if ( isVisitor)
           $ionicTabsDelegate.$getByHandle('visitorTabs').showBar(true);
         else
