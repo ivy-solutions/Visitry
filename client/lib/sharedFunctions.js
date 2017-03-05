@@ -33,14 +33,7 @@ Meteor.myFunctions = {
       return "";
   },
   isRequester: function () {
-    let groups = Roles.getGroupsForUser(Meteor.userId());
-    if ( groups.length == 0) {
-      //user does not have a group yet
-      return Roles.userIsInRole(Meteor.userId(), ['requester']);
-    } else {
-      //requester can have only one group
-      return Roles.userIsInRole(Meteor.userId(), 'requester', groups[0]);
-    }
+    return hasRoleAnywhere('requester');
   },
   isVisitor: function () {
     return hasRoleAnywhere('visitor');
