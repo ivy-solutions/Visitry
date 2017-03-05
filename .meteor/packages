@@ -26,8 +26,8 @@ jeremy:geocomplete
 # users/accounts
 accounts-password
 dotansimha:accounts-ui-angular
-alanning:roles
 mbanting:cordova-accounts-resume
+alanning:roles
 
 # data
 check@1.2.4
@@ -55,6 +55,7 @@ practicalmeteor:mocha-console-runner
 dburles:factory
 practicalmeteor:faker
 random@1.0.10
+practicalmeteor:mocha-xunit-reporter
 
 # notifications
 raix:push@3.1.0-pre.1
@@ -66,5 +67,4 @@ brentjanderson:winston-client
 shell-server
 meteorhacks:ssr
 http
-practicalmeteor:mocha-xunit-reporter
 mdg:geolocation

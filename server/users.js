@@ -262,33 +262,45 @@ Meteor.methods({
     Errors.checkUserIsAdministrator(this.userId, userArgs.agencyId, 'addUserToAgency', 'Must be an agency administrator to add users to an agency.');
     let agencyId = userArgs.agencyId;
     let userId = userArgs.userId;
-    let role = userArgs.role;
     let agency = Meteor.call('getAgency', agencyId || '');
     if (!agency) {
       logger.error('addUserToAgency - invalid agency');
       throw new Meteor.Error('invalid-agency', 'Agency missing.');
     }
-    if (role && !Roles.userIsInRole(userId, role, agencyId)) {
-      //TODO: someday we may support multiple roles in which case we need not remove old roles
-      let existingRoles = Roles.getRolesForUser(userId, agencyId);
-      if (existingRoles.length > 0 ) {
-        Roles.removeUsersFromRole(userId, existingRoles, agencyId)
-      }
-      Roles.setUserRoles(userId, role);
-    }
-    var user = User.findOne(userId);
+    let user = User.findOne(userId);
     if (!user) {
       logger.error('addUserToAgency - invalid user');
       throw new Meteor.Error('invalid-user', 'User missing.');
     }
+    // validate that a role for user can be found and is not in conflict with other roles
+    let existingRole;
+    let groups = Roles.getGroupsForUser(userId);
+    groups.forEach( function (group) {
+      role = Roles.getRolesForUser(userId, group );
+      if (role.length) {
+        existingRole = role;
+      }
+    });
+    let role = userArgs.role ? userArgs.role : existingRole;
+    if (!role) {
+        throw new Meteor.Error('invalid-role', 'User role is missing.');
+    } else {
+      if (existingRole.valueOf() != role.valueOf()) {
+        throw new Meteor.Error('invalid-role', 'Can not have multiple roles.');
+      }
+    }
+    if (!Roles.userIsInRole(userId, role, agencyId)) {
+      Roles.addUsersToRoles(userId, role, agencyId);
+    }
+    console.log(Roles.getGroupsForUser(userId));
+    console.log(Roles.getRolesForUser(userId, 'noagency'));
+    console.log(Roles.getRolesForUser(userId, agencyId));
+
     //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
     if (!user.userData.agencyIds) {
       user.userData.agencyIds = [agencyId]
     } else if (!user.userData.agencyIds.includes(agencyId)) {
       user.userData.agencyIds.push(agencyId);
-    } else {
-      logger.error('addUserToAgency - user: ' + userId + ' already belongs to agency: ' + agencyId);
-      throw new Meteor.Error('conflict', 'User already belongs to agency.');
     }
     if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
       var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
@@ -412,7 +424,8 @@ Accounts.onCreateUser(function (options, user) {
     user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds: []}
     user.hasAgency = false;
   }
-  user.roles = options.role ? [options.role] : ['requester'];
+  let role = options.role ? [options.role] : ['requester'];
+  Roles.addUsersToRoles(user, role, 'noagency');
 
   logger.info("onCreateUser for userId: " + user._id + " roles: " + user.roles);
   return user;
