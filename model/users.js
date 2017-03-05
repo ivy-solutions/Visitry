@@ -49,7 +49,7 @@ User = Class.create({
         }
       }
     },
-    roles: {type:[String], optional:true, index:1},
+    //roles: {type:[Object], optional:true, index:1},
     hasAgency: {
       type: Boolean,
       resolve(doc) {

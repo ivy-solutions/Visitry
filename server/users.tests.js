@@ -222,10 +222,11 @@ if (Meteor.isServer) {
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
           password: 'Visitry99',
-          role: "requester",
           email: 'email@address.com'
         });
-        adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99', role: "administrator"});
+        Roles.addUsersToRoles(testUserId, 'requester', 'noagency');
+        adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99'});
+        Roles.addUsersToRoles(adminTestUser, 'administrator', agencyId);
         errorsStub = sinon.stub(Errors, 'checkUserIsAdministrator').returns(true);
         meteorCallStub = sinon.stub(Meteor, 'call');
         meteorCallStub.withArgs('getAgency').returns({
@@ -240,9 +241,10 @@ if (Meteor.isServer) {
         errorsStub.restore();
       });
 
-      it('adds a user to an agency', ()=> {
+      it('adds a user to an agency, providing role', ()=> {
         const invocation = {userId: adminTestUser};
-        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId}]);
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role:'requester'}]);
+        assert.deepEqual(Roles.getRolesForUser(testUserId, agencyId),["requester"], "has requester role for agency");
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
@@ -259,14 +261,8 @@ if (Meteor.isServer) {
       it('adds a user to an agency they already belong to does not double enter', ()=> {
         const invocation = {userId: adminTestUser};
         addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId}]);
+        assert.deepEqual(Roles.getRolesForUser(testUserId, agencyId),["requester"], "has requester role for agency");
         var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0], agencyId);
-        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{
-          userId: testUserId,
-          agencyId: agencyId
-        }]), 'User already belongs to agency. [conflict]');
-        updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
       });
@@ -275,6 +271,7 @@ if (Meteor.isServer) {
         const invocation = {userId: adminTestUser};
         addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId}]);
         addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agency2Id}]);
+        assert.deepEqual(Roles.getGroupsForUser(testUserId),['noagency',agencyId,agency2Id], "has two agencies");
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
@@ -291,13 +288,13 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
         assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 0);
       });
-      it('add a user to an agency changes their role to what is set', ()=> {
+      it('add a user to an agency prevents changing of role', ()=> {
         const invocation = {userId: adminTestUser};
-        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role: 'visitor'}]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0], agencyId);
-        assert.equal(updatedUser.roles[0], 'visitor');
+        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{
+          userId: testUserId,
+          agencyId: agencyId,
+          role: 'visitor'
+        }]), 'Can not have multiple roles. [invalid-role]');
       });
     });
 
