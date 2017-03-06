@@ -17,6 +17,7 @@ angular:angular@1.5.3_1
 angular:angular-animate@1.5.3_1
 angular:angular-aria@1.5.3_1
 angular:angular-material@1.0.6
+angular:angular-mocks@1.5.3_1
 angular:angular-sanitize@1.5.3_1
 angularui:angular-ui-router@0.2.15
 angularutils:pagination@0.9.1_2
@@ -110,7 +111,6 @@ practicalmeteor:loglevel@1.2.0_2
 practicalmeteor:mocha@2.4.5_5
 practicalmeteor:mocha-console-runner@0.2.3
 practicalmeteor:mocha-core@1.0.1
-practicalmeteor:mocha-xunit-reporter@0.1.0
 practicalmeteor:sinon@1.14.1_2
 promise@0.8.8
 raix:eventemitter@0.1.3
