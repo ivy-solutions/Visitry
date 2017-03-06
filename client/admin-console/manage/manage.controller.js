@@ -16,7 +16,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.applicantsCount = -1;
   this.freqVisitors = [];
 
-  let visitsSubscription = this.subscribe('visits', ()=>[], ()=> {
+  let visitsSubscription = this.subscribe('agencyVisits', ()=> {
+    return [this.getReactively('agencyId')]
+  }, ()=> {
     this.isVisitDataReady = true;
   });
   let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
