@@ -16,7 +16,7 @@ if (Meteor.isServer) {
 
     var testUserId;
     beforeEach(() => {
-      //TODO: convert this to use StubCollections
+      //TODO: convert this to use StubCollections -- there is an issue with astronomy save method so it won't work currently
       var user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
         testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99', role: "requester"});
@@ -303,6 +303,7 @@ if (Meteor.isServer) {
       let accountsCreateUserSpy;
       let testNewUserId;
       let meteorCallStub;
+      let findUserByEmailStub;
       let errorsStub;
 
       beforeEach(()=> {
@@ -323,6 +324,11 @@ if (Meteor.isServer) {
             }
           });
         }
+        if (findUserByEmailStub) {
+          Accounts.findUserByEmail.restore();
+        }
+        findUserByEmailStub = null;
+        testNewUserId = null;
       });
 
       it('User must be logged in to createUser', ()=> {
@@ -392,7 +398,7 @@ if (Meteor.isServer) {
 
       it('if user already exists addUserToAgency is called', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
         Roles.addUsersToRoles(testUserId, ['administrator']);
         let error = {reason: 'Email already exists.'};
@@ -406,13 +412,11 @@ if (Meteor.isServer) {
           agencyId: user.userData.agencyIds[0],
           role: user.role
         }));
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
 
       it('if user already exists addUserToAgency, if user already belongs to agency it returns null', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
         Roles.addUsersToRoles(testUserId, ['administrator']);
         let error = {reason: 'Email already exists.'};
@@ -423,13 +427,11 @@ if (Meteor.isServer) {
         error = {reason: 'User already belongs to agency.'};
         meteorCallStub.throws(error);
         assert.isNull(createUserFromAdminHandler.apply(invocation, [user]));
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
 
       it('if user already exists addUserToAgency which throws error', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
         Roles.addUsersToRoles(testUserId, ['administrator']);
         let error = {reason: 'Email already exists.'};
@@ -440,14 +442,16 @@ if (Meteor.isServer) {
         error = {reason: 'Cannot read userId of undefined'};
         meteorCallStub.throws(error);
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [user]), error);
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
     });
 
     describe('users.addProspectiveAgency method', () => {
       const addProspectiveAgencyHandler = Meteor.server.method_handlers['addProspectiveAgency'];
-      var agencyId = Random.id();
+      var agencyId;
+
+      beforeEach(()=> {
+        agencyId = Random.id();
+      });
 
       it('succeeds when user adding one prospective agency', () => {
         const invocation = {userId: testUserId};
