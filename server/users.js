@@ -217,7 +217,6 @@ Meteor.methods({
     currentUser.userData.phoneNumber = data.phoneNumber ? data.phoneNumber : null; //remove phone number if there is none
     currentUser.userData.locationInfo = data.locationInfo;
     currentUser.userData.acceptSMS = (data.phoneNumber && data.acceptSMS !== undefined) ? data.acceptSMS : (data.phoneNumber ? true : false); // default to true, unless there is no phone number
-    Roles.addUsersToRoles(currentUser, [data.role]);
     currentUser.save(function (err, id) {
       if (err) {
         logger.error("updateUserData failed to update user. err: " + err);

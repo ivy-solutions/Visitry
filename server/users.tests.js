@@ -25,9 +25,7 @@ if (Meteor.isServer) {
       }
     });
     afterEach(() => {
-      Meteor.users.remove(testUserId, function (err) {
-        if (err) console.log(err);
-      });
+      Meteor.users.remove(testUserId);
     });
 
     describe('users.updateName method', () => {
@@ -183,9 +181,7 @@ if (Meteor.isServer) {
         });
       });
       afterEach(() => {
-        Meteor.users.remove(testUserWithEmailId, function (err) {
-          if (err) console.log(err);
-        });
+        Meteor.users.remove(testUserWithEmailId);
       });
 
       it('adds a user email when one does not exist', ()=> {
@@ -305,6 +301,7 @@ if (Meteor.isServer) {
       let meteorCallStub;
       let findUserByEmailStub;
       let errorsStub;
+      let agencyId = Random.id();
 
       beforeEach(()=> {
         accountsCreateUserSpy = sinon.spy(Accounts, 'createUser');
@@ -318,11 +315,7 @@ if (Meteor.isServer) {
         Meteor.call.restore();
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}});
         if (testNewUserId) {
-          Meteor.users.remove(testNewUserId._id, function (err) {
-            if (err) {
-              console.log(err);
-            }
-          });
+          Meteor.users.remove(testNewUserId._id);
         }
         if (findUserByEmailStub) {
           Accounts.findUserByEmail.restore();
@@ -335,7 +328,7 @@ if (Meteor.isServer) {
         const invocation = {userId: null};
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), 'Must be logged in to add a user to an agency. [not-logged-in]');
       });
 
@@ -344,13 +337,12 @@ if (Meteor.isServer) {
         const invocation = {userId: testUserId};
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), 'Must be an agency administrator to add users to an agency. [unauthorized]');
       });
 
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
-        let agencyId = "agencyid";
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(accountsCreateUserSpy.calledOnce);
@@ -358,8 +350,8 @@ if (Meteor.isServer) {
 
       it('If user doesn\'t exist send enrollment email is called', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
-        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [Random.id()]}}]);
+        Roles.addUsersToRoles(testUserId, ['administrator'],agencyId);
+        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(meteorCallStub.calledWith('sendEnrollmentEmail', testNewUserId));
       });
@@ -367,7 +359,7 @@ if (Meteor.isServer) {
       it('If user doesn\'t exist send welcome to agency email', ()=> {
         let agencyId = Random.id();
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(meteorCallStub.calledWith('sendAgencyWelcomeEmail', testNewUserId, agencyId));
@@ -375,24 +367,24 @@ if (Meteor.isServer) {
 
       it('Accounts.createUser returns id', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         testNewUserId = createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]);
         assert.equal(testNewUserId, Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id)
       });
 
       it('throws error if Accouts.createUser throws error', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'could not read email of undefined'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), error);
       });
 
@@ -400,12 +392,12 @@ if (Meteor.isServer) {
         testNewUserId = Random.id();
         findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}}
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}}
         createUserFromAdminHandler.apply(invocation, [user]);
         assert(meteorCallStub.calledWith('addUserToAgency', {
           userId: testNewUserId,
@@ -418,12 +410,12 @@ if (Meteor.isServer) {
         testNewUserId = Random.id();
         findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}};
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}};
         error = {reason: 'User already belongs to agency.'};
         meteorCallStub.throws(error);
         assert.isNull(createUserFromAdminHandler.apply(invocation, [user]));
@@ -433,12 +425,12 @@ if (Meteor.isServer) {
         testNewUserId = Random.id();
         findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}};
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}};
         error = {reason: 'Cannot read userId of undefined'};
         meteorCallStub.throws(error);
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [user]), error);

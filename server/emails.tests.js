@@ -31,6 +31,7 @@ describe('emails', ()=> {
     const sendEnrollmentEmailHandler = Meteor.server.method_handlers['sendEnrollmentEmail'];
     let accountsSendEnrollmentEmailStub;
 
+    const agencyId = Random.id();
     beforeEach(()=> {
       accountsSendEnrollmentEmailStub = sinon.stub(Accounts, 'sendEnrollmentEmail', ()=> true);
     });
@@ -38,12 +39,24 @@ describe('emails', ()=> {
       Accounts.sendEnrollmentEmail.restore();
     });
 
+    it('fails if user is not an administrator', ()=> {
+      const invocation = {userId: testUserId};
+      assert.throws(()=>sendEnrollmentEmailHandler.apply(invocation, [testUserId, agencyId]),
+        'Must be an agency administrator to send enrollment email. [unauthorized]');
+    });
+    it('fails if user is an administrator but not for this agency', ()=> {
+      const invocation = {userId: testUserId};
+      Roles.addUsersToRoles(testUserId, ['administrator'], 'anotherAgency');
+      assert.throws(()=>sendEnrollmentEmailHandler.apply(invocation, [testUserId, agencyId]),
+        'Must be an agency administrator to send enrollment email. [unauthorized]');
+    });
     it('Accounts.sendEnrollmentEmail is called', ()=> {
       const invocation = {userId: testUserId};
-      Roles.addUsersToRoles(testUserId, ['administrator']);
-      sendEnrollmentEmailHandler.apply(invocation, [testUserId]);
+      Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
+      sendEnrollmentEmailHandler.apply(invocation, [testUserId, agencyId]);
       assert(accountsSendEnrollmentEmailStub.calledOnce);
     });
+
   });
 
   describe('emails.sendAgencyWelcomeEmail', ()=> {
