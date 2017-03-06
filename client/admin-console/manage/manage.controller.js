@@ -54,6 +54,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       let isAllDataThere = this.getReactively('isUserDataReady');
       let selector = {
         'visitTime': {$eq: null},
+        'requestedDate':{$gt:new Date()},
         'agencyId': {$eq: this.agencyId}
       };
       var visits = Visit.find(selector, {sort: {requestedDate: 1}, limit: 10});
