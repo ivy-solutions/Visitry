@@ -15,7 +15,9 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
       this.agency = Agency.findOne({_id: this.getReactively('agencyId')});
     },
     administrators: ()=> {
-      return User.find({roles: "administrator", 'userData.agencyIds': $stateParams.agencyId})
+      let selector = {};
+      selector['roles.'+this.getReactively('agencyId')] = 'administrator';
+      return User.find(selector);
     }
   });
 

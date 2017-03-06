@@ -98,10 +98,8 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
 Meteor.publish('visitorUsers', function (agencyId) {
   if (this.userId) {
     logger.verbose("publish visitorUsers to " + this.userId);
-    var selector = {
-      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-      'roles': {$elemMatch: {$eq: 'visitor'}}
-    };
+    var selector = {};
+    selector['roles.'+agencyId] = 'visitor';
     var queryOptions = {
       fields: {
         createdAt: 1,
@@ -114,7 +112,7 @@ Meteor.publish('visitorUsers', function (agencyId) {
         'emails': 1
       }
     };
-    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
+    Counts.publish(this, 'numberVisitorUsers',  User.find(selector), {
       noReady: true
     });
     let visitors = User.find(selector, queryOptions);
@@ -148,10 +146,8 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
   logger.verbose("publish seniorUsers to " + this.userId);
   if (this.userId) {
     logger.verbose("publish seniorUsers to " + this.userId);
-    var selector = {
-      'userData.agencyIds': {$elemMatch: {$eq: agencyId}},
-      'roles': {$elemMatch: {$eq: 'requester'}}
-    };
+    var selector = {};
+    selector['roles.'+agencyId] = 'requester';
     var queryOptions = {
       fields: {
         createdAt: 1,

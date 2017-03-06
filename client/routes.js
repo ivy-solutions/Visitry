@@ -229,9 +229,9 @@ angular.module('visitry')
         controller: 'adminHomeCtrl as adminHome',
         resolve: {
           authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie,
-          currentUser: ['$meteor', '$q', function ($meteor, $q) {
+          currentUser: ['$meteor', '$q', function ($meteor, $q, $cookies) {
             return $meteor.requireUser().then(function (user) {
-              if (!_.contains(user.roles, 'administrator')) {
+              if (!Roles.getRolesForUser(user,$cookies.get('agencyId'))) {
                 // fail the promise chain
                 return $q.reject('FORBIDDEN');
               }
