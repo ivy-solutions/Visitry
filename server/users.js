@@ -267,7 +267,8 @@ Meteor.methods({
       logger.error('addUserToAgency - invalid user');
       throw new Meteor.Error('invalid-user', 'User missing.');
     }
-    // validate that a role for user can be found and is not in conflict with other roles
+    // validate that a role for user can be found
+    // If a role argument is included, change the user to have that role in the agency
     let existingRole;
     let groups = Roles.getGroupsForUser(userId);
     groups.forEach( function (group) {
@@ -279,14 +280,13 @@ Meteor.methods({
     let role = userArgs.role ? userArgs.role : existingRole;
     if (!role) {
         throw new Meteor.Error('invalid-role', 'User role is missing.');
-    } else {
-      if (existingRole.valueOf() != role.valueOf()) {
-        throw new Meteor.Error('invalid-role', 'Can not have multiple roles.');
-      }
     }
-    if (!Roles.userIsInRole(user, role, agencyId)) {
-      Roles.addUsersToRoles(user, role, agencyId);
+    let rolesInTheAgency = Roles.getRolesForUser(user, agencyId);
+    if (rolesInTheAgency.length ) {
+      Roles.removeUsersFromRoles(user, rolesInTheAgency, agencyId);
     }
+    Roles.addUsersToRoles(user, role, agencyId);
+
     user = User.findOne(userId);
 
     //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
