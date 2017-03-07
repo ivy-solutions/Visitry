@@ -13,6 +13,7 @@ angular.module('visitry').controller('adminVisitDetailsCtrl', function ($scope, 
     return [this.getReactively('agencyId')]
   });
   this.subscribe('feedback');
+  this.today = new Date();
 
   this.visit = {};
   this.helpers({

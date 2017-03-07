@@ -20,7 +20,7 @@
       </div>
       <div flex="25">{{adminManageVisits.getUser(visit.requesterId).fullName}}</div>
       <div flex="35">{{visit.location.address}}</div>
-      <div flex="20">{{ visit.requestedDate | amDifference : visit.createdAt : 'days' }}</div>
+      <div flex="20">{{adminManageVisits.today | amDifference : visit.createdAt : 'days' }}</div>
     </div>
   </md-list-item>
 </md-list>

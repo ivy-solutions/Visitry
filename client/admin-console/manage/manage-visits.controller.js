@@ -14,6 +14,7 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
   this.sort = {
     'visitTime': this.order
   };
+  this.today = new Date();
 
   this.subscribe('agencyVisits', ()=> {
     return [this.getReactively('agencyId')]
