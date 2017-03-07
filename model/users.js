@@ -53,10 +53,14 @@ User = Class.create({
     hasAgency: {
       type: Boolean,
       resolve(doc) {
-        if (doc && doc.userData && doc.userData.agencyIds && doc.userData.agencyIds.length > 0)
-          return true;
-        else
-          return false;
+        let hasRealAgency = false;
+        let groups = Roles.getGroupsForUser(doc._id);
+        if (groups) {
+          let realAgency = groups.find( function (group) {
+             return group !== 'noagency'});
+          hasRealAgency = (realAgency !== undefined);
+        }
+        return hasRealAgency;
       }
     }
   }
