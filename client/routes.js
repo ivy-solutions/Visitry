@@ -60,7 +60,7 @@ angular.module('visitry')
           available: ['$q', ($q) => {
             var deferred = $q.defer();
 
-            let currentUser = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
+            let currentUser = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'roles':1 }});
             const available = Meteor.subscribe('availableVisits', [Meteor.userId(), currentUser.hasAgency], {
               onReady: () => {
                 deferred.resolve(available)

@@ -66,7 +66,7 @@ describe ( 'BrowseVisitRequests', function() {
 
 
     it('when no user location, return no string', function () {
-      controller.fromLocation = null;
+      controller.hasLocation = false;
       chai.assert.equal(controller.getDistanceToVisitLocation(visit), "");
     });
 
@@ -78,8 +78,10 @@ describe ( 'BrowseVisitRequests', function() {
     it ('distance is an accurate number when there is both a visit and a user location', function() {
       controller.hasLocation = true;
       controller.fromLocation = {
-        "type": "Point",
-        "coordinates": [-71.477358, 42.468846]
+        "geo": {
+          "type": "Point",
+          "coordinates": [-71.477358, 42.468846]
+        }
       };
       var distance = controller.getDistanceToVisitLocation(visit);
       chai.expect(distance).to.be.a('string');

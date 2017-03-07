@@ -284,12 +284,10 @@ Meteor.methods({
         throw new Meteor.Error('invalid-role', 'Can not have multiple roles.');
       }
     }
-    if (!Roles.userIsInRole(userId, role, agencyId)) {
-      Roles.addUsersToRoles(userId, role, agencyId);
+    if (!Roles.userIsInRole(user, role, agencyId)) {
+      Roles.addUsersToRoles(user, role, agencyId);
     }
-    console.log(Roles.getGroupsForUser(userId));
-    console.log(Roles.getRolesForUser(userId, 'noagency'));
-    console.log(Roles.getRolesForUser(userId, agencyId));
+    user = User.findOne(userId);
 
     //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
     if (!user.userData.agencyIds) {
@@ -317,7 +315,7 @@ Meteor.methods({
   createUserFromAdmin(data){
     Errors.checkUserLoggedIn(this.userId, 'createUserFromAdmin', 'Must be logged in to add a user to an agency.');
     //TODO agencyId should be sent as separate argument
-    let agencyId = data.userData.agencyIds[0]
+    let agencyId = data.userData.agencyIds[0];
     Errors.checkUserIsAdministrator(this.userId, agencyId,'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
     let newUserId;
     try {
@@ -416,13 +414,12 @@ Accounts.onCreateUser(function (options, user) {
   if (options.userData) {
     user.userData = options.userData;
   } else {
-    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds: []}
+    user.userData = {firstName: "", lastName: "", visitRange: 1, agencyIds: []};
     user.hasAgency = false;
   }
   let role = options.role ? [options.role] : ['requester'];
-  Roles.addUsersToRoles(user, role, 'noagency');
+  user.roles = {'noagency': role };
 
-  logger.info("onCreateUser for userId: " + user._id + " roles: " + user.roles);
   return user;
 });
 
