@@ -8,7 +8,6 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import { HTTP } from 'meteor/http'
 import { Feedback, Feedbacks } from '/model/feedback'
 import '/server/feedback.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
 
@@ -19,7 +18,6 @@ if (Meteor.isServer) {
     var meteorStub;
 
     beforeEach(() => {
-      StubCollections.stub(Meteor.users);
 
       meteorStub = sinon.stub(Meteor, 'call');
       testFeedback = {
@@ -36,15 +34,19 @@ if (Meteor.isServer) {
     });
     afterEach(function () {
       meteorStub.restore();
-      StubCollections.restore();
     });
 
     describe('feedback.createFeedback method', () => {
+      beforeEach(function () {
+        Feedbacks.remove({});
+      });
+
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
 
       it('creates feedback', () => {
         const invocation = {userId: Random.id()};
-        createHandler.apply(invocation, [testFeedback])
+        createHandler.apply(invocation, [testFeedback]);
+        assert.isTrue(Meteor.call.calledWith('visits.attachFeedback'),"visits.attachFeedback called");
         assert.equal(Feedbacks.find().count(), 1);
       });
       it('fails if no user rating', () => {
