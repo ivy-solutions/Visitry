@@ -19,6 +19,8 @@ if (Meteor.isServer) {
     var meteorStub;
 
     beforeEach(() => {
+      StubCollections.stub(Meteor.users);
+
       meteorStub = sinon.stub(Meteor, 'call');
       testFeedback = {
         visitorId: Random.id(),
@@ -34,13 +36,11 @@ if (Meteor.isServer) {
     });
     afterEach(function () {
       meteorStub.restore();
+      StubCollections.restore();
     });
 
     describe('feedback.createFeedback method', () => {
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
-      beforeEach(function () {
-        Feedbacks.remove({});
-      });
 
       it('creates feedback', () => {
         const invocation = {userId: Random.id()};

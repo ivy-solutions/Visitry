@@ -18,6 +18,7 @@ angular.module("visitry.browser").controller('replacePasswordCtrl', function ($s
       } else {
         // Resume normal operation
         this.isDone=true;
+        this.newPassword = '';
       }
     });
   };

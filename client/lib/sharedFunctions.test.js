@@ -113,65 +113,45 @@ describe('SharedFunctions', function () {
       Roles.setUserRoles(adminUserAgency2Id, ['administrtor'], agency2Id);
     });
 
+    afterEach( function () {
+      Meteor.users.remove(requesterUserAgency1Id);
+      Meteor.users.remove(requesterUserAgency2Id);
+      Meteor.users.remove(visitorUserAgency1Id);
+      Meteor.users.remove(visitorUserAgency2Id);
+      Meteor.users.remove(adminUserAgency1Id);
+      Meteor.users.remove(requesterUserAgency1Id);
+      Meteor.users.remove(adminUserAgency2Id);
+    });
+
     describe("isVisitor", function () {
-      let userWithVisitorRoleId;
-      let userWithoutVisitorRoleId;
-      beforeEach(function () {
-        userWithVisitorRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['visitor']});
-        userWithoutVisitorRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['requester']});
-      });
-      it("user with no agency is visitor", function () {
-        userIdStub.returns(userWithVisitorRoleId);
-        assert.isTrue(Meteor.myFunctions.isVisitor());
-      });
       it("user with agency is visitor", function () {
         userIdStub.returns(visitorUserAgency1Id);
         assert.isTrue(Meteor.myFunctions.isVisitor());
       });
       it("user is not visitor", function () {
-        userIdStub.returns(userWithoutVisitorRoleId);
+        userIdStub.returns(requesterUserAgency1Id);
         assert.isFalse(Meteor.myFunctions.isVisitor());
       });
     });
 
     describe("isRequester", function () {
-      let userWithRequesterRoleId;
-      let userWithoutRequesterRoleId;
-      beforeEach(function () {
-        userWithRequesterRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['requester']});
-        userWithoutRequesterRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['visitor']});
-      });
-      it("user with no agency is requester", function () {
-        userIdStub.returns(userWithRequesterRoleId);
-        assert.isTrue(Meteor.myFunctions.isRequester());
-      });
       it("user with agency is requester", function () {
         userIdStub.returns(requesterUserAgency1Id);
         assert.isTrue(Meteor.myFunctions.isRequester());
       });
       it("user is not requester", function () {
-        userIdStub.returns(userWithoutRequesterRoleId);
+        userIdStub.returns(visitorUserAgency1Id);
         assert.isFalse(Meteor.myFunctions.isRequester());
       });
     });
 
     describe("isAdministrator", ()=> {
-      let userWithAdministratorRoleId;
-      let userWithoutAdministratorRoleId;
-      beforeEach(function () {
-        userWithAdministratorRoleId = Meteor.users.insert({username: 'visitorUser', roles: ['administrator']});
-        userWithoutAdministratorRoleId = Meteor.users.insert({username: 'nonVisitorUser', roles: ['visitor']});
-      });
-      it("user is administrator", ()=> {
-        userIdStub.returns(userWithAdministratorRoleId);
-        assert.isTrue(Meteor.myFunctions.isAdministrator());
-      });
       it("user with agency is administrator", ()=> {
         userIdStub.returns(adminUserAgency1Id);
         assert.isTrue(Meteor.myFunctions.isAdministrator());
       });
       it("user is not administrator", function () {
-        userIdStub.returns(userWithoutAdministratorRoleId);
+        userIdStub.returns(requesterUserAgency1Id);
         assert.isFalse(Meteor.myFunctions.isAdministrator());
       });
     });

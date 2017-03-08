@@ -32,9 +32,9 @@
         <span flex></span>
         <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
         <label class="button-bar">
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="16">Eve. </ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="16">Eve. </ion-radio>
         </label>
         <div layout="row">
         <span flex></span>
