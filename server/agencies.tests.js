@@ -106,6 +106,7 @@ if (Meteor.isServer) {
           username: 'Louisa', fullName: 'Louisa Jones',
           emails: [{address: 'abc@someplace.com', verified: false}],
         });
+        StubCollections.stub(Meteor.users);
         meteorStub = sinon.stub(Meteor, 'call');
         sendEmailSpy = sinon.spy(Email, 'send');
       });
@@ -114,6 +115,7 @@ if (Meteor.isServer) {
         User.findOne.restore();
         Meteor.call.restore();
         Email.send.restore();
+        StubCollections.restore();
       });
 
       const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
