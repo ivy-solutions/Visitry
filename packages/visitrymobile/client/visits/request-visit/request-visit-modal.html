@@ -15,7 +15,7 @@
           <i class="icon ion-location placeholder-icon"></i>
           <input type="text" id="locationInput" ng-google-places-autocomplete-hack options="requestVisit.autoCompleteOptions"
                  ng-model="requestVisit.visitRequest.location.name"
-                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()" ng-blur="requestVisit.isLoadingPlaces=false"
+                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()"
                  details="requestVisit.visitRequest.location.details"/>
             <span ng-hide="!requestVisit.isLoadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
         </label>

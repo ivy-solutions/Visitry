@@ -28,7 +28,7 @@ import {logger} from '/client/logging'
  **/
 
 angular.module("visitry")
-  .directive('ngGooglePlacesAutocompleteHack', function ($timeout, $ionicLoading) {
+  .directive('ngGooglePlacesAutocompleteHack', function ($timeout) {
     return {
       require: 'ngModel',
       scope: {
@@ -55,7 +55,21 @@ angular.module("visitry")
             }
           }
         }
+        // for progress indicator while typing
+        var inputChangedPromise;
+        var keystrokeListener = function () {
+          scope.ngProgress = true;
+          if(inputChangedPromise){
+            $timeout.cancel(inputChangedPromise);
+          }
+          inputChangedPromise = $timeout(stopProgress,2000);
+        };
+        function stopProgress() {
+          scope.ngProgress = false;
+        }
+        element.bind('keyup', keystrokeListener);
 
+        // google's place autocomplete
         scope.gPlace = new google.maps.places.Autocomplete(element[0], {});
         if (opts.componentRestrictions) {
           scope.gPlace.setComponentRestrictions(opts.componentRestrictions);
