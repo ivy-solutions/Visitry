@@ -90,15 +90,15 @@ if (Meteor.isServer) {
       });
 
     });
-    describe('agencies.sendJoinRequest', () => {
-      var testUserId = Random.id();
-      var testAgencyId = Random.id();
+    describe('agencies.sendJoinRequest, agencies.revokeJoinRequest', () => {
       var meteorStub;
       var findAgencyStub;
       var findUserStub;
       let sendEmailStub;
+      var assetsGetTextStub;
 
       beforeEach(() => {
+        StubCollections.stub([Meteor.users, Agencies]);
         findAgencyStub = sinon.stub(Agency, 'findOne');
         findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
         findUserStub = sinon.stub(User, 'findOne');
@@ -106,24 +106,34 @@ if (Meteor.isServer) {
           username: 'Louisa', fullName: 'Louisa Jones',
           emails: [{address: 'abc@someplace.com', verified: false}],
         });
-        StubCollections.stub(Meteor.users);
         meteorStub = sinon.stub(Meteor, 'call');
         sendEmailStub = sinon.stub(Email, 'send');
+        assetsGetTextStub = sinon.stub(Assets, 'getText').returns("");
       });
       afterEach(() => {
         Agency.findOne.restore();
         User.findOne.restore();
         Meteor.call.restore();
         Email.send.restore();
+        Assets.getText.restore();
         StubCollections.restore();
       });
 
-      const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
-
       it('updates user and sends mail when request to join agency made', ()=> {
-        const invocation = {userId: testUserId};
+        const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
+        var testAgencyId = Random.id();
+        const invocation = {userId: userId};
         sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
         assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
+        assert(Email.send.calledOnce, 'Email send called');
+      });
+
+      it('updates user and sends mail when revoke join request is made', ()=> {
+        const revokeJoinRequest = Meteor.server.method_handlers['revokeJoinRequest'];
+        var testAgencyId = Random.id();
+        const invocation = {userId: userId};
+        revokeJoinRequest.apply(invocation, [testAgencyId, "Never mind."]);
+        assert(Meteor.call.calledWith('removeProspectiveAgency'), "removeProspectiveAgency called");
         assert(Email.send.calledOnce, 'Email send called');
       });
 
