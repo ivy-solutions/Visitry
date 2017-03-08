@@ -97,8 +97,8 @@ if (Meteor.isServer) {
       let sendEmailStub;
       var assetsGetTextStub;
 
-      beforeEach(() => {
-        StubCollections.stub([Meteor.users, Agencies]);
+      beforeEach(function(done) {
+        this.timeout(3000);
         findAgencyStub = sinon.stub(Agency, 'findOne');
         findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
         findUserStub = sinon.stub(User, 'findOne');
@@ -109,6 +109,7 @@ if (Meteor.isServer) {
         meteorStub = sinon.stub(Meteor, 'call');
         sendEmailStub = sinon.stub(Email, 'send');
         assetsGetTextStub = sinon.stub(Assets, 'getText').returns("");
+        done();
       });
       afterEach(() => {
         Agency.findOne.restore();
@@ -116,7 +117,6 @@ if (Meteor.isServer) {
         Meteor.call.restore();
         Email.send.restore();
         Assets.getText.restore();
-        StubCollections.restore();
       });
 
       it('updates user and sends mail when request to join agency made', ()=> {
@@ -145,9 +145,8 @@ if (Meteor.isServer) {
       let adminUserId;
       let nonAdminUserId;
       beforeEach(()=> {
-        StubCollections.stub(Agencies);
+        StubCollections.stub([Meteor.users, Agencies]);
         agencyId = Agencies.insert({name: 'testAgency', createdAt: new Date()});
-        StubCollections.stub(Meteor.users);
         adminUserId = Meteor.users.insert({
           username: 'adminTestUser',
           password: 'password'
