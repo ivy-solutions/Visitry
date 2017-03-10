@@ -24,7 +24,7 @@ okland:camera-ui
 jeremy:geocomplete
 
 # users/accounts
-accounts-password
+accounts-password@1.3.3
 dotansimha:accounts-ui-angular
 mbanting:cordova-accounts-resume
 alanning:roles
@@ -64,8 +64,8 @@ percolate:synced-cron
 
 #other
 brentjanderson:winston-client
-shell-server
+shell-server@0.2.1
 meteorhacks:ssr
-http
+http@1.2.10
 practicalmeteor:mocha-xunit-reporter
 mdg:geolocation
