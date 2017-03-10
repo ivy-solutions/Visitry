@@ -15,7 +15,6 @@ Meteor.startup(function ()  {
       username: 'Sarahc', email: 'sarahcoletti12@gmail.com', password: 'Visitry99', role: 'visitor',
       userData: {firstName: 'Sarah', lastName: 'Coletti'}
     });
-
     var sarahc = Meteor.users.findOne({username: 'Sarahc'});
     //create the agencies
     if (Agencies.find().count() === 0) {
@@ -141,10 +140,14 @@ Meteor.startup(function ()  {
     });
     var admin = Meteor.users.findOne({username: 'admin'});
     Roles.addUsersToRoles(admin, 'administrator', agency._id);
+
     //set one user to access all agencies
     let allAgencies = Agencies.find();
     let allAgencyIds = allAgencies.map( function(agency) { return agency._id});
     Meteor.users.update(sarahc._id, {$set: {'userData.agencyIds': allAgencyIds}});
+    allAgencies.forEach( function(agency) {
+      Roles.addUsersToRoles(sarahc._id, 'administrator', agency._id);
+    });
   }
 
   if(Visits.find().count() ===0){
@@ -302,8 +305,7 @@ Meteor.startup(function ()  {
   }
 
   //Repair Roles
-  // for all users that have roles in their records, remove them and use Roles to add agency sepcific role
-  //let usersWithOldRoles = User.find({ roles: {$exists: true}});
+  // for all users that have roles with no agency, remove them and use Roles to add agency sepcific role
   let usersWithOldRoles = Meteor.users.find({ roles: {$in: ["visitor","requester","administrator"]}});
   usersWithOldRoles.forEach(function(user){
     let userId = user._id;
