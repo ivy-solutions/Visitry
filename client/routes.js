@@ -424,7 +424,7 @@ angular.module('visitry')
         if (event && Meteor.userId()) {
           logger.info("redirect from $stateChangeStart");
           let nextState;
-          if (Meteor.myFunctions.isAdministrator()) {
+          if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
             nextState = 'adminManage';
           }
           else if (Meteor.myFunctions.isVisitor()) {
@@ -452,7 +452,7 @@ angular.module('visitry')
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
               let location = '/lost';
-              if (Meteor.myFunctions.isAdministrator()) {
+              if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
                 location = 'adminManage';
               }
               else {
