@@ -50,6 +50,13 @@ Meteor.myFunctions = {
   isAdministratorInAgency: function( userId, agencyId) {
     return Roles.userIsInRole(userId, ['administrator'], agencyId);
   },
+  administersMultipleAgencies: function() {
+    let agencies = Roles.getGroupsForUser(Meteor.userId());
+    let administers = agencies.filter( function(agencyId){
+      return Roles.userIsInRole(Meteor.userId(), 'administrator', agencyId) && agencyId !== 'noagency'
+    });
+    return administers.length > 1;
+  },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
     let confirmMessage = '';

@@ -6,7 +6,7 @@ import {TopVisitors} from '/model/users'
 import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog, UserDetailsDialog) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog, UserDetailsDialog, ChooseAgencyDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
@@ -39,6 +39,18 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   );
 
   this.helpers({
+    getAgency: ()=> {
+      if (Meteor.userId() && this.getReactively('agencyId')) {
+        this.call('getAgency', this.getReactively('agencyId'), (error, result) => {
+          if (error) {
+            logger.error(error);
+          }
+          else {
+            this.agency = result;
+          }
+        });
+      }
+    },
     scheduledVisits: ()=> {
       let isAllDataThere = this.getReactively('isVisitDataReady') && this.getReactively('isUserDataReady');
       let selector = {
@@ -117,6 +129,17 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
 
   this.getUserDetails = (userId)=> {
     UserDetailsDialog.open(userId);
+  };
+
+  this.administersMultipleAgencies = () => {
+    return Meteor.myFunctions.administersMultipleAgencies();
+  };
+
+  this.switchAgency = () => {
+    ChooseAgencyDialog.open(this.updateAgencyCookie);
+  };
+  this.updateAgencyCookie = () =>{
+    this.agencyId = $cookies.get('agencyId');
   };
 
   function handleError(err) {
