@@ -110,7 +110,7 @@ describe('SharedFunctions', function () {
       adminUserAgency1Id = Meteor.users.insert({username: 'adminUserAgency1'});
       Roles.setUserRoles(adminUserAgency1Id, ['administrator'], agency1Id);
       adminUserAgency2Id = Meteor.users.insert({username: 'adminUserAgency2'});
-      Roles.setUserRoles(adminUserAgency2Id, ['administrtor'], agency2Id);
+      Roles.setUserRoles(adminUserAgency2Id, ['administrator'], agency2Id);
     });
 
     afterEach( function () {
@@ -198,5 +198,20 @@ describe('SharedFunctions', function () {
         assert.isFalse(Meteor.myFunctions.isAdministratorInAgency(requesterUserAgency1Id, agency1Id));
       });
     });
+    describe( "administersMultipleAgencies", function() {
+      it( "non-administrator returns false", function() {
+        userIdStub.returns(visitorUserAgency1Id);
+        assert.isFalse(Meteor.myFunctions.administersMultipleAgencies());
+      });
+      it( "administrator of 1 agency returns false", function() {
+        userIdStub.returns(adminUserAgency1Id);
+        assert.isFalse(Meteor.myFunctions.administersMultipleAgencies());
+      });
+      it( "administrator of 2 agencies returns true", function() {
+        Roles.setUserRoles(adminUserAgency2Id, ['administrator'], agency1Id);
+        userIdStub.returns(adminUserAgency2Id);
+        assert.isTrue(Meteor.myFunctions.administersMultipleAgencies());
+      });
+    })
   });
 });

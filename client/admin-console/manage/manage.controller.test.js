@@ -25,9 +25,13 @@ describe('Admin Manage', function () {
       return userId;
     }
   };
+  let ChooseAgencyDialogMock = {
+    open:(closeFunction)=> {}
+  };
 
   beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
-    controller = _$controller_('adminManageCtrl', {$scope: $rootScope.$new(true),AdminVisitDetailsDialog:AdminVisitDetailsDialogMock,UserDetailsDialog:UserDetailsDialogMock});
+    controller = _$controller_('adminManageCtrl', {$scope: $rootScope.$new(true),
+      AdminVisitDetailsDialog:AdminVisitDetailsDialogMock,UserDetailsDialog:UserDetailsDialogMock, ChooseAgencyDialog:ChooseAgencyDialogMock});
     $cookies = _$cookies_;
   }));
 
@@ -88,6 +92,38 @@ describe('Admin Manage', function () {
       let userId = Random.id();
       controller.getUserDetails(userId);
       assert(UserDetailsDialogSpy.calledWith(userId));
+    });
+  });
+
+  describe('switchAgency', ()=> {
+    let ChooseAgencyDialogSpy;
+    beforeEach(()=> {
+      ChooseAgencyDialogSpy = sinon.spy(ChooseAgencyDialogMock, 'open');
+    });
+    afterEach(()=> {
+      ChooseAgencyDialogMock.open.restore();
+    });
+    it('switchAgency opens ChooseAgencyDialog', ()=> {
+       controller.switchAgency();
+      assert.isTrue(ChooseAgencyDialogSpy.calledOnce);
+    });
+  });
+
+  describe('updateAgencyCookie', () => {
+    beforeEach(()=> {
+      $cookies.put('agencyId', 'oldCookie')
+    });
+    afterEach(()=> {
+      $cookies.remove('agencyId');
+    });
+    it('agencyId cookie is unchanged', function () {
+      controller.updateAgencyCookie();
+      assert.equal('oldCookie',controller.agencyId);
+    });
+    it('agencyId cookie is updated', function () {
+      $cookies.put('agencyId', 'newCookie')
+      controller.updateAgencyCookie();
+      assert.equal('newCookie',controller.agencyId);
     });
   });
 
