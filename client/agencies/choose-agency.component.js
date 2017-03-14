@@ -4,7 +4,7 @@
 import { Roles } from 'meteor/alanning:roles'
 import { Agency } from '/model/agencies'
 
-angular.module('visitry').controller('chooseAgencyCtrl', function ($scope, $state, $cookies, $reactive, $mdDialog) {
+angular.module('visitry').controller('chooseAgencyCtrl', function ($scope, $cookies, $reactive, $mdDialog) {
   $reactive(this).attach($scope);
 
   this.agencies;
