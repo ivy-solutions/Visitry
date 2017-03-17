@@ -22,20 +22,25 @@ describe('server-errors', ()=> {
   });
 
   describe('Errors.checkUserIsAdministrator', ()=> {
+    let agencyId = Random.id();
     beforeEach(()=> {
       let rolesUserIsInRoleStub = sinon.stub(Roles, 'userIsInRole');
       rolesUserIsInRoleStub.withArgs('admin').returns(true);
       rolesUserIsInRoleStub.withArgs('not-admin').returns(false);
+      rolesUserIsInRoleStub.withArgs('super-user', ['administrator'], 'allAgencies').returns(true);
     });
     afterEach(()=> {
       Roles.userIsInRole.restore();
     });
-    it('if user is logged in does not throw error', ()=> {
-      assert.doesNotThrow(()=>Errors.checkUserIsAdministrator('admin', 'testCheckUserLoggedIn', 'Error Message'), /.*/);
+    it('if user is an administrator', ()=> {
+      assert.doesNotThrow(()=>Errors.checkUserIsAdministrator('admin', agencyId, 'testCheckUserIsAdmin', 'Error Message'), /.*/);
     });
 
-    it('if user is not logged in throws error', ()=> {
-      assert.throws(()=>Errors.checkUserIsAdministrator('not-admin', 'testCheckUserLoggedIn', 'Error Message'), 'unauthorized', 'Error Message');
+    it('if user is not an administrator', ()=> {
+      assert.throws(()=>Errors.checkUserIsAdministrator('not-admin', agencyId, 'testCheckUserIsAdmin', 'Error Message'), 'unauthorized', 'Error Message');
+    });
+    it('if user is super-user', ()=> {
+      assert.doesNotThrow(()=>Errors.checkUserIsAdministrator('super-user', agencyId, 'testCheckUserIsAdmin', 'Error Message'), /.*/);
     });
   });
 

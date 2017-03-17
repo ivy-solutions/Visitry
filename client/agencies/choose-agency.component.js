@@ -16,7 +16,11 @@ angular.module('visitry').controller('chooseAgencyCtrl', function ($scope, $cook
       let administratorAgencies = agencies.filter(function (agency) {
         return Roles.userIsInRole(Meteor.userId(), 'administrator', agency) && agency != 'noagency';
       });
-      this.agencies = Agency.find({_id: {$in: administratorAgencies}});
+      if ( !Roles.userIsInRole(Meteor.userId(), 'administrator', 'allAgencies')) {
+        this.agencies = Agency.find({_id: {$in: administratorAgencies}, activeUntil: {$gt: new Date()}});
+      } else { //superUser with allAgencies gets to see everything
+        this.agencies = Agency.find();
+      }
       return this.agencies;
     }
   });

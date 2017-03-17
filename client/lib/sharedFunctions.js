@@ -55,7 +55,7 @@ Meteor.myFunctions = {
     let administers = agencies.filter( function(agencyId){
       return Roles.userIsInRole(Meteor.userId(), 'administrator', agencyId) && agencyId !== 'noagency'
     });
-    return administers.length > 1;
+    return administers.length > 1 || Roles.userIsInRole(Meteor.userId(), 'administrator', 'allAgencies');
   },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory, $window) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';

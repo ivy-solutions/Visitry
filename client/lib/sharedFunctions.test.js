@@ -95,6 +95,7 @@ describe('SharedFunctions', function () {
     let visitorUserAgency2Id;
     let adminUserAgency1Id;
     let adminUserAgency2Id;
+    let superUserId;
     let agency1Id = Random.id();
     let agency2Id = Random.id();
 
@@ -111,6 +112,8 @@ describe('SharedFunctions', function () {
       Roles.setUserRoles(adminUserAgency1Id, ['administrator'], agency1Id);
       adminUserAgency2Id = Meteor.users.insert({username: 'adminUserAgency2'});
       Roles.setUserRoles(adminUserAgency2Id, ['administrator'], agency2Id);
+      superUserId = Meteor.users.insert({username: 'clarkKent'});
+      Roles.setUserRoles(superUserId, ['administrator'], 'allAgencies');
     });
 
     afterEach( function () {
@@ -121,6 +124,7 @@ describe('SharedFunctions', function () {
       Meteor.users.remove(adminUserAgency1Id);
       Meteor.users.remove(requesterUserAgency1Id);
       Meteor.users.remove(adminUserAgency2Id);
+      Meteor.users.remove(superUserId);
     });
 
     describe("isVisitor", function () {
@@ -153,6 +157,10 @@ describe('SharedFunctions', function () {
       it("user is not administrator", function () {
         userIdStub.returns(requesterUserAgency1Id);
         assert.isFalse(Meteor.myFunctions.isAdministrator());
+      });
+      it("superuser is administrator", function () {
+        userIdStub.returns(superUserId);
+        assert.isTrue(Meteor.myFunctions.isAdministrator());
       });
     });
 
@@ -210,6 +218,10 @@ describe('SharedFunctions', function () {
       it( "administrator of 2 agencies returns true", function() {
         Roles.setUserRoles(adminUserAgency2Id, ['administrator'], agency1Id);
         userIdStub.returns(adminUserAgency2Id);
+        assert.isTrue(Meteor.myFunctions.administersMultipleAgencies());
+      });
+      it( "super user returns true", function() {
+        userIdStub.returns(superUserId);
         assert.isTrue(Meteor.myFunctions.administersMultipleAgencies());
       });
     })

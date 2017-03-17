@@ -148,7 +148,7 @@ Meteor.startup(function ()  {
     allAgencies.forEach( function(agency) {
       Roles.addUsersToRoles(sarahc._id, 'administrator', agency._id);
     });
-  }
+   }
 
   if(Visits.find().count() ===0){
     logger.info("No visit requests found - creating demo visits");
@@ -319,5 +319,10 @@ Meteor.startup(function ()  {
     }
     let groups = Roles.getGroupsForUser(user._id);
   });
+  //make a super user
+  var sarahc = Meteor.users.findOne({username: 'Sarahc'});
+  if (!Roles.userIsInRole(sarahc._id, 'administrator', 'allAgencies')) {
+    Roles.addUsersToRoles(sarahc._id, 'administrator', 'allAgencies');
+  }
 
 });

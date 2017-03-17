@@ -6,7 +6,9 @@
         <div layout="column" layout-margin layout-padding>
           <md-radio-group ng-model="chooseAgency.selected" ng-change="chooseAgency.selectAgency()">
                 <md-radio-button ng-repeat="agency in chooseAgency.myAgencies"
-                                 value="{{agency._id}}" aria-label="{{ agency.name }}">{{agency.name}}
+                                 value="{{agency._id}}" aria-label="{{ agency.name }}">
+                    {{agency.name}}
+                    <p>{{agency.location.formattedAddress}}</p>
                 </md-radio-button>
           </md-radio-group>
         </div>
