@@ -57,7 +57,7 @@ Meteor.myFunctions = {
     });
     return administers.length > 1;
   },
-  showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
+  showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory, $window) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
     let confirmMessage = '';
     if (visit.visitorId) {
@@ -88,6 +88,14 @@ Meteor.myFunctions = {
             }
           }
         });
+        if ($window.ga) { //google analytics
+          $window.ga('send', {
+            hitType: 'event',
+            eventCategory: 'Visit',
+            eventAction: cancelVisitMethod,
+            dimension1: visit.agencyId
+          });
+        }
       }
       else {
         $ionicListDelegate.closeOptionButtons();

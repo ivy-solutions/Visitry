@@ -5,7 +5,7 @@ import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('pendingVisitsCtrl',
-  function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate,$ionicHistory, RequestVisit, $filter, $state, feedback) {
+  function ($scope, $stateParams, $reactive, $location, $ionicPopup,$ionicListDelegate,$ionicHistory, RequestVisit, $filter, $state, feedback, $window) {
   $reactive(this).attach($scope);
 
   this.showDelete = false;
@@ -75,7 +75,7 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   };
 
   this.showCancelVisitConfirm = function (visit) {
-    Meteor.myFunctions.showCancelVisitConfirm(visit,$filter,$ionicPopup,$ionicListDelegate,$ionicHistory);
+    Meteor.myFunctions.showCancelVisitConfirm(visit,$filter,$ionicPopup,$ionicListDelegate,$ionicHistory, $window);
   };
 
   this.visitDetails = function (id) {

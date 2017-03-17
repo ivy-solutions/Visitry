@@ -444,16 +444,18 @@ angular.module('visitry')
     });
 
     //google analytics
-    $window.ga('create', Meteor.settings.public.googleAnalytics.trackingId, 'auto');
-    if (Meteor.isCordova) {
-      cordova.getAppVersion.getAppName(function (name) {
-        $window.ga('set', 'appName', name);
-      });
-      cordova.getAppVersion.getVersionNumber(function (version) {
-        $window.ga('set', 'appVersion', version);
-      });
-    } else {
-      $window.ga('set', 'appName', 'Visitry-Admin');
+    if (Meteor.settings.public.googleAnalytics) {
+      $window.ga('create', Meteor.settings.public.googleAnalytics.trackingId, 'auto');
+      if (Meteor.isCordova) {
+        cordova.getAppVersion.getAppName(function (name) {
+          $window.ga('set', 'appName', name);
+        });
+        cordova.getAppVersion.getVersionNumber(function (version) {
+          $window.ga('set', 'appVersion', version);
+        });
+      } else {
+        $window.ga('set', 'appName', 'Visitry-Admin');
+      }
     }
 
     $rootScope.$on('$stateChangeSuccess', function (event) {
