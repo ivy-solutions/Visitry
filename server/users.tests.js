@@ -16,7 +16,7 @@ if (Meteor.isServer) {
 
     var testUserId;
     beforeEach(() => {
-      //TODO: convert this to use StubCollections
+      //TODO: convert this to use StubCollections -- there is an issue with astronomy save method so it won't work currently
       var user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
         testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99', role: "requester"});
@@ -25,9 +25,7 @@ if (Meteor.isServer) {
       }
     });
     afterEach(() => {
-      Meteor.users.remove(testUserId, function (err) {
-        if (err) console.log(err);
-      });
+      Meteor.users.remove(testUserId);
     });
 
     describe('users.updateName method', () => {
@@ -183,9 +181,7 @@ if (Meteor.isServer) {
         });
       });
       afterEach(() => {
-        Meteor.users.remove(testUserWithEmailId, function (err) {
-          if (err) console.log(err);
-        });
+        Meteor.users.remove(testUserWithEmailId);
       });
 
       it('adds a user email when one does not exist', ()=> {
@@ -288,13 +284,13 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
         assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 0);
       });
-      it('add a user to an agency prevents changing of role', ()=> {
+      it('add a user to an agency changes their role to new role', ()=> {
         const invocation = {userId: adminTestUser};
-        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{
-          userId: testUserId,
-          agencyId: agencyId,
-          role: 'visitor'
-        }]), 'Can not have multiple roles. [invalid-role]');
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role: 'visitor'}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.isTrue(Roles.userIsInRole(testUserId, "visitor", agencyId),"has visitor role for agency");
+        assert.equal(updatedUser.userData.agencyIds.length, 1);
+        assert.equal(updatedUser.userData.agencyIds[0], agencyId);
       });
     });
 
@@ -303,7 +299,9 @@ if (Meteor.isServer) {
       let accountsCreateUserSpy;
       let testNewUserId;
       let meteorCallStub;
+      let findUserByEmailStub;
       let errorsStub;
+      let agencyId = Random.id();
 
       beforeEach(()=> {
         accountsCreateUserSpy = sinon.spy(Accounts, 'createUser');
@@ -317,19 +315,20 @@ if (Meteor.isServer) {
         Meteor.call.restore();
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}});
         if (testNewUserId) {
-          Meteor.users.remove(testNewUserId._id, function (err) {
-            if (err) {
-              console.log(err);
-            }
-          });
+          Meteor.users.remove(testNewUserId._id);
         }
+        if (findUserByEmailStub) {
+          Accounts.findUserByEmail.restore();
+        }
+        findUserByEmailStub = null;
+        testNewUserId = null;
       });
 
       it('User must be logged in to createUser', ()=> {
         const invocation = {userId: null};
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), 'Must be logged in to add a user to an agency. [not-logged-in]');
       });
 
@@ -338,13 +337,12 @@ if (Meteor.isServer) {
         const invocation = {userId: testUserId};
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), 'Must be an agency administrator to add users to an agency. [unauthorized]');
       });
 
       it('Accounts.createUser is called', ()=> {
         const invocation = {userId: testUserId};
-        let agencyId = "agencyid";
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(accountsCreateUserSpy.calledOnce);
@@ -352,8 +350,8 @@ if (Meteor.isServer) {
 
       it('If user doesn\'t exist send enrollment email is called', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
-        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [Random.id()]}}]);
+        Roles.addUsersToRoles(testUserId, ['administrator'],agencyId);
+        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(meteorCallStub.calledWith('sendEnrollmentEmail', testNewUserId));
       });
@@ -361,7 +359,7 @@ if (Meteor.isServer) {
       it('If user doesn\'t exist send welcome to agency email', ()=> {
         let agencyId = Random.id();
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
         assert(meteorCallStub.calledWith('sendAgencyWelcomeEmail', testNewUserId, agencyId));
@@ -369,85 +367,83 @@ if (Meteor.isServer) {
 
       it('Accounts.createUser returns id', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         testNewUserId = createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]);
         assert.equal(testNewUserId, Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id)
       });
 
       it('throws error if Accouts.createUser throws error', ()=> {
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'could not read email of undefined'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [{
           email: 'test@email.com',
-          userData: {agencyIds: [Random.id()]}
+          userData: {agencyIds: [agencyId]}
         }]), error);
       });
 
       it('if user already exists addUserToAgency is called', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}}
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}}
         createUserFromAdminHandler.apply(invocation, [user]);
         assert(meteorCallStub.calledWith('addUserToAgency', {
           userId: testNewUserId,
           agencyId: user.userData.agencyIds[0],
           role: user.role
         }));
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
 
       it('if user already exists addUserToAgency, if user already belongs to agency it returns null', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}};
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}};
         error = {reason: 'User already belongs to agency.'};
         meteorCallStub.throws(error);
         assert.isNull(createUserFromAdminHandler.apply(invocation, [user]));
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
 
       it('if user already exists addUserToAgency which throws error', ()=> {
         testNewUserId = Random.id();
-        sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
-        Roles.addUsersToRoles(testUserId, ['administrator']);
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
         let error = {reason: 'Email already exists.'};
         Accounts.createUser.restore();
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
-        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [Random.id()]}};
+        let user = {email: 'test@email.com', role: 'visitor', userData: {agencyIds: [agencyId]}};
         error = {reason: 'Cannot read userId of undefined'};
         meteorCallStub.throws(error);
         assert.throws(()=>createUserFromAdminHandler.apply(invocation, [user]), error);
-        testNewUserId = null;
-        Accounts.findUserByEmail.restore();
       });
     });
 
     describe('users.addProspectiveAgency method', () => {
       const addProspectiveAgencyHandler = Meteor.server.method_handlers['addProspectiveAgency'];
-      var agencyId = Random.id();
+      var agencyId;
+
+      beforeEach(()=> {
+        agencyId = Random.id();
+      });
 
       it('succeeds when user adding one prospective agency', () => {
         const invocation = {userId: testUserId};

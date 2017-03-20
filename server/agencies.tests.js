@@ -90,15 +90,15 @@ if (Meteor.isServer) {
       });
 
     });
-    describe('agencies.sendJoinRequest', () => {
-      var testUserId = Random.id();
-      var testAgencyId = Random.id();
+    describe('agencies.sendJoinRequest, agencies.revokeJoinRequest', () => {
       var meteorStub;
       var findAgencyStub;
       var findUserStub;
-      let sendEmailSpy;
+      let sendEmailStub;
+      var assetsGetTextStub;
 
-      beforeEach(() => {
+      beforeEach(function(done) {
+        this.timeout(3000);
         findAgencyStub = sinon.stub(Agency, 'findOne');
         findAgencyStub.returns({name: 'Friendly Visitor Agency', contactEmail: 'someone@somewhere.com'});
         findUserStub = sinon.stub(User, 'findOne');
@@ -107,23 +107,34 @@ if (Meteor.isServer) {
           emails: [{address: 'abc@someplace.com', verified: false}],
         });
         meteorStub = sinon.stub(Meteor, 'call');
-        sendEmailSpy = sinon.spy(Email, 'send');
+        sendEmailStub = sinon.stub(Email, 'send');
+        assetsGetTextStub = sinon.stub(Assets, 'getText').returns("");
+        done();
       });
       afterEach(() => {
         Agency.findOne.restore();
         User.findOne.restore();
         Meteor.call.restore();
         Email.send.restore();
+        Assets.getText.restore();
       });
 
-      const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
-
-      it('updates user and sends mail when request to join agency made', function (done) {
-        const invocation = {userId: testUserId};
+      it('updates user and sends mail when request to join agency made', ()=> {
+        const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
+        var testAgencyId = Random.id();
+        const invocation = {userId: userId};
         sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
         assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
-        sinon.assert.calledOnce(sendEmailSpy);
-        done();
+        assert(Email.send.calledOnce, 'Email send called');
+      });
+
+      it('updates user and sends mail when revoke join request is made', ()=> {
+        const revokeJoinRequest = Meteor.server.method_handlers['revokeJoinRequest'];
+        var testAgencyId = Random.id();
+        const invocation = {userId: userId};
+        revokeJoinRequest.apply(invocation, [testAgencyId, "Never mind."]);
+        assert(Meteor.call.calledWith('removeProspectiveAgency'), "removeProspectiveAgency called");
+        assert(Email.send.calledOnce, 'Email send called');
       });
 
     });
@@ -134,9 +145,8 @@ if (Meteor.isServer) {
       let adminUserId;
       let nonAdminUserId;
       beforeEach(()=> {
-        StubCollections.stub(Agencies);
+        StubCollections.stub([Meteor.users, Agencies]);
         agencyId = Agencies.insert({name: 'testAgency', createdAt: new Date()});
-        StubCollections.stub(Meteor.users);
         adminUserId = Meteor.users.insert({
           username: 'adminTestUser',
           password: 'password'

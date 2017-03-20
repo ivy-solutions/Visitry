@@ -1,13 +1,12 @@
-<md-dialog flex-gt-md="70" flex-gt-sm="80" flex-sm="100">
+<md-dialog flex-gt-md="70" flex-gt-sm="80" flex="100">
   <md-toolbar ng-class="adminVisitDetails.visitStatus">
     <div class="md-toolbar-tools">
       <div class="info-badge" ng-class="adminVisitDetails.visitStatus"
            style="margin-right: 10px">
         {{adminVisitDetails.visitStatus|capitalize}}
       </div>
-      <div>{{adminVisitDetails.visit.location.formattedAddress}}</div>
+      <div style="padding-right:5px">{{adminVisitDetails.visit.location.formattedAddress}}</div>
       <span flex></span>
-
       <div>{{adminVisitDetails.visit.visitTime||adminVisitDetails.visit.requestedDate |date:
         'EEE M/d/yy h:mm a'}}
       </div>
@@ -34,7 +33,7 @@
               <div>{{adminVisitDetails.visit.notes}}</div>
             </div>
             <a class="md-secondary" href="mailto:{{adminVisitDetails.requester.emails[0].address}}">
-              <ng-md-icon icon="email" aria-label="Send Email" style="fill: #e6c300" size="32"></ng-md-icon>
+              <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
             </a>
           </md-list-item>
         </md-list>
@@ -42,10 +41,8 @@
         <md-list ng-if="!adminVisitDetails.requesterFeedback">
           <md-divider layout-margin></md-divider>
           <md-list-item class="md-3-line md-long-text">
-            <div class="md-list-item-text">
-              <div layout="row" layout-align="center center">
-                <h3>...waiting on requester feedback</h3>
-              </div>
+            <div class="md-list-item-text" layout="column" layout-align="center center">
+              <div class="md-subhead" style="text-align: center">...waiting for requester to submit feedback.</div>
             </div>
           </md-list-item>
         </md-list>
@@ -96,7 +93,7 @@
               <div>{{adminVisitDetails.visit.visitorNotes}}</div>
             </div>
             <a class="md-secondary" href="mailto:{{adminVisitDetails.visitor.emails[0].address}}">
-              <ng-md-icon icon="email" aria-label="Send Email" style="fill: #e6c300" size="32"></ng-md-icon>
+              <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
             </a>
           </md-list-item>
         </md-list>
@@ -104,10 +101,8 @@
         <md-list ng-if="!adminVisitDetails.visitorFeedback">
           <md-divider layout-margin></md-divider>
           <md-list-item class="md-3-line md-long-text">
-            <div class="md-list-item-text">
-              <div layout="row" layout-align="center center">
-                <h3>...waiting on requester feedback</h3>
-              </div>
+            <div class="md-list-item-text" layout="column" layout-align="center center">
+              <div class="md-subhead" style="text-align: center">...waiting for visitor to submit feedback.</div>
             </div>
           </md-list-item>
         </md-list>

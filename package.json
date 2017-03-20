@@ -33,7 +33,7 @@
     "angular-ui-router": "^0.3.1",
     "angular-utils-pagination": "^0.11.1",
     "babel-runtime": "^6.20.0",
-    "bcrypt": "^1.0.1",
+    "bcrypt": "^1.0.2",
     "coffee-script": "^1.10.0",
     "ionic-timepicker": "^0.5.1",
     "meteor-node-stubs": "^0.2.3",
@@ -41,7 +41,7 @@
     "winston-daily-rotate-file": "^1.2.0"
   },
   "devDependencies": {
-    "angular-mocks": "^1.6.2",
+    "angular-mocks": "1.5.5",
     "mocha": "^3.2.0",
     "mocha-circleci-reporter": "0.0.2"
   }

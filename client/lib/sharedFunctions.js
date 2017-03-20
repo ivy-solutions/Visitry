@@ -50,7 +50,14 @@ Meteor.myFunctions = {
   isAdministratorInAgency: function( userId, agencyId) {
     return Roles.userIsInRole(userId, ['administrator'], agencyId);
   },
-  showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory) {
+  administersMultipleAgencies: function() {
+    let agencies = Roles.getGroupsForUser(Meteor.userId());
+    let administers = agencies.filter( function(agencyId){
+      return Roles.userIsInRole(Meteor.userId(), 'administrator', agencyId) && agencyId !== 'noagency'
+    });
+    return administers.length > 1 || Roles.userIsInRole(Meteor.userId(), 'administrator', 'allAgencies');
+  },
+  showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory, $window) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
     let confirmMessage = '';
     if (visit.visitorId) {
@@ -81,6 +88,14 @@ Meteor.myFunctions = {
             }
           }
         });
+        if ($window.ga) { //google analytics
+          $window.ga('send', {
+            hitType: 'event',
+            eventCategory: 'Visit',
+            eventAction: cancelVisitMethod,
+            dimension1: visit.agencyId
+          });
+        }
       }
       else {
         $ionicListDelegate.closeOptionButtons();

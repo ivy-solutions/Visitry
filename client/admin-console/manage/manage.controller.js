@@ -6,7 +6,7 @@ import {TopVisitors} from '/model/users'
 import { logger } from '/client/logging'
 
 
-angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog) {
+angular.module('visitry.browser').controller('adminManageCtrl', function ($scope, $state, $reactive, $cookies, $mdDialog, AdminVisitDetailsDialog, UserDetailsDialog, ChooseAgencyDialog) {
   $reactive(this).attach($scope);
 
   this.topVisitorsDayRange = 365;
@@ -16,7 +16,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.applicantsCount = -1;
   this.freqVisitors = [];
 
-  let visitsSubscription = this.subscribe('visits', ()=>[], ()=> {
+  let visitsSubscription = this.subscribe('agencyVisits', ()=> {
+    return [this.getReactively('agencyId')]
+  }, ()=> {
     this.isVisitDataReady = true;
   });
   let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
@@ -37,11 +39,23 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   );
 
   this.helpers({
+    getAgency: ()=> {
+      if (Meteor.userId() && this.getReactively('agencyId')) {
+        this.call('getAgency', this.getReactively('agencyId'), (error, result) => {
+          if (error) {
+            logger.error(error);
+          }
+          else {
+            this.agency = result;
+          }
+        });
+      }
+    },
     scheduledVisits: ()=> {
       let isAllDataThere = this.getReactively('isVisitDataReady') && this.getReactively('isUserDataReady');
       let selector = {
         'visitTime': {$exists: true, $gt: new Date()},
-        'agencyId': {$eq: this.agencyId}
+        'agencyId': {$eq: this.getReactively('agencyId')}
       };
       var visits = Visit.find(selector, {
         sort: {visitTime: 1}, limit: 10
@@ -52,7 +66,8 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       let isAllDataThere = this.getReactively('isUserDataReady');
       let selector = {
         'visitTime': {$eq: null},
-        'agencyId': {$eq: this.agencyId}
+        'requestedDate':{$gt:new Date()},
+        'agencyId': {$eq: this.getReactively('agencyId')}
       };
       var visits = Visit.find(selector, {sort: {requestedDate: 1}, limit: 10});
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
@@ -60,14 +75,18 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     applicants: ()=> {
       let isDataThere = this.getReactively('isUserDataReady');
       let selector = {
-        'userData.prospectiveAgencyIds': this.agencyId
+        'userData.prospectiveAgencyIds': this.getReactively('agencyId')
       };
       return User.find(selector, {
         fields: {
           'userData.firstName': 1,
           'userData.lastName': 1,
           'userData.prospectiveAgencyIds': 1,
-          'userData.picture': 1
+          'userData.picture': 1,
+          'createdAt': 1,
+          'userData.about': 1,
+          'userData.location': 1,
+          'emails': 1
         }
       });
     },
@@ -103,6 +122,26 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       }
     });
   };
+
+  this.getVisitDetails = (visitId)=> {
+    AdminVisitDetailsDialog.open(visitId);
+  };
+
+  this.getUserDetails = (userId)=> {
+    UserDetailsDialog.open(userId);
+  };
+
+  this.administersMultipleAgencies = () => {
+    return Meteor.myFunctions.administersMultipleAgencies();
+  };
+
+  this.switchAgency = () => {
+    ChooseAgencyDialog.open(this.updateAgencyCookie);
+  };
+  this.updateAgencyCookie = () =>{
+    this.agencyId = $cookies.get('agencyId');
+  };
+
   function handleError(err) {
     let title = (err) ? err.reason : 'Confirmation failed';
     $mdDialog.show(

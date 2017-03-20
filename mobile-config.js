@@ -67,6 +67,8 @@ App.accessRule('data:*', { type: 'navigation' });
 App.accessRule('tel:*',{type:'intent'});
 App.accessRule( 'mailto:*',{type:'navigation'});
 App.accessRule( 'sms:*',{type:'intent'});
+App.accessRule('http://www.google-analytics.com/*',{external:false});
+App.accessRule('https://stats.g.doubleclick.net',{external:false});
 
 App.setPreference("WebAppStartupTimeout", 60000);
 App.setPreference("LoadUrlTimeoutValue", 60000);

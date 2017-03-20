@@ -1,7 +1,7 @@
 import { Visit } from '/model/visits.js'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, $ionicPopup, RequestVisit) {
+angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, $ionicPopup, $window, RequestVisit) {
   $reactive(this).attach($scope);
 
   this.visitRequest = {
@@ -88,6 +88,18 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         if (err) return handleError(err);
       });
       hideRequestVisitModal();
+      let requesterAgency = Roles.getGroupsForUser(Meteor.userId(), 'requester').find( function(agencyId) {
+        agencyId !== 'noagency'
+      });
+      logger.info(requesterAgency);
+      if ($window.ga) { //google analytics
+        $window.ga('send', {
+          hitType: 'event',
+          eventCategory: 'Visit',
+          eventAction: 'request',
+          dimension1: requesterAgency
+        });
+      }
     }
   };
   this.cancel = function () {

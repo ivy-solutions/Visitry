@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
+import { Agency } from '/model/agencies'
 
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, ScheduleVisit, available) {
   $reactive(this).attach($scope);
@@ -19,28 +20,43 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
 
   this.visitRange = 3000;
 
-  this.fromLocation = {"type": "Point", "coordinates": [-71.0589, 42.3601]};  //default = Boston
+  this.fromLocation;
 
-  this.hasLocation = this.visitRange < 3000;
+  this.hasLocation = true;
   this.visits;
   this.agencyIds;
-  this.hasAgency = true;
+  this.hasAgency;
 
   this.autorun( function() {
-    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1, 'userData.agencyIds': 1}});
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1, 'userData.agencyIds': 1, roles: 1}});
     if (user) {
-      if ( user.userData && user.userData.location) {
-        this.fromLocation = user.userData.location.geo;
+      this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['noagency'];
+      this.hasAgency = user.hasAgency;
+      let agencyId = this.agencyIds.find( function( id ){
+        return id != 'noagency'
+      });
+
+      if (user.userData && user.userData.visitRange) {
         this.visitRange = user.userData.visitRange;
-        this.hasLocation = true;
-      } else {
+      }
+
+      if ( user.userData && user.userData.location) {
+        this.fromLocation = user.userData.location;
+      } else if (agencyId) {
+        // if user does not have a location, use the location of the first agency they belong to
+        let agency = Agency.findOne(agencyId, {location: 1});
+        if (agency && agency.location) {
+          this.fromLocation = agency.location;
+        }
+      }
+      if (!this.fromLocation) { //if neither user nor agency have location use default - Wichita, Kansas
+        this.fromLocation = { "formattedAddress": "Default location", "geo": {"type": "Point", "coordinates": [-97.415021, 37.716408]}};
         this.visitRange = 4000;
-        this.fromLocation = { "type": "Point", "coordinates": [-97.415021, 37.716408]};  //default - within 4000 miles of Wichita, Kansas
         this.hasLocation = false;
       }
 
-      this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['nosuchagency'];
-      this.hasAgency = user.hasAgency;
+      this.hasLocation = this.fromLocation && this.visitRange < 3000;
+
       const today = new Date();
       today.setHours(0,0,0,0);
       this.visits = Visit.find({
@@ -48,7 +64,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
         visitorId: null,
         "location.geo": {
           $near: {
-            $geometry: this.fromLocation,
+            $geometry: this.fromLocation.geo,
             $maxDistance: this.visitRange * 1609
           }
         },
@@ -113,11 +129,11 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
     }
     var EarthRadiusInMiles = 3956.0;
     var EarthRadiusInKilometers = 6367.0;
-    var fromLatRads = degreesToRadians(this.fromLocation.coordinates[1]);
-    var fromLongRads = degreesToRadians(this.fromLocation.coordinates[0]);
+    var fromLatRads = degreesToRadians(this.fromLocation.geo.coordinates[1]);
+    var fromLongRads = degreesToRadians(this.fromLocation.geo.coordinates[0]);
     var toLatRads = degreesToRadians(toLocation.geo.coordinates[1]);
     var toLongRads = degreesToRadians(toLocation.geo.coordinates[0]);
-    var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles
+    var distance = Math.acos(Math.sin(fromLatRads) * Math.sin(toLatRads) + Math.cos(fromLatRads) * Math.cos(toLatRads) * Math.cos(fromLongRads - toLongRads)) * EarthRadiusInMiles;
     var rounded = distance.toFixed(1);
     return (rounded).toString() + " miles";
   };

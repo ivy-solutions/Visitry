@@ -20,10 +20,8 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
 
   this.helpers({
     seniors: ()=> {
-      let selector = {
-        'userData.agencyIds': {$elemMatch: {$eq: this.getReactively('agencyId')}},
-        'roles': {$elemMatch: {$eq: 'requester'}}
-      };
+      let selector = {};
+      selector['roles.'+this.getReactively('agencyId')] = 'requester';
       return Meteor.users.find(selector,
         {
           limit: parseInt(this.getReactively('recordPerPage')),

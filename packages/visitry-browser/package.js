@@ -44,6 +44,7 @@ Package.onUse(function(api) {
     'client/admin-console/help/help-overview.html',
     'client/admin-console/help/help-about.html',
     'client/admin-console/help/help-feedback.html',
+    'client/admin-console/manage/choose-agency.html',
     'client/admin-console/manage/manage.html',
     'client/admin-console/manage/manage-seniors.html',
     'client/admin-console/manage/manage-visitors.html',

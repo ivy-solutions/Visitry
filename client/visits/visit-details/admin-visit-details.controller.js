@@ -1,7 +1,7 @@
 /**
  * Created by n0235626 on 2/10/17.
  */
-import { Visit } from '/model/visits'
+import { Visits } from '/model/visits'
 import {logger} from '/client/logging'
 import { Feedback,Feedbacks } from '/model/feedback'
 
@@ -17,8 +17,8 @@ angular.module('visitry').controller('adminVisitDetailsCtrl', function ($scope, 
   this.visit = {};
   this.helpers({
     visit: ()=> {
-      let visit = Visit.findOne({_id: this.getReactively('visitId')});
-      this.visitStatus = getVisitStatus(visit);
+      let visit = Visits.findOne({_id: this.getReactively('visitId')});
+      this.visitStatus = (visit) ? getVisitStatus(visit) : '';
       Meteor.call('getUserPicture', visit.requesterId, (err, result)=> {
         if (err) {
           logger.error(err);
@@ -52,11 +52,11 @@ angular.module('visitry').controller('adminVisitDetailsCtrl', function ($scope, 
   });
 });
 
-function getVisitStatus (visit){
+function getVisitStatus(visit) {
   let status = '';
   let today = new Date();
   switch (true) {
-    case (visit.invalid):
+    case (visit.inactive):
       status = 'cancelled';
       break;
     case (!visit.visitorId && visit.requestedDate < today):

@@ -4,10 +4,10 @@
       <md-list flex>
         <md-list-item class="md-2-line">
           <img class="md-avatar" style="height:100px;width:100px"
-               ng-src="{{userDetails.getUserImage(userDetails.userId)}}">
+               ng-src="{{userDetails.userPicture}}">
           <div class="md-list-item-text">
             <div class="md-display-3">{{userDetails.user.fullName}}</div>
-            <div layout-padding><span ng-show="userDetails.user.roles[0]==='visitor'"
+            <div layout-padding><span ng-show="userDetails.isVisitor"
                                       style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px"><ng-md-icon
                 style="vertical-align: -webkit-baseline-middle;"
                 icon="star"></ng-md-icon>{{userDetails.user.visitorRating|number:1}}</span>Member since
@@ -16,7 +16,7 @@
           </div>
         </md-list-item>
         <div layout-padding>
-          <div ng-show="userDetails.user.roles[0]"><strong>Role:</strong> {{userDetails.user.roles[0] |capitalize}}
+          <div><strong>Role:</strong> {{userDetails.isVisitor ? "VISITOR" : "REQUESTER"}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
             {{userDetails.user.userData.location.address}}
@@ -47,13 +47,13 @@
             {{userDetails.pendingVisitsCount}}
           </div>
         </div>
-        <div layout="row" layout-align="end center" ng-show="userDetails.user.roles[0]==='requester'">
+        <div layout="row" layout-align="end center" ng-show="!userDetails.isVisitor">
           <div layout-padding>Unfilled</div>
           <div class="info-badge incomplete">
             {{userDetails.unfilledVisitsCount}}
           </div>
         </div>
-        <div layout="row" layout-align="end center" ng-show="userDetails.user.roles[0]==='visitor'">
+        <div layout="row" layout-align="end center" ng-show="userDetails.isVisitor">
           <div layout-padding>Hours</div>
           <div class="info-badge">
             {{userDetails.hoursCount}}

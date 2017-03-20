@@ -6,14 +6,14 @@ import { Feedback,Feedbacks } from '/model/feedback'
 import {VisitorUsers} from '/model/users'
 import { Roles } from 'meteor/alanning:roles'
 
-angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cookies, $reactive,AdminVisitDetailsDialog) {
+angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cookies, $reactive, AdminVisitDetailsDialog) {
   $reactive(this).attach($scope);
   this.userId = this.locals.userId;
   this.agencyId = $cookies.get('agencyId');
 
-  this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), ['visitor'], this.agencyId);
+  this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId);
   let userdataSubscription = this.subscribe('userdata', ()=>[], ()=> {
-    this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), ['visitor'], this.agencyId);
+    this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId);
     userdataSubscription.stop();
   });
   this.subscribe('feedback');
@@ -22,6 +22,10 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   });
   this.subscribe('visitorUsers', ()=> {
     return [this.getReactively('agencyId')]
+  });
+
+  this.call('getUserPicture', this.userId, (err, result)=> {
+    this.userPicture = result;
   });
 
   this.visitsCount = 0;
@@ -67,9 +71,8 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
       let queryOptions = {
         fields: {
           username: 1, emails: 1, fullName: 1, createdAt: 1, roles: 1,
-          'userData.location': 1,
-          'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'visitorHours': 1, 'visitorRating': 1
+          'userData.location': 1, 'userData.firstName': 1, 'userData.lastName': 1,
+          'userData.about': 1, 'userData.phoneNumber': 1, 'visitorHours': 1, 'visitorRating': 1
         }
       };
 
@@ -88,8 +91,6 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
       })
     }
   });
-  this.getUser = Meteor.myFunctions.getUser;
-  this.getUserImage = Meteor.myFunctions.getUserImage;
 
   this.pageChanged = function (newPage) {
     this.page = newPage;

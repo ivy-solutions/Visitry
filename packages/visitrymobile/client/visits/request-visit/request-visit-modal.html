@@ -15,7 +15,7 @@
           <i class="icon ion-location placeholder-icon"></i>
           <input type="text" id="locationInput" ng-google-places-autocomplete-hack options="requestVisit.autoCompleteOptions"
                  ng-model="requestVisit.visitRequest.location.name"
-                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()" ng-blur="requestVisit.isLoadingPlaces=false"
+                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()"
                  details="requestVisit.visitRequest.location.details"/>
             <span ng-hide="!requestVisit.isLoadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
         </label>
@@ -32,9 +32,9 @@
         <span flex></span>
         <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
         <label class="button-bar">
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
-          <ion-radio class="ampm" ng-model="requestVisit.visitRequest.time" ng-value="16">Eve. </ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="9">A.M.</ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="13">P.M.</ion-radio>
+          <ion-radio class="request-time-of-day" ng-model="requestVisit.visitRequest.time" ng-value="16">Eve. </ion-radio>
         </label>
         <div layout="row">
         <span flex></span>

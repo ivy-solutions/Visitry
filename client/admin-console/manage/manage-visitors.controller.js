@@ -21,10 +21,8 @@ angular.module('visitry.browser').controller('adminManageVisitorsCtrl', function
 
   this.helpers({
     visitors: ()=> {
-      let selector = {
-        'userData.agencyIds': {$elemMatch: {$eq: this.agencyId}},
-        'roles': {$elemMatch: {$eq: 'visitor'}}
-      };
+      let selector = {};
+      selector['roles.'+this.getReactively('agencyId')] = 'visitor';
       return VisitorUsers.find(selector,
         {
           limit: parseInt(this.getReactively('recordPerPage')),

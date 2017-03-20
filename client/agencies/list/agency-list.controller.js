@@ -25,7 +25,6 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
           this.coordinates = [-71.0589, 42.3601]; //default location: Boston
         }
       }
-      logger.verbose(this.coordinates);
       return Agency.find({
         'location.geo': {
           $near: {

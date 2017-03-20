@@ -107,15 +107,18 @@ Meteor.methods({
       });
       return agencyId;
     } else {
+      let userId = this.userId;
       let agency = new Agency(fields);
       agency.activeUntil = new Date(2020, 12,12);
-      agency.administratorId = this.userId;
-      agency.save(function (err, id) {
+      agency.save(function (err, agencyId) {
         if (err) {
           logger.error("failed to create agency. err: " + err);
           throw err;
         }
+        // make the creator an administrator
+        Roles.addUsersToRoles(userId,'administrator', agencyId);
       });
+
       logger.verbose("created agency for " + this.userId);
       return agency._id;
     }

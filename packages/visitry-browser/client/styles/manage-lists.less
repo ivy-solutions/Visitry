@@ -1,13 +1,15 @@
-.manageList > * {
-  padding: 6px;
-  margin: 0px;
-}
-.manageList > button{
-  text-align: left;
+.manage-list-item {
+  > button {
+    text-align: left;
+  }
+  > * {
+    padding: 6px;
+    margin: 0px;
+  }
 }
 
-md-list-item.md-clickable {
-  >button {
+md-list-item.md-clickable.no-padding {
+  > button {
     padding: 0px;
   }
 }
