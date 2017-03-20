@@ -1,4 +1,6 @@
-general:
+machine:
+  java:
+    version: oraclejdk8general:
   artifacts:
     - "/home/ubuntu/build/Visitry/android/debug.apk"
     - "/home/ubuntu/build/Visitry/android/release-unsigned.apk"
