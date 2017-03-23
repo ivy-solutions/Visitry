@@ -210,7 +210,6 @@ Meteor.methods({
   },
   updateUserData(data) {
     Errors.checkUserLoggedIn(this.userId,"updateUserData","Must be logged in to update user data.");
-    logger.verbose(data);
     var currentUser = User.findOne(this.userId);
     currentUser.userData.visitRange = data.visitRange;
     currentUser.userData.about = data.about;
