@@ -16,24 +16,39 @@ describe('App Feedback', function () {
   });
 
   let controller;
+  let scope;
   let stateSpy;
   let meteorCallStub;
 
-  beforeEach(inject(function (_$controller_, $rootScope, _$state_) {
-    controller = _$controller_('appFeedbackCtrl', {$scope: $rootScope.$new(true), $state: _$state_});
-    $state = _$state_;
+
+  beforeEach(inject(function (_$controller_) {
+    // The injector unwraps the underscores (_) from around the parameter names when matching
+    $controller = _$controller_;
   }));
 
-  describe('submitFeedback', ()=> {
-    beforeEach(()=> {
-      meteorCallStub = sinon.stub(Meteor, 'call');
-      stateSpy = sinon.spy($state, 'go');
-    });
 
-    afterEach(()=> {
-      Meteor.call.restore();
-      $state.go.restore();
+  beforeEach(()=> {
+    meteorCallStub = sinon.stub(Meteor, 'call');
+
+    inject(function ($rootScope, $state) {
+      scope = $rootScope.$new(true);
+      controller = $controller('appFeedbackCtrl', {
+        $scope: scope,
+        $state: $state}
+      );
+      stateSpy = sinon.stub($state, 'go');
+      controller.setAgencyIds = function() {};
     });
+  });
+
+  afterEach(()=> {
+    Meteor.call.restore();
+    if (stateSpy) {
+      stateSpy.restore();
+    }
+  });
+
+  describe('submitFeedback', ()=> {
 
     it('submit feedback calls trello create card service', ()=> {
       controller.feedback.title = 'Test';
