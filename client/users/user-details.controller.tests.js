@@ -14,10 +14,11 @@ import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
 import StubCollections from 'meteor/hwillson:stub-collections';
 
-describe.skip('UserDetails', function () {
+describe('UserDetails', function () {
 
   beforeEach(function () {
     angular.mock.module('visitry');
+    angular.mock.module('ngCookies', 'visitry');
   });
 
   let testUserId = Random.id();
@@ -109,9 +110,8 @@ describe.skip('UserDetails', function () {
     StubCollections.restore();
   });
 
-  //skip - it fails in CircleCI
-  // and does not truly test the cookie is set since controller.ganecyId is always 'undefined'
-  describe.skip('AgencyId Cookie', () => {
+  //skip - it does not truly test the cookie is set since controller.agencyId is always 'undefined'
+  describe('AgencyId Cookie', () => {
     beforeEach(()=> {
       $cookies.put('agencyId', Random.id());
     });
