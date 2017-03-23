@@ -14,7 +14,7 @@ import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
 import StubCollections from 'meteor/hwillson:stub-collections';
 
-describe('UserDetails', function () {
+describe.skip('UserDetails', function () {
 
   beforeEach(function () {
     angular.mock.module('visitry');
