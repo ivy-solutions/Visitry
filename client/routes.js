@@ -444,7 +444,7 @@ angular.module('visitry')
     });
 
     //google analytics
-    if (Meteor.settings.public.googleAnalytics) {
+    if (Meteor.settings && Meteor.settings.public && Meteor.settings.public.googleAnalytics) {
       $window.ga('create', Meteor.settings.public.googleAnalytics.trackingId, 'auto');
       if (Meteor.isCordova) {
         cordova.getAppVersion.getAppName(function (name) {
