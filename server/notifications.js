@@ -67,9 +67,9 @@ Meteor.methods({
   'notifications.visitCancelled'(visit) {
     if (visit.visitorId && visit.visitorId !== this.userId ) {
       //communicate with visitor
-      var msgTitle = "Cancelled";
+      var msgTitle = "Canceled";
       var user = User.findOne(this.userId);
-      var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" cancelled by " + user.userData.firstName + ".";
+      var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" canceled by " + user.userData.firstName + ".";
 
       new Notification({
           visitId: visit._id,
@@ -86,8 +86,8 @@ Meteor.methods({
      }
     if ( visit.visitorId === this.userId){
       var user = User.findOne(this.userId);
-      var msgText = "Visit on " + formattedVisitTime(visit) + " cancelled by " + user.fullName + ".";
-      var msgTitle = "Visit cancelled";
+      var msgText = "Visit on " + formattedVisitTime(visit) + " canceled by " + user.fullName + ".";
+      var msgTitle = "Visit canceled";
 
       new Notification({
           visitId: visit._id,
