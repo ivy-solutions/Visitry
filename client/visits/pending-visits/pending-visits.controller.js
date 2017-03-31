@@ -18,12 +18,12 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.subscribe('userdata');
 
   this.autorun( function() {
-    var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1}});
+    var user = User.findOne({_id: Meteor.userId()}, {fields: {roles:1,'userData.agencyIds': 1}});
     if ( Meteor.userId()) {
-       if ( user && user.userData ) {
-        this.hasAgency = user.userData.agencyIds && user.userData.agencyIds.length > 0 ;
+        if ( user ) {
+          this.hasAgency = user.hasAgency;
       }
-      if (this.hasAgency) {
+      if (this.getReactively('hasAgency')) {
         this.visits = Visit.find({
           requesterId: Meteor.userId(),
           requestedDate: {$gte: new Date()}
@@ -39,8 +39,8 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.helpers({
     pendingVisits: ()=> {
       var hasAgency = this.getReactively('hasAgency');
-      if (Meteor.userId() && this.visits) {
-        return Meteor.myFunctions.groupVisitsByRequestedDate(this.getReactively('visits'));
+      if (Meteor.userId() && this.getReactively('visits')) {
+        return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
       }
     }
   });

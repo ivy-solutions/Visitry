@@ -83,15 +83,13 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
       } else {
         newVisit.location = currentUser.userData.location;
       }
-      logger.info("New visit request", newVisit);
       Meteor.call('visits.createVisit',newVisit, (err) => {
         if (err) return handleError(err);
       });
       hideRequestVisitModal();
       let requesterAgency = Roles.getGroupsForUser(Meteor.userId(), 'requester').find( function(agencyId) {
-        agencyId !== 'noagency'
+        return agencyId !== 'noagency';
       });
-      logger.info(requesterAgency);
       if ($window.ga) { //google analytics
         $window.ga('send', {
           hitType: 'event',
