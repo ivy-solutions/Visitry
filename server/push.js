@@ -10,7 +10,7 @@ Push.allow({
 });
 
 Meteor.methods({
-  serverNotification: function(text,title) {
+  serverNotification: function(title,text) {
     logger.info( "serverNotification:" + text );
     Push.send({
       from: 'push',
@@ -21,7 +21,7 @@ Meteor.methods({
       }
     });
   },
-  userNotification: function(text,title,userId) {
+  userNotification: function(title,text,userId) {
     logger.info("userNotification:" + text);
     Push.send({
       from: 'push',
