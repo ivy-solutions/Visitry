@@ -50,7 +50,6 @@ describe('App Feedback', function () {
   describe('submitFeedback', ()=> {
 
     it('submit feedback calls trello create card service', ()=> {
-      controller.setAgencyIds = function() {};
       controller.feedback.title = 'Test';
       controller.feedback.comments = 'This is a test.';
       controller.feedback.type = 'BUG';
@@ -60,7 +59,6 @@ describe('App Feedback', function () {
       assert.isTrue(stateSpy.calledWith('login'), 'bad navigation');
     });
     it('submit feedback works without agencyIds', ()=> {
-      controller.setAgencyIds = function() {};
       controller.feedback.title = 'Test';
       controller.feedback.comments = 'This is a test.';
       controller.feedback.type = 'BUG';
