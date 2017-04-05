@@ -12,11 +12,17 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId);
   this.agency
 
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.helpers({
     agency: () => {
       this.agency = Agency.findOne({_id: $stateParams.groupId});
       return this.agency
+    },
+    enrollment: () => {
+      return Enrollment.findOne({userId: Meteor.userId(), agencyId:$stateParams.groupId });
     }
   });
 
@@ -64,7 +70,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
     if ( !this.isMember() && Meteor.myFunctions.isVisitor() ) {
       return true;
     } else {
-      return (Enrollment.find({userId: Meteor.userId()}).count === 0);
+      return (Enrollment.find({userId: Meteor.userId()}).count() === 0);
     }
   };
 

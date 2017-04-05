@@ -40,6 +40,9 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
 
   this.subscribe('userProfile');
   this.subscribe('allAgencies', () => { return [ {reactive:false}] });
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.isMember = (agencyId) => {
     return Meteor.myFunctions.membershipStatus(agencyId) === 'member';

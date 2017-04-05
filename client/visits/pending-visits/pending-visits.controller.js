@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 2/18/16.
  */
 import { Visit } from '/model/visits'
+import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('pendingVisitsCtrl',
@@ -16,6 +17,9 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.hasAgency = true;
 
   this.subscribe('userdata');
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.autorun( function() {
     var user = User.findOne({_id: Meteor.userId()}, {fields: {roles:1,'userData.agencyIds': 1}});
@@ -80,5 +84,15 @@ angular.module('visitry').controller('pendingVisitsCtrl',
 
   this.visitDetails = function (id) {
     $state.go( 'visitDetails', {visitId: id} );
+  };
+
+  this.groups = function () {
+    // go to agency list or first agency I applied to
+    let enrollments = Enrollment.findOne({userId: Meteor.userId()});
+    if ( enrollments ) {
+      $state.go( 'agencyDetails', {groupId: enrollments.agencyId })
+    } else {
+      $state.go('agencyList');
+    }
   };
 });

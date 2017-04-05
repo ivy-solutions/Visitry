@@ -107,10 +107,10 @@ Meteor.myFunctions = {
     let status = 'noUser';
     if (Meteor.userId()) {
       const enrollment = Enrollment.findOne({userId:Meteor.userId(), agencyId:agencyId});
-      if (!enrollment || enrollment.removed) {
+      if (!enrollment ) {
         status = "notMember";
       } else {
-        status = enrollment.approvedDate ? "member" :  "pendingMember";
+        status = enrollment.approvalDate ? "member" :  "pendingMember";
       }
     }
     return status;

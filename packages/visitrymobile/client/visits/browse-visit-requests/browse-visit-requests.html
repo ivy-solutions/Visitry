@@ -3,8 +3,13 @@
          <div class="warning" ng-hide="connectionStatus=='ok'">
              No connection to server. ({{connectionStatus}})
          </div>
-         <div class="warning" ng-hide="browseVisitRequests.hasAgency">
-             You are not yet a member of a group.
+         <div ng-hide="browseVisitRequests.hasAgency" class="text-center">
+             <div>
+                 <h4>You are not yet a member of a group.</h4>
+                 <button class="button button-assertive" ng-click="browseVisitRequests.groups()">
+                     Join Group
+                 </button>
+             </div>
          </div>
          <div ng-hide="!browseVisitRequests.hasAgency">
              <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">

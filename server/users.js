@@ -1,4 +1,3 @@
-import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
 import { Enrollment } from '/model/enrollment'
@@ -43,8 +42,9 @@ Meteor.publish("userdata", function () {
 Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
-    return User.find({_id: this.userId},
-      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1 }});
+    return [User.find({_id: this.userId},
+      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1 }}),
+      Enrollment.find({userId: this.userId})];
   } else {
     this.ready();
   }
@@ -285,9 +285,9 @@ Meteor.methods({
     }
     Roles.addUsersToRoles(user, role, agencyId);
 
-    let application = Enrollment.findOne( {userId: this.userId, agencyId: agencyId});
+    let application = Enrollment.findOne( {userId: userId, agencyId: agencyId});
     if (!application) {
-      application = new Enrollment({userId: this.userId, agencyId: agencyId});
+      application = new Enrollment({userId: userId, agencyId: agencyId});
     }
     application.approvalDate = new Date();
     application.save(function (err, id) {

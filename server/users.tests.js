@@ -216,7 +216,6 @@ if (Meteor.isServer) {
       let meteorCallStub;
       let errorsStub;
       beforeEach(()=> {
-        StubCollections.stub(Enrollments);
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
           password: 'Visitry99',
@@ -237,7 +236,6 @@ if (Meteor.isServer) {
         Meteor.users.remove(adminTestUser);
         meteorCallStub.restore();
         errorsStub.restore();
-        StubCollections.restore();
       });
 
       it('adds a user to an agency, providing role', ()=> {
@@ -247,6 +245,13 @@ if (Meteor.isServer) {
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
+      });
+      it('adds a user to an agency adds enrollment document', ()=> {
+        const invocation = {userId: adminTestUser};
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role:'requester'}]);
+        let enrollment = Enrollments.findOne({userId: testUserId});
+        assert.equal(enrollment.userId, testUserId);
+        assert.equal(enrollment.agencyId, agencyId);
       });
       it('add a user to an agency fails if no user is provided', ()=> {
         const invocation = {userId: adminTestUser};

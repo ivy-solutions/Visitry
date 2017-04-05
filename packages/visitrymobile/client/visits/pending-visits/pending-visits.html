@@ -1,17 +1,22 @@
 <ion-view view-title="Requests" hide-back-button=true>
   <ion-nav-buttons side="secondary" class="show">
-    <button class="button button-clear icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
+    <button class="button button-clear icon ion-plus-circled" ng-disabled="!pendingVisits.hasAgency" ng-click="pendingVisits.showRequestVisitModal()">
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header has-tabs pending">
       <div class="warning" ng-hide="connectionStatus=='ok'">
           No connection to server. ({{connectionStatus}})
       </div>
-      <div class="warning" ng-hide="pendingVisits.hasAgency">
-          You are not yet a member of a group.
-      </div>
     <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
       No active requests. Press + to request a visit.
+    </div>
+    <div ng-hide="pendingVisits.hasAgency" class="text-center">
+      <div>
+        <h4>You are not yet a member of a group.</h4>
+          <button class="button button-assertive" ng-click="pendingVisits.groups()">
+            Join Group
+          </button>
+      </div>
     </div>
     <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
       <div ng-repeat="dateVisits in pendingVisits.pendingVisits">

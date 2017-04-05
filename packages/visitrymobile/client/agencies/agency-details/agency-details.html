@@ -10,11 +10,17 @@
                         <div><img ng-src="{{agencyDetails.agency.logo}}"/></div>
                     </div>
                 </div>
-                <div layout="column" flex="55" layout-align="space-around start" layout-fill>
-                    <h4> {{agencyDetails.agency.name}}</h4>
-                    <p ng-show="agencyDetails.isMember()" class="positive">Member</p>
-                    <p ng-show="agencyDetails.isPendingMember()" class="energized">Application Pending</p>
-                    <h5 class="item-text-wrap">{{agencyDetails.agency.location.address}}</h5>
+                <div layout="column" layout-align="space-around start" layout-fill>
+                    <h5 ng-if="agencyDetails.isPendingMember()">
+                        <i class="ion-checkmark-circled energized"></i>
+                        <span> Application submitted: {{agencyDetails.enrollment.applicationDate | date: 'shortDate'}}</span>
+                    </h5>
+                    <h5 ng-if="agencyDetails.isMember()">
+                        <i class="ion-checkmark-circled calm"></i>
+                        Member since: {{agencyDetails.enrollment.approvalDate | date: 'shortDate' }}
+                    </h5>
+                    <h3> {{agencyDetails.agency.name}}</h3>
+                    <h4 class="item-text-wrap">{{agencyDetails.agency.location.address}}</h4>
                 </div>
             </div>
             <div layout="column">

@@ -73,13 +73,10 @@
     <md-list flex="33">
       <div md-whiteframe="1">
         <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-          <md-subheader style="background-color: #0086b3">Applicants</md-subheader>
+          <md-subheader style="background-color: #0086b3">Applicants ({{adminManage.applicantCount}})</md-subheader>
         </div>
-        <div layout="row" layout-align="center center" ng-hide="adminManage.isUserDataReady">
+        <div layout="row" layout-align="center center" ng-hide="adminManage.isApplicantDataReady">
           <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-        </div>
-        <div layout="row" layout-align="center center" ng-hide="adminManage.applicants.length>0">
-          <h4>No pending applicants</h4>
         </div>
         <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants" ng-click="adminManage.getUserDetails(applicant._id)">
           <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>

@@ -7,15 +7,16 @@
     <ion-content>
         <ion-list can-swipe="agencies.canSwipe">
             <div class="item item-divider">
-                Choose a group to ask to join
+                Choose a group to join
             </div>
             <div ng-repeat="agency in agencies.agencies">
                 <ion-item>
                 <a ng-click="agencies.agencyDetail(agency._id)">
                     <h2>
                         <i class="ion-checkmark-circled" ng-if="!agencies.isNotMember(agency._id)"
-                           ng-class="{calm: agencies.isMember(agency._id), energized:agencies.isPendingMember(agency._id)}" ></i>
-                        {{agency.name}}{{agencies.membershipStatus}}
+                           ng-class="{calm: agencies.isMember(agency._id), energized:agencies.isPendingMember(agency._id)}" >
+                        </i>
+                        {{agency.name}}
                     </h2>
                     <div class="item-text-wrap"><h3>{{agency.description}}</h3></div>
                 </a>
