@@ -426,10 +426,16 @@ angular.module('visitry')
           if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
             nextState = 'adminManage';
           }
-          else if (Meteor.myFunctions.isVisitor()) {
-            nextState = 'browseRequests';
-          } else if (Meteor.myFunctions.isRequester()) {
-            nextState = 'pendingVisits';
+          else {
+            let user = Meteor.myFunctions.getUser(Meteor.userId());
+            if (!user.hasAgency) {
+              nextState = 'agencyList'
+            }
+            else if (Meteor.myFunctions.isVisitor()) {
+              nextState = 'browseRequests';
+            } else if (Meteor.myFunctions.isRequester()) {
+              nextState = 'pendingVisits';
+            }
           }
           if (nextState) {
             logger.info(nextState);
@@ -485,12 +491,18 @@ angular.module('visitry')
                 location = 'adminManage';
               }
               else {
-                if (Meteor.myFunctions.isVisitor()) {
-                  location = 'browseRequests'
-                } else if (Meteor.myFunctions.isRequester()) {
-                  location = 'pendingVisits';
-                } else {
-                  logger.error("user with no role." + Meteor.userId())
+                let user = Meteor.myFunctions.getUser(Meteor.userId());
+                if ( !user.hasAgency ) {
+                  location = 'agencyList'
+                }
+                else {
+                  if (Meteor.myFunctions.isVisitor()) {
+                    location = 'browseRequests'
+                  } else if (Meteor.myFunctions.isRequester()) {
+                    location = 'pendingVisits';
+                  } else {
+                    logger.error("user with no role." + Meteor.userId())
+                  }
                 }
               }
               handle.stop();

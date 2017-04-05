@@ -1,7 +1,7 @@
 import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Visits } from '/model/visits'
-import { Feedbacks } from '/model/feedback'
+import { Enrollment } from '/model/enrollment'
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import { Roles } from 'meteor/alanning:roles'
 import { SSR } from 'meteor/meteorhacks:ssr';
@@ -10,30 +10,29 @@ import {Errors} from '/server/server-errors';
 Meteor.publish("userdata", function () {
   if (this.userId) {
     logger.verbose("publish userdata to " + this.userId);
-    var user = User.findOne({_id: this.userId}, {
-      fields: {
-        'userData.agencyIds': 1,
-        'userData.prospectiveAgencyIds': 1
-      }
-    });
-    let agencyIds = user.hasAgency ? user.userData.agencyIds : user.userData.prospectiveAgencyIds;
-    if (!agencyIds) {
-      agencyIds = [];
+
+    let usersInAgencies;
+    let agencyIds = Enrollment.find({
+      userId:this.userId
+    }).map( function (enrollment) { return enrollment.agencyId});
+    if (agencyIds) {
+      usersInAgencies = Enrollment.find({
+        'agencyId': {$in:agencyIds}
+      }).map( function (enrollment) {return enrollment.userId});
     }
-    return User.find({
-        $or: [{_id: this.userId},
-          {'userData.agencyIds': {$in: agencyIds}},
-          {'userData.prospectiveAgencyIds': {$in: agencyIds}},
-        ]
-      },
+    else { //if user is not enrolled, get only his own data
+      usersInAgencies = [this.userId];
+    }
+
+    return User.find(
+      {_id: {$in: usersInAgencies}},
       {
         fields: {
           username: 1, emails: 1, roles: 1, fullName: 1, 'createdAt':1,
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.locationInfo': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
-          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1,
-          'userData.prospectiveAgencyIds': 1
+          'userData.picture': 1, 'userData.about': 1, 'userData.phoneNumber': 1, 'userData.acceptSMS': 1
         }
       });
   } else {
@@ -45,7 +44,7 @@ Meteor.publish("userBasics", function () {
   if (this.userId) {
     logger.verbose("publish userBasics to " + this.userId);
     return User.find({_id: this.userId},
-      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
+      {limit: 1, fields: {username: 1, roles: 1, 'userData.agencyIds': 1 }});
   } else {
     this.ready();
   }
@@ -286,6 +285,18 @@ Meteor.methods({
     }
     Roles.addUsersToRoles(user, role, agencyId);
 
+    let application = Enrollment.findOne( {userId: this.userId, agencyId: agencyId});
+    if (!application) {
+      application = new Enrollment({userId: this.userId, agencyId: agencyId});
+    }
+    application.approvalDate = new Date();
+    application.save(function (err, id) {
+      if (err) {
+        logger.error("addUserToAgency failed to update enrollment. err: " + err);
+        throw err;
+      }
+    });
+
     user = User.findOne(userId);
 
     //TODO: don't need to store agencyId in agencyIds, if we are doing it in role
@@ -294,10 +305,7 @@ Meteor.methods({
     } else if (!user.userData.agencyIds.includes(agencyId)) {
       user.userData.agencyIds.push(agencyId);
     }
-    if (user.userData.prospectiveAgencyIds && user.userData.prospectiveAgencyIds.includes(agencyId)) {
-      var index = user.userData.prospectiveAgencyIds.indexOf(agencyId);
-      user.userData.prospectiveAgencyIds.splice(index, 1);
-    }
+
     user.save((err, id)=> {
       if (err) {
         logger.error('addUserToAgency failed to update user: ' + id + ' err:' + err);
@@ -319,12 +327,15 @@ Meteor.methods({
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
+      let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvedDate: new Date()} );
+      enrollment.save();
+
       Meteor.call('sendEnrollmentEmail', newUserId, agencyId, (err)=> {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err);
         }
       });
-      Meteor.call('sendAgencyWelcomeEmail', newUserId, data.userData.agencyIds[0], (err)=> {
+      Meteor.call('sendAgencyWelcomeEmail', newUserId, agencyId, (err)=> {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' agency welcome email ' + err);
         }
@@ -349,17 +360,9 @@ Meteor.methods({
     return newUserId || null;
   },
   addProspectiveAgency(agencyId) {
-    Errors.checkUserLoggedIn(this.userId, 'addProspectiveAgency', 'Must be logged in to update agencies.');
-    var currentUser = User.findOne(this.userId);
-    var currentProspectiveAgencies = currentUser.userData.prospectiveAgencyIds;
-    if (!currentProspectiveAgencies) {
-      currentUser.userData.prospectiveAgencyIds = [agencyId];
-    } else {
-      if (!currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
-        currentUser.userData.prospectiveAgencyIds.push(agencyId);
-      }
-    }
-    currentUser.save(function (err, id) {
+    Errors.checkUserLoggedIn(this.userId, 'addProspectiveAgency', 'Must be logged in to update enrollments.');
+    let application = new Enrollment( {userId: this.userId, agencyId: agencyId});
+    application.save(function (err, id) {
       if (err) {
         logger.error("addProspectiveAgency failed to update user. err: " + err);
         throw err;
@@ -368,18 +371,11 @@ Meteor.methods({
     logger.info("addProspectiveAgency for userId: " + this.userId);
   },
   removeProspectiveAgency(agencyId) {
-    Errors.checkUserLoggedIn(this.userId, 'removeProspectiveAgency', 'Must be logged in to update agencies');
-    var currentUser = User.findOne(this.userId);
-    if (currentUser.userData.prospectiveAgencyIds && currentUser.userData.prospectiveAgencyIds.includes(agencyId)) {
-      var index = currentUser.userData.prospectiveAgencyIds.indexOf(agencyId);
-      currentUser.userData.prospectiveAgencyIds.splice(index, 1);
+    Errors.checkUserLoggedIn(this.userId, 'removeProspectiveAgency', 'Must be logged in to update enrollments');
+    let application = Enrollment.findOne({userId:this.userId, agencyId:agencyId});
+    if (application) {
+      application.softRemove()
     }
-    currentUser.save(function (err, id) {
-      if (err) {
-        logger.error("removeProspectiveAgency failed to update user. err: " + err);
-        throw err;
-      }
-    });
     logger.info("removeProspectiveAgency for userId: " + this.userId);
   },
   updateRegistrationInfo(userId, data) {

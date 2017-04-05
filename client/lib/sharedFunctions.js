@@ -3,6 +3,7 @@
  */
 
 import {logger} from '/client/logging'
+import { Enrollment } from '/model/enrollment'
 
 Meteor.myFunctions = {
   //expects arr to be sorted by requested dates
@@ -105,18 +106,11 @@ Meteor.myFunctions = {
   membershipStatus: function (agencyId) {
     let status = 'noUser';
     if (Meteor.userId()) {
-      const user = User.findOne({_id: Meteor.userId()}, {fields: { 'userData.agencyIds': 1, 'userData.prospectiveAgencyIds': 1}});
-      if (user && user.userData) {
-        const myAgencies = user.userData.agencyIds;
-        const pendingAgencies = user.userData.prospectiveAgencyIds;
-        if (myAgencies && myAgencies.includes(agencyId))
-          status = "member";
-        else if (pendingAgencies && pendingAgencies.includes(agencyId))
-          status = "pendingMember";
-        else
-          status = "notMember";
-      } else {
+      const enrollment = Enrollment.findOne({userId:Meteor.userId(), agencyId:agencyId});
+      if (!enrollment || enrollment.removed) {
         status = "notMember";
+      } else {
+        status = enrollment.approvedDate ? "member" :  "pendingMember";
       }
     }
     return status;

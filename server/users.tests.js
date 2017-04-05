@@ -9,6 +9,7 @@ import {Roles} from 'meteor/alanning:roles'
 import '/server/users.js';
 import '/model/users.js'
 import {Errors} from '/server/server-errors';
+import {Enrollments} from '/model/enrollment'
 import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
@@ -215,6 +216,7 @@ if (Meteor.isServer) {
       let meteorCallStub;
       let errorsStub;
       beforeEach(()=> {
+        StubCollections.stub(Enrollments);
         testUserId = Accounts.createUser({
           username: 'testUserWithEmail',
           password: 'Visitry99',
@@ -235,6 +237,7 @@ if (Meteor.isServer) {
         Meteor.users.remove(adminTestUser);
         meteorCallStub.restore();
         errorsStub.restore();
+        StubCollections.restore();
       });
 
       it('adds a user to an agency, providing role', ()=> {
@@ -272,17 +275,6 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds.length, 2);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
         assert.equal(updatedUser.userData.agencyIds[1], agency2Id);
-      });
-      it('add a user to an agency and remove the agency from prospective', ()=> {
-        const invocation = {userId: adminTestUser};
-        let originalUser = User.findOne({_id: testUserId});
-        originalUser.userData = {prospectiveAgencyIds: [agencyId]};
-        originalUser.save();
-        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId}]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.agencyIds.length, 1);
-        assert.equal(updatedUser.userData.agencyIds[0], agencyId);
-        assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 0);
       });
       it('add a user to an agency changes their role to new role', ()=> {
         const invocation = {userId: adminTestUser};
@@ -348,6 +340,15 @@ if (Meteor.isServer) {
         assert(accountsCreateUserSpy.calledOnce);
       });
 
+      it('Enrollment record is created', ()=> {
+        const invocation = {userId: testUserId};
+        createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
+        testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
+        let enrollment = Enrollments.findOne({userId: testNewUserId});
+        assert.equal(enrollment.userId, testNewUserId);
+        assert.equal(enrollment.agencyId, agencyId);
+      });
+
       it('If user doesn\'t exist send enrollment email is called', ()=> {
         const invocation = {userId: testUserId};
         Roles.addUsersToRoles(testUserId, ['administrator'],agencyId);
@@ -406,7 +407,7 @@ if (Meteor.isServer) {
         }));
       });
 
-      it('if user already exists addUserToAgency, if user already belongs to agency it returns null', ()=> {
+      it('if user already exists and user already belongs to agency addUserToAgency returns null', ()=> {
         testNewUserId = Random.id();
         findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
@@ -421,7 +422,7 @@ if (Meteor.isServer) {
         assert.isNull(createUserFromAdminHandler.apply(invocation, [user]));
       });
 
-      it('if user already exists addUserToAgency which throws error', ()=> {
+      it('if user already exists addUserToAgency throws error', ()=> {
         testNewUserId = Random.id();
         findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>({_id: testNewUserId}));
         const invocation = {userId: testUserId};
@@ -448,19 +449,9 @@ if (Meteor.isServer) {
       it('succeeds when user adding one prospective agency', () => {
         const invocation = {userId: testUserId};
         addProspectiveAgencyHandler.apply(invocation, [agencyId]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 1);
-        assert.equal(updatedUser.userData.prospectiveAgencyIds[0], agencyId);
-      });
-      it('succeeds when user adding two prospective agencies', () => {
-        const invocation = {userId: testUserId};
-        var agency2 = Random.id();
-        addProspectiveAgencyHandler.apply(invocation, [agencyId]);
-        addProspectiveAgencyHandler.apply(invocation, [agency2]);
-        var updatedUser = Meteor.users.findOne({_id: testUserId});
-        assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 2);
-        assert.equal(updatedUser.userData.prospectiveAgencyIds[0], agencyId);
-        assert.equal(updatedUser.userData.prospectiveAgencyIds[1], agency2);
+        let enrollment = Enrollments.findOne({userId: testUserId});
+        assert.equal(enrollment.userId, testUserId);
+        assert.equal(enrollment.agencyId, agencyId);
       });
     });
 
