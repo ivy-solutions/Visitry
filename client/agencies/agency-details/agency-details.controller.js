@@ -2,6 +2,7 @@
  * Created by sarahcoletti on 12/20/16.
  */
 import { Agency } from '/model/agencies'
+import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
 angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership) {
@@ -11,11 +12,17 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId);
   this.agency
 
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.helpers({
     agency: () => {
       this.agency = Agency.findOne({_id: $stateParams.groupId});
       return this.agency
+    },
+    enrollment: () => {
+      return Enrollment.findOne({userId: Meteor.userId(), agencyId:$stateParams.groupId });
     }
   });
 
@@ -63,8 +70,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
     if ( !this.isMember() && Meteor.myFunctions.isVisitor() ) {
       return true;
     } else {
-      var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.agencyIds': 1, 'userData.prospectiveAgencyIds':1}});
-      return this.isNotMember() && !user.hasAgency && (!user.userData.prospectiveAgencyIds || user.userData.prospectiveAgencyIds.length==0);
+      return (Enrollment.find({userId: Meteor.userId()}).count() === 0);
     }
   };
 

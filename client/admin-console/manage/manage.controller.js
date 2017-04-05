@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import {TopVisitors} from '/model/users'
+import {Enrollment} from '/model/enrollment'
 import { logger } from '/client/logging'
 
 
@@ -13,8 +14,10 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.agencyId = $cookies.get('agencyId');
   this.isTopVisitorsReady = false;
   this.isFrequentVisitorsReady = false;
-  this.applicantsCount = -1;
+  this.isApplicantDataReady = false;
   this.freqVisitors = [];
+  this.applicantIds = [];
+  this.applicantCount;
 
   let visitsSubscription = this.subscribe('agencyVisits', ()=> {
     return [this.getReactively('agencyId')]
@@ -24,10 +27,17 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
     this.isUserDataReady = true;
   });
+  let applicantsSubscription = this.subscribe('applicants', ()=> {
+    return [this.getReactively('agencyId')]
+  }, ()=> {
+    this.isApplicantDataReady = true;
+  });
 
   this.autorun(()=> {
     this.isUserDataReady = userDataSubscription.ready();
     this.isVisitDataReady = visitsSubscription.ready();
+    this.isApplicantDataReady = applicantsSubscription.ready();
+    this.applicantCount = this.getReactively('applicantIds').length.toString();
   });
 
 
@@ -73,15 +83,16 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     },
     applicants: ()=> {
-      let isDataThere = this.getReactively('isUserDataReady');
+      let isDataThere = this.getReactively('isApplicantDataReady') && this.getReactively('isUserDataReady');
+      let applicants = Enrollment.find({agencyId:this.getReactively('agencyId'), approvalDate: null });
+      this.applicantIds = applicants.map( function (applicant) { return applicant.userId } );
       let selector = {
-        'userData.prospectiveAgencyIds': this.getReactively('agencyId')
+        _id: {$in: this.applicantIds }
       };
       return User.find(selector, {
         fields: {
           'userData.firstName': 1,
           'userData.lastName': 1,
-          'userData.prospectiveAgencyIds': 1,
           'userData.picture': 1,
           'createdAt': 1,
           'userData.about': 1,

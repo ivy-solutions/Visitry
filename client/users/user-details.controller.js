@@ -5,6 +5,8 @@ import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
 import {VisitorUsers} from '/model/users'
 import { Roles } from 'meteor/alanning:roles'
+import { Enrollment } from '/model/enrollment'
+import { logger } from '/client/logging'
 
 angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cookies, $reactive, AdminVisitDetailsDialog) {
   $reactive(this).attach($scope);
@@ -21,6 +23,9 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   });
   this.subscribe('visitorUsers', ()=> {
     return [this.getReactively('agencyId')]
+  });
+  this.subscribe('memberships', ()=> {
+    return [this.getReactively('userId')]
   });
 
   this.call('getUserPicture', this.userId, (err, result)=> {
@@ -88,7 +93,13 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
         skip: parseInt((this.getReactively('page') - 1) * this.recordPerPage),
         sort: {requestedDate: -1}
       })
+    },
+    enrolled: () => {
+      let enrollment =  Enrollment.findOne({agencyId: this.agencyId, userId: this.userId});
+      logger.verbose(enrollment);
+      return enrollment;
     }
+
   });
 
   this.pageChanged = (newPage) => {

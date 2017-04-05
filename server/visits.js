@@ -56,7 +56,7 @@ Meteor.publish("agencyVisits", function (agencyId, options) {
     });
 
     return [visits,
-      Meteor.users.find({_id: {$in: userIds}}, {fields: {'userData.firstName' : 1, 'userData.lastName': 1, 'userData.picture':1, 'userData.prospectiveAgencyIds':1}})];
+      Meteor.users.find({_id: {$in: userIds}}, {fields: {'userData.firstName' : 1, 'userData.lastName': 1, 'userData.picture':1}})];
   } else {
     this.ready();
   }

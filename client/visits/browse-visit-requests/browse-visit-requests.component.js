@@ -30,6 +30,7 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.autorun( function() {
     var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1, 'userData.agencyIds': 1, roles: 1}});
     if (user) {
+      logger.info(user.userData);
       this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['noagency'];
       this.hasAgency = user.hasAgency;
       let agencyId = this.agencyIds.find( function( id ){
@@ -149,4 +150,8 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.scheduleVisit = function(visit) {
     ScheduleVisit.showModal( visit );
    };
+
+  this.groups = function (id) {
+    $state.go( 'agencyList');
+  };
 });

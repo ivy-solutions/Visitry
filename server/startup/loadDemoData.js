@@ -3,6 +3,7 @@
  */
 import {Agency, Agencies} from '/model/agencies'
 import {Visit, Visits } from '/model/visits'
+import {Enrollment, Enrollments } from '/model/enrollment'
 import { logger } from '/server/logging'
 
 Meteor.startup(function ()  {
@@ -319,10 +320,31 @@ Meteor.startup(function ()  {
     }
     let groups = Roles.getGroupsForUser(user._id);
   });
+
   //make a super user
   var sarahc = Meteor.users.findOne({username: 'Sarahc'});
   if (!Roles.userIsInRole(sarahc._id, 'administrator', 'allAgencies')) {
     Roles.addUsersToRoles(sarahc._id, 'administrator', 'allAgencies');
+  }
+
+  //create Enrollment records if there are none
+  if(Enrollments.find().count() ===0) {
+    let allUsers = Meteor.users.find();
+    allUsers.forEach(function(user) {
+      let userId = user._id;
+      if (user.userData.agencyIds) {
+        user.userData.agencyIds.forEach( function(agencyId) {
+          let enrollment = new Enrollment({userId: userId, agencyId:agencyId, approvalDate: new Date()});
+          enrollment.save();
+        });
+      }
+      if (user.userData.prospectiveAgencyIds) {
+        user.userData.prospectiveAgencyIds.forEach( function(agencyId) {
+          let enrollment = new Enrollment({userId: userId, agencyId:agencyId });
+          enrollment.save();
+        });
+      }
+    })
   }
 
 });
