@@ -327,7 +327,7 @@ Meteor.methods({
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
-      let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvedDate: new Date()} );
+      let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvalDate: new Date()} );
       enrollment.save();
 
       Meteor.call('sendEnrollmentEmail', newUserId, agencyId, (err)=> {

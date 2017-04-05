@@ -7,12 +7,21 @@
                ng-src="{{userDetails.userPicture}}">
           <div class="md-list-item-text">
             <div class="md-display-3">{{userDetails.user.fullName}}</div>
-            <div layout-padding><span ng-show="userDetails.isVisitor"
-                                      style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px"><ng-md-icon
-                style="vertical-align: -webkit-baseline-middle;"
-                icon="star"></ng-md-icon>{{userDetails.user.visitorRating|number:1}}</span>Member since
-              {{userDetails.user.createdAt | date:'mediumDate'}} <a
-                  href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></div>
+            <div layout-padding>
+                <span ng-show="userDetails.isVisitor" style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px">
+                    <ng-md-icon style="vertical-align: -webkit-baseline-middle;" icon="star">
+                    </ng-md-icon>{{userDetails.user.visitorRating|number:1}}
+                </span>
+                <div ng-show="userDetails.enrolled.approvalDate">
+                    Member since
+                    {{userDetails.enrolled.approvalDate | date:'mediumDate'}}
+                </div>
+                <div ng-show="!userDetails.enrolled.approvalDate">
+                    Applied on
+                    {{userDetails.enrolled.applicationDate | date:'mediumDate'}}
+                </div>
+                <a href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a>
+            </div>
           </div>
         </md-list-item>
         <div layout-padding>
