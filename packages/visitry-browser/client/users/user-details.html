@@ -1,4 +1,5 @@
 <md-dialog flex="80">
+  <div>{{userDetails.user}}</div>
   <div layout="row" flex="none">
     <div layout="column">
       <md-list flex>
@@ -11,12 +12,12 @@
                                       style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px"><ng-md-icon
                 style="vertical-align: -webkit-baseline-middle;"
                 icon="star"></ng-md-icon>{{userDetails.user.visitorRating|number:1}}</span>Member since
-              {{userDetails.user.createdAt | date:'mediumDate'}} <a
-                  href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></div>
+              {{userDetails.user.createdAt | date:'mediumDate'}} <span ng-if="userDetails.user.emails[0].address"><a
+                  href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></span></div>
           </div>
         </md-list-item>
         <div layout-padding>
-          <div><strong>Role:</strong> {{userDetails.isVisitor ? "VISITOR" : "REQUESTER"}}
+          <div><strong>Role:</strong> {{userDetails.isVisitor ? "Visitor" : "Requester"}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
             {{userDetails.user.userData.location.address}}

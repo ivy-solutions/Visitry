@@ -77,8 +77,8 @@ describe('UserDetails', function () {
     timeSpent: 5 * 60
   };
 
-  let visitIds = [];
-  let feedbackIds = [];
+  //let visitIds = [];
+  //let feedbackIds = [];
 
   let AdminVisitDetailsDialogMock = {
     open: (visitId)=> {
@@ -87,39 +87,51 @@ describe('UserDetails', function () {
   };
 
   beforeEach(function () {
-    StubCollections.stub([Visits,Feedbacks]);
+    StubCollections.stub([Visits, Feedbacks]);
     Visits.insert(completedVisit);
     Visits.insert(scheduledVisit);
     Visits.insert(availableVisit);
     Visits.insert(incompleteVisit);
-     Feedbacks.insert(feedbackTwoHours);
+    Feedbacks.insert(feedbackTwoHours);
     Feedbacks.insert(feedbackThreeHours);
     Feedbacks.insert(feedbackLongAgo);
   });
 
   let controller;
-  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
-    controller = _$controller_('userDetailsCtrl', {
-      $scope: $rootScope.$new(true),
-      AdminVisitDetailsDialog: AdminVisitDetailsDialogMock
-    }, {locals: {userId: testUserId}});
+  let scope;
+
+  beforeEach(inject(function (_$controller_, _$cookies_) {
     $cookies = _$cookies_;
+    $controller = _$controller_;
+  }));
+
+  function initializeController() {
+    controller = $controller('userDetailsCtrl', {
+      $scope: scope,
+      AdminVisitDetailsDialog: AdminVisitDetailsDialogMock
+    }, {locals: {userId: testUserId}})
+  }
+
+  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
+    scope = $rootScope.$new(true);
+    initializeController();
   }));
 
   afterEach(function () {
     StubCollections.restore();
   });
 
-  //skip - it does not truly test the cookie is set since controller.agencyId is always 'undefined'
   describe('AgencyId Cookie', () => {
+    let agencyId = Random.id();
     beforeEach(()=> {
-      $cookies.put('agencyId', Random.id());
+      $cookies.put('agencyId', agencyId);
+      initializeController();
     });
     afterEach(()=> {
       $cookies.remove('agencyId');
     });
     it('agencyId cookie is not null', ()=> {
-      assert.isNotNull(controller.agencyId);
+      assert.equal(agencyId,controller.agencyId);
     });
   });
 

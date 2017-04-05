@@ -28,7 +28,7 @@ Meteor.publish("userdata", function () {
       },
       {
         fields: {
-          username: 1, emails: 1, roles: 1, fullName: 1, 'createdAt':1,
+          username: 1, emails: 1, roles: 1, fullName: 1, 'createdAt': 1,
           'userData.agencyIds': 1,
           'userData.location': 1, 'userData.locationInfo': 1, 'userData.visitRange': 1,
           'userData.firstName': 1, 'userData.lastName': 1,
@@ -68,7 +68,7 @@ Meteor.publish("topVisitors", function (agency, numberOfDays) {
     'userData.agencyIds': {$elemMatch: {$eq: agency}}
   }, {
     fields: {
-      username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1, 'userData.picture':1
+      username: 1, primaryEmail: 1, 'userData.firstName': 1, 'userData.lastName': 1, 'userData.picture': 1
     }
   });
   visitors.forEach((user)=> {
@@ -99,20 +99,22 @@ Meteor.publish('visitorUsers', function (agencyId) {
   if (this.userId) {
     logger.verbose("publish visitorUsers to " + this.userId);
     var selector = {};
-    selector['roles.'+agencyId] = 'visitor';
+    selector['roles.' + agencyId] = 'visitor';
     var queryOptions = {
       fields: {
-        createdAt: 1,
+        fullName: 1,
+        'createdAt': 1,
         'userData.agencyIds': 1,
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location': 1,
         'userData.about': 1,
+        'userData.phoneNumber': 1,
         'roles': 1,
         'emails': 1
       }
     };
-    Counts.publish(this, 'numberVisitorUsers',  User.find(selector), {
+    Counts.publish(this, 'numberVisitorUsers', User.find(selector), {
       noReady: true
     });
     let visitors = User.find(selector, queryOptions);
@@ -147,7 +149,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
   if (this.userId) {
     logger.verbose("publish seniorUsers to " + this.userId);
     var selector = {};
-    selector['roles.'+agencyId] = 'requester';
+    selector['roles.' + agencyId] = 'requester';
     var queryOptions = {
       fields: {
         createdAt: 1,
@@ -172,7 +174,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
 Meteor.methods({
   updateName(firstName, lastName)
   {
-    Errors.checkUserLoggedIn(this.userId,"updateName","Must be logged in to update name.");
+    Errors.checkUserLoggedIn(this.userId, "updateName", "Must be logged in to update name.");
     var currentUser = User.findOne(this.userId);
     currentUser.userData.firstName = firstName;
     currentUser.userData.lastName = lastName;
@@ -186,7 +188,7 @@ Meteor.methods({
     logger.info("updateName for userId: " + this.userId);
   },
   updateLocation(loc) {
-    Errors.checkUserLoggedIn(this.userId,"updateLocation","Must be logged in to update location.");
+    Errors.checkUserLoggedIn(this.userId, "updateLocation", "Must be logged in to update location.");
     var currentUser = User.findOne(this.userId);
     if (loc) {
       currentUser.userData.location = {
@@ -225,7 +227,7 @@ Meteor.methods({
     logger.info("updateUserData for userId: " + this.userId);
   },
   updateUserEmail(email) {
-    Errors.checkUserLoggedIn(this.userId,"updateUserEmail","Must be logged in to update email.");
+    Errors.checkUserLoggedIn(this.userId, "updateUserEmail", "Must be logged in to update email.");
     let userId = this.userId;
     var currentUser = Meteor.users.findOne(userId, {emails: 1});
     var currentEmails = currentUser.emails;
@@ -243,7 +245,7 @@ Meteor.methods({
           Accounts.addEmail(userId, email);
           currentUser = Meteor.users.findOne({_id: userId}, {emails: 1});
           if (currentUser.emails.length > 1) {
-            Accounts.removeEmail(userId,oldEmail);
+            Accounts.removeEmail(userId, oldEmail);
           }
           Accounts.sendVerificationEmail(userId);
         }
@@ -270,8 +272,8 @@ Meteor.methods({
     // If a role argument is included, change the user to have that role in the agency
     let existingRole;
     let groups = Roles.getGroupsForUser(userId);
-    groups.forEach( function (group) {
-      role = Roles.getRolesForUser(userId, group );
+    groups.forEach(function (group) {
+      role = Roles.getRolesForUser(userId, group);
       if (role.length) {
         existingRole = role;
       }
@@ -315,7 +317,7 @@ Meteor.methods({
     Errors.checkUserLoggedIn(this.userId, 'createUserFromAdmin', 'Must be logged in to add a user to an agency.');
     //TODO agencyId should be sent as separate argument
     let agencyId = data.userData.agencyIds[0];
-    Errors.checkUserIsAdministrator(this.userId, agencyId,'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
+    Errors.checkUserIsAdministrator(this.userId, agencyId, 'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
@@ -417,7 +419,7 @@ Accounts.onCreateUser(function (options, user) {
     user.hasAgency = false;
   }
   let role = options.role ? [options.role] : ['requester'];
-  user.roles = {'noagency': role };
+  user.roles = {'noagency': role};
 
   return user;
 });
