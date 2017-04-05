@@ -284,13 +284,13 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
         assert.equal(updatedUser.userData.prospectiveAgencyIds.length, 0);
       });
-      it('add a user to an agency prevents changing of role', ()=> {
+      it('add a user to an agency changes their role to new role', ()=> {
         const invocation = {userId: adminTestUser};
-        assert.throws(()=>addUserToAgencyHandler.apply(invocation, [{
-          userId: testUserId,
-          agencyId: agencyId,
-          role: 'visitor'
-        }]), 'Can not have multiple roles. [invalid-role]');
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role: 'visitor'}]);
+        var updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.isTrue(Roles.userIsInRole(testUserId, "visitor", agencyId),"has visitor role for agency");
+        assert.equal(updatedUser.userData.agencyIds.length, 1);
+        assert.equal(updatedUser.userData.agencyIds[0], agencyId);
       });
     });
 

@@ -1,5 +1,8 @@
 {
   "public": {
+    "googleAnalytics": {
+      "trackingId": "UA-93814106-2"
+    }
   },
   "apnCert": "VisitryPush.pem",
   "isProduction": false,

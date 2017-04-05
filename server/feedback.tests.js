@@ -17,8 +17,17 @@ if (Meteor.isServer) {
   describe('Feedback', () => {
 
     var meteorStub;
+    let testUserId;
+    let testUser={
+      username: 'testUserForFeedback',
+      password: 'Visitry99',
+      role: "requester"
+    };
 
     beforeEach(() => {
+      StubCollections.stub([Feedbacks,Meteor.users]);
+      testUserId = Meteor.users.insert(testUser);
+
       meteorStub = sinon.stub(Meteor, 'call');
       testFeedback = {
         visitorId: Random.id(),
@@ -33,57 +42,56 @@ if (Meteor.isServer) {
       };
     });
     afterEach(function () {
+      StubCollections.restore();
       meteorStub.restore();
     });
 
     describe('feedback.createFeedback method', () => {
       const createHandler = Meteor.server.method_handlers['feedback.createFeedback'];
-      beforeEach(function () {
-        Feedbacks.remove({});
-      });
 
-      it('creates feedback', () => {
-        const invocation = {userId: Random.id()};
-        createHandler.apply(invocation, [testFeedback])
-        assert.equal(Feedbacks.find().count(), 1);
+      it('creates feedback and attaches feedback to visit', function() {
+        this.timeout(3000); //Note: timeout cannot be used in method with ES6 arrow syntax
+        const invocation = {userId: testUserId};
+        createHandler.apply(invocation, [testFeedback]);
+        assert.isTrue(Meteor.call.calledWith('visits.attachFeedback'),"visits.attachFeedback called");
       });
       it('fails if no user rating', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.companionRating = null;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);
         }, '"companionRating" is required');
       });
       it('fails if user rating too low', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.companionRating = 0;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);
         }, '"companionRating" has to be greater than or equal 1');
       });
       it('fails if user rating too high', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.companionRating = 6;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);
         }, '"companionRating" has to be less than or equal 5');
       });
       it('fails if no visit rating', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.visitRating = null;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);
         }, '"visitRating" is required');
       });
       it('fails if user rating too low', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.visitRating = 0;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);
         }, '"visitRating" has to be greater than or equal 1');
       });
       it('fails if user rating too high', () => {
-        const invocation = {userId: Random.id()};
+        const invocation = {userId: testUserId};
         testFeedback.visitRating = 6;
         assert.throws(function () {
           createHandler.apply(invocation, [testFeedback]);

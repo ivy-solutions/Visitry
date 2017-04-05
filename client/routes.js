@@ -405,15 +405,14 @@ angular.module('visitry')
         else {
           if (Meteor.isCordova) {
             $ionicHistory.clearHistory();
-          } else {
-            $cookies.remove('agencyId');
           }
+          $cookies.remove('agencyId');
           $state.go('login');
         }
       });
     }
   })
-  .run(function ($rootScope, $state) {
+  .run(function ($rootScope, $state, $window, $location,$cookies) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
         $state.go('login', {notify: false});
@@ -424,7 +423,7 @@ angular.module('visitry')
         if (event && Meteor.userId()) {
           logger.info("redirect from $stateChangeStart");
           let nextState;
-          if (Meteor.myFunctions.isAdministrator()) {
+          if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
             nextState = 'adminManage';
           }
           else if (Meteor.myFunctions.isVisitor()) {
@@ -444,6 +443,36 @@ angular.module('visitry')
       }
     });
 
+    //google analytics
+    if (Meteor.settings && Meteor.settings.public && Meteor.settings.public.googleAnalytics) {
+      $window.ga('create', Meteor.settings.public.googleAnalytics.trackingId, 'auto');
+      if (Meteor.isCordova) {
+        cordova.getAppVersion.getAppName(function (name) {
+          $window.ga('set', 'appName', name);
+        });
+        cordova.getAppVersion.getVersionNumber(function (version) {
+          $window.ga('set', 'appVersion', version);
+        });
+      } else {
+        $window.ga('set', 'appName', 'Visitry-Admin');
+      }
+    }
+
+    $rootScope.$on('$stateChangeSuccess', function (event) {
+      if (!$window.ga)
+        return;
+      let agency = $cookies.get('agencyId');
+      $window.ga('set', 'dimension1', agency);
+      // remove the id if the path is e.g. /visits/id
+      let path = $location.path();
+      let lastIndex = path.lastIndexOf('/');
+      let lastPart = path.slice(lastIndex+1);
+      if (lastPart.match(/[0-9a-zA-Z]{17}/)) {
+        path = path.slice(0,lastIndex)
+      }
+      $window.ga('send', 'screenview', {screenName: path});
+    });
+
     Accounts.onLogin(function () {
       // if we are already logged in but on the login page, redirect to role-based appropriate page
       if ($state.is('login')) {
@@ -452,7 +481,7 @@ angular.module('visitry')
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
               let location = '/lost';
-              if (Meteor.myFunctions.isAdministrator()) {
+              if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
                 location = 'adminManage';
               }
               else {
@@ -472,6 +501,6 @@ angular.module('visitry')
         }
       }
     });
-
   });
+
 

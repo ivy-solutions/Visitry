@@ -13,7 +13,7 @@ let Errors = {
     }
   },
   checkUserIsAdministrator(userId, agencyId, functionName, msg){
-    if (!Roles.userIsInRole(userId, ['administrator'], agencyId)) {
+    if (!Roles.userIsInRole(userId, ['administrator'], agencyId) && !Roles.userIsInRole(userId, ['administrator'], 'allAgencies')) {
       logger.error(functionName + ' - unauthorized');
       throw new Meteor.Error('unauthorized', msg);
     }

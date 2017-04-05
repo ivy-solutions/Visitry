@@ -68,17 +68,6 @@
               {{visitry.agency.name}}
             </md-button>
           </md-menu-item>
-          <md-menu-item>
-            <md-button ng-href="/admin/administrate/agency/" aria-label="create group">
-                Create Group
-            </md-button>
-          </md-menu-item>
-          <md-menu-divider></md-menu-divider>
-            <md-menu-item ng-repeat="agency in visitry.agenciesCreatedByMe">
-                <md-button ng-href="/admin/administrate/agency/{{agency._id}}">
-                    {{agency.name}}
-                </md-button>
-            </md-menu-item>
         </md-menu-content>
       </md-menu>
       <md-menu>

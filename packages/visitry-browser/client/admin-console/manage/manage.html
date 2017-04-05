@@ -1,5 +1,13 @@
-<div layout-margin layout-fill>
-  <div layout="row" layout-padding>
+<div layout-fill>
+    <div layout="row" ng-if="adminManage.administersMultipleAgencies()" layout-align="end center" flex="none" style="background-color: #4caf50">
+        <div layout-padding layout-margin >{{adminManage.agency.name}}</div>
+        <md-button class="md-secondary" aria-label="switch group" ng-click="adminManage.switchAgency()">Switch Group</md-button>
+        <md-button ng-if="visitry.isSuperUser()" ng-href="/admin/administrate/agency/" aria-label="create group">
+            Create Group
+        </md-button>
+
+    </div>
+    <div layout="row" layout-margin layout-padding>
     <!-- Upcoming Visits-->
     <md-list flex="33">
       <div layout="row" layout-align="space-between center" style="background-color: #0086b3">

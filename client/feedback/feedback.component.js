@@ -14,7 +14,7 @@ angular.module('visitry').directive('feedback', function () {
       }
     },
     controllerAs: 'feedback',
-    controller: function ($scope, $reactive, $state, $stateParams, $ionicPopup) {
+    controller: function ($scope, $reactive, $state, $stateParams, $ionicPopup, $window) {
       $reactive(this).attach($scope);
       this.subscribe('userdata');
 
@@ -38,6 +38,7 @@ angular.module('visitry').directive('feedback', function () {
       this.visitor = '';
       this.requester = '';
       this.userSubmitted = false;
+      this.agencyId = '';
 
       this.helpers({
         visit: ()=> {
@@ -49,6 +50,7 @@ angular.module('visitry').directive('feedback', function () {
               this.requester = User.findOne({_id: v.requesterId});
               //if the current user is not the visitor for the visit, it may be the requester or someone acting on the requester's behalf
               this.isVisitor = this.visitor._id == Meteor.userId() ? true : false;
+              this.agencyId = v.agencyId;
             } else {
               logger.error("Failed to find visit requiring feedback. id: " + $stateParams.visitId);
             }
@@ -137,6 +139,14 @@ angular.module('visitry').directive('feedback', function () {
               $state.go('pendingVisits');
             }
             this.resetForm(form);
+            if ($window.ga) { //google analytics
+              $window.ga('send', {
+                hitType: 'event',
+                eventCategory: 'Feedback',
+                eventAction: this.isVisitor ? 'visitor' : 'requester',
+                dimension1: this.agencyId
+              });
+            }
           } catch (err) {
             this.handleError(err.reason)
           }

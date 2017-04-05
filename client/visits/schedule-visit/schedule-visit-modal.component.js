@@ -3,7 +3,7 @@
  */
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup, ScheduleVisit) {
+angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope, $reactive, $state, $ionicPopup, $window, ScheduleVisit) {
   $reactive(this).attach($scope);
 
 
@@ -40,6 +40,15 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
          });
          this.hideScheduleVisitModal();
          $state.go('upcoming');
+
+         if ($window.ga) { //google analytics
+           $window.ga('send', {
+             hitType: 'event',
+             eventCategory: 'Visit',
+             eventAction: 'schedule',
+             dimension1: visit.agencyId
+           });
+         }
       } else {
         return this.handleError( '', "Time must be in future.")
       }
