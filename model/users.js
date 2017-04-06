@@ -8,7 +8,6 @@ const UserData = Class.create({
     firstName: {type: String, optional: true},
     lastName: {type: String, optional: true},
     agencyIds: {type: [String], optional: true, index: 1},  //user can initially be unassigned to an agency
-    prospectiveAgencyIds: {type: [String], optional: true},
     about: {type: String, optional: true},
     location: {type: Address, optional:true},
     locationInfo: { type: String, optional: true},
