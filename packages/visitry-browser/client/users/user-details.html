@@ -20,12 +20,12 @@
                     Applied on
                     {{userDetails.enrolled.applicationDate | date:'mediumDate'}}
                 </div>
-                <a href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a>
+                <span ng-if="userDetails.user.emails[0].address"><a href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></span>
             </div>
           </div>
         </md-list-item>
         <div layout-padding>
-          <div><strong>Role:</strong> {{userDetails.isVisitor ? "VISITOR" : "REQUESTER"}}
+          <div><strong>Role:</strong> {{userDetails.isVisitor ? "Visitor" : "Requester"}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
             {{userDetails.user.userData.location.address}}

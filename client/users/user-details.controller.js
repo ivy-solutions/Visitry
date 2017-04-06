@@ -16,7 +16,6 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId);
   let userdataSubscription = this.subscribe('userdata', ()=>[], ()=> {
     this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId);
-    userdataSubscription.stop();
   });
   this.subscribe('feedback');
   this.subscribe('agencyVisits', ()=> {
@@ -46,10 +45,10 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
     let lastMonth = new Date();
     lastMonth = lastMonth.setMonth(lastMonth.getMonth() - 1);
     this.completedVisitsCount = Visits.find({
-      'visitTime': {$exists: true, $lt: this.today}, 'inactive': {$exists: false},
-      $or: [{requesterId: this.userId}, {visitorId: this.userId}],
-      'updatedAt': {$gt: new Date(lastMonth)}
-    }).count();
+     'visitTime': {$exists: true, $lt: this.today}, 'inactive': {$exists: false},
+     $or: [{requesterId: this.userId}, {visitorId: this.userId}],
+     'updatedAt': {$gt: new Date(lastMonth)}
+     }).count();
     this.pendingVisitsCount = Visits.find({
       'requestedDate': {$gt: this.today}, 'inactive': {$exists: false},
       $or: [{requesterId: this.userId}, {visitorId: this.userId}],
@@ -102,7 +101,7 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
 
   });
 
-  this.pageChanged = function (newPage) {
+  this.pageChanged = (newPage) => {
     this.page = newPage;
   };
 
@@ -113,4 +112,5 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.getVisitDetails = (visitId)=> {
     AdminVisitDetailsDialog.open(visitId);
   }
-});
+})
+;

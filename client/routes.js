@@ -325,7 +325,7 @@ angular.module('visitry')
         controller: 'adminAdminAgencyCtrl as adminAdminAgency',
         resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
       })
-      .state('adminHelpOverview', {
+      /*.state('adminHelpOverview', {
         url: '/admin/help',
         templateUrl: ()=> {
           if (Meteor.isCordova) {
@@ -335,7 +335,7 @@ angular.module('visitry')
           }
         },
         controller: 'adminHelpOverviewCtrl as adminHelpOverview'
-      })
+      })*/
       .state('adminHelpAbout', {
         url: '/admin/help/about',
         templateUrl: ()=> {
@@ -357,8 +357,7 @@ angular.module('visitry')
           }
         },
         controller: 'adminHelpHowToCtrl as adminHelpHowTo'
-      })
-    ;
+      });
     $urlRouterProvider.otherwise("/login");
 
     function authenticate($q, $state, $timeout, $cookies, $ionicHistory) {
@@ -442,6 +441,10 @@ angular.module('visitry')
         return;  //go to login page
       }
     });
+/*    $rootScope.$on('$stateNotFound',(event,unfoundState,fromState,fromParams)=>{
+      event.preventDefault()
+      $state.go('login');
+    });*/
 
     //google analytics
     if (Meteor.settings && Meteor.settings.public && Meteor.settings.public.googleAnalytics) {
@@ -502,5 +505,3 @@ angular.module('visitry')
       }
     });
   });
-
-

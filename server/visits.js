@@ -42,21 +42,28 @@ Meteor.publish("agencyVisits", function (agencyId, options) {
     Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
       noReady: true
     });
-    var visits =  Visits.find(selector, options);
+    var visits = Visits.find(selector, options);
     var userIds = [];
     visits.forEach(function (visit) {
-      if ( visit.visitorId ) {
-        if ( userIds.indexOf(visit.visitorId)===-1) {
+      if (visit.visitorId) {
+        if (userIds.indexOf(visit.visitorId) === -1) {
           userIds.push(visit.visitorId)
         }
       }
-      if (userIds.indexOf(visit.requesterId)===-1) {
+      if (userIds.indexOf(visit.requesterId) === -1) {
         userIds.push(visit.requesterId);
       }
     });
 
     return [visits,
-      Meteor.users.find({_id: {$in: userIds}}, {fields: {'userData.firstName' : 1, 'userData.lastName': 1, 'userData.picture':1}})];
+      Meteor.users.find({_id: {$in: userIds}}, {
+        fields: {
+          'userData.firstName': 1,
+          'userData.lastName': 1,
+          'userData.picture': 1,
+          emails: 1
+        }
+      })];
   } else {
     this.ready();
   }
@@ -90,7 +97,7 @@ Meteor.publish("availableVisits", function (data) {
   let userId = data[0];
   let hasAgency = data[1];
   let userAgencies = Roles.getGroupsForUser(userId, 'visitor');
-  if (this.userId && hasAgency && userAgencies.length > 0 ) {
+  if (this.userId && hasAgency && userAgencies.length > 0) {
     logger.verbose("publish availableVisits to " + this.userId);
     const defaultVisitRange = 4000;
     const defaultLocation = {"type": "Point", "coordinates": [-97.415021, 37.716408]};  //default = Wichita, Kansas
@@ -130,7 +137,7 @@ Meteor.publish("availableVisits", function (data) {
     });
     requesterIds.push(userId);
     return [availableRequests,
-       Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails: 1}})];
+      Meteor.users.find({_id: {$in: requesterIds}}, {fields: {userData: 1, emails: 1}})];
   } else {
     this.ready();
   }

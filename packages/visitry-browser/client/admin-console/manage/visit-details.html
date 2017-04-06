@@ -19,9 +19,7 @@
       <div layout="row" layout-align="start">
         <div class="md-subheader">Requester</div>
         <span flex></span>
-        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">Days Pending: {{
-          adminVisitDetails.visit.requestedDate
-          | amDifference : adminVisitDetails.visit.createdAt : 'days' }}
+        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">Days Pending: {{ adminVisitDetails.today | amDifference : adminVisitDetails.visit.createdAt : 'days' }}
         </div>
       </div>
       <div md-whiteframe="3">
