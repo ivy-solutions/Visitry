@@ -2,7 +2,6 @@
  * Created by Daniel Biales on 8/9/16.
  */
 import { Visit } from '/model/visits'
-import {TopVisitors} from '/model/users'
 import {Enrollment} from '/model/enrollment'
 import { logger } from '/client/logging'
 
@@ -40,13 +39,6 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     this.applicantCount = this.getReactively('applicantIds').length.toString();
   });
 
-
-  this.subscribe('topVisitors', ()=> {
-      return [this.getReactively('agencyId'), this.getReactively('topVisitorsDayRange')]
-    }, ()=> {
-      this.isTopVisitorsReady = true;
-    }
-  );
 
   this.helpers({
     getAgency: ()=> {
@@ -100,9 +92,6 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
           'emails': 1
         }
       });
-    },
-    topVisitors: ()=> {
-      return TopVisitors.find({}, {sort: {visitCount: -1}, limit: 10});
     },
     frequentVisitors: () => {
       var visitorIds = [];

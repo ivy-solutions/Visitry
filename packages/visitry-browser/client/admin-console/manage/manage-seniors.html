@@ -30,7 +30,7 @@
             {{user.userData.lastName}}, {{user.userData.firstName}}
           </div>
           <div flex="grow" style="min-width: 88px" layout-margin layout-padding>{{user.userData.location.address}}</div>
-          <div flex="noshrink" style="min-width: 88px;text-align:right" layout-margin layout-padding>{{user.createdAt |
+          <div flex="noshrink" style="min-width: 88px;text-align:right" layout-margin layout-padding>{{adminManageSeniors.getJoinedDate(user._id) |
             date:'mediumDate'}}
           </div>
         </div>

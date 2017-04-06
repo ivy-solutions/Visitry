@@ -60,6 +60,9 @@ Meteor.publish("userProfile", function () {
   }
 });
 
+//TODO Currently, not in use. If we use it then we need to rewrite this
+// so we do not have observeChanges on every visitor/visit combination
+// and we have a stop on each observeChangs
 Meteor.publish("topVisitors", function (agency, numberOfDays) {
   var self = this;
   var visitors = User.find({
@@ -101,7 +104,6 @@ Meteor.publish('visitorUsers', function (agencyId) {
     selector['roles.' + agencyId] = 'visitor';
     var queryOptions = {
       fields: {
-        fullName: 1,
         'createdAt': 1,
         'userData.agencyIds': 1,
         'userData.firstName': 1,
@@ -117,7 +119,22 @@ Meteor.publish('visitorUsers', function (agencyId) {
       noReady: true
     });
     let visitors = User.find(selector, queryOptions);
+    let handle = visitors.observeChanges({
+      added: (id, fields)=> {
+        this.added('visitorUsers', id, fields);
+      },
+      changed: (id, fields)=> {
+        this.changed('visitorUsers', id, fields);
+      },
+      removed: (id)=> {
+        this.removed('visitorUsers', id)
+      }
+    });
+
     visitors.forEach((user)=> {
+      let enrollment = Enrollment.findOne({userId:user._id, agencyId: agencyId });
+      user.joinedAgencyOn = enrollment.approvalDate;
+
       let feedbackRating = Meteor.call('feedbackAvgVisitorRatings', user._id);
       let hoursSinceDate = new Date();
       hoursSinceDate.setFullYear(hoursSinceDate.getFullYear() - 1);
@@ -125,19 +142,12 @@ Meteor.publish('visitorUsers', function (agencyId) {
       user.visitorRating = (feedbackRating[0] && feedbackRating[0].visitorRating) ? feedbackRating[0].visitorRating : '';
       user.visitorHours = (feedbackHours[0] && feedbackHours[0].visitorHours) ? feedbackHours[0].visitorHours / 60 : 0;
       this.added('visitorUsers', user._id, user);
-      visitors.observeChanges({
-        added: (id, fields)=> {
-          this.added('visitorUsers', id, fields);
-        },
-        changed: (id, fields)=> {
-          this.changed('visitorUsers', id, fields);
-        },
-        removed: (id)=> {
-          this.removed('visitorUsers', id)
-        }
-      });
     }, this);
     this.ready();
+    // Stop observing the cursor when the client unsubscribes. Stopping a
+    // subscription automatically takes care of sending the client any `removed`
+    // messages.
+    this.onStop (() => {handle.stop()});
   } else {
     this.ready();
   }

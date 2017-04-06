@@ -2,6 +2,8 @@
  * Created by n0235626 on 8/31/16.
  */
 import { Counts } from 'meteor/tmeasday:publish-counts';
+import {Enrollment } from '/model/enrollment';
+import {logger} from '/client/logging';
 
 angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function ($scope, $state, $reactive, $cookies, UserDetailsDialog) {
   $reactive(this).attach($scope);
@@ -14,6 +16,9 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
     'userData.lastName': this.order
   };
   this.subscribe('seniorUsers', ()=> {
+    return [this.getReactively('agencyId')]
+  });
+  this.subscribe('members', ()=> {
     return [this.getReactively('agencyId')]
   });
 
@@ -52,6 +57,11 @@ angular.module('visitry.browser').controller('adminManageSeniorsCtrl', function 
 
   this.getUserDetails = (userId)=> {
     UserDetailsDialog.open(userId);
+  };
+
+  this.getJoinedDate = function (userId) {
+    let enrollment = Enrollment.findOne({userId: userId, agencyId: this.agencyId});
+    return enrollment ? enrollment.approvalDate : '';
   }
 });
 

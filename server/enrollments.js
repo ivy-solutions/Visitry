@@ -22,3 +22,11 @@ Meteor.publish("memberships", function (userId) {
   }
 });
 
+Meteor.publish("members", function (agencyId) {
+  if (this.userId) {
+    logger.verbose("publish members to " + this.userId);
+    return Enrollment.find({agencyId:agencyId, approvalDate: { $ne: null }});
+  } else {
+    this.ready();
+  }
+});
