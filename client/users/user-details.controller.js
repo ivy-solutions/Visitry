@@ -97,7 +97,6 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
     },
     enrolled: () => {
       let enrollment =  Enrollment.findOne({agencyId: this.agencyId, userId: this.userId});
-      logger.verbose(enrollment);
       return enrollment;
     }
 

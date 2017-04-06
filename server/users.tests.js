@@ -238,10 +238,14 @@ if (Meteor.isServer) {
         errorsStub.restore();
       });
 
-      it('adds a user to an agency, providing role', ()=> {
+      it('adds a user to an agency sets role', ()=> {
         const invocation = {userId: adminTestUser};
         addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role:'requester'}]);
         assert.deepEqual(Roles.getRolesForUser(testUserId, agencyId),["requester"], "has requester role for agency");
+      });
+      it('adds a user to an agency updates user document', ()=> {
+        const invocation = {userId: adminTestUser};
+        addUserToAgencyHandler.apply(invocation, [{userId: testUserId, agencyId: agencyId, role:'requester'}]);
         var updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 1);
         assert.equal(updatedUser.userData.agencyIds[0], agencyId);
