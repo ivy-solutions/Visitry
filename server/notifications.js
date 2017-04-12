@@ -126,10 +126,10 @@ sendPushNotificationNow = function(notification) {
 };
 
 formattedVisitTime = function(visit) {
-  var agency = Agency.findOne({_id:visit.agencyId}, {timeZone: 1});
+  var agency = Agency.findOne({_id:visit.agencyId}, {timezone: 1});
   var timeZone = 'America/New_York'; //default
-  if ( agency && agency.timeZone) {
-    timeZone = agency.timeZone
+  if ( agency && agency.timezone) {
+    timeZone = agency.timezone
   }
   var time = moment.tz(visit.visitTime, timeZone).format('MMM. D, h:mm');
   return time;

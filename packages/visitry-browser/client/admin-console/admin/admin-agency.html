@@ -17,7 +17,7 @@
       </div>
       <md-list>
         <md-list-item ng-hide="!adminAdminAgency.agency">
-          <label class="md-title" for="administrators" layout-margin flex="15">Admins</label>
+          <label class="md-title" for="administrators" layout-margin flex="20">Admins</label>
           <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="true"
                     md-removable="false" layout-margin flex>
             <md-chip-template>
@@ -25,33 +25,39 @@
             </md-chip-template>
         </md-list-item>
         <md-list-item>
-          <label class="md-title" for="name" layout-margin flex="15">Name</label>
+          <label class="md-title" for="name" layout-margin flex="20">Name</label>
           <input type="text" id="name" name="name" ng-model="adminAdminAgency.agency.name"
                  ng-readonly="!adminAdminAgency.isEditMode" required layout-margin flex/>
         </md-list-item>
         <md-list-item>
-          <label class="md-title" for="phone" layout-margin flex="15">Phone</label>
+          <label class="md-title" for="phone" layout-margin flex="20">Phone</label>
           <input type="tel" id="phone" name="phone" ng-model="adminAdminAgency.agency.contactPhone"
                  ng-readonly="!adminAdminAgency.isEditMode" phone-input
                  ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" layout-margin flex/>
         </md-list-item>
         <md-list-item>
-          <label class="md-title" for="email" layout-margin flex="15">Email</label>
+          <label class="md-title" for="email" layout-margin flex="20">Email</label>
           <input type="email" id="email" name="email" ng-model="adminAdminAgency.agency.contactEmail"
                  ng-readonly="!adminAdminAgency.isEditMode" required layout-margin flex/>
         </md-list-item>
         <md-list-item>
-          <label class="md-title" for="website" layout-margin flex="15">Website</label>
+          <label class="md-title" for="website" layout-margin flex="20">Website</label>
           <input type="text" id="website" name="website" ng-model="adminAdminAgency.agency.website"
                  ng-pattern="/^(?:(http|https):\/\/)?(?:[\w-]+\.)+[a-z]{3,6}(?:[\/|\?].*)?$/"
                  ng-readonly="!adminAdminAgency.isEditMode" layout-margin flex/>
         </md-list-item>
         <md-list-item>
-          <label class="md-title" for="locationInput" layout-margin flex="15">Location</label>
+          <label class="md-title" for="locationInput" layout-margin flex="20">Location</label>
           <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
                  ng-model="adminAdminAgency.agency.location.address"
-                 details="adminAdminAgency.agency.location.details" ng-readonly="!adminAdminAgency.isEditMode"
+                 details="adminAdminAgency.agency.location.details" ng-disabled="!adminAdminAgency.isEditMode"
                  layout-margin flex required/>
+        </md-list-item>
+        <md-list-item>
+          <label class="md-title" for="timezone" layout-margin flex="20">Timezone</label>
+          <select id="timezone" ng-model="adminAdminAgency.agency.timezone" ng-disabled="!adminAdminAgency.isEditMode">
+              <option ng-repeat="tz in adminAdminAgency.timezones" value="{{tz.value}}">{{tz.name}}</option>
+          </select>
         </md-list-item>
         <md-list-item>
           <label class="md-title" for="description" layout-margin="left">Description</label>

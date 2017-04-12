@@ -35,6 +35,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
         contactEmail: this.agency.contactEmail,
         description: this.agency.description,
         location: addNewLocation(this.agency.location),
+        timezone: this.agency.timezone,
         welcomeMessage: this.agency.welcomeMessage
       }, (err, result)=> {
         if (err) {
@@ -102,4 +103,70 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     $state.go('register', {role: 'administrator'});
   };
 
+  this.timezones = [
+    {
+      "value":"Hawaii",
+      "name":"(GMT-10:00) Hawaii"
+    },
+    {
+      "value":"Alaska",
+      "name":"(GMT-09:00) Alaska"
+    },
+    {
+      "value":"America/Anchorage",
+      "name":"(GMT-09:00) America/Anchorage"
+    },
+    {
+      "value":"America/Los_Angeles",
+      "name":"(GMT-08:00) America/Los Angeles"
+    },
+    {
+      "value":"Pacific Time (US & Canada)",
+      "name":"(GMT-08:00) Pacific Time (US & Canada)"
+    },
+    {
+      "value":"America/Denver",
+      "name":"(GMT-07:00) America/Denver"
+    },
+    {
+      "value":"America/Phoenix",
+      "name":"(GMT-07:00) America/Phoenix"
+    },
+    {
+      "value":"Arizona",
+      "name":"(GMT-07:00) Arizona"
+    },
+    {
+      "value":"Mountain Time (US & Canada)",
+      "name":"(GMT-07:00) Mountain Time (US & Canada)"
+    },
+    {
+      "value":"America/Chicago",
+      "name":"(GMT-06:00) America/Chicago"
+    },
+    {
+      "value":"Central Time (US & Canada)",
+      "name":"(GMT-06:00) Central Time (US & Canada)"
+    },
+    {
+      "value":"America/New_York",
+      "name":"(GMT-05:00) America/New York"
+    },
+    {
+      "value":"Eastern Time (US & Canada)",
+      "name":"(GMT-05:00) Eastern Time (US & Canada)"
+    },
+    {
+      "value":"Indiana (East)",
+      "name":"(GMT-05:00) Indiana (East)"
+    },
+    {
+      "value":"Atlantic Time (Canada)",
+      "name":"(GMT-04:00) Atlantic Time (Canada)"
+    },
+    {
+      "value":"Newfoundland",
+      "name":"(GMT-03:30) Newfoundland"
+    },
+  ];
 });

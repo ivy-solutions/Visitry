@@ -124,7 +124,7 @@ if (Meteor.isServer) {
           assert.equal(formattedVisitTime(visit), "Oct. 1, 11:30");
         });
         it('formatted visitTime with agency time zone = PST', () => {
-          findOneAgencyStub.returns({timeZone: 'America/Los_Angeles'})
+          findOneAgencyStub.returns({timezone: 'America/Los_Angeles'})
           var dateAt330pmUTC = Date.UTC(2016, 9, 1, 15, 30, 0, 0);
           var visit = {visitTime: dateAt330pmUTC};
           assert.equal(formattedVisitTime(visit), "Oct. 1, 8:30");
