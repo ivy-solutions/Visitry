@@ -49,7 +49,7 @@
         <md-list-item>
           <label class="md-title" for="locationInput" layout-margin flex="20">Location</label>
           <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
-                 ng-model="adminAdminAgency.agency.location.address"
+                 ng-model="adminAdminAgency.agency.location.address" ng-progress="adminAdminAgency.isLoadingPlaces"
                  details="adminAdminAgency.agency.location.details" ng-disabled="!adminAdminAgency.isEditMode"
                  layout-margin flex required/>
         </md-list-item>

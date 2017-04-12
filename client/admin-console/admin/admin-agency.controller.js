@@ -22,6 +22,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
   });
 
   this.isEditMode = !$stateParams.agencyId;
+  this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.editAgency = ()=> {
     this.isEditMode = true;
