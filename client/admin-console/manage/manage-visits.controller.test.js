@@ -42,6 +42,18 @@ describe('Admin Manage Visits', function () {
     });
   });
 
+  describe('setSort', function () {
+    it('sort ascending by requested date', ()=> {
+      controller.setSort('requestedDate', 'ascending');
+      assert.equal(controller.sort['requestedDate'], 1);
+    });
+    it('sort decending by visit time', ()=> {
+      controller.setSort('visitTime', 'descending');
+      assert.equal(controller.sort['visitTime'], -1);
+    });
+  });
+
+
   describe('AgencyId Cookie', () => {
     beforeEach(()=> {
       $cookies.put('agencyId', Random.id());

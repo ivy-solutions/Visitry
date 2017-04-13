@@ -9,7 +9,7 @@
   </md-list-item>
   <md-list-item
       dir-paginate="visit in adminManageVisits.scheduledVisits | itemsPerPage: adminManageVisits.recordPerPage"
-      pagination-id="scheduled-visits" total-items="adminManageVisits.visitsCount" class="no-padding"
+      pagination-id="scheduled-visits" total-items="adminManageVisits.scheduledVisitsCount" class="no-padding"
       ng-click="adminManageVisits.getVisitDetails(visit._id)">
     <div layout="row" class="manage-list-item" layout-align="space-between center" layout-fill>
       <div flex="20">

@@ -42,6 +42,36 @@ Meteor.publish("agencyVisits", function (agencyId, options) {
     Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
       noReady: true
     });
+    Counts.publish(this, 'numberScheduledVisits', Visits.find({
+      'visitTime': {$exists: true, $gt: new Date()},
+      'agencyId': {$eq: agencyId},
+      'inactive': {$exists: false}
+      }), {
+      noReady: true
+    });
+    Counts.publish(this, 'numberCompletedVisits', Visits.find({
+      'visitTime': {$exists: true, $lt: new Date()},
+      'agencyId': {$eq: agencyId},
+      'inactive': {$exists: false}
+    }), {
+      noReady: true
+    });
+    Counts.publish(this, 'numberRequestedVisits', Visits.find({
+      'visitTime': {$eq: null},
+      'requestedDate': {$gt: new Date()},
+      'agencyId': {$eq: agencyId},
+      'inactive': {$exists: false}
+    }), {
+      noReady: true
+    });
+    Counts.publish(this, 'numberUnfilledRequests', Visits.find({
+      'visitTime': {$eq: null},
+      'requestedDate': {$lt: new Date()},
+      'agencyId': {$eq: agencyId},
+      'inactive': {$exists: false}
+    }), {
+      noReady: true
+    });
     var visits = Visits.find(selector, options);
     var userIds = [];
     visits.forEach(function (visit) {

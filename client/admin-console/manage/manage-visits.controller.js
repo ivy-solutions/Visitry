@@ -14,6 +14,7 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
   this.sort = {
     'visitTime': this.order
   };
+
   this.today = new Date();
 
   this.subscribe('agencyVisits', ()=> {
@@ -64,8 +65,32 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
         }
       );
     },
-    visitsCount() {
-      return Counts.get('numberAgencyVisits');
+    unfilledRequests: () => {
+      let selector = {
+        'visitTime': {$eq: null},
+        'requestedDate': {$lt: new Date()},
+        'agencyId': {$eq: this.agencyId},
+        'inactive': {$exists: false}
+      };
+      return Visits.find(selector,
+        {
+          limit: parseInt(this.getReactively('recordPerPage')),
+          skip: parseInt((this.getReactively('page') - 1) * this.recordPerPage),
+          sort: this.getReactively('sort')
+        }
+      );
+    },
+    scheduledVisitsCount() {
+      return Counts.get('numberScheduledVisits');
+    },
+    completedVisitsCount() {
+      return Counts.get('numberCompletedVisits');
+    },
+    requestedVisitsCount() {
+      return Counts.get('numberRequestedVisits');
+    },
+    unfilledRequestCount() {
+      return Counts.get('numberUnfilledRequests');
     }
   });
 
@@ -74,9 +99,16 @@ angular.module('visitry.browser').controller('adminManageVisitsCtrl', function (
   };
 
   this.toggleSort = function (fieldname) {
-    var newSort = {};
+    let newSort = {};
     this.order = -this.order;
     newSort[fieldname] = parseInt(this.order);
+    this.sort = newSort;
+  };
+
+  this.setSort = function (fieldname, direction){
+    let newSort ={};
+    this.order = (direction === 'descending' ? -1 : 1);
+    newSort[fieldname] = this.order;
     this.sort = newSort;
   };
 

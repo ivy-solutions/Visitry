@@ -1,18 +1,18 @@
 <md-list>
   <md-list-item>
-    <div layout="row" class="manage-list-item" layout-align="space-between center" layout-fill flex="noshrink">
+    <md-button layout="row" class="manage-list-item" layout-align="space-between center" layout-fill flex="noshrink">
       <md-button ng-click="adminManageVisits.toggleSort('requestedDate')" flex>Date
       </md-button>
       <div class="md-subhead" flex="25">Requester</div>
       <md-button flex="35" ng-click="adminManageVisits.toggleSort('location.address')">
         Location
       </md-button>
-      <div class="md-subhead" flex="20">Days Pending</div>
+      <md-button ng-click="adminManageVisits.toggleSort('createdAt')" flex flex="20">Created</md-button>
     </div>
   </md-list-item>
   <md-list-item
-      dir-paginate="visit in adminManageVisits.requestedVisits | itemsPerPage: adminManageVisits.recordPerPage"
-      pagination-id="available-visits" total-items="adminManageVisits.numberRequestedVisits" class="no-padding"
+      dir-paginate="visit in adminManageVisits.unfilledRequests | itemsPerPage: adminManageVisits.recordPerPage"
+      pagination-id="unfilled-requests" total-items="adminManageVisits.unfilledRequestCount" class="no-padding"
       ng-click="adminManageVisits.getVisitDetails(visit._id)">
     <div layout="row" class="manage-list-item" layout-align="space-between center" layout-fill>
       <div flex="20">
@@ -20,9 +20,9 @@
       </div>
       <div flex="25">{{adminManageVisits.getUser(visit.requesterId).fullName}}</div>
       <div flex="35">{{visit.location.address}}</div>
-      <div flex="20">{{adminManageVisits.today | amDifference : visit.createdAt : 'days' }}</div>
+      <div flex="20">{{visit.createdAt | date:'MM/dd/yy' }}</div>
     </div>
   </md-list-item>
 </md-list>
 <dir-pagination-controls on-page-change="adminManageVisits.pageChanged(newPageNumber)"
-                         pagination-id="available-visits"></dir-pagination-controls>
+                         pagination-id="unfilled-requests"></dir-pagination-controls>
