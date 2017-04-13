@@ -6,7 +6,6 @@ import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import { Visit,Visits } from '/model/visits'
-import { Agency } from '/model/agencies'
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import '/server/visits.js';
 import '/model/users';
@@ -300,7 +299,6 @@ if (Meteor.isServer) {
     var findOneUserStub;
     var countsPublishStub;
     var rolesStub;
-    var testVisit;
     var agency1Id;
     var agency2Id;
     var requesterId;
@@ -321,21 +319,6 @@ if (Meteor.isServer) {
       });
       rolesStub = sinon.stub(Roles, 'getGroupsForUser').returns([agency1Id]);
       countsPublishStub = sinon.stub(Counts, 'publish');
-      testVisit = {
-        notes: 'test visit',
-        requestedDate: getTomorrowDate(),
-        createdAt: new Date(),
-        agencyId: agency1Id,
-        requesterId: requesterId,
-        location: {
-          address: "Boston",
-          formattedAddress: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      };
       insertTestVisits(requesterId, agency1Id, agency2Id, userId);
     });
 
@@ -367,13 +350,6 @@ if (Meteor.isServer) {
       assert.equal(visitCursor.count(), 1);
       var visit = visitCursor.fetch()[0];
       assert.equal(visit.notes, 'future unscheduled visit for agency: ' + agency2Id, JSON.stringify(visit));
-    });
-
-    //FIXME this.ready() not a function
-    it.skip('user associated with no agency should see no visits', () => {
-      rolesStub.returns([]);
-      const invocation = {userId: userId};
-      publication.apply(invocation, [userId, false]);
     });
 
     it('agency1 user sees only future unscheduled visits', () => {
@@ -447,7 +423,6 @@ if (Meteor.isServer) {
   describe('userRequests Publication', () => {
     const publication = Meteor.server.publish_handlers["userRequests"];
 
-    var testVisit;
     var agency1Id;
     var requesterId;
     var agency2Id;
@@ -460,21 +435,6 @@ if (Meteor.isServer) {
       agency2Id = Random.id();
       userId = Random.id();
 
-      testVisit = {
-        notes: 'test visit',
-        requestedDate: getTomorrowDate(),
-        createdAt: new Date(),
-        agencyId: agency1Id,
-        requesterId: requesterId,
-        location: {
-          address: "Boston",
-          formattedAddress: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      };
       insertTestVisits(requesterId, agency1Id, agency2Id, userId);
     });
 
@@ -505,7 +465,6 @@ if (Meteor.isServer) {
 
   describe('visits Publication', ()=> {
     var findOneUserStub;
-    var testVisit;
 
     const publication = Meteor.server.publish_handlers["visits"];
 
@@ -520,21 +479,7 @@ if (Meteor.isServer) {
       requesterId = Random.id();
       agency2Id = Random.id();
       userId = Random.id();
-      testVisit = {
-        notes: 'test visit',
-        requestedDate: getTomorrowDate(),
-        createdAt: new Date(),
-        agencyId: agency1Id,
-        requesterId: requesterId,
-        location: {
-          address: "Boston",
-          formattedAddress: "Boston",
-          geo: {
-            type: "Point",
-            coordinates: [-71.0589, 42.3601]
-          }
-        }
-      };
+
       insertTestVisits(requesterId, agency1Id, agency2Id, userId);
       findOneUserStub = sinon.stub(Meteor.users, 'findOne');
       findOneUserStub.returns({
@@ -573,6 +518,47 @@ if (Meteor.isServer) {
     });
 
   });
+
+  describe('agencyVisits Publication', ()=> {
+
+    const publication = Meteor.server.publish_handlers["agencyVisits"];
+
+    var agency1Id;
+    var requesterId;
+    var agency2Id;
+    var userId;
+    let countsPublishStub;
+    let usersFindStub;
+
+    beforeEach(() => {
+      agency1Id = Random.id();
+      requesterId = Random.id();
+      agency2Id = Random.id();
+      userId = Random.id();
+
+      insertTestVisits(requesterId, agency1Id, agency2Id, userId);
+      countsPublishStub = sinon.stub(Counts, 'publish');
+    });
+
+    afterEach(function () {
+      Visits.remove({});
+      Counts.publish.restore();
+    });
+
+    it('visits from agency1', ()=> {
+      const invocation = {userId: requesterId};
+      const cursors = publication.apply(invocation, [agency1Id]);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 5);
+    });
+    it('visits from agency2', ()=> {
+      const invocation = {userId: requesterId};
+      const cursors = publication.apply(invocation, [agency2Id]);
+      const visitCursor = cursors[0];
+      assert.equal(visitCursor.count(), 1);
+    });
+  });
+
 
   function createTestVisit(visit) {
     Visits.insert(visit);
