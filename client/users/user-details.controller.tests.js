@@ -64,7 +64,8 @@ describe('UserDetails', function () {
     visitId: completedVisitId,
     createdAt: yesterday,
     submitterId: testUserId,
-    timeSpent: 2 * 60
+    timeSpent: 2 * 60,
+    visitRating: 2
   };
   let feedbackThreeHours = {
     createdAt: yesterday,
@@ -160,10 +161,14 @@ describe('UserDetails', function () {
       assert.equal(controller.hoursCount, 5);
     });
 
-    it('getUserVisitFeedback returns feedback of id that was passed', ()=> {
-      let result = controller.getUserVisitFeedback(completedVisitId);
-      assert.equal(result.visitId, completedVisitId);
-      assert.equal(result.timeSpent / 60, 2);
+    it('getUserVisitFeedbackRating returns rating of submitter', ()=> {
+      let rating = controller.getUserVisitFeedbackRating(completedVisitId);
+      assert.equal(rating, 2);
+    });
+
+    it('getUserVisitFeedbackRating returns 0 when no feedback found', ()=> {
+      let rating = controller.getUserVisitFeedbackRating(Random.id());
+      assert.equal(rating, 0);
     });
   });
 
