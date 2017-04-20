@@ -19,7 +19,11 @@
       <div layout="row" layout-align="start">
         <div class="md-subheader">Requester</div>
         <span flex></span>
-        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">Days Pending: {{ adminVisitDetails.today | amDifference : adminVisitDetails.visit.createdAt : 'days' }}
+        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">
+            Requested {{ adminVisitDetails.today | amDifference : adminVisitDetails.visit.createdAt : 'days' }} days ago
+        </div>
+        <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'unfilled'">
+            Requested: {{ adminVisitDetails.visit.createdAt |date: 'EEE M/d/yy'}}
         </div>
       </div>
       <div md-whiteframe="3">
@@ -36,7 +40,7 @@
           </md-list-item>
         </md-list>
         <!--REQUESTER FEEDBACK-->
-        <md-list ng-if="!adminVisitDetails.requesterFeedback">
+        <md-list ng-if="!adminVisitDetails.requesterFeedback && adminVisitDetails.visitStatus==='complete'">
           <md-divider layout-margin></md-divider>
           <md-list-item class="md-3-line md-long-text">
             <div class="md-list-item-text" layout="column" layout-align="center center">
@@ -96,7 +100,7 @@
           </md-list-item>
         </md-list>
         <!--VISITOR FEEDBACK-->
-        <md-list ng-if="!adminVisitDetails.visitorFeedback">
+        <md-list ng-if="!adminVisitDetails.visitorFeedback && adminVisitDetails.visitStatus==='complete'">
           <md-divider layout-margin></md-divider>
           <md-list-item class="md-3-line md-long-text">
             <div class="md-list-item-text" layout="column" layout-align="center center">
