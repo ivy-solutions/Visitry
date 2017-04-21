@@ -107,7 +107,6 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
 
   this.getUserVisitFeedbackRating = (visitId)=> {
     let feedback = Feedbacks.findOne({visitId: visitId, submitterId: this.userId});
-    logger.info(feedback);
     return feedback ? feedback.visitRating : 0;
   };
 
