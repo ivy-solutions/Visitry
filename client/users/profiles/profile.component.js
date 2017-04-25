@@ -126,8 +126,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     logger.info( "profile.updatePicture for " + Meteor.userId());
     MeteorCameraUI.getPicture({ width: 160, height: 160, quality:80, correctOrientation: true, allowEdit:true, targetWidth:200, targetHeight:200 },
       function (err, data) {
-        if (err && (err.error == 'cancel' || err.reason == 'no image selected')) {
-          logger.info(err);
+        if (err && (err.error == 'cancel' || err.reason == 'no image selected') || !data ) {
           return;
         }
 
@@ -143,7 +142,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
           logger.info("picture updated");
           $ionicLoading.hide();
           if (err) {
-            handleError(err);
+            return handleError(err);
           }
         });
       }
