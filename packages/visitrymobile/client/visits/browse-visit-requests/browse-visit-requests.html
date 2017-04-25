@@ -3,39 +3,41 @@
          <div class="warning" ng-hide="connectionStatus=='ok'">
              No connection to server. ({{connectionStatus}})
          </div>
-         <div ng-hide="browseVisitRequests.hasAgency" class="text-center">
-             <div>
-                 <h4>You are not yet a member of a group.</h4>
-                 <button class="button button-assertive button-large" ng-click="browseVisitRequests.groups()">
-                     Join Group
-                 </button>
+         <div ng-hide="connectionStatus!=='ok'">
+             <div ng-hide="browseVisitRequests.hasAgency" class="text-center">
+                 <div>
+                     <h4>You are not yet a member of a group.</h4>
+                     <button class="button button-assertive button-large" ng-click="browseVisitRequests.groups()">
+                         Join Group
+                     </button>
+                 </div>
              </div>
-         </div>
-         <div ng-hide="!browseVisitRequests.hasAgency">
-             <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
-                 No requests within {{browseVisitRequests.visitRange }} miles of {{browseVisitRequests.fromLocation | streetAddress }}
-             </div>
-             <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
-                <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
-                    <div class="item item-divider">
-                        {{visitsByDate.date|date: "EEEE, MMMM d"}}
+             <div ng-hide="!browseVisitRequests.hasAgency">
+                 <div class="emptyListInfo" ng-hide="browseVisitRequests.openVisitCount > 0">
+                     No requests within {{browseVisitRequests.visitRange }} miles of {{browseVisitRequests.fromLocation | streetAddress }}
+                 </div>
+                 <ion-list show-delete="browseVisitRequests.showDelete" can-swipe="browseVisitRequests.canSwipe">
+                    <div ng-repeat="visitsByDate in browseVisitRequests.openVisits">
+                        <div class="item item-divider">
+                            {{visitsByDate.date|date: "EEEE, MMMM d"}}
+                        </div>
+                        <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
+                            <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}" ng-click="browseVisitRequests.visitDetails(visit._id)"/>
+                            <a ng-click="browseVisitRequests.visitDetails(visit._id)">
+                                <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
+                                <div class="visitInfo">
+                                    <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}
+                                        <span class="distance">{{browseVisitRequests.getDistanceToVisitLocation(visit) }}</span></h2>
+                                    <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
+                                </div>
+                            </a>
+                            <ion-option-button class="button-positive" ng-click="browseVisitRequests.scheduleVisit(visit)">
+                                Plan Visit
+                         </ion-option-button>
+                        </ion-item>
                     </div>
-                    <ion-item ng-repeat="visit in visitsByDate.visits" class="item-avatar">
-                        <img ng-src="{{browseVisitRequests.getRequesterImage(visit)}}" ng-click="browseVisitRequests.visitDetails(visit._id)"/>
-                        <a ng-click="browseVisitRequests.visitDetails(visit._id)">
-                            <div class="timeOfDay">{{visit.requestedDate | timeOfDay }}</div>
-                            <div class="visitInfo">
-                                <h2>{{browseVisitRequests.getRequester(visit) | firstNameLastInitial}}
-                                    <span class="distance">{{browseVisitRequests.getDistanceToVisitLocation(visit) }}</span></h2>
-                                <p>{{visit.notes | limitTo:80 }}{{visit.notes.length >80 ?'...':''}}</p>
-                            </div>
-                        </a>
-                        <ion-option-button class="button-positive" ng-click="browseVisitRequests.scheduleVisit(visit)">
-                            Plan Visit
-                     </ion-option-button>
-                    </ion-item>
-                </div>
-            </ion-list>
+                </ion-list>
+             </div>
          </div>
     </ion-content>
 </ion-view>

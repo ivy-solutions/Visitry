@@ -4,49 +4,51 @@
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header has-tabs pending">
-      <div class="warning" ng-hide="connectionStatus=='ok'">
-          No connection to server. ({{connectionStatus}})
-      </div>
-    <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
-      No active requests. Press + to request a visit.
+    <div class="warning" ng-hide="connectionStatus=='ok'">
+      No connection to server. ({{connectionStatus}})
     </div>
-    <div ng-hide="pendingVisits.hasAgency" class="text-center">
-      <div>
-        <h4>You are not yet a member of a group.</h4>
-          <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
-            Join Group
-          </button>
-      </div>
-    </div>
-    <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
-      <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
-        <div class="item item-divider">
-            <span class="assertive" ng-if="pendingVisits.isToday(dateVisits.date)">Today :</span>
-          {{dateVisits.date|date: "EEEE, MMMM d"}}
+    <div ng-hide="connectionStatus!=='ok'">
+        <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
+          No active requests. Press + to request a visit.
         </div>
-        <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
-                  on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
-            <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}" ng-click="pendingVisits.visitDetails(visit._id)">
-            <div ng-if="!visit.visitorId" class="visit-picture no-visitor" ng-click="pendingVisits.visitDetails(visit._id)"></div>
-            <a ng-click="pendingVisits.visitDetails(visit._id)">
-              <div>
-                <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
-                </h4>
-                <h2 ng-if="visit.visitorId">
-                    {{pendingVisits.getVisitor(visit) | firstNameLastInitial }}
-                    <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
-                </h2>
-                <span flex></span>
-              </div>
-              <p>{{visit.location.address}}</p>
-              <p style="white-space: nowrap">{{visit.notes}}</p>
+        <div ng-hide="pendingVisits.hasAgency" class="text-center">
+          <div>
+            <h4>You are not yet a member of a group.</h4>
+              <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
+                Join Group
+              </button>
+          </div>
+        </div>
+        <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
+          <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
+            <div class="item item-divider">
+                <span class="assertive" ng-if="pendingVisits.isToday(dateVisits.date)">Today :</span>
+              {{dateVisits.date|date: "EEEE, MMMM d"}}
+            </div>
+            <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
+                      on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
+                <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}" ng-click="pendingVisits.visitDetails(visit._id)">
+                <div ng-if="!visit.visitorId" class="visit-picture no-visitor" ng-click="pendingVisits.visitDetails(visit._id)"></div>
+                <a ng-click="pendingVisits.visitDetails(visit._id)">
+                  <div>
+                    <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
+                    </h4>
+                    <h2 ng-if="visit.visitorId">
+                        {{pendingVisits.getVisitor(visit) | firstNameLastInitial }}
+                        <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
+                    </h2>
+                    <span flex></span>
+                  </div>
+                  <p>{{visit.location.address}}</p>
+                  <p style="white-space: nowrap">{{visit.notes}}</p>
 
-            </a>
-              <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
-                Cancel Visit
-              </ion-option-button>
-        </ion-item>
-      </div>
-    </ion-list>
+                </a>
+                  <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
+                    Cancel Visit
+                  </ion-option-button>
+            </ion-item>
+          </div>
+        </ion-list>
+    </div>
   </ion-content>
 </ion-view>
