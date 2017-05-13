@@ -4,6 +4,7 @@
 import {logger} from '/client/logging'
 import {Roles} from 'meteor/alanning:roles'
 import {Agency} from '/model/agencies'
+import {Enrollment} from '/model/enrollment'
 
 angular.module("visitry").controller('profileCtrl', function($scope, $reactive, $state,$ionicPopup,$ionicLoading,$ionicHistory, EditRegistration) {
   $reactive(this).attach($scope);
@@ -22,6 +23,9 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     this.isProfileReady = true;
   });
   this.subscribe('myAgencies');
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.autorun (() => {
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
@@ -108,7 +112,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
     //clear form
     this.resetForm(form);
 
-    if ($ionicHistory.backView() != null && !['Register', 'Groups'].includes($ionicHistory.backTitle())) {
+    if ($ionicHistory.backView() != null && !['Register', 'Groups', 'Group'].includes($ionicHistory.backTitle())) {
       $ionicHistory.goBack();
     } else {
       $ionicHistory.nextViewOptions({
@@ -150,12 +154,19 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   };
 
   this.groups = () => {
-    $state.go('agencyList');
+    // go to agency list or the only agency I applied to
+    let numEnrollments = Enrollment.find({userId: Meteor.userId()}).count();
+    if ( numEnrollments == 1 ) {
+      let enrollment = Enrollment.findOne({userId: Meteor.userId()});
+      $state.go( 'agencyDetails', {groupId: enrollment.agencyId })
+    } else {
+      $state.go('agencyList');
+    }
   };
 
   this.showNavigationToGroups = () => {
     //dont show, if we came from groups during registration process
-    return !['Groups'].includes($ionicHistory.backTitle())
+    return !['Groups','Group'].includes($ionicHistory.backTitle())
   };
 
   this.showEditRegistrationModal = function () {

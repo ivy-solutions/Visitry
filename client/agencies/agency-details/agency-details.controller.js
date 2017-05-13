@@ -5,7 +5,7 @@ import { Agency } from '/model/agencies'
 import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership) {
+angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory) {
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
@@ -14,6 +14,10 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
 
   this.subscribe('memberships', ()=> {
     return [Meteor.userId()]
+  });
+
+  this.autorun (() => {
+    this.membershipStatus = Meteor.myFunctions.membershipStatus(this.groupId);
   });
 
   this.helpers({
@@ -66,21 +70,37 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   };
 
   this.canRequestMembership = () => {
-    // visitors can be members of many groups, requesters, only one
-    if ( !this.isMember() && Meteor.myFunctions.isVisitor() ) {
-      return true;
-    } else {
-      return (Enrollment.find({userId: Meteor.userId()}).count() === 0);
+    if (!this.isMember()) {
+        // visitors can be members of many groups, requesters, only one
+       if (Meteor.myFunctions.isVisitor()) {
+        return true;
+      } else {
+        return this.isPendingMember || (Enrollment.find({userId: Meteor.userId()}).count() === 0);
+      }
     }
+    return false;
   };
 
   this.requestMembership = () => {
-    ChangeMembership.showModal(this.agency, false);
+    Meteor.call('sendJoinRequest', this.agency._id, "");
+  };
+
+  this.allAgencies = () => {
     $state.go('agencyList');
   };
+
+  this.profile = () => {
+    $state.go('profile');
+  };
+
   this.revokeRequest = () => {
     ChangeMembership.showModal(this.agency, true);
     $state.go('agencyList');
   };
 
+  this.showNavigationToProfile = () => {
+    //dont show, if we came from profile
+    let user = Meteor.user();
+    return user.userData.firstName !== $ionicHistory.backTitle();
+  };
 });

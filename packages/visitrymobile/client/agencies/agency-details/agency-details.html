@@ -1,7 +1,13 @@
 /**
 * Created by sarahcoletti on 3/2/16.
 */
-<ion-view view-title="{{agencyDetails.agency.name}}" hide-back-button=false hide-tabs>
+<ion-view view-title="Group" hide-back-button=false hide-tabs>
+    <ion-nav-buttons side="right">
+        <button ng-click="agencyDetails.profile()" ng-if="agencyDetails.showNavigationToProfile()"
+                class="button button-clear button-icon icon-right ion-ios-arrow-right" style="font-weight: 400;">
+            Profile&nbsp;
+        </button>
+    </ion-nav-buttons>
     <ion-content padding="true" scroll="true" class="has-footer">
         <div layout="column">
             <div layout="row">
@@ -61,6 +67,12 @@
                             ng-if="agencyDetails.isPendingMember()"
                             ng-click="agencyDetails.revokeRequest()">
                         <span class="assertive">Remove Request</span>
+                    </button>
+                </div>
+                <div class="button-bar button-balanced" ng-if="visitry.isVisitor()">
+                    <button class="button button-full button-clear"
+                            ng-click="agencyDetails.allAgencies()">
+                        <span class="balanced">All Groups</span>
                     </button>
                 </div>
             </div>
