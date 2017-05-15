@@ -25,10 +25,10 @@
                     <ion-option-button class="button-dark" ng-click="agencies.agencyDetail(agency._id)">
                         Details
                     </ion-option-button>
-                    <ion-option-button class="button-assertive" ng-if="agencies.isPendingMember(agency._id)" ng-click="agencies.revokeRequest(agency._id)">
+                    <ion-option-button class="button-assertive" ng-if="agencies.canRevokeMembershipRequest(agency._id)" ng-click="agencies.revokeRequest(agency._id)">
                         Remove Request
                     </ion-option-button>
-                    <ion-option-button class="button-positive" ng-if="agencies.isNotMember(agency._id)" ng-click="agencies.requestMembership(agency._id)">
+                    <ion-option-button class="button-positive" ng-if="agencies.canRequestMembership(agency._id)" ng-click="agencies.requestMembership(agency._id)">
                         Ask to Join
                     </ion-option-button>
                 </ion-item-options>

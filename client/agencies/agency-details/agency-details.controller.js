@@ -5,7 +5,7 @@ import { Agency } from '/model/agencies'
 import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory) {
+angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, $ionicHistory) {
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
@@ -75,7 +75,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
        if (Meteor.myFunctions.isVisitor()) {
         return true;
       } else {
-        return this.isPendingMember || (Enrollment.find({userId: Meteor.userId()}).count() === 0);
+        return this.isPendingMember() || (Enrollment.find({userId: Meteor.userId()}).count() === 0);
       }
     }
     return false;
@@ -94,8 +94,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   };
 
   this.revokeRequest = () => {
-    ChangeMembership.showModal(this.agency, true);
-    $state.go('agencyList');
+    Meteor.call('revokeJoinRequest', this.agency._id, "");
   };
 
   this.showNavigationToProfile = () => {

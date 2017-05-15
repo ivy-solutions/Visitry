@@ -3,9 +3,10 @@
  */
 
 import {Agency} from '/model/agencies'
+import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, ChangeMembership,$ionicHistory ) {
+angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stateParams, $reactive, $state, $ionicHistory ) {
   $reactive(this).attach($scope);
 
   this.canSwipe = true;
@@ -60,13 +61,27 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
   this.agencyDetail = function (id) {
     $state.go( 'agencyDetails', {groupId: id} );
   };
+  this.canRequestMembership = (id) => {
+    if (!this.isMember(id)) {
+      // visitors can be members of many groups, requesters, only one
+      if (Meteor.myFunctions.isVisitor()) {
+        return true;
+      } else {
+        return Enrollment.find({userId: Meteor.userId()}).count() === 0;
+      }
+    }
+    return false;
+  };
+  this.canRevokeMembershipRequest = (id) => {
+    return this.isPendingMember(id);
+  };
   this.revokeRequest = (id) => {
     let agency = Agency.findOne(id);
-    ChangeMembership.showModal(agency, true);
+    Meteor.call('revokeJoinRequest', agency._id, "");
   };
   this.requestMembership = (id) => {
     let agency = Agency.findOne(id);
-    ChangeMembership.showModal(agency, false);
+    Meteor.call('sendJoinRequest', agency._id, "");
   };
 
 
