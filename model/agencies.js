@@ -43,7 +43,6 @@ const Agency = Class.create({
         {type: 'maxLength', param: 15}
       ]},
     logos: {type: [String], optional: true },
-    welcomeMessage: {type: String, optional:true},
     createdAt: {type:Date, immutable: true},
     updatedAt: {type:Date},
     removed: {type:Boolean, optional: true },

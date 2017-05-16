@@ -36,8 +36,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
         contactEmail: this.agency.contactEmail,
         description: this.agency.description,
         location: addNewLocation(this.agency.location),
-        timezone: this.agency.timezone,
-        welcomeMessage: this.agency.welcomeMessage
+        timezone: this.agency.timezone
       }, (err, result)=> {
         if (err) {
           logger.error('Error updating ' + this.agency.name + ' ' + err);
