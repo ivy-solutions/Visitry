@@ -92,7 +92,7 @@ describe('Admin Admin Agency', function () {
     describe('addAdmin', function () {
       it('navigate to the register screen', ()=> {
         controller.addAdmin();
-        assert(stateSpy.withArgs('register', {role: "administrator"}).calledOnce);
+        assert(stateSpy.withArgs('register', {role: "administrator", agencyId: agencyId}).calledOnce);
       });
     });
   });

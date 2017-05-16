@@ -100,7 +100,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
   }
 
   this.addAdmin = () => {
-    $state.go('register', {role: 'administrator'});
+    $state.go('register', {role: 'administrator', agencyId:this.agencyId});
   };
 
   this.timezones = [

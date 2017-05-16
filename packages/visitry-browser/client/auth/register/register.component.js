@@ -53,7 +53,7 @@ angular.module("visitry.browser").directive('register', function () {
         } else if ($stateParams.role === 'visitor') {
           $state.go('adminManageVisitors', {reload: true});
         } else if ($stateParams.role === 'administrator') {
-          $state.go('adminAdminAgency', {reload: true});
+          $state.go('adminAdminAgency', {agencyId:this.agencyId});
         } else {
           $state.go('/lost');
         }
