@@ -57,7 +57,6 @@ angular.module('visitry').controller('pendingVisitsCtrl',
     RequestVisit.showModal();
   };
 
-
   this.getTimeSinceRequested = function(requestedTime){
     return moment(requestedTime).fromNow();
   };
@@ -84,6 +83,12 @@ angular.module('visitry').controller('pendingVisitsCtrl',
 
   this.visitDetails = function (id) {
     $state.go( 'visitDetails', {visitId: id} );
+  };
+
+  this.membershipPending = function (){
+    let hasAgency = this.getReactively('hasAgency');
+    let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+    return enrollments ? true : false;
   };
 
   this.groups = function () {

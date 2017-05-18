@@ -3,6 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
+import { Enrollment } from '/model/enrollment'
 import { Agency } from '/model/agencies'
 
 angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scope, $reactive, $state, ScheduleVisit, available) {
@@ -17,6 +18,9 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   };
 
   this.subscribe('userdata'); //userdata for self and all requesters and potention requesters
+  this.subscribe('memberships', ()=> {
+    return [Meteor.userId()]
+  });
 
   this.visitRange = 3000;
 
@@ -150,6 +154,12 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.scheduleVisit = function(visit) {
     ScheduleVisit.showModal( visit );
    };
+
+  this.membershipPending = function (){
+    let hasAgency = this.getReactively('hasAgency');
+    let enrollments = Enrollment.find({userId: Meteor.userId()});
+    return (!hasAgency && enrollments) ? true : false;
+  };
 
   this.groups = function (id) {
     $state.go( 'agencyList');

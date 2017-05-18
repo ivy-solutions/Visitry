@@ -5,10 +5,16 @@
          </div>
          <div ng-hide="connectionStatus!=='ok'">
              <div ng-hide="browseVisitRequests.hasAgency" class="text-center">
-                 <div>
+                 <div ng-if="!browseVisitRequests.membershipPending">
                      <h4>You are not yet a member of a group.</h4>
                      <button class="button button-assertive button-large" ng-click="browseVisitRequests.groups()">
                          Join Group
+                     </button>
+                 </div>
+                 <div ng-if="browseVisitRequests.membershipPending">
+                     <h4>Your membership is awaiting approval.</h4>
+                     <button class="button button-clear button-large button-balanced" ng-click="browseVisitRequests.groups()">
+                         Group
                      </button>
                  </div>
              </div>

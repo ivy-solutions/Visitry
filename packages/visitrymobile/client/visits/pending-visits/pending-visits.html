@@ -8,15 +8,21 @@
       No connection to server. ({{connectionStatus}})
     </div>
     <div ng-hide="connectionStatus!=='ok'">
-        <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests">
+        <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency">
           No active requests. Press + to request a visit.
         </div>
         <div ng-hide="pendingVisits.hasAgency" class="text-center">
-          <div>
+          <div ng-if="!pendingVisits.membershipPending">
             <h4>You are not yet a member of a group.</h4>
-              <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
-                Join Group
-              </button>
+            <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
+              Join Group
+            </button>
+          </div>
+          <div ng-if="pendingVisits.membershipPending">
+            <h4>Your membership is awaiting approval.</h4>
+            <button class="button button-clear button-large button-balanced" ng-click="pendingVisits.groups()">
+               Group
+            </button>
           </div>
         </div>
         <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
