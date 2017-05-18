@@ -156,9 +156,13 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
    };
 
   this.membershipPending = function (){
+    //true if not yet a member of any agency but have applied to at least one agency.
     let hasAgency = this.getReactively('hasAgency');
-    let enrollments = Enrollment.find({userId: Meteor.userId()});
-    return (!hasAgency && enrollments) ? true : false;
+    let application = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+    if (application && !hasAgency) {
+      return true;
+    }
+    return false;
   };
 
   this.groups = function (id) {

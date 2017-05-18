@@ -46,7 +46,16 @@ angular.module('visitry').controller('pendingVisitsCtrl',
       if (Meteor.userId() && this.getReactively('visits')) {
         return Meteor.myFunctions.groupVisitsByRequestedDate(this.visits);
       }
-    }
+    },
+    membershipPending: ()=> {
+      let hasAgency = this.getReactively('hasAgency');
+      let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+      if (enrollments) {
+        return true;
+      } else {
+        return false;
+      }
+     }
   });
 
   this.getVisitor = function (visit) {
@@ -83,12 +92,6 @@ angular.module('visitry').controller('pendingVisitsCtrl',
 
   this.visitDetails = function (id) {
     $state.go( 'visitDetails', {visitId: id} );
-  };
-
-  this.membershipPending = function (){
-    let hasAgency = this.getReactively('hasAgency');
-    let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
-    return enrollments ? true : false;
   };
 
   this.groups = function () {
