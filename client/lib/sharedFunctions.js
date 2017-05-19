@@ -34,19 +34,23 @@ Meteor.myFunctions = {
       return "";
   },
   isRequester: function () {
-    return hasRoleAnywhere('requester');
+    return hasRoleAnywhere(Meteor.userId(),'requester');
   },
   isVisitor: function () {
-    return hasRoleAnywhere('visitor');
+    return hasRoleAnywhere(Meteor.userId(),'visitor');
   },
   isAdministrator: function(){
-    return hasRoleAnywhere('administrator');
+    return hasRoleAnywhere(Meteor.userId(),'administrator');
   },
   isRequesterInAgency: function( userId, agencyId) {
     return Roles.userIsInRole(userId, ['requester'], agencyId);
   },
   isVisitorInAgency: function( userId, agencyId) {
-    return Roles.userIsInRole(userId, ['visitor'], agencyId);
+    if (!agencyId) {
+      return hasRoleAnywhere(userId,'visitor');
+    } else {
+      return Roles.userIsInRole(userId, ['visitor'], agencyId)
+    }
   },
   isAdministratorInAgency: function( userId, agencyId) {
     return Roles.userIsInRole(userId, ['administrator'], agencyId);
@@ -103,16 +107,17 @@ Meteor.myFunctions = {
       }
     });
   },
-  membershipStatus: function (agencyId) {
+  membershipStatus: function (agencyId, userId) {
     let status = 'noUser';
-    if (Meteor.userId()) {
-      const enrollment = Enrollment.findOne({userId:Meteor.userId(), agencyId:agencyId});
+    if (userId) {
+      const enrollment = Enrollment.findOne({userId:userId, agencyId:agencyId});
       if (!enrollment ) {
         status = "notMember";
       } else {
         status = enrollment.approvalDate ? "member" :  "pendingMember";
       }
     }
+    logger.info(status);
     return status;
   }
 };
@@ -126,16 +131,16 @@ function handleError(err, $ionicPopup) {
   });
 }
 
-function hasRoleAnywhere( role ) {
+function hasRoleAnywhere( userId, role ) {
   let isRoleAnywhere = false;
-  let groups = Roles.getGroupsForUser(Meteor.userId());
+  let groups = Roles.getGroupsForUser(userId);
   if ( groups.length == 0) {
     //user does not have a group yet
-    isRoleAnywhere = Roles.userIsInRole(Meteor.userId(), role);
+    isRoleAnywhere = Roles.userIsInRole(userId, role);
   } else {
     // true if is a visitor anywhere
     groups.forEach( function (group) {
-      if ( Roles.userIsInRole(Meteor.userId(), role, group)) {
+      if ( Roles.userIsInRole(userId, role, group)) {
         isRoleAnywhere  = true;
       }
     })

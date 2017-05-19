@@ -46,16 +46,16 @@ angular.module('visitry').controller('listAgenciesCtrl', function ($scope, $stat
   });
 
   this.isMember = (agencyId) => {
-    return Meteor.myFunctions.membershipStatus(agencyId) === 'member';
+    return Meteor.myFunctions.membershipStatus(agencyId, Meteor.userId()) === 'member';
   };
   this.isPendingMember = (agencyId) => {
-    return Meteor.myFunctions.membershipStatus(agencyId) === 'pendingMember';
+    return Meteor.myFunctions.membershipStatus(agencyId,Meteor.userId()) === 'pendingMember';
   };
   this.isNotMember = (agencyId) => {
-    return Meteor.myFunctions.membershipStatus(agencyId) === 'notMember';
+    return Meteor.myFunctions.membershipStatus(agencyId,Meteor.userId()) === 'notMember';
   };
   this.membershipStatus = (agencyId) => {
-    return Meteor.myFunctions.membershipStatus(agencyId);
+    return Meteor.myFunctions.membershipStatus(agencyId,Meteor.userId());
   };
 
   this.agencyDetail = function (id) {

@@ -25,7 +25,7 @@
           </div>
         </md-list-item>
         <div layout-padding>
-          <div><strong>Role:</strong> {{userDetails.isVisitor ? "Visitor" : "Requester"}}
+          <div><strong>Role:</strong> {{userDetails.role}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
             {{userDetails.user.userData.location.address}}
@@ -41,7 +41,7 @@
       </md-list>
     </div>
     <span flex></span>
-    <div layout="column" flex="none">
+    <div layout="column" flex="none" ng-show="userDetails.enrolled.approvalDate">
       <div layout="column" layout-align="center end" style="border: 1px solid; border-radius: 5px" layout-margin>
         <div layout-margin class="md-subhead" style="padding-right: 30px;padding-left: 10px">Visits Last Month</div>
         <div layout="row" layout-align="end center">

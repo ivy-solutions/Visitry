@@ -182,14 +182,20 @@ describe('SharedFunctions', function () {
       it("user is visitor in agency1", function () {
         assert.isTrue(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency1Id, agency1Id));
       });
-      it("user is not requester in agency2", function () {
+      it("user is not visitor in agency2", function () {
         assert.isFalse(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency1Id, agency2Id));
       });
-      it("user is not requester in agency1", function () {
+      it("user is not visitor in agency1", function () {
         assert.isFalse(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency2Id, agency1Id));
       });
-      it("user is not requester", function () {
+      it("user is not visitor", function () {
         assert.isFalse(Meteor.myFunctions.isVisitorInAgency(requesterUserAgency1Id, agency1Id));
+      });
+      it("user is visitor when no agencyId is passed", function () {
+        assert.isTrue(Meteor.myFunctions.isVisitorInAgency(visitorUserAgency1Id, null));
+      });
+      it("user is not visitor when no agencyId is passed", function () {
+        assert.isFalse(Meteor.myFunctions.isVisitorInAgency(requesterUserAgency1Id, null));
       });
     });
     describe("isAdministratorInAgency", function () {

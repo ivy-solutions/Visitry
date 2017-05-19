@@ -9,7 +9,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
-  this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId);
+  this.membershipStatus = Meteor.myFunctions.membershipStatus($stateParams.groupId,Meteor.userId());
   this.agency
 
   this.subscribe('memberships', ()=> {
@@ -17,7 +17,7 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   });
 
   this.autorun (() => {
-    this.membershipStatus = Meteor.myFunctions.membershipStatus(this.groupId);
+    this.membershipStatus = Meteor.myFunctions.membershipStatus(this.groupId,Meteor.userId());
   });
 
   this.helpers({
