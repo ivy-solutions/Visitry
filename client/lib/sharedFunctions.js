@@ -117,7 +117,6 @@ Meteor.myFunctions = {
         status = enrollment.approvalDate ? "member" :  "pendingMember";
       }
     }
-    logger.info(status);
     return status;
   }
 };

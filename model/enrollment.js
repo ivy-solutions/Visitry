@@ -28,6 +28,17 @@ const Enrollment = Class.create({
     removed: {type:Boolean, optional: true },
     removedAt: {type: Date, optional: true}
   },
+  indexes:{
+    user: {
+      fields: {
+        userId: 1,
+        agencyId: 1
+      },
+      options: {
+        unique: true
+      }
+    }
+  },
   behaviors: {
     timestamp: {
       hasCreatedField: true,

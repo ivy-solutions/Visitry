@@ -462,6 +462,12 @@ if (Meteor.isServer) {
         assert.equal(enrollment.userId, testUserId);
         assert.equal(enrollment.agencyId, agencyId);
       });
+      it('fails when user has already applied to agency', () => {
+        const invocation = {userId: testUserId};
+        addProspectiveAgencyHandler.apply(invocation, [agencyId]);
+        addProspectiveAgencyHandler.apply(invocation, [agencyId]);
+        assert.equal( Enrollments.find({userId: testUserId}).count(), 1);
+      });
     });
 
     describe('users.updateRegistrationInfo', () => {

@@ -289,7 +289,7 @@ Meteor.methods({
     });
     let role = userArgs.role ? userArgs.role : existingRole;
     if (!role) {
-        throw new Meteor.Error('invalid-role', 'User role is missing.');
+      throw new Meteor.Error('invalid-role', 'User role is missing.');
     }
     let rolesInTheAgency = Roles.getRolesForUser(user, agencyId);
     if (rolesInTheAgency.length ) {
@@ -301,13 +301,15 @@ Meteor.methods({
     if (!application) {
       application = new Enrollment({userId: userId, agencyId: agencyId});
     }
-    application.approvalDate = new Date();
-    application.save(function (err, id) {
-      if (err) {
-        logger.error("addUserToAgency failed to update enrollment. err: " + err);
-        throw err;
-      }
-    });
+    if (!application.approvalDate) {
+      application.approvalDate = new Date();
+      application.save(function (err, id) {
+        if (err) {
+          logger.error("addUserToAgency failed to update enrollment. err: " + err);
+          throw err;
+        }
+      });
+    }
 
     user = User.findOne(userId);
 
@@ -373,14 +375,17 @@ Meteor.methods({
   },
   addProspectiveAgency(agencyId) {
     Errors.checkUserLoggedIn(this.userId, 'addProspectiveAgency', 'Must be logged in to update enrollments.');
-    let application = new Enrollment( {userId: this.userId, agencyId: agencyId});
-    application.save(function (err, id) {
-      if (err) {
-        logger.error("addProspectiveAgency failed to update user. err: " + err);
-        throw err;
-      }
-    });
-    logger.info("addProspectiveAgency for userId: " + this.userId);
+    let application = Enrollment.findOne({userId:this.userId, agencyId:agencyId});
+    if (!application) {
+      application = new Enrollment({userId: this.userId, agencyId: agencyId});
+      application.save(function (err, id) {
+        if (err) {
+          logger.error("addProspectiveAgency failed to update user. err: " + err);
+          throw err;
+        }
+      });
+      logger.info("addProspectiveAgency for userId: " + this.userId);
+    }
   },
   removeProspectiveAgency(agencyId) {
     Errors.checkUserLoggedIn(this.userId, 'removeProspectiveAgency', 'Must be logged in to update enrollments');
