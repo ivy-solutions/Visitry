@@ -25,7 +25,7 @@
           </div>
         </md-list-item>
         <div layout-padding>
-          <div><strong>Role:</strong> {{userDetails.role}}
+          <div><strong>Role:</strong> {{userDetails.role()}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
             {{userDetails.user.userData.location.address}}

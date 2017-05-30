@@ -14,7 +14,9 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.agencyId = $cookies.get('agencyId');
 
   //by passing null as agencyId, this covers applicants as well as members
-  this.role = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), null) ? "Visitor" : "Requester";
+  this.role = () => {
+    return Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), null) ? "Visitor" : "Requester";
+  };
 
   this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId);
   let userdataSubscription = this.subscribe('userdata', ()=>[], ()=> {
