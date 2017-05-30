@@ -1,8 +1,5 @@
 <ion-view title="Choose to Visit" hide-back-button=true>
      <ion-content class="has-header has-tabs">
-         <div class="warning" ng-hide="connectionStatus=='ok'">
-             No connection to server. ({{connectionStatus}})
-         </div>
          <div ng-hide="connectionStatus!=='ok'">
              <div ng-hide="browseVisitRequests.hasAgency" class="text-center">
                  <div ng-if="!browseVisitRequests.membershipPending()">

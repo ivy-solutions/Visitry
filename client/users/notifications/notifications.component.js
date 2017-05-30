@@ -8,8 +8,6 @@ import { Notification, NotificationStatus } from '/model/notifications'
 angular.module('visitry').controller('notificationsCtrl', function ($scope, $reactive, $state, $stateParams) {
     $reactive(this).attach($scope);
 
-    this.subscribe('receivedNotifications');
-
     this.numMessages = 0;
 
     this.helpers({

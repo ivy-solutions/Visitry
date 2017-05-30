@@ -4,9 +4,6 @@
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header has-tabs pending">
-    <div class="warning" ng-hide="connectionStatus=='ok'">
-      No connection to server. ({{connectionStatus}})
-    </div>
     <div ng-hide="connectionStatus!=='ok'">
         <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency">
           No active requests. Press + to request a visit.

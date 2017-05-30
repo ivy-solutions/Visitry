@@ -3,7 +3,7 @@
  */
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
-import { Agency,Agencies } from '/model/agencies'
+import { Notification, NotificationStatus } from '/model/notifications'
 
 angular.module('visitry').directive('visitry', function () {
   return {
@@ -25,12 +25,17 @@ angular.module('visitry').directive('visitry', function () {
         this.isAgencyDataLoaded = true;
       });
       this.subscribe('visits');
+      this.subscribe('receivedNotifications');
 
       this.feedbackOutstanding;
+
       this.autorun(() => {
         var status = Meteor.status();
         $scope.connectionStatus = (status.connected == true || (status.status != 'disconnected' && status.retryCount < 3)) ? 'ok' : status.status;
         if (status.status !== 'connected') {
+          if ($scope.connectionStatus !== 'ok') {
+            window.plugins.toast.showShortBottom('No connection to server. (' + $scope.connectionStatus + ')');
+          }
           logger.error("Lost server connection " + JSON.stringify(status));
         }
         if (Meteor.userId()) {
@@ -52,6 +57,13 @@ angular.module('visitry').directive('visitry', function () {
         });
         this.feedbackOutstanding = feedback.count();
         this.isAgencyDataLoaded = allAgencySubscription.ready();
+
+        let secondsAgo = moment(Date.now()).add(-5, 's').toDate();
+        let notifications =  Notification.find({toUserId: Meteor.userId(), status: NotificationStatus.SENT, updatedAt: {$gt: secondsAgo}});
+        if ( notifications.count() > 0 ) {
+          let notification = notifications.fetch();
+          window.plugins.toast.showShortTop(notification[0].text);
+        }
       });
 
 
@@ -74,7 +86,7 @@ angular.module('visitry').directive('visitry', function () {
               }
             });
           }
-        }
+        },
       });
 
       this.isRequester = ()=> {
@@ -107,7 +119,7 @@ angular.module('visitry').directive('visitry', function () {
       };
 
       this.feedbackNeeded = () => {
-        return $ionicHistory.currentStateName() === 'requesterFeedback';
+         return $ionicHistory.currentStateName() === 'requesterFeedback';
       };
 
       this.showUserActions = () => {
