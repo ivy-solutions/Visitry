@@ -1,6 +1,6 @@
 Package.describe({
   name: 'visitrymobile',
-  version: '0.0.1',
+  version: '1.1.3',
   // Brief, one-line summary of the package.
   summary: '',
   // URL to the Git repository containing the source code for this package.
@@ -22,6 +22,7 @@ Package.onUse(function(api) {
   api.addFiles([
     'client/lib/module.js',
     'client/agencies/list/agency-list.html',
+    'client/admin-console/browse-to-dashboard.html',
     'client/agencies/agency-details/agency-details.html',
     'client/auth/login/login.component.js',
     'client/auth/login/login.html',

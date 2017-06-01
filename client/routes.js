@@ -244,11 +244,7 @@ angular.module('visitry')
       .state('adminManage', {
         url: '/admin/manage',
         templateUrl: ()=> {
-          if (Meteor.isCordova) {
-            return '/packages/visitrymobile/client/admin-console/manage/manage.html';
-          } else {
-            return '/packages/visitry-browser/client/admin-console/manage/manage.html';
-          }
+          return '/packages/visitry-browser/client/admin-console/manage/manage.html';
         },
         controller: 'adminManageCtrl as adminManage',
         resolve: {authenticate: authenticate, checkAgencyIdCookie: updateAgencyIdCookie}
@@ -357,7 +353,16 @@ angular.module('visitry')
           }
         },
         controller: 'adminHelpHowToCtrl as adminHelpHowTo'
-      });
+      })
+    .state('adminBrowseToDashboard', {
+      url: '/admin/browse',
+      templateUrl: ()=> {
+        if (Meteor.isCordova) {
+          return '/packages/visitrymobile/client/admin-console/browse-to-dashboard.html';
+        }
+      },
+      controller: 'adminBrowseToDashboardCtrl as adminBrowse'
+    });
     $urlRouterProvider.otherwise("/login");
 
     function authenticate($q, $state, $timeout, $cookies, $ionicHistory) {
@@ -422,8 +427,12 @@ angular.module('visitry')
         if (event && Meteor.userId()) {
           logger.info("redirect from $stateChangeStart");
           let nextState;
-          if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
-            nextState = 'adminManage';
+          if (Meteor.myFunctions.isAdministrator() ) {
+            if (!Meteor.isCordova) {
+              nextState = 'adminManage';
+            } else {
+              nextState = 'adminBrowseToDashboard';
+            }
           }
           else if (Meteor.myFunctions.isVisitor()) {
             nextState = 'browseRequests';
@@ -484,8 +493,12 @@ angular.module('visitry')
           const handle = Meteor.subscribe('userBasics', {}, {
             onReady: ()=> {
               let location = '/lost';
-              if (Meteor.myFunctions.isAdministrator() && !Meteor.isCordova) {
-                location = 'adminManage';
+              if (Meteor.myFunctions.isAdministrator() ) {
+                if (!Meteor.isCordova) {
+                  location = 'adminManage';
+                } else {
+                  location = 'adminBrowseToDashboard';
+                }
               }
               else {
                 if (Meteor.myFunctions.isVisitor()) {
