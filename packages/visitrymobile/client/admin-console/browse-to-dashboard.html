@@ -1,10 +1,15 @@
 <ion-view title="Admin" hide-back-button=true>
     <ion-content class="padding" scroll="false">
         <div class="text-center">
-            <div>
+            <div ng-if="adminBrowse.isTablet">
                 <button class="button button-block button-clear button-large" ng-click="adminBrowse.browseToWebsite()">
                     <span class="balanced">Go to Dashboard</span>
                 </button>
+            </div>
+            <div ng-if="adminBrowse.isTablet===false">
+                <span>
+                    Administration dashboard is not available on this device. Please use an iPad or web browser.
+                </span>
             </div>
          </div>
 
