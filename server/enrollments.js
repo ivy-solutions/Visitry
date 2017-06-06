@@ -7,7 +7,10 @@ import { Enrollment } from '/model/enrollment'
 Meteor.publish("applicants", function (agencyId) {
   if (this.userId) {
     logger.verbose("publish applicants to " + this.userId);
-    return Enrollment.find({agencyId:agencyId, approvalDate: null });;
+    Counts.publish(this, 'numberOfApplicants', Enrollment.find({agencyId: agencyId, approvalDate: null}), {
+      noReady: true
+    });
+    return Enrollment.find({agencyId:agencyId, approvalDate: null });
   } else {
     this.ready();
   }

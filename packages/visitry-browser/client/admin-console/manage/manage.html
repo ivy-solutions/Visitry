@@ -78,12 +78,13 @@
         <div layout="row" layout-align="center center" ng-hide="adminManage.isApplicantDataReady">
           <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>
-        <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants" ng-click="adminManage.getUserDetails(applicant._id)">
-          <img ng-src="{{applicant.userData.picture}}" class="md-avatar"/>
-          <div class="md-list-item-text" layout="row" layout-align="space-between center">
-            <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}}</h3>
-          </div>
-          <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
+        <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants"
+                      ng-click="adminManage.getUserDetails(applicant._id)">
+            <img ng-src="{{adminManage.getUserImage(applicant._id)}}" class="md-avatar"/>
+            <div class="md-list-item-text" layout="row" layout-align="space-between center">
+                <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}} </h3>
+            </div>
+            <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
         </md-list-item>
       </div>
       <div layout-padding></div>

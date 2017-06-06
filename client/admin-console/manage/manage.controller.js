@@ -14,8 +14,8 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   this.isTopVisitorsReady = false;
   this.isFrequentVisitorsReady = false;
   this.isApplicantDataReady = false;
+  this.isUserDataReady = false;
   this.freqVisitors = [];
-  this.applicantIds = [];
   this.applicantCount;
 
   let visitsSubscription = this.subscribe('agencyVisits', ()=> {
@@ -23,7 +23,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
   }, ()=> {
     this.isVisitDataReady = true;
   });
-  let userDataSubscription = this.subscribe('userdata', ()=>[], ()=> {
+  let userDataSubscription = this.subscribe('userdata', ()=>{
+    return [this.getReactively('applicantCount')] //so we will republish when we get a new enrollment
+  }, ()=> {
     this.isUserDataReady = true;
   });
   let applicantsSubscription = this.subscribe('applicants', ()=> {
@@ -36,7 +38,6 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
     this.isUserDataReady = userDataSubscription.ready();
     this.isVisitDataReady = visitsSubscription.ready();
     this.isApplicantDataReady = applicantsSubscription.ready();
-    this.applicantCount = this.getReactively('applicantIds').length.toString();
   });
 
 
@@ -74,25 +75,15 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
       var visits = Visit.find(selector, {sort: {requestedDate: 1}, limit: 10});
       return Meteor.myFunctions.groupVisitsByRequestedDate(visits);
     },
-    applicants: ()=> {
-      let isDataThere = this.getReactively('isApplicantDataReady') && this.getReactively('isUserDataReady');
-      let applicants = Enrollment.find({agencyId:this.getReactively('agencyId'), approvalDate: null });
-      this.applicantIds = applicants.map( function (applicant) { return applicant.userId } );
-      let selector = {
-        _id: {$in: this.applicantIds }
-      };
-      return User.find(selector, {
-        fields: {
-          'userData.firstName': 1,
-          'userData.lastName': 1,
-          'userData.picture': 1,
-          'createdAt': 1,
-          'userData.about': 1,
-          'userData.location': 1,
-          'emails': 1
-        }
-      });
+    applicantCount() {
+      this.applicantCount = Counts.get('numberOfApplicants');
+      return this.applicantCount;
     },
+    applicants: ()=> {
+      let isDataThere = this.isApplicantDataReady && this.getReactively('isUserDataReady');
+      let enrollments = Enrollment.find({agencyId:this.getReactively('agencyId'), approvalDate: null });
+      return enrollments.map( function(applicant) { return Meteor.myFunctions.getUser(applicant.userId)});
+     },
     frequentVisitors: () => {
       var visitorIds = [];
       var users;
@@ -113,6 +104,7 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
 
   this.getUser = Meteor.myFunctions.getUser;
   this.getUserImage = Meteor.myFunctions.getUserImage;
+
 
   this.confirmUser = (userId)=> {
     this.call('addUserToAgency', {userId: userId, agencyId: this.agencyId}, (err)=> {

@@ -49,12 +49,13 @@ angular.module('visitry').controller('pendingVisitsCtrl',
     },
     membershipPending: ()=> {
       let hasAgency = this.getReactively('hasAgency');
-      let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
-      if (enrollments) {
-        return true;
-      } else {
-        return false;
+      if (Meteor.userId()) {
+        let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+        if (enrollments) {
+          return true;
+        }
       }
+      return false;
      }
   });
 
