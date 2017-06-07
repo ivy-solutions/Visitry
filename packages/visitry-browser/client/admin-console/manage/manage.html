@@ -1,106 +1,111 @@
 <div layout-fill>
-    <div layout="row" ng-if="adminManage.administersMultipleAgencies()" layout-align="end center" flex="none" style="background-color: #4caf50">
-        <div layout-padding layout-margin >{{adminManage.agency.name}}</div>
-        <md-button class="md-secondary" aria-label="switch group" ng-click="adminManage.switchAgency()">Switch Group</md-button>
-        <md-button ng-if="visitry.isSuperUser()" ng-href="/admin/administrate/agency/" aria-label="create group">
-            Create Group
-        </md-button>
+  <div layout="row" hide-xs hide-sm ng-if="adminManage.administersMultipleAgencies()" flex layout-align="end center" style="background-color: #4caf50">
+    <div layout-padding layout-margin >{{adminManage.agency.name}}</div>
+    <md-button class="md-secondary" aria-label="switch group" ng-click="adminManage.switchAgency()">Switch Group</md-button>
+    <md-button ng-if="visitry.isSuperUser()" ng-href="/admin/administrate/agency/" aria-label="create group">
+        Create Group
+    </md-button>
+  </div>
 
-    </div>
-    <div layout="row" layout-margin layout-padding>
+  <div layout="row" layout-xs="column" layout-padding >
     <!-- Upcoming Visits-->
-    <md-list flex="33">
-      <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-        <md-subheader style="background-color: #0086b3">Upcoming Visits</md-subheader>
-        <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
-      </div>
-      <div layout="row" layout-align="center center"
-           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
-        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-      </div>
-      <div ng-repeat="visitsByDate in adminManage.scheduledVisits" md-whiteframe="1">
-        <div class="item item-divider">
-          <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
+    <md-list flex>
+      <div md-whiteframe="1">
+        <div layout="row" layout-align="space-between start" layout-wrap layout-padding style="background-color: #0086b3">
+          <span class="md-subheader" style="background-color: #0086b3">Upcoming Visits</span>
+          <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
         </div>
-        <md-list-item class="md-3-line" ng-repeat="visit in visitsByDate.visits"
-                      ng-click="adminManage.getVisitDetails(visit._id)">
-          <img ng-src="{{adminManage.getUserImage(visit.visitorId)}}" class="md-avatar"/>
-          <div class="md-list-item-text" layout="row" layout-align="space-between center">
-            <h3>{{adminManage.getUser(visit.visitorId)| firstNameLastInitial}}</h3>
-            <div layout="column" layout-align="center center">
-              <p>is visiting</p>
-              <p>{{visit.visitTime | date: "h:mm"}}</p>
-              <p>{{visit.location | approximateLocation}}</p>
-            </div>
-            <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
+        <div layout="row" layout-align="center center"
+           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+        <div ng-repeat="visitsByDate in adminManage.scheduledVisits">
+          <div class="item item-divider">
+            <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
           </div>
-          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"
+
+          <md-list-item class="md-3-line" ng-repeat="visit in visitsByDate.visits"
+                      ng-click="adminManage.getVisitDetails(visit._id)">
+                 <img ng-src="{{adminManage.getUserImage(visit.visitorId)}}" class="md-avatar"/>
+                <div class="md-list-item-text" layout="row" layout-xs="column" layout-sm="column" layout-align="space-between center">
+                  <h3>{{adminManage.getUser(visit.visitorId)| firstNameLastInitial}}</h3>
+                  <div layout="column" layout-align="center center">
+                    <p>is visiting</p>
+                    <p>{{visit.visitTime | date: "h:mm"}}</p>
+                    <p>{{visit.location | approximateLocation}}</p>
+                  </div>
+                  <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
+                </div>
+            <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"
                style="margin-left: 16px;margin-right:0px"/>
-        </md-list-item>
+          </md-list-item>
+        </div>
       </div>
     </md-list>
     <!-- Available Visits-->
-    <md-list flex="33">
-      <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-        <md-subheader style="background-color: #0086b3">Available Visits</md-subheader>
-        <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
-      </div>
-      <div layout="row" layout-align="center center"
-           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
-        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-      </div>
-      <div ng-repeat="visitsByDate in adminManage.outstandingRequests" md-whiteframe="1">
-        <div class="item item-divider">
-          <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
+    <md-list flex>
+      <div md-whiteframe="1">
+        <div layout="row" layout-align="space-between start" layout-wrap layout-padding style="background-color: #0086b3">
+          <span class="md-subheader"  style="background-color: #0086b3">Available Visits</span>
+          <a style="color: ghostwhite" ng-href="/admin/manage/visits" layout-padding>See More >></a>
         </div>
-        <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits"
-                      ng-click="adminManage.getVisitDetails(visit._id)">
-          <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
-          <div class="md-list-item-text" layout="column" flex>
-            <div layout="row" layout-align="space-between center">
-              <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
-              <p>{{visit.location | approximateLocation}}</p>
-            </div>
-            <div layout="row" layout-align="space-between center">
-              <p>{{visit.notes}}</p>
-              <p>{{visit.requestedDate | date: "h:mm"}}</p>
-            </div>
+        <div layout="row" layout-align="center center"
+           ng-hide="adminManage.isVisitDataReady&&adminManage.isUserDataReady">
+          <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+        </div>
+        <div ng-repeat="visitsByDate in adminManage.outstandingRequests">
+          <div class="item item-divider">
+            <p>{{visitsByDate.date|date: "EEEE, MMMM d"}}</p>
           </div>
-        </md-list-item>
+          <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits"
+                      ng-click="adminManage.getVisitDetails(visit._id)">
+            <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
+            <div class="md-list-item-text" layout="row" layout="row" layout-xs="column" layout-sm="column" layout-align="space-between center">
+              <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
+              <div layout="row" layout-align="space-between center">
+                <p>{{visit.location | approximateLocation}}</p>
+              </div>
+              <div layout="row" layout-align="space-between center">
+                <p>{{visit.notes}}</p>
+                <p>{{visit.requestedDate | date: "h:mm"}}</p>
+              </div>
+            </div>
+          </md-list-item>
+        </div>
       </div>
     </md-list>
     <!-- Applicants-->
-    <md-list flex="33">
+    <md-list flex>
       <div md-whiteframe="1">
-        <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-          <md-subheader style="background-color: #0086b3">Applicants ({{adminManage.applicantCount}})</md-subheader>
+        <div layout="row" layout-xs="column" layout-padding layout-align="start start" style="background-color: #0086b3">
+          <span class="md-subheader"  style="background-color: #0086b3">Applicants ({{adminManage.applicantCount}})</span>
         </div>
         <div layout="row" layout-align="center center" ng-hide="adminManage.isApplicantDataReady">
           <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>
         <md-list-item class="md-2-line" ng-repeat="applicant in adminManage.applicants track by $index"
                       ng-click="adminManage.getUserDetails(applicant._id)" aria-label="{{applicant.fullName}}">
-            <img ng-src="{{adminManage.getUserImage(applicant._id)}}" class="md-avatar"/>
-            <div class="md-list-item-text" layout="column" flex>
-                <div layout="row" layout-align="space-between center">
-                    <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}} </h3>
-                </div>
+            <img ng-src="{{adminManage.getUserImage(applicant._id)}}" class="md-avatar" hide-xs hide-sm/>
+            <div class="md-list-item-text" layout="row" layout-wrap>
+              <div layout="column" layout-align="center left">
+                 <h3>{{applicant.userData.firstName}} {{applicant.userData.lastName}} </h3>
+                  <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
+              </div>
             </div>
-            <md-button class="md-secondary" ng-click="adminManage.confirmUser(applicant._id)">Confirm</md-button>
         </md-list-item>
       </div>
       <div layout-padding></div>
       <!--Frequent Visitors-->
       <div md-whiteframe="1">
-        <div layout="row" layout-align="space-between center" style="background-color: #0086b3">
-          <md-subheader style="background-color: #0086b3">Frequent Visitors</md-subheader>
+        <div layout="row" layout-xs="column" layout-padding layout-align="start start" style="background-color: #0086b3">
+          <span class="md-subheader" style="background-color: #0086b3">Frequent Visitors</span>
         </div>
         <div layout="row" layout-align="center center" ng-hide="adminManage.isFrequentVisitorsReady">
           <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>
         <md-list-item class="md-2-line" ng-repeat="visitor in adminManage.freqVisitors">
           <img ng-src="{{visitor.userData.picture}}" class="md-avatar"/>
-          <div class="md-list-item-text" layout="row" layout-align="space-between center">
+          <div class="md-list-item-text" layout="row" layout-wrap layout-align="space-between center">
             <h3>{{visitor.userData.firstName}} {{visitor.userData.lastName}}</h3>
             <h3>{{visitor.visitCount}}</h3>
           </div>
