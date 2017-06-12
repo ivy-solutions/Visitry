@@ -330,6 +330,10 @@ Meteor.methods({
           logger.error(error);
         }
       });
+      Meteor.call('notifications.agencyEnrolled', userId, agency, (error) => {
+        if (error)
+          logger.error;
+      });
     });
     logger.info('addUserToAgency for user: ' + userId + ' and agency: ' + agencyId);
   },

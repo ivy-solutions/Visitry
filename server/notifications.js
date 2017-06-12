@@ -106,6 +106,22 @@ Meteor.methods({
     futureNotifications.forEach((notification)=> {
       notification.remove();
     });
+  },
+  'notifications.agencyEnrolled'(newMemberId, agency) {
+    var msgTitle = "Welcome to " + agency.name + "!";
+    var msgText = "Application to " + agency.name + " is approved.";
+
+    new Notification({
+        notifyDate: new Date(), toUserId: newMemberId, status: NotificationStatus.SENT,
+        title: msgTitle, text: msgText
+      }
+    ).save(function (err, id) {
+      if (err) {
+        logger.error(err);
+      } else {
+        sendPushNotificationNow(id);
+      }
+    });
   }
 });
 

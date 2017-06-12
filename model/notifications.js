@@ -27,7 +27,7 @@ const Notification = Class.create({
   name: 'Notification',
   collection: Notifications,
   fields: {
-    visitId: {type: String, immutable: true},
+    visitId: {type: String, immutable: true, optional:true},
     notifyDate: {type: Date},
     title: {type: String},
     text: {type: String},

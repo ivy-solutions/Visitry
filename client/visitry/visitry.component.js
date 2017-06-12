@@ -44,7 +44,13 @@ angular.module('visitry').directive('visitry', function () {
           let notifications =  Notification.find({toUserId: Meteor.userId(), status: NotificationStatus.SENT, updatedAt: {$gt: secondsAgo}});
           if ( notifications.count() > 0 ) {
             let notification = notifications.fetch();
-            window.plugins.toast.showShortTop(notification[0].text);
+            window.plugins.toast.showWithOptions(
+              {
+                message: notification[0].text,
+                duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                position: "top",
+                addPixelsY: 45  // added a  value to move it down a bit (default 0)
+              });
           }
         }
 

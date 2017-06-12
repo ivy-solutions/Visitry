@@ -103,6 +103,16 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
         }
       });
 
+      if ( form.$dirty) {
+        window.plugins.toast.showWithOptions(
+          {
+            message: "Profile saved.",
+            duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+            position: "top",
+            addPixelsY: 45  // added a  value to move it down a bit (default 0)
+          });
+      }
+
       return this.submitSuccess(form);
     }
   };
