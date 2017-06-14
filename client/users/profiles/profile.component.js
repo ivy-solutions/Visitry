@@ -28,6 +28,7 @@ angular.module("visitry").controller('profileCtrl', function($scope, $reactive, 
   });
 
   this.autorun (() => {
+    let isDataThere = this.getReactively('isProfileReady');
     this.currentUser = User.findOne({_id: Meteor.userId()}, {fields: {
       username: 1, emails: 1, roles: 1, 'userData':1}}
     );
