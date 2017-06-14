@@ -167,6 +167,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.lastName': 1,
         'userData.location': 1,
         'userData.about': 1,
+        'userData.phoneNumber': 1,
         'roles': 1,
         'emails': 1
       }
