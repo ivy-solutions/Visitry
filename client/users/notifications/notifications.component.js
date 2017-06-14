@@ -12,7 +12,8 @@ angular.module('visitry').controller('notificationsCtrl', function ($scope, $rea
 
     this.helpers({
       messages: ()=> {
-        var myMessages = Notification.find({toUserId: Meteor.userId(), status: NotificationStatus.SENT});
+        var myMessages = Notification.find({toUserId: Meteor.userId(), status: NotificationStatus.SENT},
+          {sort: {notifyDate:-1} });
         this.numMessages = myMessages.count();
         return myMessages;
       }
