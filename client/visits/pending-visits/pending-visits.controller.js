@@ -20,6 +20,7 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.subscribe('memberships', ()=> {
     return [Meteor.userId()]
   });
+  this.subscribe('userRequests');
 
   this.autorun( function() {
     var user = User.findOne({_id: Meteor.userId()}, {fields: {roles:1,'userData.agencyIds': 1}});
