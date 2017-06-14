@@ -18,7 +18,7 @@ Meteor.publish("receivedNotifications", function () {
 
 Meteor.methods({
   'notifications.visitScheduled'(visit) {
-    var msgTitle = "Visit scheduled";
+    var msgTitle = "Visit scheduled!";
     var user = User.findOne(this.userId);
     var msgText = "Visit scheduled for " + formattedVisitTime(visit) + " by " + user.fullName;
     if (visit.visitorNotes) {
@@ -43,7 +43,7 @@ Meteor.methods({
     new Notification({
         visitId: visit._id,
         notifyDate: twoHoursBeforeVisit, toUserId: visit.requesterId, status: NotificationStatus.FUTURE,
-        title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
+        title: "Visit reminder", text: "Visit today, " + formattedVisitTime(visit) + ", with " + user.fullName
       }
     ).save(function(err, id) {
       if (err) {
@@ -55,7 +55,7 @@ Meteor.methods({
     new Notification({
         visitId: visit._id,
         notifyDate: twoHoursBeforeVisit, toUserId: visit.visitorId, status: NotificationStatus.FUTURE,
-        title: "Visit today", text: "Visit today, " + formattedVisitTime(visit) + ", with " + requester.fullName
+        title: "Visit reminder", text: "Visit today, " + formattedVisitTime(visit) + ", with " + requester.fullName
       }
     ).save(function(err, id) {
       if (err) {
@@ -67,7 +67,7 @@ Meteor.methods({
   'notifications.visitCancelled'(visit) {
     if (visit.visitorId && visit.visitorId !== this.userId ) {
       //communicate with visitor
-      var msgTitle = "Canceled";
+      var msgTitle = "Visit canceled";
       var user = User.findOne(this.userId);
       var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" canceled by " + user.userData.firstName + ".";
 
