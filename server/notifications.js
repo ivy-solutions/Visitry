@@ -4,6 +4,7 @@
 import { Notification, NotificationStatus } from '/model/notifications'
 import { Visit } from '/model/visits'
 import { Agency } from '/model/agencies'
+import { Feedback } from '/model/feedback'
 import { logger } from '/server/logging'
 
 Meteor.publish("receivedNotifications", function () {
@@ -122,6 +123,40 @@ Meteor.methods({
         sendPushNotificationNow(id);
       }
     });
+  },
+  'notifications.newVisitRequest'(visit) {
+    // notify visitors who requester previously rated highly of a new request
+    var requester = User.findOne(this.userId);
+    var msgTitle = "Visit " + requester.fullName + " again?";
+    var msgText = requester.fullName + " rated a previous visit with you highly and has just made a new visit request.";
+
+    var sixMonthsAgo = moment(new Date()).add(-6, 'M').toDate();
+    let recentHighRatings = Feedback.find(
+      {requesterId:this.userId,
+        submitterId: this.userId,
+        companionRating: {$gt: 3},
+        visitRating: {$gt: 3},
+        createdAt: {$gt: sixMonthsAgo}
+      });
+    let preferredVisitors = recentHighRatings.map( function (goodFeedback ) {
+      return goodFeedback.visitorId;
+    });
+    let uniquePreferredVisitors = preferredVisitors.filter(function(visitorId, index, self) {
+      return index == self.indexOf(visitorId);
+    });
+    uniquePreferredVisitors.forEach( function(visitorId) {
+      new Notification({
+          notifyDate: new Date(), toUserId: visitorId, status: NotificationStatus.SENT,
+          title: msgTitle, text: msgText
+        }
+      ).save(function (err, id) {
+        if (err) {
+          logger.error(err);
+        } else {
+          sendPushNotificationNow(id);
+        }
+      });
+    });
   }
 });
 
@@ -129,7 +164,7 @@ sendPushNotificationNow = function(notification) {
   var sentNotification = Notification.findOne(notification);
   if (sentNotification) {
     Meteor.call('userNotification', sentNotification.title, sentNotification.text, sentNotification.toUserId);
-    logger.info("notification.send " + sentNotification.text);
+    logger.info("notification.send to " + sentNotification.toUserId);
     sentNotification.status = NotificationStatus.SENT;
     sentNotification.save(function(err,id) {
       if (err) {

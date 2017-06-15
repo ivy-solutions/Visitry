@@ -21,6 +21,7 @@ Meteor.methods({
         throw err;
       }
     });
+    Meteor.call('notifications.newVisitRequest', visit);
     console.log("created visit for " + this.userId);
     return visit;
   },
