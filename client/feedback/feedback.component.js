@@ -138,6 +138,14 @@ angular.module('visitry').directive('feedback', function () {
             else {
               $state.go('pendingVisits');
             }
+            window.plugins.toast.showWithOptions(
+              {
+                message: "Thank you for your feedback.",
+                duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+                position: "top",
+                addPixelsY: 45  // added a  value to move it down a bit (default 0)
+              });
+
             this.resetForm(form);
             if ($window.ga) { //google analytics
               $window.ga('send', {
