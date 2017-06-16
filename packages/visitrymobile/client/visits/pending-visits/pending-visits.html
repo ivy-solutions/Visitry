@@ -5,8 +5,10 @@
   </ion-nav-buttons>
   <ion-content class="has-header has-tabs pending">
     <div ng-hide="connectionStatus!=='ok'">
-        <div class="emptyListInfo" ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency">
-          No active requests. Press + to request a visit.
+        <div ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency" class="text-center">
+           <h4>No active requests. Press + to request a visit.</h4>
+            <button class="button button-balanced button-large icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
+            </button>
         </div>
         <div ng-hide="pendingVisits.hasAgency" class="text-center">
           <div ng-if="!pendingVisits.membershipPending">
