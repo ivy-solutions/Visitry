@@ -28,15 +28,15 @@
       </div>
       <div md-whiteframe="3">
         <md-list>
-          <md-list-item>
+          <md-list-item layout="row" layout-align="left center">
             <img ng-src="{{adminVisitDetails.requesterPicture}}" class="md-avatar"/>
-            <div class="md-list-item-text">
+            <div class="md-list-item-text" >
               <h4>{{adminVisitDetails.requester.fullName}}</h4>
-              <div>{{adminVisitDetails.visit.notes}}</div>
-            </div>
-            <a class="md-secondary" href="mailto:{{adminVisitDetails.requester.emails[0].address}}">
+              <p flex="90">{{adminVisitDetails.visit.notes}}</p>
+              <a class="md-secondary" href="mailto:{{adminVisitDetails.requester.emails[0].address}}">
               <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
-            </a>
+                </a>
+            </div>
           </md-list-item>
         </md-list>
         <!--REQUESTER FEEDBACK-->
@@ -88,15 +88,15 @@
       </div>
       <div md-whiteframe="3">
         <md-list>
-          <md-list-item>
+          <md-list-item layout="row" layout-align="left center">
             <img ng-src="{{adminVisitDetails.visitorPicture}}" class="md-avatar"/>
             <div class="md-list-item-text">
               <h4>{{adminVisitDetails.visitor.fullName}}</h4>
-              <div>{{adminVisitDetails.visit.visitorNotes}}</div>
+              <p flex="90">{{adminVisitDetails.visit.visitorNotes}}</p>
+              <a class="md-secondary" href="mailto:{{adminVisitDetails.visitor.emails[0].address}}">
+                <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
+              </a>
             </div>
-            <a class="md-secondary" href="mailto:{{adminVisitDetails.visitor.emails[0].address}}">
-              <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
-            </a>
           </md-list-item>
         </md-list>
         <!--VISITOR FEEDBACK-->

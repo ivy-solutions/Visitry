@@ -60,17 +60,17 @@
           <md-list-item class="md-2-line" ng-repeat="visit in visitsByDate.visits"
                       ng-click="adminManage.getVisitDetails(visit._id)">
             <img ng-src="{{adminManage.getUserImage(visit.requesterId)}}" class="md-avatar"/>
-            <div class="md-list-item-text" layout="row" layout="row" layout-xs="column" layout-sm="column" layout-align="space-between center">
+            <div class="md-list-item-text" layout="row" layout-xs="column" layout-sm="column" layout-align="space-between center">
               <h3>{{adminManage.getUser(visit.requesterId)| firstNameLastInitial}}</h3>
-              <div layout="row" layout-align="space-between center">
-                <p>{{visit.location | approximateLocation}}</p>
+              <div flex="50">
+                 <p>{{visit.location | approximateLocation}}</p>
+                  <p>{{visit.notes}}</p>
               </div>
-              <div layout="row" layout-align="space-between center">
-                <p>{{visit.notes}}</p>
+              <div>
                 <p>{{visit.requestedDate | date: "h:mm"}}</p>
               </div>
             </div>
-          </md-list-item>
+           </md-list-item>
         </div>
       </div>
     </md-list>
