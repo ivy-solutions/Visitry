@@ -125,7 +125,7 @@ if (Meteor.isServer) {
         const invocation = {userId: userId};
         sendJoinRequest.apply(invocation, [testAgencyId, "Please let me join."]);
         assert(Meteor.call.calledWith('addProspectiveAgency'), "addProspectiveAgency called");
-        assert(Email.send.calledOnce, 'Email send called');
+        assert(Email.send.calledTwice, 'Email send to agency and to applicant');
       });
 
       it('updates user and sends mail when revoke join request is made', ()=> {
