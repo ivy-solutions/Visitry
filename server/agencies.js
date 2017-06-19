@@ -69,6 +69,17 @@ Meteor.methods({
         absoluteUrl: Meteor.absoluteUrl()
       })
     });
+    SSR.compileTemplate('thankYouForApplying', Assets.getText('emails/thank-you-for-applying.html'));
+    Email.send({
+      to: currentUser.emails[0].address,
+      from: from,
+      subject: "Thank you for your applictaion",
+      html: SSR.render('thankYouForApplying', {
+        user: currentUser,
+        agency: agency,
+        absoluteUrl: Meteor.absoluteUrl()
+      })
+    });
   },
   revokeJoinRequest(agencyId, userNotes) {
     Meteor.call('removeProspectiveAgency', agencyId);
