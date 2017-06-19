@@ -110,7 +110,7 @@ Meteor.methods({
   },
   'notifications.agencyEnrolled'(newMemberId, agency) {
     var msgTitle = "Welcome to " + agency.name + "!";
-    var msgText = "Application to " + agency.name + " is approved.";
+    var msgText = "Application to " + agency.name + " is approved. You can begin scheduling visits!";
 
     new Notification({
         notifyDate: new Date(), toUserId: newMemberId, status: NotificationStatus.SENT,
@@ -157,7 +157,97 @@ Meteor.methods({
         }
       });
     });
-  }
+  },
+  'notifications.feedbackReminders'() {
+    logger.verbose('notifications.feedbackReminders');
+    // for visits more than 24 hours ago, missing feedback, remind visitor and requester to provide feedback
+    let yesterday = moment(new Date()).add(-1, 'd').toDate();
+    let visitsNeedingFeedback = Visit.find({
+        visitTime: {$lt: yesterday},
+        visitorId: {$ne: null},
+        $or: [{requesterFeedbackId: null},
+          {visitorFeedbackId: null}]
+      }
+    );
+    let msgTitle = "Please provide feedback on visit.";
+    let msgText = "Feedback from your visit helps us make your future visits even better. Open Visitry and tell us how it went.";
+    let usersToNotify = [];
+
+    visitsNeedingFeedback.forEach( function (visit ) {
+      if (!visit.requesterFeedbackId) {
+        if (usersToNotify.indexOf(visit.requesterId) === -1) {
+          usersToNotify.push(visit.requesterId)
+        }
+      }
+      if (!visit.visitorFeedbackId) {
+        if (usersToNotify.indexOf(visit.visitorId) === -1) {
+          usersToNotify.push(visit.visitorId)
+        }
+      }
+    });
+
+    logger.verbose("feedback reminders to:" + usersToNotify);
+
+    usersToNotify.forEach( function(memberId) {
+      new Notification({
+          notifyDate: new Date(), toUserId: memberId, status: NotificationStatus.SENT,
+          title: msgTitle, text: msgText
+        }
+      ).save(function (err, id) {
+        if (err) {
+          logger.error(err);
+        } else {
+          sendPushNotificationNow(id);
+        }
+      });
+    });
+  },
+  'notifications.useAppReminder'() {
+    // if no Notification are scheduled or have been sent in the last 7 days, then user has gone inactive
+    // nudge visitors to use app if there are pending visit requests
+    logger.verbose('notifications.useAppReminder');
+    let sevenDaysAgo = moment(new Date()).add(-7, 'd').toDate();
+    let usersWithRecentOrFutureNotifications = Notification.find({ notifyDate: {$gt: sevenDaysAgo}});
+    let activeUsers = [];
+    usersWithRecentOrFutureNotifications.forEach( function (notification ) {
+      if (activeUsers.indexOf(notification.toUserId) === -1) {
+        activeUsers.push(notification.toUserId);
+      }
+    });
+
+    let pendingRequests = Visit.find({requestedDate: {$gt: new Date()}, visitTime: null});
+    let agenciesWithPendingRequests = [];
+    pendingRequests.forEach( function(visit) {
+      if (agenciesWithPendingRequests.indexOf(visit.agencyId) === -1) {
+        agenciesWithPendingRequests.push(visit.agencyId);
+      }
+    });
+
+    let msgTitle = "Brighten the week with a visit!";
+    let msgText1 = "Visit requests are available at ";
+    let msgText2 = " Use Visitry to schedule a visit.";
+
+    agenciesWithPendingRequests.forEach( function( agencyId ) {
+      var selector = {_id: {$nin:activeUsers }};
+      selector['roles.' + agencyId] = 'visitor';
+      let inactiveVisitors = User.find(selector);
+
+      inactiveVisitors.forEach(function (user) {
+        let agency = Agency.findOne({_id: agencyId});
+        new Notification({
+            notifyDate: new Date(), toUserId: user._id, status: NotificationStatus.SENT,
+            title: msgTitle, text: (msgText1 + agency.name + msgText2)
+          }
+        ).save(function (err, id) {
+          if (err) {
+            logger.error(err);
+          } else {
+            sendPushNotificationNow(id);
+          }
+        });
+      });
+    });
+}
 });
 
 sendPushNotificationNow = function(notification) {

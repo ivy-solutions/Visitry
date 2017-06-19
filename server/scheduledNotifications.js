@@ -6,6 +6,7 @@ import { Notification, NotificationStatus } from '/model/notifications'
 Meteor.startup(function() {
 
   SyncedCron.start();
+
   SyncedCron.add({
     name: 'sendFutureNotifications',
     schedule: function (parser) {
@@ -19,6 +20,29 @@ Meteor.startup(function() {
       });
     }
   });
+
+  SyncedCron.add({
+    name: 'sendFeedbackReminders',
+    schedule: function(parser) {
+      return parser.recur().on(17).hour();
+    },
+    job: function() {
+      Meteor.call('notifications.feedbackReminders');
+      return;
+    }
+  });
+
+  SyncedCron.add({
+    name: 'inactivityReminder',
+    schedule: function(parser) {
+      return parser.recur().on(12).hour();
+    },
+    job: function() {
+      Meteor.call('notifications.useAppReminder');
+      return;
+    }
+  });
+
 });
 
 
