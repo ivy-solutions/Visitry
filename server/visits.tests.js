@@ -230,7 +230,7 @@ if (Meteor.isServer) {
     describe('visits.createVisit method', () => {
       const createVisitHandler = Meteor.server.method_handlers['visits.createVisit'];
       let newVisit;
-      var findOneUserStub;
+      let findOneUserStub;
 
       beforeEach(() => {
         findOneUserStub = sinon.stub(Meteor.users, 'findOne');
@@ -258,6 +258,7 @@ if (Meteor.isServer) {
       afterEach(function () {
         Meteor.users.findOne.restore();
         Visits.remove({});
+        Meteor.call.restore()
       });
 
       it('fails if no location in request', () => {
@@ -290,6 +291,13 @@ if (Meteor.isServer) {
         createVisitHandler.apply(invocation, [newVisit]);
         assert.equal(Visits.find().count(), 1);
       });
+
+      it('create Visit can notify preferred visitors', () => {
+        const invocation = {userId: userId};
+        createVisitHandler.apply(invocation, [newVisit]);
+        assert(Meteor.call.calledWith('notifications.newVisitRequest'), "notifications called");
+      });
+
     });
   });
 

@@ -119,7 +119,7 @@ if (Meteor.isServer) {
         Assets.getText.restore();
       });
 
-      it('updates user and sends mail when request to join agency made', ()=> {
+      it('updates user and sends 2 emails when request to join agency made', ()=> {
         const sendJoinRequest = Meteor.server.method_handlers['sendJoinRequest'];
         var testAgencyId = Random.id();
         const invocation = {userId: userId};
