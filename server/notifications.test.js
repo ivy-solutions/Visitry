@@ -5,8 +5,10 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail,to } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import { Notifications,Notification, NotificationStatus } from '/model/notifications'
-import { Agency} from '/model/agencies'
+import { Notifications,Notification, NotificationStatus } from '/model/notifications';
+import { Agency} from '/model/agencies';
+import { Feedback} from '/model/feedback';
+import { Visit} from '/model/visits';
 import '/server/notifications.js';
 
 if (Meteor.isServer) {
@@ -114,6 +116,128 @@ if (Meteor.isServer) {
           handler.apply(invocation, [visitorVisit]);
           assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
         });
+      });
+
+      describe('notifications.agencyEnrolled', () => {
+        const handler = Meteor.server.method_handlers['notifications.agencyEnrolled'];
+        beforeEach(function() {
+          Notifications.remove({});
+          findOneAgencyStub.returns({name: "Test Agency"});
+        });
+        it('creates a notification records', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [otherUserId, {name: "Test Agency"}]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1); //notification sent to requester
+        });
+        it('sends a push notification', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [otherUserId, {name: "Test Agency"}]);
+          assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+
+      });
+
+      describe('notifications.newVisitRequest', () => {
+        const handler = Meteor.server.method_handlers['notifications.newVisitRequest'];
+        let findFeedbackStub;
+        beforeEach(function() {
+          Notifications.remove({});
+          findOneUserStub.returns({fullname: "Sylvia Dolittle"});
+          findFeedbackStub = sinon.stub(Feedback, 'find');
+          findFeedbackStub.returns([]);
+         });
+        afterEach(function () {
+          findFeedbackStub.restore();
+        });
+        it('finds no previous feedback so sends no notification', () => {
+          const invocation = {userId: otherUserId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0); //no notification sent to favorite visitor
+        });
+        it('finds previous feedback so sends 1 notifiation', () => {
+          findFeedbackStub.returns([{visitorId: otherUserId}]);
+          const invocation = {userId: userId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+        });
+        it('finds multiple previous feedback from one user sends 1 notifiation', () => {
+          findFeedbackStub.returns([{visitorId: otherUserId}, {visitorId: otherUserId}, {visitorId: otherUserId}]);
+          const invocation = {userId: userId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+        });
+      });
+
+      describe('notifications.feedbackReminders', () => {
+        const handler = Meteor.server.method_handlers['notifications.feedbackReminders'];
+        let findVisitStub;
+        beforeEach(function() {
+          Notifications.remove({});
+          findVisitStub = sinon.stub(Visit, 'find');
+          findVisitStub.returns([]);
+        });
+        afterEach(function () {
+          findVisitStub.restore();
+        });
+        it('finds no visits needing feedback so sends no notification', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0);
+        });
+        it('finds one visit needing requester and visitor feedback so sends 2 notifications', () => {
+          const invocation = {userId: userId};
+          findVisitStub.returns([visitorVisit]);
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 2);
+        });
+        it('finds one visit needing requester feedback so sends 1 notifications', () => {
+          const invocation = {userId: userId};
+          findVisitStub.returns([{visitorFeedbackId: Random.id(), requesterId: otherUserId}]);
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+        });
+        it('finds one visit needing visitor feedback so sends 1 notifications', () => {
+          const invocation = {userId: userId};
+          findVisitStub.returns([{requesterFeedbackId: Random.id(), requesterId: otherUserId, visitorId:userId}]);
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+        });
+      });
+
+      describe('notifications.useAppReminder', () => {
+        const handler = Meteor.server.method_handlers['notifications.useAppReminder'];
+        let findVisitStub;
+        let findUserStub;
+        beforeEach(function() {
+          Notifications.remove({});
+          findVisitStub = sinon.stub(Visit, 'find');
+          findVisitStub.returns([{notes: 'SomePendingRequest', agencyId: agencyId }]);
+          findOneAgencyStub.returns( {name: 'Test Agency'});
+          findUserStub = sinon.stub(User, 'find');
+          findUserStub.returns([]);
+        });
+        afterEach(function () {
+          findVisitStub.restore();
+          findUserStub.restore();
+        });
+        it('finds no inactive users so sends no notification', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0);
+        });
+        it('finds 2 inactive users so sends 2 notifications', () => {
+          const invocation = {userId: userId};
+          findUserStub.returns([{_id:userId},{_id:otherUserId}]);
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 2);
+        });
+        it('finds no agency with pending requests so sends no notification', () => {
+          const invocation = {userId: userId};
+          findVisitStub.returns([]);
+          handler.apply(invocation);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0);
+        });
+
       });
 
       describe('formattedVisitTime ', () => {
