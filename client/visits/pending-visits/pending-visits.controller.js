@@ -15,10 +15,13 @@ angular.module('visitry').controller('pendingVisitsCtrl',
   this.hasRequests = true;
   this.visits = null;
   this.hasAgency = true;
+  this.isMembershipDataLoaded=false;
 
   this.subscribe('userdata');
-  this.subscribe('memberships', ()=> {
+  let enrollmentSubscription = this.subscribe('memberships', ()=> {
     return [Meteor.userId()]
+  }, ()=> {
+    this.isMembershipDataLoaded = true;
   });
   this.subscribe('userRequests');
 
@@ -36,7 +39,10 @@ angular.module('visitry').controller('pendingVisitsCtrl',
         this.hasRequests = this.visits.count() > 0;
       }
 
-     } else {
+      this.isMembershipDataLoaded = enrollmentSubscription.ready();
+    } else {
+      this.hasAgency=true; //no user during logoff and do not want to display the 'join group' button
+      this.isMembershipDataLoaded = false;
       feedback.stop()
     }
   });
@@ -50,11 +56,10 @@ angular.module('visitry').controller('pendingVisitsCtrl',
     },
     membershipPending: ()=> {
       let hasAgency = this.getReactively('hasAgency');
+      let dataLoaded = this.getReactively('isMembershipDataLoaded');
       if (Meteor.userId()) {
-        let enrollments = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
-        if (enrollments) {
-          return true;
-        }
+        let application = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+        return application;
       }
       return false;
      }

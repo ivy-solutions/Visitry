@@ -16,10 +16,13 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.listSort = {
     requestedDate: 1
   };
+  this.isMembershipDataLoaded = false;
 
-  this.subscribe('userdata'); //userdata for self and all requesters and potention requesters
-  this.subscribe('memberships', ()=> {
+  this.subscribe('userdata'); //userdata for self and all requesters and potential requesters
+  let enrollmentSubscription = this.subscribe('memberships', ()=> {
     return [Meteor.userId()]
+  }, ()=> {
+    this.isMembershipDataLoaded = true;
   });
 
   this.visitRange = 3000;
@@ -34,7 +37,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.autorun( function() {
     var user = User.findOne({_id: Meteor.userId()}, {fields: {'userData.location': 1,'userData.visitRange': 1, 'userData.agencyIds': 1, roles: 1}});
     if (user) {
-      logger.info(user.userData);
       this.agencyIds = user.hasAgency ? user.userData.agencyIds : ['noagency'];
       this.hasAgency = user.hasAgency;
       let agencyId = this.agencyIds.find( function( id ){
@@ -80,6 +82,11 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
         sort: this.getReactively('listSort'),
         fields: {"requesterId": 1, "requestedDate": 1, "notes": 1, "location": 1}
       });
+      this.isMembershipDataLoaded = enrollmentSubscription.ready();
+    } else {
+      //no user, logging off
+      this.hasAgency = true;  //do not want to flash the 'Join Group' button
+      this.isMembershipDataLoaded =false;
     }
   });
 
@@ -91,19 +98,26 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
 
       if (Meteor.userId()) {
         if (this.visits) {
-          logger.info("openVisits in agencies: " + userAgencies + " within " + this.visitRange + " miles of " + JSON.stringify(this.fromLocation));
+          //logger.info("openVisits in agencies: " + userAgencies + " within " + this.visitRange + " miles of " + JSON.stringify(this.fromLocation));
           return Meteor.myFunctions.groupVisitsByRequestedDate(this.getReactively('visits'));
         }
       } else {
         available.stop();
       }
     },
-    openVisitCount(){
+    openVisitCount: () =>{
       // Use visits.count() rather than Counts value to accomodate user's changes in profile
       // location range or location
       var hasAgency = this.getReactively('hasAgency');
       let visits = this.getReactively('visits');
       return visits? visits.count() : 0;
+    },
+    membershipPending: () => {
+    //true if not yet a member of any agency but have applied to at least one agency.
+      let hasAgency = this.getReactively('hasAgency');
+      let dataLoaded = this.getReactively('isMembershipDataLoaded');
+      let application = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
+      return application;
     }
   });
 
@@ -154,16 +168,6 @@ angular.module('visitry').controller('browseVisitRequestsCtrl', function ( $scop
   this.scheduleVisit = function(visit) {
     ScheduleVisit.showModal( visit );
    };
-
-  this.membershipPending = function (){
-    //true if not yet a member of any agency but have applied to at least one agency.
-    let hasAgency = this.getReactively('hasAgency');
-    let application = Enrollment.findOne({userId: Meteor.userId(), approvalDate: null});
-    if (application && !hasAgency) {
-      return true;
-    }
-    return false;
-  };
 
   this.groups = function (id) {
     $state.go( 'agencyList');
