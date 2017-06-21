@@ -5,7 +5,7 @@ import { Agency } from '/model/agencies'
 import { Enrollment } from '/model/enrollment'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, $ionicHistory) {
+angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $stateParams, $reactive, $state, $ionicHistory, $ionicPopup) {
   $reactive(this).attach($scope);
 
   this.groupId = $stateParams.groupId;
@@ -82,19 +82,32 @@ angular.module('visitry').controller('agencyDetailsCtrl', function ($scope, $sta
   };
 
   this.requestMembership = () => {
-    Meteor.call('sendJoinRequest', this.agency._id, "");
-
-    window.plugins.toast.showWithOptions(
-      {
-        message: "Thank you for your application.",
-        duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
-        position: "top",
-        addPixelsY: 45  // added a  value to move it down a bit (default 0)
-      });
-
+    Meteor.call('sendJoinRequest', this.agency._id, "", (err) => {
+      if (err) {
+        return this.handleError(err);
+      } else {
+        window.plugins.toast.showWithOptions(
+          {
+            message: "Thank you for your application.",
+            duration: "short", // which is 2000 ms. "long" is 4000. Or specify the nr of ms yourself.
+            position: "top",
+            addPixelsY: 45  // added a  value to move it down a bit (default 0)
+          });
+      }
+    })
   };
 
-  this.allAgencies = () => {
+  this.handleError = function (message) {
+    logger.error('Join Request: ', message);
+
+    $ionicPopup.alert({
+      title: 'Error',
+      template: message,
+      okType: 'button-positive button-clear'
+    });
+  };
+
+    this.allAgencies = () => {
     $state.go('agencyList');
   };
 
