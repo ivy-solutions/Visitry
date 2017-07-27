@@ -13,19 +13,23 @@ describe('Admin Manage Visits', function () {
   });
 
   let controller;
+  let stateSpy;
   let AdminVisitDetailsDialogMock = {
     open: (visitId)=>visitId
   }
 
-  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope) {
+  beforeEach(inject(function (_$controller_, _$cookies_, $rootScope,_$state_) {
     controller = _$controller_('adminManageVisitsCtrl', {
       $scope: $rootScope.$new(true),
+      $state:_$state_,
       AdminVisitDetailsDialog: AdminVisitDetailsDialogMock
     });
+    stateSpy = sinon.stub(_$state_, 'go');
     $cookies = _$cookies_;
   }));
 
   afterEach(function () {
+    stateSpy.restore();
   });
 
   describe('pageChanged', function () {
@@ -79,6 +83,13 @@ describe('Admin Manage Visits', function () {
       controller.getVisitDetails(visitId);
       assert(adminVisitDetailsDialogSpy.calledWith(visitId));
     });
+  })
+
+  describe('createVisit',()=>{
+    it('createVisit navigates to create visit page',()=>{
+      controller.createVisit()
+      assert(stateSpy.withArgs('createVisit').calledOnce);
+    })
   })
 })
 ;

@@ -3,13 +3,15 @@
  */
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
-
+import {Roles} from 'meteor/alanning:roles'
 
 Meteor.methods({
   'visits.createVisit'(visit) {
-    visit.requesterId = this.userId;
-    var requester = Meteor.users.findOne({_id: this.userId}, {fields: {'userData.agencyIds': 1}});
-    if (requester.userData.agencyIds==null || requester.userData.agencyIds.length === 0) {
+    if(!visit.requesterId){
+      visit.requesterId = this.userId;
+    }
+    let requester = User.findOne({_id: visit.requesterId}, {fields: {'userData.agencyIds': 1}});
+    if (!requester.userData.agencyIds || requester.userData.agencyIds.length === 0) {
       console.log("user without agency affiliation attempted to create visit request, userId: " + this.userId);
       throw new Meteor.Error('requires-agency', "You must be a member of a group to submit a request.")
     }
@@ -19,11 +21,16 @@ Meteor.methods({
       if (err) {
         console.log("failed to create visit. err: " + err);
         throw err;
+      }else{
+        Meteor.call('notifications.newVisitRequest', visit);
+        if(this.userId !== visit.requesterId){
+          Meteor.call('notifications.visitCreatedByAdmin',visit)
+        }
+        console.log("created visit for " + this.userId);
+        return visit;
       }
     });
-    Meteor.call('notifications.newVisitRequest', visit);
-    console.log("created visit for " + this.userId);
-    return visit;
+
   },
   'visits.rescindRequest'(visitId) {
     var visit = Visit.findOne(visitId);
@@ -31,11 +38,12 @@ Meteor.methods({
       console.log( "visits.rescindRequest for visit not found. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-found', 'Visit request not found.');
     }
-    if (this.userId !== visit.requesterId) {
-      console.log( "visits.rescindRequest user is not requester. visitId: " + visitId + " userId: " + this.userId);
+    let isUserAdmin = Roles.userIsInRole(this.userId,'administrator',visit.agencyId)
+    if (this.userId !== visit.requesterId && !isUserAdmin) {
+      console.log( "visits.rescindRequest user is not requester or admin. visitId: " + visitId + " userId: " + this.userId);
       throw new Meteor.Error('not-authorized', 'Only requester is allowed to cancel visit request.');
     }
-    console.log( "rescind visit request for " + this.userId);
+    console.log( "rescind visit request for " + visit.requesterId);
     //notify visitor
     Meteor.call( 'notifications.visitCancelled', visit);
 

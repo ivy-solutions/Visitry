@@ -1,6 +1,10 @@
 <div layout="row" layout-align="center start" layout-margin layout-padding layout-fill>
   <div flex="0" flex-gt-sm="10"></div>
   <div layout="column" flex="80">
+    <div layout="row" layout-align="end none">
+      <span flex></span>
+      <md-button class="md-raised md-primary" ng-click="adminManageVisits.createVisit()">+ Visit</md-button>
+    </div>
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab label="Scheduled" ng-click="adminManageVisits.setSort('visitTime','ascending' )">
         <md-content class="md-padding">

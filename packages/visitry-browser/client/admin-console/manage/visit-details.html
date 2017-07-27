@@ -20,22 +20,22 @@
         <div class="md-subheader">Requester</div>
         <span flex></span>
         <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'available'">
-            Requested {{ adminVisitDetails.today | amDifference : adminVisitDetails.visit.createdAt : 'days' }} days ago
+          Requested {{ adminVisitDetails.today | amDifference : adminVisitDetails.visit.createdAt : 'days' }} days ago
         </div>
         <div class="md-title" ng-if="adminVisitDetails.visitStatus === 'unfilled'">
-            Requested: {{ adminVisitDetails.visit.createdAt |date: 'EEE M/d/yy'}}
+          Requested: {{ adminVisitDetails.visit.createdAt |date: 'EEE M/d/yy'}}
         </div>
       </div>
       <div md-whiteframe="3">
         <md-list>
           <md-list-item layout="row" layout-align="left center">
             <img ng-src="{{adminVisitDetails.requesterPicture}}" class="md-avatar"/>
-            <div class="md-list-item-text" >
+            <div class="md-list-item-text">
               <h4>{{adminVisitDetails.requester.fullName}}</h4>
               <p flex="90">{{adminVisitDetails.visit.notes}}</p>
               <a class="md-secondary" href="mailto:{{adminVisitDetails.requester.emails[0].address}}">
-              <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
-                </a>
+                <ng-md-icon icon="email" aria-label="Send Email" class="email-icon" size="32"></ng-md-icon>
+              </a>
             </div>
           </md-list-item>
         </md-list>
@@ -142,5 +142,10 @@
         </div>
       </div>
     </div>
+  </div>
+  <div layout="row" layout-align="center" layout-padding ng-show="['available','scheduled'].includes(adminVisitDetails.visitStatus)">
+    <md-button class="md-warn" type="button" ng-click="adminVisitDetails.cancelVisit()">
+      Delete Visit
+    </md-button>
   </div>
 </md-dialog>

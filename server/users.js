@@ -157,9 +157,9 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
   logger.verbose("publish seniorUsers to " + this.userId);
   if (this.userId) {
     logger.verbose("publish seniorUsers to " + this.userId);
-    var selector = {};
+    let selector = {};
     selector['roles.' + agencyId] = 'requester';
-    var queryOptions = {
+    let queryOptions = {
       fields: {
         createdAt: 1,
         'userData.agencyIds': 1,

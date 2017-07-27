@@ -6,6 +6,7 @@ import { Visit } from '/model/visits'
 import { Agency } from '/model/agencies'
 import { Feedback } from '/model/feedback'
 import { logger } from '/server/logging'
+import {Roles} from 'meteor/alanning:roles'
 
 Meteor.publish("receivedNotifications", function () {
   if (this.userId) {
@@ -65,12 +66,31 @@ Meteor.methods({
     });
 
   },
+  'notifications.visitCreatedByAdmin'(visit){
+    let msgTitle ='Visit Created'
+    let admin = User.findOne(this.userId)
+    let msgText = 'Visit created for you by '+admin.fullName+ ' for '+moment(visit.requestDate).local().format('MMM. D')
+    new Notification({
+      visitId: visit._id,
+      notifyDate:new Date(),
+      toUserId: visit.requesterId,
+      status: NotificationStatus.SENT,
+      title: msgTitle,
+      text: msgText
+    }).save(function(err, id) {
+      if (err) {
+        logger.error(err);
+      } else {
+        sendPushNotificationNow(id);
+      }
+    });
+  },
   'notifications.visitCancelled'(visit) {
-    if (visit.visitorId && visit.visitorId !== this.userId ) {
+    if (visit.visitorId && (visit.visitorId !== this.userId ||Roles.userIsInRole(this.userId,'administrator',visit.agencyId)) ) {
       //communicate with visitor
-      var msgTitle = "Visit canceled";
-      var user = User.findOne(this.userId);
-      var msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" canceled by " + user.userData.firstName + ".";
+      let msgTitle = "Visit canceled";
+      let user = User.findOne(this.userId);
+      let msgText = "Visit on " + moment(visit.requestDate).local().format('MMM. D') +" canceled by " + user.userData.firstName + ".";
 
       new Notification({
           visitId: visit._id,
@@ -85,10 +105,11 @@ Meteor.methods({
         }
       });
      }
-    if ( visit.visitorId === this.userId){
-      var user = User.findOne(this.userId);
-      var msgText = "Visit on " + formattedVisitTime(visit) + " canceled by " + user.fullName + ".";
-      var msgTitle = "Visit canceled";
+    if ( visit.visitorId === this.userId || Roles.userIsInRole(this.userId,'administrator',visit.agencyId)){
+      //communicate with the requester
+      let user = User.findOne(this.userId);
+      let msgText = "Visit on " + formattedVisitTime(visit) + " canceled by " + user.fullName + ".";
+      let msgTitle = "Visit canceled";
 
       new Notification({
           visitId: visit._id,

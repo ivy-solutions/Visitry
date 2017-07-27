@@ -1,9 +1,17 @@
 import { Visit } from '/model/visits.js'
 import {logger} from '/client/logging'
+import {Roles} from 'meteor/alanning:roles'
 
-angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, $ionicPopup, $window, RequestVisit) {
+angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, $reactive, $timeout, $ionicPopup, $window, $cookies,$state, RequestVisit) {
   $reactive(this).attach($scope);
 
+  if(!Meteor.isCordova){
+    this.agencyId = $cookies.get('agencyId')
+    this.subscribe('seniorUsers', ()=> {
+      return [this.getReactively('agencyId')]
+    });
+  }
+  this.searchText = ''
   this.visitRequest = {
     location: {
       name: '',
@@ -20,15 +28,28 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.userSubmitted = false;
-  var currentUser;
+  let currentUser;
 
   this.helpers({
     userLocation: ()=> {
-      currentUser = User.findOne(Meteor.userId());
-      if (currentUser.userData && currentUser.userData.location) {
-        this.visitRequest.location.name = currentUser.userData.location.address;
+      if(Meteor.isCordova) {
+        currentUser = User.findOne(Meteor.userId())
+        if (currentUser.userData && currentUser.userData.location) {
+          this.visitRequest.location.name = currentUser.userData.location.address
+        }
+      }else if(this.getReactively('visitRequest.requesterId')) {
+        currentUser = User.findOne(this.visitRequest.requesterId)
       }
-      return currentUser;
+      return currentUser
+
+    },
+    requesters:()=>{
+      if(!Meteor.isCordova && this.getReactively('searchText')){
+        let nameFilter = this.getReactively('searchText')
+        return Roles.getUsersInRole('requester',$cookies.get('agencyId')).fetch().filter((user)=>{
+          return Boolean((user.userData.firstName.toLowerCase()+' '+user.userData.lastName.toLowerCase()).includes(nameFilter.toString().toLowerCase()))
+        })
+      }
     }
   });
 
@@ -38,10 +59,10 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   };
 
   this.isLocationValid = ()=> {
-    if ( this.userSubmitted ) {
+    if ( this.userSubmitted && currentUser) {
       //user has selected a location, or has a default location that matches what is on screen
-      var hasSelectedLocation = this.visitRequest.location.details.geometry != null;
-      var usingProfileLocation = currentUser.userData && currentUser.userData.location != null && currentUser.userData.location.address === this.visitRequest.location.name;
+      let hasSelectedLocation = this.visitRequest.location.details.geometry !== null;
+      let usingProfileLocation = currentUser.userData && currentUser.userData.location != null && currentUser.userData.location.address === this.visitRequest.location.name;
       return this.visitRequest.location.name.length > 0 && (
         hasSelectedLocation || usingProfileLocation)
     } else {
@@ -50,25 +71,35 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   };
   this.isDateValid = ()=> {
     if (this.userSubmitted) {
-      return (this.visitRequest.date && this.visitRequest.date > new Date()) ? true : false;
+      return Boolean(this.visitRequest.date && this.visitRequest.date > new Date())
     } else {
       return true;
     }
   };
   this.isTimeValid = ()=> {
     if (this.userSubmitted) {
-      return this.visitRequest.time > 0 ? true: false;
+      return Boolean(this.visitRequest.time > 0);
     } else {
       return true;
     }
   };
+  this.getFullName=(user)=>user.userData.firstName+' '+user.userData.lastName
+  this.onSelectUser = (user)=>{
+    if(user) {
+      this.visitRequest.requesterId = user._id
+      if (user.userData && user.userData.location && user.userData.location.address) {
+        this.visitRequest.location.name = user.userData.location.address
+      }
+    }
+  }
 
   this.submit = function () {
     this.userSubmitted = true;
-    if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()) {
-      var newVisit = new Visit({
+    if (this.isLocationValid() && this.isDateValid() && this.isTimeValid() && (Roles.userIsInRole(Meteor.userId(),'administrator',this.agencyId)===Boolean(this.visitRequest.requesterId))) {
+      let newVisit = new Visit({
         requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
-        notes: this.visitRequest.notes
+        notes: this.visitRequest.notes,
+        requesterId:this.visitRequest.requesterId
       });
       //location from selection or from user default
       if ( this.visitRequest.location.details.geometry ) {
@@ -107,9 +138,13 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 
   function hideRequestVisitModal() {
     //remove the blocks google added
-    var container = document.getElementsByClassName('pac-container');
+    let container = document.getElementsByClassName('pac-container');
     angular.element(container).remove();
-    RequestVisit.hideModal();
+    if(Meteor.isCordova){
+      RequestVisit.hideModal();
+    }else{
+      $state.go('adminManageVisits')
+    }
   }
 
   function handleError(err) {

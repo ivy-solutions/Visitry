@@ -14,20 +14,22 @@ import '/server/notifications.js';
 if (Meteor.isServer) {
 
     describe('Notifications', () => {
-      var userId, otherUserId;
-      var visitorVisit, requesterVisit;
-      var meteorStub;
-      var findOneAgencyStub, findOneUserStub;
-      var agencyId, visitId;
+      let userId, otherUserId, adminId;
+      let visitorVisit, requesterVisit, unscheduledVisit;
+      let meteorStub;
+      let findOneAgencyStub, findOneUserStub, rolesUserIsInRoleStub;
+      let agencyId, visitId;
 
       beforeEach(() => {
         userId = Random.id();
         otherUserId = Random.id();
+        adminId = Random.id();
         agencyId = Random.id();
         visitId = Random.id();
         meteorStub = sinon.stub(Meteor, 'call');
         findOneAgencyStub = sinon.stub(Agency, 'findOne');
         findOneUserStub = sinon.stub(User, 'findOne');
+        rolesUserIsInRoleStub = sinon.stub(Roles,'userIsInRole').withArgs(adminId,'administrator',agencyId).returns(true);
 
         visitorVisit = {
           _id: visitId,
@@ -49,11 +51,20 @@ if (Meteor.isServer) {
           visitTime: getTomorrowDate(),
           agencyId: agencyId
         };
+        unscheduledVisit = {
+          _id: visitId,
+          notes: 'test userId is visitor',
+          requestedDate: getTomorrowDate(),
+          createdAt: new Date(),
+          requesterId: otherUserId,
+          agencyId: agencyId
+        }
       });
       afterEach(function () {
         Agency.findOne.restore();
         User.findOne.restore();
         meteorStub.restore();
+        Roles.userIsInRole.restore();
       });
 
 
@@ -75,6 +86,24 @@ if (Meteor.isServer) {
           assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
         });
       });
+
+      describe('notifications.visitCreatedByAdmin method',() =>{
+        const handler = Meteor.server.method_handlers['notifications.visitCreatedByAdmin'];
+        beforeEach(()=>{
+          Notifications.remove({});
+          findOneUserStub.returns({fullName:'admin 1'})
+        })
+        it('creates 1 notification record',()=>{
+          const invocation = {userId: adminId}
+          handler.apply(invocation,[requesterVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1)
+        });
+        it('sends a push notification', () => {
+          const invocation = {userId: adminId};
+          handler.apply(invocation, [requesterVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+      })
 
       describe('notifications.visitCancelled method', () => {
         const handler = Meteor.server.method_handlers['notifications.visitCancelled'];
@@ -115,6 +144,24 @@ if (Meteor.isServer) {
           const invocation = {userId: userId};
           handler.apply(invocation, [visitorVisit]);
           assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+        it('cancel by admin sends push notification to visitor and requester',()=>{
+          const invocation = {userId: adminId};
+          handler.apply(invocation, [visitorVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification',sinon.match(/.*/),sinon.match(/.*/),visitorVisit.visitorId),"userNotification called");
+          assert.isTrue(Meteor.call.calledWith('userNotification',sinon.match(/.*/),sinon.match(/.*/),visitorVisit.requesterId),"userNotification called");
+        });
+        it("cancel by admin sends notification and removes future notifications", () => {
+          const invocation = {userId: adminId};
+          handler.apply(invocation, [visitorVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 2);
+          assert.equal(Notifications.find({status: NotificationStatus.FUTURE}).count(), 0);
+        });
+        it('cancel by admin sends one push notification if visitor hasn\'t accepted the visit',()=>{
+          const invocation = {userId: adminId};
+          handler.apply(invocation, [unscheduledVisit]);
+          assert.isTrue(Meteor.call.calledWith('userNotification',sinon.match(/.*/),sinon.match(/.*/),visitorVisit.requesterId),"userNotification called");
+          assert.isTrue(Meteor.call.calledOnce);
         });
       });
 

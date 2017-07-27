@@ -33,6 +33,7 @@ Package.onUse(function(api) {
     'client/visits/browse-visit-requests/browse-visit-requests.html',
     'client/visits/pending-visits/pending-visits.html',
     'client/visits/visitor-view-upcoming/visitor-view-upcoming.html',
+    'client/visits/request-visit/request-visit.html',
     'client/visits/schedule-visit/schedule-visit-modal.html',
     'client/styles/main.less',
     'client/styles/lists.less',

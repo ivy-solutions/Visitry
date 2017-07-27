@@ -1,0 +1,86 @@
+<div layout-margin layout-fill>
+  <div layout="row" layout-align="center start" layout-fill layout-margin>
+    <md-whiteframe layout="column" flex flex-md="50" flex-lg="50" flex-gt-lg="33" class="md-whiteframe-z2">
+
+      <md-toolbar class="md-primary" layout="column" layout-align="end" layout-fill>
+        <div layout="row" class="md-toolbar-tools md-toolbar-tools-bottom">
+          <h3 class="md-display-1"> Create a visit</h3>
+        </div>
+      </md-toolbar>
+
+      <div layout="column" layout-fill layout-margin layout-padding>
+
+        <form name="createVisitForm" novalidate ng-submit="requestVisit.submit()">
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+              <label>Visit for:</label>
+              <md-autocomplete md-selected-item-change="requestVisit.onSelectUser(user)" md-input-name="requesterName"
+                               md-items="user in requestVisit.requesters" md-item-text="requestVisit.getFullName(user)"
+                               md-search-text="requestVisit.searchText" style="background:white;" required>
+                <md-item-template>
+                  {{user.userData.firstName}} {{user.userData.lastName}}
+                </md-item-template>
+                <div
+                    ng-messages="createVisitForm.requesterName.$error">
+                  <div ng-message="required">Required</div>
+                </div>
+              </md-autocomplete>
+              <div
+                  ng-show="requestVisit.userSubmitted && !requestVisit.visitRequest.requesterId">
+                <div class="md-errors-spacer"></div>
+                <div style="color: rgb(221,44,0)">Required</div>
+              </div>
+            </md-input-container>
+          </div>
+          <div layout="row">
+            <md-input-container class="md-block" flex>
+              <label>Location:</label>
+              <div class="layout-row md-whiteframe-z1" style="height:40px;">
+                <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
+                       options="requestVisit.autoCompleteOptions"
+                       ng-model="requestVisit.visitRequest.location.name"
+                       ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()"
+                       details="requestVisit.visitRequest.location.details" placeholder="" required/>
+              </div>
+              <div
+                  ng-messages="createVisitForm.location.$error">
+                <div ng-message="required">Required</div>
+              </div>
+            </md-input-container>
+          </div>
+          <div layout="row">
+            <md-input-container flex>
+              <label>Time:</label>
+              <md-select ng-model="requestVisit.visitRequest.time" name="time" ng-class="{'ng-invalid-required':(requestVisit.userSubmitted && !requestVisit.isTimeValid())}" required>
+                <md-option ng-value="9">Morning</md-option>
+                <md-option ng-value="13">Afternoon</md-option>
+                <md-option ng-value="16">Evening</md-option>
+              </md-select>
+              <div
+                  ng-show="requestVisit.userSubmitted && !requestVisit.isTimeValid()">
+                <div class="md-errors-spacer"></div>
+                <div style="color: rgb(221,44,0)">Required</div>
+              </div>
+            </md-input-container>
+            <span flex></span>
+            <md-datepicker ng-model="requestVisit.visitRequest.date" flex>
+          </div>
+          <div layout="row">
+            <md-input-container flex>
+              <label>Notes:</label>
+              <textarea ng-model="requestVisit.visitRequest.notes" max-rows="5"></textarea>
+            </md-input-container>
+          </div>
+          <div class="padding" layout="row" layout-align="space-around center">
+
+            <md-button class="md-warn" type="button" ng-click="requestVisit.cancel()">
+              Cancel
+            </md-button>
+            <md-button class="md-raised md-primary" type="submit">Submit</md-button>
+          </div>
+        </form>
+      </div>
+
+    </md-whiteframe>
+  </div>
+</div>

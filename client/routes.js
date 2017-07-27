@@ -14,6 +14,17 @@ angular.module('visitry')
         url: '/visits',
         template: '<list-visits></list-visits>'
       })
+      .state('createVisit',{
+        url:'/create-visit',
+        templateUrl:()=>{
+          if(Meteor.isCordova){
+            return '/packages/visitrymobile/client/visits/request-visit/request-visit-modal.html'
+          }else{
+            return '/packages/visitry-browser/client/visits/request-visit/request-visit.html'
+          }
+        },
+        controller: 'requestVisitModalCtrl as requestVisit'
+      })
       .state('pendingVisits', {
         url: '/requester/pendingVisits',
         templateUrl: ()=> {

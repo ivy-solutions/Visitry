@@ -178,5 +178,14 @@ describe('AdminVisitDetails', function () {
     });
   });
 
+  describe('cancelVisit',()=>{
+    let meteorCallStub
+
+    it('calls rescindRequest',()=>{
+      controller.cancelVisit()
+      assert(meteorStub.calledWith('visits.rescindRequest'))
+    })
+  })
+
 });
 

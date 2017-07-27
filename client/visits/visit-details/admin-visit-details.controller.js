@@ -1,79 +1,99 @@
 /**
  * Created by n0235626 on 2/10/17.
  */
-import { Visits } from '/model/visits'
+import {Visits} from '/model/visits'
 import {logger} from '/client/logging'
-import { Feedback,Feedbacks } from '/model/feedback'
+import {Feedback, Feedbacks} from '/model/feedback'
 
-angular.module('visitry').controller('adminVisitDetailsCtrl', function ($scope, $reactive, $cookies) {
-  $reactive(this).attach($scope);
-  this.visitId = this.locals.visitId;
-  this.agencyId = $cookies.get('agencyId');
-  this.subscribe('agencyVisits', ()=> {
+angular.module('visitry').controller('adminVisitDetailsCtrl', function ($scope, $reactive, $cookies, $ionicPopup, $mdDialog) {
+  $reactive(this).attach($scope)
+  this.visitId = this.locals.visitId
+  this.agencyId = $cookies.get('agencyId')
+  this.subscribe('agencyVisits', () => {
     return [this.getReactively('agencyId')]
-  });
-  this.subscribe('feedback');
-  this.today = new Date();
+  })
+  this.subscribe('feedback')
+  this.today = new Date()
 
-  this.visit = {};
+  this.visit = {}
   this.helpers({
-    visit: ()=> {
-      let visit = Visits.findOne({_id: this.getReactively('visitId')});
-      this.visitStatus = (visit) ? getVisitStatus(visit) : '';
-      Meteor.call('getUserPicture', visit.requesterId, (err, result)=> {
+    visit: () => {
+      let visit = Visits.findOne({_id: this.getReactively('visitId')})
+      this.visitStatus = (visit) ? getVisitStatus(visit) : ''
+      Meteor.call('getUserPicture', visit.requesterId, (err, result) => {
         if (err) {
-          logger.error(err);
+          logger.error(err)
         } else {
-          this.requesterPicture = result;
+          this.requesterPicture = result
         }
-      });
+      })
       if (visit.visitorId) {
-        Meteor.call('getUserPicture', visit.visitorId, (err, result)=> {
+        Meteor.call('getUserPicture', visit.visitorId, (err, result) => {
           if (err) {
-            logger.error(err);
+            logger.error(err)
           } else {
-            this.visitorPicture = result;
+            this.visitorPicture = result
           }
-        });
+        })
       }
-      return visit;
+      return visit
     },
-    requester: ()=> User.findOne({_id: this.getReactively('visit.requesterId')}),
-    requesterFeedback: ()=> {
+    requester: () => User.findOne({_id: this.getReactively('visit.requesterId')}),
+    requesterFeedback: () => {
       return Feedbacks.findOne({
         submitterId: this.getReactively('visit.requesterId'),
         visitId: this.getReactively('visitId')
       })
     },
-    visitor: ()=> User.findOne({_id: this.getReactively('visit.visitorId')}),
-    visitorFeedback: ()=> Feedbacks.findOne({
+    visitor: () => User.findOne({_id: this.getReactively('visit.visitorId')}),
+    visitorFeedback: () => Feedbacks.findOne({
       submitterId: this.getReactively('visit.visitorId'),
       visitId: this.getReactively('visitId')
     })
-  });
-});
+  })
+  this.cancelVisit = () => {
+    Meteor.call('visits.rescindRequest', this.visitId, (err) => {
+      if (err) {
+        $mdDialog.hide()
+        return handleError(err)
+      } else {
+        $mdDialog.hide()
+      }
+    })
+  }
+  function handleError(err) {
+    logger.error('visit cancel error ', err)
+
+    $ionicPopup.alert({
+      title: 'Delete failed',
+      template: err.reason,
+      okType: 'button-positive button-clear'
+    })
+  }
+})
 
 function getVisitStatus(visit) {
-  let status = '';
-  let today = new Date();
+  let status = ''
+  let today = new Date()
   switch (true) {
     case (visit.inactive):
-      status = 'cancelled';
-      break;
+      status = 'cancelled'
+      break
     case (!visit.visitorId && visit.requestedDate < today):
-      status = 'unfilled';
-      break;
+      status = 'unfilled'
+      break
     case (!visit.visitorId && visit.requestedDate > today):
-      status = 'available';
-      break;
+      status = 'available'
+      break
     case (visit.visitTime && visit.visitTime > today):
-      status = 'scheduled';
-      break;
+      status = 'scheduled'
+      break
     case (visit.visitTime && visit.visitTime < today):
-      status = 'complete';
-      break;
+      status = 'complete'
+      break
     default:
-      break;
+      break
   }
-  return status;
+  return status
 }
+
