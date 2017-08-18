@@ -298,6 +298,7 @@ if (Meteor.isServer) {
     describe('users.createUserFromAdmin', ()=> {
       const createUserFromAdminHandler = Meteor.server.method_handlers['createUserFromAdmin'];
       let accountsCreateUserSpy;
+      let rolesAddRolesStub;
       let testNewUserId;
       let meteorCallStub;
       let findUserByEmailStub;
@@ -306,12 +307,14 @@ if (Meteor.isServer) {
 
       beforeEach(()=> {
         accountsCreateUserSpy = sinon.spy(Accounts, 'createUser');
+        rolesAddRolesStub = sinon.stub(Roles, 'addUsersToRoles');
         meteorCallStub = sinon.stub(Meteor, 'call');
         errorsStub = sinon.stub(Errors, 'checkUserIsAdministrator').returns(true);
       });
       afterEach(()=> {
         accountsCreateUserSpy.reset();
         Accounts.createUser.restore();
+        rolesAddRolesStub.restore();
         errorsStub.restore();
         Meteor.call.restore();
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}});
@@ -346,7 +349,8 @@ if (Meteor.isServer) {
         const invocation = {userId: testUserId};
         createUserFromAdminHandler.apply(invocation, [{email: 'test@email.com', userData: {agencyIds: [agencyId]}}]);
         testNewUserId = Meteor.users.findOne({emails: {$elemMatch: {address: 'test@email.com'}}})._id;
-        assert(accountsCreateUserSpy.calledOnce);
+        assert(accountsCreateUserSpy.calledOnce, 'creating account');
+        assert(rolesAddRolesStub.calledOnce, 'adding role');
       });
 
       it('Enrollment record is created', ()=> {
