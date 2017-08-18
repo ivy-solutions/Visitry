@@ -346,6 +346,7 @@ Meteor.methods({
     let newUserId;
     try {
       newUserId = Accounts.createUser(data);
+      Roles.addUsersToRoles(newUserId, data.role, agencyId);
       let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvalDate: new Date()} );
       enrollment.save();
 
