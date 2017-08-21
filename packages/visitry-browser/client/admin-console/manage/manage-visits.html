@@ -6,14 +6,14 @@
       <md-button class="md-raised md-primary" ng-click="adminManageVisits.createVisit()">+ Visit</md-button>
     </div>
     <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="Available" ng-click="adminManageVisits.setSort('requestedDate','ascending' )">
+        <md-content class="md-padding">
+           <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-available.html'"></div>
+        </md-content>
+      </md-tab>
       <md-tab label="Scheduled" ng-click="adminManageVisits.setSort('visitTime','ascending' )">
         <md-content class="md-padding">
           <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-scheduled.html'"></div>
-        </md-content>
-      </md-tab>
-      <md-tab label="Available" ng-click="adminManageVisits.setSort('requestedDate','ascending' )">
-        <md-content class="md-padding">
-          <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-available.html'"></div>
         </md-content>
       </md-tab>
       <md-tab label="Completed" ng-click="adminManageVisits.setSort('visitTime','descending' )">
