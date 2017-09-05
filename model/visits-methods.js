@@ -7,12 +7,13 @@ import {Roles} from 'meteor/alanning:roles'
 
 Meteor.methods({
   'visits.createVisit'(visit) {
+    let currentUserId = this.userId;
     if(!visit.requesterId){
       visit.requesterId = this.userId;
     }
     let requester = User.findOne({_id: visit.requesterId}, {fields: {'userData.agencyIds': 1}});
     if (!requester.userData.agencyIds || requester.userData.agencyIds.length === 0) {
-      console.log("user without agency affiliation attempted to create visit request, userId: " + this.userId);
+      console.log("user without agency affiliation attempted to create visit request, userId: " + visit.requesterId);
       throw new Meteor.Error('requires-agency', "You must be a member of a group to submit a request.")
     }
     visit.agencyId = requester.userData.agencyIds[0]; //requesters are associated with only 1 agency, so first one is it
@@ -23,10 +24,10 @@ Meteor.methods({
         throw err;
       }else{
         Meteor.call('notifications.newVisitRequest', visit);
-        if(this.userId !== visit.requesterId){
+        if(currentUserId !== visit.requesterId){
           Meteor.call('notifications.visitCreatedByAdmin',visit)
         }
-        console.log("created visit for " + this.userId);
+        console.log("created visit for " + visit.requesterId);
         return visit;
       }
     });
