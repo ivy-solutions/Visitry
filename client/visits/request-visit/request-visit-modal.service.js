@@ -3,14 +3,15 @@ angular.module('visitry').service('RequestVisit', function ($rootScope, $ionicMo
   this.showModal = showModal;
   this.hideModal = hideModal;
 
-  function showModal() {
+  function showModal(visitId) {
     this._scope = $rootScope.$new();
+    this._scope.fromVisitId = visitId;
 
-    $ionicModal.fromTemplateUrl(getModalHtml(), {
+    $ionicModal.fromTemplateUrl(getModalHtml(visitId), {
       scope: this._scope
     }).then((modal) => {
       this._modal = modal;
-      modal.show();
+      modal.show(visitId);
     });
   }
 
@@ -20,9 +21,13 @@ angular.module('visitry').service('RequestVisit', function ($rootScope, $ionicMo
   }
 });
 
-function getModalHtml() {
+function getModalHtml(visitId) {
   if (Meteor.isCordova) {
-    return '/packages/visitrymobile/client/visits/request-visit/request-visit-modal.html'
+    if (visitId) {
+      return '/packages/visitrymobile/client/visits/request-visit/request-another-visit-modal.html'
+    } else {
+      return '/packages/visitrymobile/client/visits/request-visit/request-visit-modal.html'
+    }
   }
   else {
     return '/packages/vistry-browser/client/visits/request-visit/request-visit-modal.html'

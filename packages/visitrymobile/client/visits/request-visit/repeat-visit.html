@@ -1,0 +1,30 @@
+<ion-view view-title="Visit Again" hide-back-button=true>
+    <ion-content padding="true" class="has-header has-tabs">
+        <div layout="row">
+            <div>
+                <div class="profile-picture has-picture" layout-align="center center">
+                    <div class="item-avatar"><img ng-src="{{repeatVisit.getVisitorImage()}}"/></div>
+                </div>
+            </div>
+             <div layout="column" flex="55" layout-align="space-around start" layout-fill>
+                <h4>{{repeatVisit.visitor | firstNameLastInitial}}</h4>
+                <h4 layout-margin>Like another visit with this visitor?</h4>
+            </div>
+        </div>
+        <div>
+            <div layout="column" layout-padding="true">
+            <div class="button-bar">
+                <button class="button button-full button-clear"
+                        ng-click="repeatVisit.scheduleVisit()"
+                >
+                    <span class="balanced">Schedule Now</span>
+                </button>
+                <button class="button button-full button-clear"
+                         ng-click="repeatVisit.dismiss()" >
+                    <span class="assertive">Not Now</span>
+                </button>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-view>

@@ -6,12 +6,13 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   $reactive(this).attach($scope);
 
   if(!Meteor.isCordova){
-    this.agencyId = $cookies.get('agencyId')
+    this.agencyId = $cookies.get('agencyId');
     this.subscribe('seniorUsers', ()=> {
       return [this.getReactively('agencyId')]
     });
   }
-  this.searchText = ''
+
+  this.searchText = '';
   this.visitRequest = {
     location: {
       name: '',
@@ -28,19 +29,35 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.userSubmitted = false;
-  let currentUser;
+  let requester;
+  this.fromVisit;
+  this.autorun( function() {
+    logger.info(JSON.stringify($scope.fromVisit));
+    if (this.getReactively('fromVisit')) {
+      this.visitRequest.location.name = this.fromVisit.location.address;
+      // make the request date on the next day with same day of week and time
+      var weekday = moment(this.fromVisit.requestedDate).weekday();
+      if (moment().weekday() < weekday) {
+         this.visitRequest.date =  moment().day(weekday).hours(0).minutes(0).seconds(0).toDate();
+      } else {
+        this.visitRequest.date = moment().add(1, 'weeks').day(weekday).hours(0).minutes(0).seconds(0).toDate();
+      }
+      this.visitRequest.notes = this.fromVisit.notes;
+      this.visitRequest.visitorId = this.fromVisit.visitorId;
+    }
+  });
 
   this.helpers({
     userLocation: ()=> {
       if(Meteor.isCordova) {
-        currentUser = User.findOne(Meteor.userId())
-        if (currentUser.userData && currentUser.userData.location) {
-          this.visitRequest.location.name = currentUser.userData.location.address
+        requester = User.findOne(Meteor.userId())
+        if (requester.userData && requester.userData.location) {
+          this.visitRequest.location.name = requester.userData.location.address
         }
       }else if(this.getReactively('visitRequest.requesterId')) {
-        currentUser = User.findOne(this.visitRequest.requesterId)
+        requester = User.findOne(this.visitRequest.requesterId)
       }
-      return currentUser
+      return requester
 
     },
     requesters:()=>{
@@ -50,6 +67,18 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
           return Boolean((user.userData.firstName.toLowerCase()+' '+user.userData.lastName.toLowerCase()).includes(nameFilter.toString().toLowerCase()))
         })
       }
+    },
+    priorVisit:()=>{
+      this.fromVisit = Visit.findOne({_id: $scope.fromVisitId});
+      logger.info(this.fromVisit);
+      return this.fromVisit;
+    },
+    priorVisitor:()=>{
+      var visitor;
+      if (this.getReactively('fromVisit')) {
+        visitor = User.findOne({_id: this.fromVisit.visitorId});
+      }
+      return visitor;
     }
   });
 
@@ -59,10 +88,10 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   };
 
   this.isLocationValid = ()=> {
-    if ( this.userSubmitted && currentUser) {
+    if ( this.userSubmitted && requester) {
       //user has selected a location, or has a default location that matches what is on screen
       let hasSelectedLocation = this.visitRequest.location.details.geometry !== null;
-      let usingProfileLocation = currentUser.userData && currentUser.userData.location != null && currentUser.userData.location.address === this.visitRequest.location.name;
+      let usingProfileLocation = requester.userData && requester.userData.location != null && requester.userData.location.address === this.visitRequest.location.name;
       return this.visitRequest.location.name.length > 0 && (
         hasSelectedLocation || usingProfileLocation)
     } else {
@@ -77,31 +106,40 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     }
   };
   this.isTimeValid = ()=> {
-    if (this.userSubmitted) {
+    logger.info(this.visitRequest.time);
+    if (this.userSubmitted && this.fromVisit==null) {
       return Boolean(this.visitRequest.time > 0);
     } else {
       return true;
     }
   };
-  this.getFullName=(user)=>user.userData.firstName+' '+user.userData.lastName
+  this.getFullName=(user)=>user.userData.firstName+' '+user.userData.lastName;
   this.onSelectUser = (user)=>{
     if(user) {
-      this.visitRequest.requesterId = user._id
+      this.visitRequest.requesterId = user._id;
       if (user.userData && user.userData.location && user.userData.location.address) {
         this.visitRequest.location.name = user.userData.location.address
       }
     }
-  }
+  };
 
   this.submit = function () {
     this.userSubmitted = true;
     if (this.isLocationValid() && this.isDateValid() && this.isTimeValid() && (Roles.userIsInRole(Meteor.userId(),'administrator',this.agencyId)===Boolean(this.visitRequest.requesterId))) {
       let newVisit = new Visit({
-        requestedDate: new Date(this.visitRequest.date.setHours(this.visitRequest.time)),
         notes: this.visitRequest.notes,
         requesterId:this.visitRequest.requesterId
       });
-      //location from selection or from user default
+      if (this.fromVisit) {
+        newVisit.requestedDate = new Date(this.visitRequest.date);
+        newVisit.requestedDate.setHours(this.fromVisit.visitTime.getHours());
+        newVisit.requestedDate.setMinutes(this.fromVisit.visitTime.getMinutes());
+        newVisit.visitorId = this.fromVisit.visitorId;
+        newVisit.visitTime = newVisit.requestedDate;
+      } else {
+        newVisit.requestedDate = new Date(this.visitRequest.date.setHours(this.visitRequest.time));
+      }
+      //location from selection, from priorVisit, or from user default
       if ( this.visitRequest.location.details.geometry ) {
         newVisit.location = {
           address: this.visitRequest.location.details.name + ", " + this.visitRequest.location.details.vicinity,
@@ -111,14 +149,17 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
             coordinates: [this.visitRequest.location.details.geometry.location.lng(), this.visitRequest.location.details.geometry.location.lat()]
           }
         }
-      } else {
-        newVisit.location = currentUser.userData.location;
+      } else if (this.fromVisit) {
+        newVisit.location = this.fromVisit.location;
+
+      }else {
+        newVisit.location = requester.userData.location;
       }
       Meteor.call('visits.createVisit',newVisit, (err) => {
         if (err) return handleError(err);
       });
       hideRequestVisitModal();
-      let requesterAgency = Roles.getGroupsForUser(Meteor.userId(), 'requester').find( function(agencyId) {
+      let requesterAgency = Roles.getGroupsForUser(this.visitRequest.requesterId, 'requester').find( function(agencyId) {
         return agencyId !== 'noagency';
       });
       if ($window.ga) { //google analytics

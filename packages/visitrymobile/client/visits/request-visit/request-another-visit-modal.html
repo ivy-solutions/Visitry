@@ -1,0 +1,59 @@
+<ion-modal-view ng-controller="requestVisitModalCtrl as requestVisit" xmlns="http://www.w3.org/1999/html">
+  <ion-header-bar>
+    <div class="buttons" side="primary">
+      <button class="button button-clear button-balanced" ng-click="requestVisit.cancel()">Cancel</button>
+    </div>
+    <h1 class="title">Another Visit?</h1>
+    <div class="buttons" side="secondary" ng-click="requestVisit.submit()">
+      <button class="button button-clear button-balanced">Submit</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <form>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <i class="icon ion-location placeholder-icon"></i>
+          <input type="text" id="locationInput" ng-google-places-autocomplete-hack options="requestVisit.autoCompleteOptions"
+                 ng-model="requestVisit.visitRequest.location.name"
+                 ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()"
+                 details="requestVisit.visitRequest.location.details"/>
+            <span ng-hide="!requestVisit.isLoadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
+        </label>
+        <div layout="row">
+          <span flex></span>
+          <span class="error-message" ng-hide="requestVisit.isLocationValid() || requestVisit.isLoadingPlaces">Type address or place name and select location</span>
+        </div>
+      </div>
+      <div class="list list-inset date-time-input">
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input type="date" ng-model="requestVisit.visitRequest.date">
+        </label>
+        <span flex></span>
+        <div class="error-message" ng-hide="requestVisit.isDateValid()">Please pick a future date</div>
+        <label class="item item-input">
+            <span class="input-label">Time</span>
+            <input type="time" ng-model="requestVisit.fromVisit.visitTime">
+        </label>
+      </div>
+      <div class="list list-inset">
+        <label class="item item-input">
+          <textarea ng-model="requestVisit.visitRequest.notes" rows="3" placeholder="Notes">
+          </textarea>
+        </label>
+      </div>
+    <div class="list list-inset">
+        <label class="item item-input">
+        <span class="input-label">With {{requestVisit.priorVisitor | firstNameLastInitial}}</span>
+            <div layout="row">
+                <div>
+                    <div class="profile-picture has-picture" layout-align="center center">
+                        <div class="item-avatar"><img ng-src="{{requestVisit.priorVisitor.userData.picture}}"/></div>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+</form>
+  </ion-content>
+</ion-modal-view>

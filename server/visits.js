@@ -1,6 +1,5 @@
 import { softremove } from 'meteor/jagi:astronomy-softremove-behavior'
 import { Visit,Visits } from '/model/visits'
-import { Agency } from '/model/agencies'
 import { logger } from '/server/logging'
 import { Counts } from 'meteor/tmeasday:publish-counts';
 import {Roles} from 'meteor/alanning:roles'
@@ -12,6 +11,7 @@ Meteor.publish("visits", function (options) {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     // active future visit requests, or past requests for which feedback is needed
+    // or for which has been modified today (e.g., feedback added)
     var agencies = user && user.userData && user.userData.agencyIds ? user.userData.agencyIds : [];
     let selector = {
       agencyId: {$in: agencies},
@@ -20,13 +20,11 @@ Meteor.publish("visits", function (options) {
         {
           visitTime: {$lt: new Date()},
           $or: [{requesterId: this.userId, requesterFeedbackId: null},
-            {visitorId: this.userId, visitorFeedbackId: null}]
+            {visitorId: this.userId, visitorFeedbackId: null},
+            {updatedAt: {$gt: today}}]
         },
         {requestedDate: {$gt: today}}]
     };
-    Counts.publish(this, 'numberAgencyVisits', Visits.find(selector), {
-      noReady: true
-    });
     return Visits.find(selector);
   } else {
     this.ready();

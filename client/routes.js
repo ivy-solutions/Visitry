@@ -57,6 +57,17 @@ angular.module('visitry')
           }
         }
       })
+      .state('repeatRequest', {
+        url: '/requester/repeatVisit/:priorVisitId',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/visits/request-visit/repeat-visit.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/request-visit/repeat-visit.html';
+          }
+        },
+        controller: 'repeatVisitController as repeatVisit'
+      })
       .state('browseRequests', {
         url: '/visitor/browseRequests',
         templateUrl: ()=> {
@@ -430,10 +441,12 @@ angular.module('visitry')
   .run(function ($rootScope, $state, $window, $location,$cookies) {
     $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
       if (error === 'AUTH_REQUIRED') {
+        logger.info("AUTH_REQUIRED" + toState.name );
         $state.go('login', {notify: false});
       }
     });
     $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+      logger.info( fromState.name + " to " + toState.name );
       if (toState.name === 'login') {
         if (event && Meteor.userId()) {
           logger.info("redirect from $stateChangeStart");

@@ -136,7 +136,7 @@ angular.module('visitry').directive('feedback', function () {
               $state.go('visitorFeedbackList');
             }
             else {
-              $state.go('pendingVisits');
+              $state.go('repeatRequest', {priorVisitId:$stateParams.visitId});
             }
             window.plugins.toast.showWithOptions(
               {
@@ -155,6 +155,7 @@ angular.module('visitry').directive('feedback', function () {
                 dimension1: this.agencyId
               });
             }
+
           } catch (err) {
             this.handleError(err.reason)
           }

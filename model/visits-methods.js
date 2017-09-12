@@ -100,7 +100,6 @@ Meteor.methods({
         throw err;
       }
     });
-    console.log( "visits.scheduleVisit scheduled visitId: " + visitId + " userId: " + this.userId);
 
     Meteor.call('notifications.visitScheduled', visit);
 

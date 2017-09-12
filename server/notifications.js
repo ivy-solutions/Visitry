@@ -146,28 +146,45 @@ Meteor.methods({
     });
   },
   'notifications.newVisitRequest'(visit) {
-    // notify visitors who requester previously rated highly of a new request
-    var requester = User.findOne(this.userId);
-    var msgTitle = "Visit " + requester.fullName + " again?";
-    var msgText = requester.fullName + " rated a previous visit with you highly and has just made a new visit request.";
+    var requester = User.findOne(visit.requesterId);
+    if (!visit.visitorId) {
+      // notify visitors who requester previously rated highly of a new request
+      var msgTitle = "Visit " + requester.fullName + " again?";
+      var msgText = requester.fullName + " rated a previous visit with you highly and has just made a new visit request.";
 
-    var sixMonthsAgo = moment(new Date()).add(-6, 'M').toDate();
-    let recentHighRatings = Feedback.find(
-      {requesterId:this.userId,
-        submitterId: this.userId,
-        companionRating: {$gt: 3},
-        visitRating: {$gt: 3},
-        createdAt: {$gt: sixMonthsAgo}
+      var sixMonthsAgo = moment(new Date()).add(-6, 'M').toDate();
+      let recentHighRatings = Feedback.find(
+        {
+          requesterId: this.userId,
+          submitterId: this.userId,
+          companionRating: {$gt: 3},
+          visitRating: {$gt: 3},
+          createdAt: {$gt: sixMonthsAgo}
+        });
+      let preferredVisitors = recentHighRatings.map(function (goodFeedback) {
+        return goodFeedback.visitorId;
       });
-    let preferredVisitors = recentHighRatings.map( function (goodFeedback ) {
-      return goodFeedback.visitorId;
-    });
-    let uniquePreferredVisitors = preferredVisitors.filter(function(visitorId, index, self) {
-      return index == self.indexOf(visitorId);
-    });
-    uniquePreferredVisitors.forEach( function(visitorId) {
+      let uniquePreferredVisitors = preferredVisitors.filter(function (visitorId, index, self) {
+        return index == self.indexOf(visitorId);
+      });
+      uniquePreferredVisitors.forEach(function (visitorId) {
+        new Notification({
+            notifyDate: new Date(), toUserId: visitorId, status: NotificationStatus.SENT,
+            title: msgTitle, text: msgText
+          }
+        ).save(function (err, id) {
+          if (err) {
+            logger.error(err);
+          } else {
+            sendPushNotificationNow(id);
+          }
+        });
+      });
+    } else { //new request is pre-filled with visitorId, just let that visitor know
+      var msgTitle = "Let's get together again!";
+      var msgText = requester.fullName + " has scheduled a visit for " + formattedVisitTime(visit);
       new Notification({
-          notifyDate: new Date(), toUserId: visitorId, status: NotificationStatus.SENT,
+          notifyDate: new Date(), toUserId: visit.visitorId, status: NotificationStatus.SENT,
           title: msgTitle, text: msgText
         }
       ).save(function (err, id) {
@@ -177,7 +194,8 @@ Meteor.methods({
           sendPushNotificationNow(id);
         }
       });
-    });
+
+    }
   },
   'notifications.feedbackReminders'() {
     logger.verbose('notifications.feedbackReminders');
