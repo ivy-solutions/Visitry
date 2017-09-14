@@ -159,14 +159,14 @@ describe('Client Feedback', function () {
         controller.submitFeedback(form);
         chai.assert.isTrue(stateSpy.withArgs('visitorFeedbackList').calledOnce)
       });
-      it("after feedback requester goes to pendingVisits ", function () {
+      it("after feedback requester goes to repeatRequest ", function () {
         controller.visitor = {_id: Random.id()};
         controller.requester = {_id: Random.id()};
         controller.companionRating.selectStar(5);
         controller.visitRating.selectStar(5);
         controller.isVisitor=false;
         controller.submitFeedback(form);
-        chai.assert.isTrue(stateSpy.withArgs('pendingVisits').calledOnce)
+        chai.assert.isTrue(stateSpy.withArgs('repeatRequest').calledOnce)
       });
 
     });

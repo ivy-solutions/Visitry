@@ -32,7 +32,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   let requester;
   this.fromVisit;
   this.autorun( function() {
-    logger.info(JSON.stringify($scope.fromVisit));
     if (this.getReactively('fromVisit')) {
       this.visitRequest.location.name = this.fromVisit.location.address;
       // make the request date on the next day with same day of week and time
@@ -70,7 +69,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     },
     priorVisit:()=>{
       this.fromVisit = Visit.findOne({_id: $scope.fromVisitId});
-      logger.info(this.fromVisit);
       return this.fromVisit;
     },
     priorVisitor:()=>{
@@ -106,7 +104,6 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     }
   };
   this.isTimeValid = ()=> {
-    logger.info(this.visitRequest.time);
     if (this.userSubmitted && this.fromVisit==null) {
       return Boolean(this.visitRequest.time > 0);
     } else {

@@ -198,21 +198,34 @@ if (Meteor.isServer) {
         });
         it('finds no previous feedback so sends no notification', () => {
           const invocation = {userId: otherUserId};
-          handler.apply(invocation, [requesterVisit]);
+          handler.apply(invocation, [unscheduledVisit]);
           assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0); //no notification sent to favorite visitor
         });
         it('finds previous feedback so sends 1 notifiation', () => {
           findFeedbackStub.returns([{visitorId: otherUserId}]);
           const invocation = {userId: userId};
-          handler.apply(invocation, [requesterVisit]);
+          handler.apply(invocation, [unscheduledVisit]);
           assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
         });
-        it('finds multiple previous feedback from one user sends 1 notifiation', () => {
+        it('finds multiple previous feedback from one user sends 1 notification', () => {
           findFeedbackStub.returns([{visitorId: otherUserId}, {visitorId: otherUserId}, {visitorId: otherUserId}]);
+          const invocation = {userId: userId};
+          handler.apply(invocation, [unscheduledVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
+        });
+        it('finds multiple previous feedback from two users sends 2 notifications', () => {
+          findFeedbackStub.returns([{visitorId: otherUserId}, {visitorId: userId}, {visitorId: otherUserId}]);
+          const invocation = {userId: userId};
+          handler.apply(invocation, [unscheduledVisit]);
+          assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 2);
+        });
+        it('new visit with visitor filled in, notifies visitor', () => {
+          findFeedbackStub.returns([{visitorId: otherUserId}]);
           const invocation = {userId: userId};
           handler.apply(invocation, [requesterVisit]);
           assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
         });
+
       });
 
       describe('notifications.feedbackReminders', () => {
