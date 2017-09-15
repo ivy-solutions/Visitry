@@ -35,6 +35,10 @@
             <span class="input-label">Time</span>
             <input type="time" ng-model="requestVisit.fromVisit.visitTime">
         </label>
+          <div layout="row">
+              <span flex></span>
+              <div class="error-message" ng-hide="requestVisit.isTimeValid()">Select preferred time of day</div>
+          </div>
       </div>
       <div class="list list-inset">
         <label class="item item-input">

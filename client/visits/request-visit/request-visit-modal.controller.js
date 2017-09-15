@@ -104,8 +104,12 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
     }
   };
   this.isTimeValid = ()=> {
-    if (this.userSubmitted && this.fromVisit==null) {
-      return Boolean(this.visitRequest.time > 0);
+    if (this.userSubmitted ) {
+      if (this.fromVisit==null) {
+        return Boolean(this.visitRequest.time > 0);
+      } else {
+        return Boolean(this.fromVisit.visitTime && this.fromVisit.visitTime.getHours() );
+      }
     } else {
       return true;
     }

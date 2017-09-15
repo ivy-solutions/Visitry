@@ -88,6 +88,16 @@ describe('Request Visit', function () {
       controller.visitRequest.time = 9;
       assert.isTrue(controller.isTimeValid());
     });
+    it('there is a fromVisit but it has no visitTime', function() {
+      controller.userSubmitted = true;
+      controller.fromVisit = {};
+      assert.isFalse(controller.isTimeValid());
+    });
+    it('there is a fromVisit with visitTime', function() {
+      controller.userSubmitted = true;
+      controller.fromVisit = { visitTime: new Date()};
+      assert.isTrue(controller.isTimeValid());
+    });
   });
 
   describe('getFullName',()=>{
