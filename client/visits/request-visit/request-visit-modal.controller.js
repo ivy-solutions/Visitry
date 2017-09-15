@@ -156,7 +156,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
         newVisit.location = this.fromVisit.location;
 
       }else {
-        newVisit.location = requester.userData.location;
+        newVisit.location = this.requester.userData.location;
       }
       Meteor.call('visits.createVisit',newVisit, (err) => {
         if (err) return handleError(err);
