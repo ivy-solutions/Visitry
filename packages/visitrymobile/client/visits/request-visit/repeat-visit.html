@@ -15,13 +15,12 @@
             <div layout="column" layout-padding="true">
             <div class="button-bar">
                 <button class="button button-full button-clear"
-                        ng-click="repeatVisit.scheduleVisit()"
-                >
-                    <span class="balanced">Schedule Now</span>
+                        ng-click="repeatVisit.dismiss()" >
+                    <span class="assertive">Not Now</span>
                 </button>
                 <button class="button button-full button-clear"
-                         ng-click="repeatVisit.dismiss()" >
-                    <span class="assertive">Not Now</span>
+                        ng-click="repeatVisit.scheduleVisit()">
+                    <span class="balanced">Schedule Now</span>
                 </button>
             </div>
         </div>
