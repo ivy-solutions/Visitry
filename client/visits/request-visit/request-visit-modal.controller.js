@@ -29,7 +29,7 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.isLoadingPlaces = false; //true when retrieving info from Google Places
 
   this.userSubmitted = false;
-  let requester;
+  this.requester;
   this.fromVisit;
   this.autorun( function() {
     if (this.getReactively('fromVisit')) {
@@ -49,14 +49,14 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   this.helpers({
     userLocation: ()=> {
       if(Meteor.isCordova) {
-        requester = User.findOne(Meteor.userId())
-        if (requester.userData && requester.userData.location) {
-          this.visitRequest.location.name = requester.userData.location.address
+        this.requester = User.findOne(Meteor.userId())
+        if (this.requester.userData && this.requester.userData.location) {
+          this.visitRequest.location.name = this.requester.userData.location.address
         }
       }else if(this.getReactively('visitRequest.requesterId')) {
-        requester = User.findOne(this.visitRequest.requesterId)
+        this.requester = User.findOne(this.visitRequest.requesterId)
       }
-      return requester
+      return this.requester
 
     },
     requesters:()=>{
@@ -86,10 +86,10 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
   };
 
   this.isLocationValid = ()=> {
-    if ( this.userSubmitted && requester) {
+    if ( this.userSubmitted && this.requester) {
       //user has selected a location, or has a default location that matches what is on screen
       let hasSelectedLocation = this.visitRequest.location.details.geometry !== null;
-      let usingProfileLocation = requester.userData && requester.userData.location != null && requester.userData.location.address === this.visitRequest.location.name;
+      let usingProfileLocation = this.requester.userData && this.requester.userData.location != null && this.requester.userData.location.address === this.visitRequest.location.name;
       return this.visitRequest.location.name.length > 0 && (
         hasSelectedLocation || usingProfileLocation)
     } else {
@@ -126,7 +126,9 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
 
   this.submit = function () {
     this.userSubmitted = true;
-    if (this.isLocationValid() && this.isDateValid() && this.isTimeValid() && (Roles.userIsInRole(Meteor.userId(),'administrator',this.agencyId)===Boolean(this.visitRequest.requesterId))) {
+    if (this.isLocationValid() && this.isDateValid() && this.isTimeValid()
+      && (Roles.userIsInRole(Meteor.userId(),'administrator',this.agencyId)===Boolean(this.visitRequest.requesterId)) ) {
+
       let newVisit = new Visit({
         notes: this.visitRequest.notes,
         requesterId:this.visitRequest.requesterId
@@ -170,6 +172,17 @@ angular.module('visitry').controller('requestVisitModalCtrl', function ($scope, 
           eventAction: 'request',
           dimension1: requesterAgency
         });
+      }
+    } else {
+      logger.error("error in request form. ");
+      if (!this.isLocationValid()) {
+        logger.error( "Location is invalid:" + this.visitRequest.location.name);
+      }
+      if (!this.isDateValid()) {
+        logger.error( "Date is invalid: " + this.visitRequest.date)
+      }
+      if (!this.isTimeValid()) {
+        logger.error( "Time is invalid.")
       }
     }
   };
