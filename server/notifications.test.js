@@ -131,14 +131,27 @@ if (Meteor.isServer) {
         });
         it('cancel by requester sends push notification to visitor', () => {
           const invocation = {userId: userId};
-          handler.apply(invocation, [requesterVisit]);
+          handler.apply(invocation, [requesterVisit, "requester's message"]);
           assert.isTrue(Meteor.call.calledWith('userNotification'),"userNotification called");
+        });
+        it('cancel by requester sends notification with message to visitor', () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [requesterVisit, "requester's message"]);
+          let sentNotification = Notifications.findOne({status: NotificationStatus.SENT});
+          assert.match( sentNotification.text, /requester's message/);
+
         });
         it("cancel by visitor sends notification and removes future notifications", () => {
           const invocation = {userId: userId};
-          handler.apply(invocation, [visitorVisit]);
+          handler.apply(invocation, [visitorVisit, "visitor's message"]);
           assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 1);
           assert.equal(Notifications.find({status: NotificationStatus.FUTURE}).count(), 0);
+        });
+        it("cancel by visitor sends notification with message", () => {
+          const invocation = {userId: userId};
+          handler.apply(invocation, [visitorVisit, "visitor's message"]);
+          let sentNotification = Notifications.findOne({status: NotificationStatus.SENT});
+          assert.match( sentNotification.text, /visitor's message/);
         });
         it('cancel by requester sends push notification to visitor', () => {
           const invocation = {userId: userId};
@@ -201,7 +214,7 @@ if (Meteor.isServer) {
           handler.apply(invocation, [unscheduledVisit]);
           assert.equal(Notifications.find({status: NotificationStatus.SENT}).count(), 0); //no notification sent to favorite visitor
         });
-        it('finds previous feedback so sends 1 notifiation', () => {
+        it('finds previous feedback so sends 1 notification', () => {
           findFeedbackStub.returns([{visitorId: otherUserId}]);
           const invocation = {userId: userId};
           handler.apply(invocation, [unscheduledVisit]);

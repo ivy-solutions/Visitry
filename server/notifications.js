@@ -67,9 +67,9 @@ Meteor.methods({
 
   },
   'notifications.visitCreatedByAdmin'(visit){
-    let msgTitle ='Visit Created'
-    let admin = User.findOne(this.userId)
-    let msgText = 'Visit created for you by '+admin.fullName+ ' for '+moment(visit.requestDate).local().format('MMM. D')
+    let msgTitle ='Visit Created';
+    let admin = User.findOne(this.userId);
+    let msgText = 'Visit created for you by '+admin.fullName+ ' for '+moment(visit.requestDate).local().format('MMM. D');
     new Notification({
       visitId: visit._id,
       notifyDate:new Date(),
@@ -85,7 +85,11 @@ Meteor.methods({
       }
     });
   },
-  'notifications.visitCancelled'(visit) {
+  'notifications.visitCancelled'(visit,message) {
+    let msgText2 = "";
+    if (message && message.length > 0 ) {
+      msgText2 = ' Message: \"' + message + '\"';
+    }
     if (visit.visitorId && (visit.visitorId !== this.userId ||Roles.userIsInRole(this.userId,'administrator',visit.agencyId)) ) {
       //communicate with visitor
       let msgTitle = "Visit canceled";
@@ -95,7 +99,7 @@ Meteor.methods({
       new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.visitorId, status: NotificationStatus.SENT,
-          title: msgTitle, text: msgText
+          title: msgTitle, text: msgText + msgText2
         }
       ).save(function(err, id) {
         if (err) {
@@ -114,7 +118,7 @@ Meteor.methods({
       new Notification({
           visitId: visit._id,
           notifyDate: new Date(), toUserId: visit.requesterId, status: NotificationStatus.SENT,
-          title: msgTitle, text: msgText
+          title: msgTitle, text: msgText + msgText2
         }
       ).save(function(err, id) {
          if (err) {

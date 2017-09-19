@@ -33,7 +33,7 @@ Meteor.methods({
     });
 
   },
-  'visits.rescindRequest'(visitId) {
+  'visits.rescindRequest'(visitId, message) {
     var visit = Visit.findOne(visitId);
     if (!visit) {
       console.log( "visits.rescindRequest for visit not found. visitId: " + visitId + " userId: " + this.userId);
@@ -46,13 +46,13 @@ Meteor.methods({
     }
     console.log( "rescind visit request for " + visit.requesterId);
     //notify visitor
-    Meteor.call( 'notifications.visitCancelled', visit);
+    Meteor.call( 'notifications.visitCancelled', visit, message);
 
     visit.softRemove();
 
     return visit;
   },
-  'visits.cancelScheduled'(visitId) {
+  'visits.cancelScheduled'(visitId, message) {
     const visit = Visit.findOne(visitId);
     if (!visit) {
       console.log( "visits.cancelScheduled for visit not found. visitId: " + visitId + " userId: " + this.userId);
@@ -64,7 +64,7 @@ Meteor.methods({
     }
 
     //notify requester, before editing the visit
-    Meteor.call( 'notifications.visitCancelled', visit);
+    Meteor.call( 'notifications.visitCancelled', visit, message);
 
     // format msg for the push notification before the save
     var user = User.findOne(this.userId);

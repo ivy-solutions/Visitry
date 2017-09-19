@@ -64,7 +64,8 @@ Meteor.myFunctions = {
   },
   showCancelVisitConfirm: function (visit, $filter, $ionicPopup, $ionicListDelegate, $ionicHistory, $window) {
     let cancelVisitMethod = (visit.requesterId === Meteor.userId()) ? 'visits.rescindRequest' : 'visits.cancelScheduled';
-    let confirmMessage = '';
+    let confirmMessage;
+    let confirmPopup;
     if (visit.visitorId) {
       let otherParty = null;
       if (visit.requesterId === Meteor.userId()) {
@@ -72,19 +73,30 @@ Meteor.myFunctions = {
       } else {
         otherParty = User.findOne({_id:visit.requesterId}, {userData:1});
       }
-      confirmMessage = "Do you want to cancel your visit with " + $filter('firstNameLastInitial')(otherParty) + " on " + $filter('date')(new Date(visit.visitTime), 'MMMM d, h:mm') + "?"
+      let otherPartyName = $filter('firstNameLastInitial')(otherParty);
+      confirmMessage = "Do you want to cancel your visit with " + otherPartyName + " on " + $filter('date')(new Date(visit.visitTime), 'MMMM d, h:mm') + "?"
+      confirmPopup = $ionicPopup.prompt({
+        title: 'Cancel Visit',
+        template: confirmMessage,
+        cancelText: 'No',
+        okText: 'Yes',
+        inputType: 'textArea',
+        inputPlaceholder: 'Message for ' + otherPartyName
+      });
     }
     else {
       confirmMessage = "Do you want to cancel your visit request for " + $filter('date')(new Date(visit.requestedDate), 'MMMM d') + "?";
+      confirmPopup = $ionicPopup.confirm({
+        title: 'Cancel Request',
+        template: confirmMessage,
+        cancelText: 'No',
+        okText: 'Yes'
+      });
     }
-    let confirmPopup = $ionicPopup.confirm({
-      template: confirmMessage,
-      cancelText: 'No',
-      okText: 'Yes'
-    });
+
     confirmPopup.then((result)=> {
-      if (result) {
-        Meteor.call(cancelVisitMethod, visit._id, (err) => {
+      if (result !==undefined && result != false) {
+        Meteor.call(cancelVisitMethod, visit._id, result, (err) => {
           if (err) {
             return handleError(err, $ionicPopup);
           } else {
