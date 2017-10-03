@@ -9,7 +9,7 @@ aldeed:moment-timezone@0.4.0
 aldeed:schema-deny@1.1.0
 aldeed:schema-index@1.1.1
 aldeed:simple-schema@1.5.3
-allow-deny@1.0.5
+allow-deny@1.0.9
 angular@1.3.11
 angular-meteor-data@1.3.11
 angular-templates@1.0.9
