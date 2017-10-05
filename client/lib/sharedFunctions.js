@@ -95,7 +95,7 @@ Meteor.myFunctions = {
     }
 
     confirmPopup.then((result)=> {
-      if (result !==undefined && result != false) {
+      if (result !==undefined && result !== false) {
         Meteor.call(cancelVisitMethod, visit._id, result, (err) => {
           if (err) {
             return handleError(err, $ionicPopup);
