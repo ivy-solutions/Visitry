@@ -82,6 +82,23 @@ describe('View Visit Details', function () {
     });
   });
 
+  describe("canEdit", function() {
+    it("only if user is requester", function() {
+      userIdStub.returns("someUserId");
+      controller.visit = {requesterId: 'requesterId'};
+      chai.assert.isFalse(controller.canEdit());
+    });
+    it("only if unscheduled", function() {
+      controller.visit = {requesterId: Meteor.userId(), visitorId:"visitorId"};
+      chai.assert.isFalse(controller.canEdit());
+    });
+    it("if unscheduled and user is requester", function() {
+      userIdStub.returns("someUserId");
+      controller.visit = {requesterId: "someUserId"};
+      chai.assert.isTrue(controller.canEdit());
+    });
+  });
+
   describe("canCallRequester", function () {
     it("user is visitor and has a phone number", function () {
       userIdStub.returns("someUserId");

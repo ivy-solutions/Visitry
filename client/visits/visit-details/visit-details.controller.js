@@ -57,7 +57,7 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   };
 
   this.canEdit = function () {
-    return this.requester._id === Meteor.userId() && !this.visit.visitorId
+    return this.visit.requesterId === Meteor.userId() && !this.visit.visitorId
   };
 
   this.requesterEmailLink = function () {
