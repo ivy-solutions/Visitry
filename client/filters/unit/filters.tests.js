@@ -134,19 +134,28 @@ describe( 'Filters ', function () {
       chai.assert.equal(timeOfDay(null), 'No Time Specified');
     });
 
-    it('returns string indicating "Morning,Afternoon,Evening,Any time", depending on hour', function() {
+    it('returns string indicating "Morning,Afternoon,Evening", depending on hour', function() {
       var timeOfDay = $filter('timeOfDay');
       //new Date(Date.UTC(year, month, day, hour, minute, second))
-      var morning = new Date(2106, 6, 13, 9, 0, 0);
-      var afternoon = new Date(2106, 6, 13, 13, 0, 0);
-      var evening = new Date(2106, 6, 13, 16, 0, 0);
-      var anytime = new Date((2106, 6, 13, 7, 0, 0));
+      var morning = new Date(2016, 6, 13, 9, 0, 0);
+      var afternoon = new Date(2016, 6, 13, 13, 0, 0);
+      var evening = new Date(2016, 6, 13, 16, 0, 0);
       chai.assert.equal(timeOfDay(morning), 'Morning');
       chai.assert.equal(timeOfDay(afternoon), 'Afternoon');
       chai.assert.equal(timeOfDay(evening), 'Evening');
-      chai.assert.equal(timeOfDay(anytime), 'Any time');
     });
-
+    it('returns string indicating with exact time included', function() {
+      var timeOfDay = $filter('timeOfDay');
+      //new Date(Date.UTC(year, month, day, hour, minute, second))
+      var morning = new Date(2016, 6, 13, 9, 15, 0);
+      var afternoon = new Date(2016, 6, 13, 14, 0, 0);
+      var evening = new Date(2016, 6, 13, 17, 0, 0);
+      var early = new Date(2016, 6, 13, 7, 0, 0);
+      chai.assert.equal(timeOfDay(morning), 'Morning (9:15am)');
+      chai.assert.equal(timeOfDay(afternoon), 'Afternoon (2:00pm)');
+      chai.assert.equal(timeOfDay(evening), 'Evening (5:00pm)');
+      chai.assert.equal(timeOfDay(early), 'Morning (7:00am)');
+    });
   });
 
   describe( 'Filter: hoursMinutes', function() {

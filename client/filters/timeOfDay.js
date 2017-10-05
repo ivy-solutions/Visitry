@@ -18,7 +18,7 @@ angular.module('visitry').filter('timeOfDay', function () {
       if ( hours != 9 || minutes != 0 )
         answer += exactTime;
     }
-    else if (hours <= 16) {
+    else if (hours < 16) {
       answer = 'Afternoon';
       if (hours != 13 || minutes != 0)
         answer += exactTime;
