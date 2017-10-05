@@ -14,10 +14,11 @@
         <div class="item item-divider">
           <div layout="row">
             <strong><span class="scheduledDate">{{visit.requestedDate | date: "EEEE, MMMM d"}}</span></strong>
-          </div>
+          </div>       </div>
+        <div class="item item-divider">
+          <strong>Requested Time: {{visit.requestedDate | timeOfDay }}</strong>
         </div>
         <label class="item item-input">
-          <strong>Time</strong>
           <ionic-timepicker class="button button-block button-clear" input-obj="timePickerObject" ng-click="scheduleVisit.initTimePicker(visit.requestedDate)">
             <button class="button overflowShow">Set Time
             </button>

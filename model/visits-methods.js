@@ -31,7 +31,15 @@ Meteor.methods({
         return visit;
       }
     });
-
+  },
+  'visits.updateVisit'(visit) {
+    visit.save(function (err, id) {
+      if (err) {
+        console.log("failed to update visit. err: " + err);
+        throw err;
+      }
+      return visit;
+    });
   },
   'visits.rescindRequest'(visitId, message) {
     var visit = Visit.findOne(visitId);

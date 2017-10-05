@@ -1,0 +1,35 @@
+<h4 layout="column">
+  <form>
+    <ion-list>
+      <label class="item item-input">
+        <i class="icon ion-location placeholder-icon"></i>
+        <input type="text" name="location" id="locationInput" ng-google-places-autocomplete-hack
+               ng-model="editVisit.visit.location.address"
+               ng-progress="editVisit.isLoadingPlaces"
+               details="editVisit.visit.location.details" data-tap-disabled="true"
+        />
+        <span ng-hide="!editVisit.isLoadingPlaces"><ion-spinner icon="ios-small"></ion-spinner></span>
+      </label>
+      <div class="list list-inset date-time-input">
+        <label class="item item-input">
+          <span class="input-label">Date</span>
+          <input type="date" ng-model="editVisit.visit.requestedDate">
+        </label>
+        <div layout="row">
+          <span flex></span>
+          <div class="error-message" ng-hide="editVisit.isDateValid()">Please pick a future date</div>
+        </div>
+        <label class="item item-input">
+          <span class="input-label">Time</span>
+          <input type="time" ng-model="editVisit.visit.requestedDate">
+        </label>
+      </div>
+      <h4>Notes</h4>
+      <div class="item item-input">
+      <textarea ng-model="editVisit.visit.notes" rows="3">
+      </textarea>
+      </div>
+    </ion-list>
+  </form>
+</h4>
+

@@ -116,6 +116,17 @@ angular.module('visitry')
         },
         controller: 'visitDetailsCtrl as visitDetails'
       })
+      .state('editVisit', {
+        url: '/visits/edit/:visitId',
+        templateUrl: ()=> {
+          if (Meteor.isCordova) {
+            return '/packages/visitrymobile/client/visits/visit-details/edit-visit.html';
+          } else {
+            return '/packages/visitry-browser/client/visits/visit-details/edit-visit.html';
+          }
+        },
+        controller: 'editVisitCtrl as editVisit'
+      })
       .state('login', {
         url: '/login',
         templateUrl: ()=> {

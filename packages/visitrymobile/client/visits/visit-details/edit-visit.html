@@ -1,0 +1,28 @@
+/**
+* Created by sarahcoletti on 3/2/16.
+*/
+<ion-view view-title="Edit Visit" hide-back-button=false hide-tabs>
+  <ion-content padding="true" scroll="true">
+    <div ng-if="editVisit.isRequester()"
+         ng-include="'/packages/visitrymobile/client/visits/visit-details/edit-visit-requester.html'">
+    </div>
+    <div ng-if="editVisit.isVisitor()"
+         ng-include="'/packages/visitrymobile/client/visits/visit-details/edit-visit-visitor.html'">
+    </div>
+    <div>
+      <div layout="column" layout-padding="true">
+          <div class="button-bar">
+              <button class="button button-full button-clear"
+                      ng-click="editVisit.submit()"
+              >
+                  <span class="balanced">Save</span>
+              </button>
+              <button class="button button-full button-clear"
+                      ng-click="editVisit.cancel()" >
+                  <span class="assertive">Cancel Edit</span>
+              </button>
+          </div>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

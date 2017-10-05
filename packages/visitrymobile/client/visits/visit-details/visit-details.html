@@ -19,6 +19,12 @@
                   <span class="balanced">Plan Visit</span>
               </button>
               <button class="button button-full button-clear"
+                      ng-if="visitDetails.canEdit()"
+                      ng-click="visitDetails.editVisit()"
+              >
+                  <span class="balanced">Edit Visit</span>
+              </button>
+              <button class="button button-full button-clear"
                       ng-if="(visitDetails.visit.visitorId)||(visitDetails.isRequester())"
                       ng-click="visitDetails.cancelVisit()" >
                   <span class="assertive">Cancel Visit</span>

@@ -4,7 +4,8 @@
 import { Visit } from '/model/visits'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup, $filter, $ionicListDelegate,$ionicHistory, ScheduleVisit, $window) {
+angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stateParams, $reactive, $ionicPopup,
+                                                                   $filter, $ionicListDelegate,$ionicHistory, ScheduleVisit, $window, $state) {
   $reactive(this).attach($scope);
 
   this.visitId = $stateParams.visitId;
@@ -53,6 +54,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
   this.canCallVisitor = function () {
     var visitor = this.getVisitor();
     return (Meteor.myFunctions.isRequester() && visitor && visitor.userData && visitor.userData.phoneNumber) ? true : false;
+  };
+
+  this.canEdit = function () {
+    return this.requester._id === Meteor.userId() && !this.visit.visitorId
   };
 
   this.requesterEmailLink = function () {
@@ -181,6 +186,10 @@ angular.module('visitry').controller('visitDetailsCtrl', function ($scope, $stat
 
   this.scheduleVisit = function() {
     ScheduleVisit.showModal(this.visit);
+  };
+
+  this.editVisit = function() {
+    $state.go('editVisit', {visitId: this.visitId});
   };
 
   this.cancelVisit = ()=>{
