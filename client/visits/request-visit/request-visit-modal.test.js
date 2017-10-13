@@ -111,8 +111,9 @@ describe('Request Visit', function () {
       assert.isFalse(controller.isTimeValid());
     });
     it('there is a fromVisit with visitTime', function() {
+      var decDateAt9am = new Date(2017, 12, 30, 9, 0 ,0 ,0);
       controller.userSubmitted = true;
-      controller.fromVisit = { visitTime: new Date()};
+      controller.fromVisit = { visitTime: decDateAt9am};
       assert.isTrue(controller.isTimeValid());
     });
   });
@@ -141,6 +142,7 @@ describe('Request Visit', function () {
       controller.fromVisit = { visitTime: new Date(), visitorId: Random.id()};
       var tomorrow = new Date();
       tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
+      tomorrow.setHours(9);
       controller.visitRequest = {
         date: tomorrow,
         time: 0,
