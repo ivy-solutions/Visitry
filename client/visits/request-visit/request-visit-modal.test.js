@@ -140,11 +140,11 @@ describe('Request Visit', function () {
     it('does submit if fromVisit provided',function () {
       controller.userSubmitted = true;
       controller.fromVisit = { visitTime: new Date(), visitorId: Random.id()};
-      var tomorrow = new Date();
-      tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000));
-      tomorrow.setHours(9);
+      var nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear()+1)
+      nextYear.setHours(9);
       controller.visitRequest = {
-        date: tomorrow,
+        date: nextYear,
         time: 0,
         location: {
           name: "someplace",
