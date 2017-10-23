@@ -9,7 +9,7 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
 
   var timePicker = {
     inputEpochTime: 10* 60 *60,  //Optional - start time to display, 10am - but overriden by requestedDate
-    step: 15,  //Optional - show 15 minute increments
+    step: 5,  //Optional - show 5 minute increments
     format: 12,  //Optional - 12 hour time
     titleLabel: 'Visit Time',  //Optional
     setLabel: 'Set',  //Optional
@@ -84,14 +84,14 @@ angular.module('visitry').controller('scheduleVisitModalCtrl', function ($scope,
     } else {
       return "";
     }
-  };
+  }
 
   this.setSelectedTime = function( time ) {
     selectedTime = time;
   };
 
   this.initTimePicker = function(requestedDate) {
-    timePicker.inputEpochTime = (requestedDate.getHours())* 60 *60;
+    timePicker.inputEpochTime = (requestedDate.getHours())* 60 * 60 + ( requestedDate.getMinutes() * 60);
   };
 
   function timePickerCallback(val) {

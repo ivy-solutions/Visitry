@@ -21,7 +21,11 @@
         </div>
         <label class="item item-input">
           <span class="input-label">Time</span>
-          <input type="time" ng-model="editVisit.visit.requestedDate">
+          <ionic-timepicker class="button button-block button-clear" input-obj="timePickerObject">
+            <button class="button overflowShow">{{editVisit.getEditedTime() | date: "h:mm a"}}
+            </button>
+
+          </ionic-timepicker>
         </label>
       </div>
       <h4>Notes</h4>
