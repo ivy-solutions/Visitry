@@ -9,16 +9,16 @@ import {Roles} from 'meteor/alanning:roles'
 import '/server/users.js';
 import '/model/users.js'
 import {Errors} from '/server/server-errors';
-import {Enrollments} from '/model/enrollment'
+import {Enrollments,Enrollment} from '/model/enrollment'
 import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
   describe('Users', () => {
 
-    var testUserId;
+    let testUserId;
     beforeEach(() => {
       //TODO: convert this to use StubCollections -- there is an issue with astronomy save method so it won't work currently
-      var user = Meteor.users.findOne({username: 'testUser'});
+      let user = Meteor.users.findOne({username: 'testUser'});
       if (!user) {
         testUserId = Accounts.createUser({username: 'testUser', password: 'Visitry99', role: "requester"});
       } else {
@@ -35,7 +35,7 @@ if (Meteor.isServer) {
       it('succeeds when valid first and last name passed', () => {
         const invocation = {userId: testUserId};
         updateNameHandler.apply(invocation, ["firstName", "lastName"]);
-        var updatedUser = User.findOne({_id: testUserId});
+        let updatedUser = User.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.firstName, "firstName");
         assert.equal(updatedUser.userData.lastName, "lastName");
       });
@@ -64,7 +64,7 @@ if (Meteor.isServer) {
       it('succeeds when valid location passed', () => {
         const invocation = {userId: testUserId};
         updateLocationHandler.apply(invocation, [location]);
-        var updatedUser = User.findOne(testUserId);
+        let updatedUser = User.findOne(testUserId);
         assert.equal(updatedUser.userData.location.address, location.name);
         assert.equal(updatedUser.userData.location.formattedAddress, location.formattedAddress);
         assert.equal(updatedUser.userData.location.geo.coordinates[1], location.latitude);
@@ -207,7 +207,59 @@ if (Meteor.isServer) {
         assert.equal(updatedUser.emails[0].address, 'EMAIL@address.com');
       })
     });
+    describe('users.removeUserFromAgency',()=>{
+      const removeUserFromAgencyHandler = Meteor.server.method_handlers['removeUserFromAgency'];
+      let agencyId = Random.id();
+      let adminTestUser;
+      let meteorCallStub;
+      let errorsStub;
+      beforeEach(()=> {
+        testUserId = Accounts.createUser({
+          username: 'testUserWithEmail',
+          password: 'Visitry99',
+          email: 'email@address.com'
+        });
+        Roles.addUsersToRoles(testUserId, 'requester', agencyId);
+        StubCollections.stub(Enrollments)
+        Enrollments.insert({userId: testUserId, agencyId: agencyId})
+        adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99'});
+        Roles.addUsersToRoles(adminTestUser, 'administrator', agencyId);
+        errorsStub = sinon.stub(Errors, 'checkUserIsAdministrator').returns(true);
+        meteorCallStub = sinon.stub(Meteor, 'call');
+        meteorCallStub.withArgs('getAgency').returns({
+          name: 'fakeAgency',
+          contactEmail: 'fake@email.com',
+          contactPhone: '1234567890'
+        });
+      });
+      afterEach(()=> {
+        Meteor.users.remove(adminTestUser);
+        StubCollections.restore()
+        meteorCallStub.restore();
+        errorsStub.restore();
+      });
 
+      it('remove a user removes their role', ()=> {
+        const invocation = {userId: adminTestUser};
+        removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId,role:'requester', agencyId: agencyId }]);
+        assert.notDeepEqual(Roles.getRolesForUser(testUserId, agencyId),["requester"], "does not have requester role for agency");
+      });
+      it('remove a user updates user document', ()=> {
+        const invocation = {userId: adminTestUser};
+        removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId,role:'requester', agencyId: agencyId }]);
+        let updatedUser = Meteor.users.findOne({_id: testUserId});
+        assert.equal(updatedUser.userData.agencyIds.length, 0);
+      });
+      it('add a user to an agency fails if no user is provided', ()=> {
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{agencyId: agencyId}]), 'User missing. [invalid-user]');
+      });
+      it('add a user to an agency fails if no agency is provided', ()=> {
+        meteorCallStub.withArgs('getAgency').returns('');
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId}]), 'Agency missing. [invalid-agency]');
+      });
+    })
     describe('users.addUserToAgency', ()=> {
 
       const addUserToAgencyHandler = Meteor.server.method_handlers['addUserToAgency'];

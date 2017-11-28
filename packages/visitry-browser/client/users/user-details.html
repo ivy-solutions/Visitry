@@ -8,19 +8,20 @@
           <div class="md-list-item-text">
             <div class="md-display-3">{{userDetails.user.fullName}}</div>
             <div layout-padding>
-                <span ng-show="userDetails.isVisitor" style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px">
+                <span ng-show="userDetails.isVisitor"
+                      style="border-width: thin;border-style: solid; border-radius: 5px; margin-right: 6px">
                     <ng-md-icon style="vertical-align: -webkit-baseline-middle;" icon="star">
                     </ng-md-icon>{{userDetails.user.visitorRating|number:1}}
                 </span>
-                <div ng-show="userDetails.enrolled.approvalDate">
-                    Member since
-                    {{userDetails.enrolled.approvalDate | date:'mediumDate'}}
-                </div>
-                <div ng-show="!userDetails.enrolled.approvalDate">
-                    Applied on
-                    {{userDetails.enrolled.applicationDate | date:'mediumDate'}}
-                </div>
-                <span ng-if="userDetails.user.emails[0].address"><a href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></span>
+              <div ng-show="userDetails.enrolled.approvalDate">
+                Member since
+                {{userDetails.enrolled.approvalDate | date:'mediumDate'}}
+              </div>
+              <div ng-show="!userDetails.enrolled.approvalDate">
+                Applied on
+                {{userDetails.enrolled.applicationDate | date:'mediumDate'}}
+              </div>
+              <span ng-if="userDetails.user.emails[0].address"><a href="mailto:{{userDetails.user.emails[0].address}}">{{userDetails.user.emails[0].address}}</a></span>
             </div>
           </div>
         </md-list-item>
@@ -85,8 +86,10 @@
         </div>
       </md-list-item>
       <md-list-item
-          dir-paginate="visit in userDetails.visits | itemsPerPage: userDetails.recordPerPage" pagination-id="userDetailsVisits"
-          total-items="userDetails.visitsCount" ng-click="userDetails.getVisitDetails(visit._id)" aria-label="users visits">
+          dir-paginate="visit in userDetails.visits | itemsPerPage: userDetails.recordPerPage"
+          pagination-id="userDetailsVisits"
+          total-items="userDetails.visitsCount" ng-click="userDetails.getVisitDetails(visit._id)"
+          aria-label="users visits">
         <div layout="row" layout-align="start center" layout-fill
              class="md-list-item-text" ng-include="'/packages/visitry-browser/client/users/user-available-visit.html'"
              ng-if="!visit.visitorId&&!visit.inactive" layout-padding>
@@ -108,6 +111,12 @@
         </div>
       </md-list-item>
     </md-list>
-    <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)" pagination-id="userDetailsVisits"></dir-pagination-controls>
+    <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)"
+                             pagination-id="userDetailsVisits"></dir-pagination-controls>
+
+  </div>
+  <md-divider></md-divider>
+  <div layout="row" layout-align="center center">
+    <md-button class="md-warn" ng-click="userDetails.removeUser($event)">Remove User</md-button>
   </div>
 </md-dialog>
