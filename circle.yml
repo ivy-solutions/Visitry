@@ -8,7 +8,7 @@ machine:
   java:
     version: oraclejdk8
   node:
-    version: 5.7.0
+    version: 6.11.4
 dependencies:
   pre:
     - npm install -g npm
