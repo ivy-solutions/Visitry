@@ -9,6 +9,7 @@ machine:
     version: oraclejdk8
 dependencies:
   pre:
+    - npm install -g npm
     - npm -g install ssh2
     - npm install -g mup # install meteor-up for deployment
     - mkdir $HOME/build/
