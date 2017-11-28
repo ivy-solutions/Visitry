@@ -11,7 +11,7 @@ module.exports = {
       // or leave blank for authenticate from ssh-agent
       opts: {
         port: 22,
-      },
+      }
     }
   },
 
@@ -61,10 +61,9 @@ module.exports = {
   },
 
   mongo: {
-    oplog: true,
-    port: 27017,
+    version: '3.4.1',
     servers: {
       one: {},
-    },
-  },
+    }
+  }
 }
