@@ -39,7 +39,8 @@ module.exports = {
     },
     buildOptions: {
       serverOnly: true,
-      debug: true,
+      debug: false,
+      cleanAfterBuild: true, // default
       buildLocation: '/home/ubuntu/build/Visitry' // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       //mobileSettings: {
