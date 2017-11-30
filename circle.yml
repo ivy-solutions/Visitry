@@ -7,10 +7,13 @@ general:
 machine:
   java:
     version: oraclejdk8
+  node:
+    version: 6.11.4
 dependencies:
   pre:
+    - npm install -g npm
     - npm -g install ssh2
-    - npm install -g mup@1.1.2 # install meteor-up for deployment
+    - npm install -g mup # install meteor-up for deployment
     - mkdir $HOME/build/
     - mkdir $HOME/build/Visitry/
     # Android SDK Platform 25
@@ -20,9 +23,9 @@ dependencies:
   override:
     - meteor || curl https://install.meteor.com | /bin/sh
     - npm install -g spacejam
+    - meteor npm install bcrypt
     - meteor npm install
     - meteor npm install --save babel-runtime
-    - meteor npm install --save bcrypt
   cache_directories:
     - ~/.meteor
     - /usr/local/android-sdk-linux/platforms/android-25

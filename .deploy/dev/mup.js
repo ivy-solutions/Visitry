@@ -12,7 +12,7 @@ module.exports = {
       opts: {
         port: 22
       }
-    }
+    },
   },
 
   meteor: {
@@ -27,43 +27,55 @@ module.exports = {
     //   "/second/host/path": "/second/container/path"
     // },
     docker: {
-      //image: 'kadirahq/meteord', // (optional)
-      image: 'abernix/meteord:base' // use this image if using Meteor 1.4+
-      //args:[ // lets you add/overwrite any parameter on the docker run command (optional)
-        // "--link=myCustomMongoDB:myCustomMongoDB", // linking example
-        // "--memory-reservation 200M" // memory reservation example
-      //]
+      // change to 'abernix/meteord:base' if your app is using Meteor 1.4 - 1.5
+      image: 'abernix/meteord:base'
+      //image: 'abernix/meteord:node-8.4.0-base'
     },
     servers: {
       one: {}
     },
     buildOptions: {
       serverOnly: true,
-      debug: true,
+      debug: false,
+      cleanAfterBuild: true, // default
       buildLocation: '/home/ubuntu/build/Visitry' // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       //mobileSettings: {
       //}
     },
+
     env: {
       PORT: 3000,
       ROOT_URL: 'https://dev.visitry.org',
       MONGO_URL: 'mongodb://localhost/meteor'
     },
+
+    // ssl: { // (optional)
+    //   // Enables let's encrypt (optional)
+    //   autogenerate: {
+    //     email: 'email.address@domain.com',
+    //     // comma separated list of domains
+    //     domains: 'website.com,www.website.com'
+    //   }
+    // },
     ssl: {
       port: 443,
       crt: 'bundle.crt',
       key: 'private.key'
     },
 
-    deployCheckWaitTime: 600
+    deployCheckWaitTime: 600,
+
+
+    // Show progress bar while uploading bundle to server
+    // You might need to disable it on CI servers
+    enableUploadProgressBar: true
   },
 
   mongo: {
-    oplog: true,
-    port: 27017,
+    version: '3.4.1',
     servers: {
       one: {}
-    },
-  },
-};
+    }
+  }
+}
