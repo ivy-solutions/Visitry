@@ -19,7 +19,8 @@ angular.module("visitry.browser").directive('register', function () {
         userData: {
           firstName: "",
           lastName: "",
-          agencyIds: [this.agencyId]
+          agencyIds: [this.agencyId],
+          phoneNumber: ""
         }
       };
 

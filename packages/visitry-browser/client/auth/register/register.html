@@ -33,7 +33,8 @@
               </div>
             </md-input-container>
           </div>
-          <md-input-container class="md-block">
+          <div layout="row">
+          <md-input-container class="md-block" flex>
             <label>Email</label>
             <input ng-model="register.credentials.email" name="email" type="email" placeholder="Email" required
                    minlength="10" maxlength="100" ng-pattern="/^.+@.+\..+$/"/>
@@ -44,6 +45,17 @@
               </div>
             </div>
           </md-input-container>
+          <md-input-container class="md-block" flex>
+            <label>Phone</label>
+            <input ng-model="register.credentials.userData.phoneNumber" name="phoneNumber" type="tel" placeholder="Phone number"
+                   required ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" />
+            <div
+                ng-messages="registrationForm.phoneNumber.$error" role="alert">
+              <div ng-message-exp="['required', 'pattern']">Phone number must include 3 digit area code and 7 digit phone number.
+              </div>
+            </div>
+          </md-input-container>
+            </div>
           <div layout="row">
             <md-radio-group ng-model="register.credentials.role" flex layout-padding>
               <md-radio-button ng-hide="register.credentials.role==='administrator'" value="requester"

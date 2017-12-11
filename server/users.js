@@ -394,10 +394,16 @@ Meteor.methods({
         }
       })
     } catch (err) {
-      if (err.reason === 'Email already exists.') {
+      // can add existing user as an administrator
+      if (err.reason === 'Email already exists.' && data.role === 'administrator') {
+        let existingUser = Accounts.findUserByEmail(data.email);
+        let isSameUser = data.userData.firstName.toUpperCase() === existingUser.userData.firstName.toUpperCase() &&
+          data.userData.lastName.toUpperCase() === existingUser.userData.lastName.toUpperCase();
+        if (!isSameUser)
+          throw err;
         try {
           Meteor.call('addUserToAgency', {
-            userId: newUserId || Accounts.findUserByEmail(data.email)._id,
+            userId: existingUser._id,
             agencyId: agencyId,
             role: data.role
           })
