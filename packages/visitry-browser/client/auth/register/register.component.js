@@ -7,7 +7,7 @@ angular.module("visitry.browser").directive('register', function () {
     restrict: 'E',
     templateUrl: '/packages/visitry-browser/client/auth/register/register.html',
     controllerAs: 'register',
-    controller: function ($scope, $reactive, $state, $mdDialog, $cookies, $stateParams) {
+    controller: function ($scope, $reactive, $state, $mdDialog, $cookies, $stateParams, UserDetailsDialog) {
       $reactive(this).attach($scope);
 
       this.subscribe('userdata');
@@ -36,6 +36,7 @@ angular.module("visitry.browser").directive('register', function () {
                   if (err) {
                     return handleError(err);
                   } else {
+                    UserDetailsDialog.open(result);
                     this.cancel(form);
                   }
                 });
