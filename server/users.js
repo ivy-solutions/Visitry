@@ -5,6 +5,7 @@ import {Counts} from 'meteor/tmeasday:publish-counts'
 import {Roles} from 'meteor/alanning:roles'
 import {SSR} from 'meteor/meteorhacks:ssr'
 import {Errors} from '/server/server-errors'
+import { Accounts } from 'meteor/accounts-base'
 
 Meteor.publish("userdata", function () {
   if (this.userId) {
@@ -374,49 +375,43 @@ Meteor.methods({
   createUserFromAdmin(data){
     Errors.checkUserLoggedIn(this.userId, 'createUserFromAdmin', 'Must be logged in to add a user to an agency.')
     //TODO agencyId should be sent as separate argument
-    let agencyId = data.userData.agencyIds[0]
-    Errors.checkUserIsAdministrator(this.userId, agencyId, 'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.')
-    let newUserId
+    let agencyId = data.userData.agencyIds[0];
+    Errors.checkUserIsAdministrator(this.userId, agencyId, 'createUserFromAdmin', 'Must be an agency administrator to add users to an agency.');
+    let newUserId;
     try {
-      newUserId = Accounts.createUser(data)
-      Roles.addUsersToRoles(newUserId, data.role, agencyId)
-      let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvalDate: new Date()})
-      enrollment.save()
+      newUserId = Accounts.createUser(data);
+      Roles.addUsersToRoles(newUserId, data.role, agencyId);
+      let enrollment = new Enrollment({userId: newUserId, agencyId: agencyId, approvalDate: new Date()});
+      enrollment.save();
 
       Meteor.call('sendEnrollmentEmail', newUserId, agencyId, (err) => {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' enrollment email ' + err)
         }
-      })
+      });
       Meteor.call('sendAgencyWelcomeEmail', newUserId, agencyId, (err) => {
         if (err) {
           logger.error('There was an error sending ' + newUserId + ' agency welcome email ' + err)
         }
       })
     } catch (err) {
-      // can add existing user as an administrator
-      if (err.reason === 'Email already exists.' && data.role === 'administrator') {
+      // can add existing user as data.role
+      if (err.reason === 'Email already exists.' ) {
         let existingUser = Accounts.findUserByEmail(data.email);
         let isSameUser = data.userData.firstName.toUpperCase() === existingUser.userData.firstName.toUpperCase() &&
           data.userData.lastName.toUpperCase() === existingUser.userData.lastName.toUpperCase();
         if (!isSameUser)
           throw err;
-        try {
-          Meteor.call('addUserToAgency', {
-            userId: existingUser._id,
-            agencyId: agencyId,
-            role: data.role
-          })
-        } catch (e) {
-          if (e.reason !== 'User already belongs to agency.') {
-            throw e
-          }
-        }
+         Meteor.call('addUserToAgency', {
+          userId: existingUser._id,
+          agencyId: agencyId,
+          role: data.role
+        })
       } else {
         throw err
       }
     }
-    return newUserId || null
+     return newUserId || null
   },
   addProspectiveAgency(agencyId) {
     Errors.checkUserLoggedIn(this.userId, 'addProspectiveAgency', 'Must be logged in to update enrollments.')
@@ -464,8 +459,20 @@ Meteor.methods({
     Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to view user picture.')
     let user = User.findOne({_id: userId}, {fields: {'userData.picture': 1}})
     return user.userData.picture
+  },
+  getUserByEmail( agencyId, email){
+    Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to retrieve user info.');
+    Errors.checkUserIsAdministrator(this.userId, agencyId, 'getUserByEmail', 'Must be an agency administrator.');
+    let user = Accounts.findUserByEmail(email);
+    if (user) { //check that user is member of admin's agency
+      let member = Enrollment.findOne({userId: user._id, agencyId: agencyId})
+      if ( member ) {
+        return user._id;
+      }
+    }
+    return null;  // no user, or not in this agency
   }
-})
+});
 
 Accounts.onCreateUser(function (options, user) {
   if (options.userData) {

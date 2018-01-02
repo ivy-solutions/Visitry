@@ -2,6 +2,8 @@
  * Created by sarahcoletti on 2/17/16.
  */
 import { Roles } from 'meteor/alanning:roles'
+import { Accounts } from 'meteor/accounts-base'
+
 angular.module("visitry.browser").directive('register', function () {
   return {
     restrict: 'E',
@@ -30,7 +32,7 @@ angular.module("visitry.browser").directive('register', function () {
             if (err) {
               return handleError(err);
             } else {
-              if (result) {
+              if (result) {  // result is new user id if a new user was created
                 var avatarWithInitials = generateAvatar(this.credentials.userData.firstName, this.credentials.userData.lastName);
                 Meteor.call('updatePicture',result, avatarWithInitials, (err) => {
                   if (err) {
@@ -41,6 +43,11 @@ angular.module("visitry.browser").directive('register', function () {
                   }
                 });
               } else {
+                Meteor.call('getUserByEmail', this.agencyId, this.credentials.email, (err, existingUser) => {
+                  if (existingUser) {
+                    UserDetailsDialog.open(existingUser);
+                  }
+                });
                 this.cancel(form);
               }
             }
