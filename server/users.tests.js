@@ -515,8 +515,6 @@ if (Meteor.isServer) {
         accountsCreateUserSpy = sinon.stub(Accounts, 'createUser');
         accountsCreateUserSpy.throws(error);
         let user = {email: 'test@email.com', role: 'administrator', userData: {agencyIds: [agencyId], firstName: 'adam', lastName: 'first'}};
-        error = {reason: 'User already belongs to agency.'};
-        meteorCallStub.throws(error);
         assert.isNull(createUserFromAdminHandler.apply(invocation, [user]));
       });
 
@@ -607,5 +605,52 @@ if (Meteor.isServer) {
       });
     });
 
+    describe('users.getUserByEmail', ()=> {
+      const getUserByEmailHandler = Meteor.server.method_handlers['getUserByEmail'];
+      let agencyId = Random.id();
+      let errorsStub,findUserByEmailStub ;
+      beforeEach(()=> {
+        StubCollections.stub([Meteor.users, Enrollments]);
+        errorsStub = sinon.stub(Errors, 'checkUserIsAdministrator').returns(true);
+      });
+      afterEach(()=> {
+        StubCollections.restore();
+        errorsStub.restore();
+        if (findUserByEmailStub) {
+          findUserByEmailStub.restore();
+        }
+      });
+
+      it('User must be administrator to get a user by email', ()=> {
+        const invocation = {userId: testUserId};
+        errorsStub.restore();
+        assert.throws(()=>getUserByEmailHandler.apply(invocation, [agencyId, "test@email.com"]),
+          'Must be an agency administrator. [unauthorized]');
+      });
+      it('succeeds, returns user', ()=> {
+        const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
+        let requesterId = Random.id();
+        Enrollments.insert({userId: requesterId, agencyId: agencyId});
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>(
+          {_id: requesterId, email:"testy@email.com", userData: {firstName: 'Adam', lastName: 'First'} })
+        );
+        assert.equal(getUserByEmailHandler.apply(invocation, [agencyId, "testy@email.com"]),requesterId);
+      });
+      it( 'returns null if no such user email', ()=> {
+        const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
+        assert.isNull(getUserByEmailHandler.apply(invocation, [agencyId, "test@gamil.com"]));
+      });
+      it('returns null if user is not in agency', ()=> {
+        const invocation = {userId: testUserId};
+        Roles.addUsersToRoles(testUserId, ['administrator'], agencyId);
+        let requesterId = Random.id();
+        findUserByEmailStub = sinon.stub(Accounts, 'findUserByEmail', ()=>(
+          {_id: requesterId, email:"testy@email.com", userData: {firstName: 'Adam', lastName: 'First'} })
+        );
+        assert.isNull(getUserByEmailHandler.apply(invocation, [agencyId, "testy@email.com"]));
+      });
+    });
   });
 }

@@ -465,7 +465,7 @@ Meteor.methods({
     Errors.checkUserIsAdministrator(this.userId, agencyId, 'getUserByEmail', 'Must be an agency administrator.');
     let user = Accounts.findUserByEmail(email);
     if (user) { //check that user is member of admin's agency
-      let member = Enrollment.findOne({userId: user._id, agencyId: agencyId})
+      let member = Enrollment.findOne({userId: user._id, agencyId: agencyId});
       if ( member ) {
         return user._id;
       }
