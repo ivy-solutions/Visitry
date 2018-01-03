@@ -608,7 +608,7 @@ if (Meteor.isServer) {
 
   function getYesterdayDate() {
     var yesterday = new Date()
-    yesterday.setTime(yesterday.getTime() + ( 24 * 60 * 60 * 1000))
+    yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000))
     return yesterday
   }
 

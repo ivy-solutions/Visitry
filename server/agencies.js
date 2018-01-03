@@ -72,7 +72,7 @@ Meteor.methods({
     Email.send({
       to: currentUser.emails[0].address,
       from: from,
-      subject: "Thank you for your applictaion",
+      subject: "Thank you for your application",
       html: SSR.render('thankYouForApplying', {
         user: currentUser,
         agency: agency,

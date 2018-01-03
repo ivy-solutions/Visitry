@@ -10,6 +10,7 @@ import '/server/users.js';
 import '/model/users.js'
 import {Errors} from '/server/server-errors';
 import {Enrollments,Enrollment} from '/model/enrollment'
+import {Visits} from '/model/visits'
 import StubCollections from 'meteor/hwillson:stub-collections';
 
 if (Meteor.isServer) {
@@ -222,6 +223,7 @@ if (Meteor.isServer) {
         Roles.addUsersToRoles(testUserId, 'requester', agencyId);
         StubCollections.stub(Enrollments)
         Enrollments.insert({userId: testUserId, agencyId: agencyId})
+        StubCollections.stub(Visits)
         adminTestUser = Accounts.createUser({username: 'testUserAdmin', password: 'Visitry99'});
         Roles.addUsersToRoles(adminTestUser, 'administrator', agencyId);
         errorsStub = sinon.stub(Errors, 'checkUserIsAdministrator').returns(true);
@@ -250,15 +252,61 @@ if (Meteor.isServer) {
         let updatedUser = Meteor.users.findOne({_id: testUserId});
         assert.equal(updatedUser.userData.agencyIds.length, 0);
       });
-      it('add a user to an agency fails if no user is provided', ()=> {
+      it('remove a user from an agency fails if no user is provided', ()=> {
         const invocation = {userId: adminTestUser};
         assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{agencyId: agencyId}]), 'User missing. [invalid-user]');
       });
-      it('add a user to an agency fails if no agency is provided', ()=> {
+      it('remove a user from an agency fails if no agency is provided', ()=> {
         meteorCallStub.withArgs('getAgency').returns('');
         const invocation = {userId: adminTestUser};
         assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId}]), 'Agency missing. [invalid-agency]');
       });
+      it('remove a user from an agency fails if the user has a visit request outstanding',()=>{
+        Visits.insert({
+          requestedDate:getTomorrowDate(),
+          requesterId:testUserId,
+          agencyId:agencyId,
+          location:{
+            address: 'here',
+            formattedAddress: 'here',
+            geo: {type:'Point',coordinates:[1,2]}
+          }
+        })
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId,role:'requester', agencyId: agencyId }]), 'Cannot remove the user, due to outstanding visits. [user-has-visits]');
+      })
+      it('remove a user from an agency fails if the user has a visit scheduled',()=>{
+        Visits.insert({
+          requestedDate:getYesterdayDate(),
+          requesterId:Random.id(),
+          visitorId:testUserId,
+          agencyId:agencyId,
+          visitTime:getTomorrowDate(),
+          location:{
+            address: 'here',
+            formattedAddress: 'here',
+            geo: {type:'Point',coordinates:[1,2]}
+          }
+        })
+        const invocation = {userId: adminTestUser};
+        assert.throws(()=>removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId,role:'requester', agencyId: agencyId }]), 'Cannot remove the user, due to outstanding visits. [user-has-visits]');
+      })
+      it('remove a user from an agency does not fail if the user has a past visit',()=>{
+        Visits.insert({
+          requestedDate:getYesterdayDate(),
+          requesterId:testUserId,
+          visitorId:Random.id(),
+          agencyId:agencyId,
+          visitTime:getYesterdayDate(),
+          location:{
+            address: 'here',
+            formattedAddress: 'here',
+            geo: {type:'Point',coordinates:[1,2]}
+          }
+        })
+        const invocation = {userId: adminTestUser};
+        assert.doesNotThrow(()=>removeUserFromAgencyHandler.apply(invocation, [{userId: testUserId,role:'requester', agencyId: agencyId }]), 'Cannot remove the user, due to outstanding visits. [user-has-visits]');
+      })
     })
     describe('users.addUserToAgency', ()=> {
 
@@ -653,4 +701,16 @@ if (Meteor.isServer) {
       });
     });
   });
+
+  function getTomorrowDate() {
+    let tomorrow = new Date()
+    tomorrow.setTime(tomorrow.getTime() + ( 24 * 60 * 60 * 1000))
+    return tomorrow
+  }
+
+  function getYesterdayDate() {
+    let yesterday = new Date()
+    yesterday.setTime(yesterday.getTime() - ( 24 * 60 * 60 * 1000))
+    return yesterday
+  }
 }

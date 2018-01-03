@@ -278,6 +278,15 @@ Meteor.methods({
       logger.error('removeUserFromAgency - invalid agency')
       throw new Meteor.Error('invalid-agency', 'Agency missing.')
     }
+    const today = new Date()
+    if (Visits.find({
+        agencyId:userArgs.agencyId,
+        'inactive': {$exists: false},
+        $or: [{requesterId: userArgs.userId,requestedDate:{$gt:today}}, {visitorId: userArgs.userId,visitTime:{$gt:today}}]
+      }).count() > 0) {
+      logger.error('removeUserFromAgency - user has active visits')
+      throw new Meteor.Error('user-has-visits','Cannot remove the user, due to outstanding visits.')
+    }
     let user = User.findOne(userArgs.userId)
     if (!user) {
       logger.error('removeUserFromAgency - invalid user')
@@ -290,7 +299,7 @@ Meteor.methods({
       if (err) {
         logger.error('removeUserFromAgency failed to update user: ' + id + ' err:' + err)
         throw err
-      }else{
+      } else {
         Roles.removeUsersFromRoles(userArgs.userId, userArgs.role, userArgs.agencyId)
         let enrollment = Enrollment.findOne({userId: userArgs.userId, agencyId: userArgs.agencyId})
         enrollment.softRemove()
