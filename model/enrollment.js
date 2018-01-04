@@ -44,11 +44,6 @@ const Enrollment = Class.create({
       hasCreatedField: true,
       createdFieldName: 'applicationDate',
       hasUpdatedField: false
-    },
-    softremove: {
-      removedFieldName: 'removed',
-      hasRemovedAtField: true,
-      removedAtFieldName: 'removedAt'
     }
   }
 });
