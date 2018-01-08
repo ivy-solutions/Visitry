@@ -470,7 +470,7 @@ Meteor.methods({
     return user.userData.picture
   },
   getUserByEmail( agencyId, email){
-    Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to retrieve user info.');
+    Errors.checkUserLoggedIn(this.userId, 'getUserByEmail', 'Must be logged in to retrieve user info.');
     Errors.checkUserIsAdministrator(this.userId, agencyId, 'getUserByEmail', 'Must be an agency administrator.');
     let user = Accounts.findUserByEmail(email);
     if (user) { //check that user is member of admin's agency

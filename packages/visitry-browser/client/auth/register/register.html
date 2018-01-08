@@ -48,10 +48,10 @@
           <md-input-container class="md-block" flex>
             <label>Phone</label>
             <input ng-model="register.credentials.userData.phoneNumber" name="phoneNumber" type="tel" placeholder="Phone number"
-                   required ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" />
+                   ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" />
             <div
                 ng-messages="registrationForm.phoneNumber.$error" role="alert">
-              <div ng-message-exp="['required', 'pattern']">Phone number must include 3 digit area code and 7 digit phone number.
+              <div ng-message-exp="['pattern']">Phone number must include 3 digit area code and 7 digit phone number.
               </div>
             </div>
           </md-input-container>
