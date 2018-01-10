@@ -25,7 +25,7 @@
             </div>
           </div>
         </md-list-item>
-        <div layout-padding>
+        <div layout-padding ng-hide="userDetails.isEditMode">
           <div><strong>Role:</strong> {{userDetails.role()}}
           </div>
           <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
@@ -38,6 +38,43 @@
             <div><strong>About:</strong></div>
             <div style="padding-left:4px">{{userDetails.user.userData.about}}</div>
           </div>
+        </div>
+        <div layout-padding ng-show="userDetails.isEditMode">
+          <form name="userForm" >
+            <div layout="row">
+            <md-input-container class="md-block" flex>
+              <div><strong>Role:</strong> {{userDetails.role()}}
+              </div>
+            </md-input-container>
+            </div>
+            <div layout="row">
+            <md-input-container flex>
+              <label>Location:</label>
+                   <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
+                          ng-model="userDetails.location.address"
+                          ng-progress="userDetails.isLoadingPlaces" ng-change="userDetails.changeLocation()"
+                          details="userDetails.location.details" placeholder=""/>
+              </md-input-container>
+            </div>
+            <div layout="row">
+              <md-input-container flex>
+              <label>Phone:</label>
+                <input type="tel" id="phone" name="phone" ng-model="userDetails.user.userData.phoneNumber"
+                       ng-readonly="!userDetails.isEditMode" phone-input
+                       ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" flex/>
+              </md-input-container>
+              <div layout="row">
+                <span flex></span>
+                <span class="error-message" ng-show="userForm.phone.$invalid && userForm.phone.$touched">Phone number should be 10 digits</span>
+              </div>
+            </div>
+            <div layout="row">
+              <md-input-container flex>
+                <label>About:</label>
+                <textarea id="about" ng-model="userDetails.user.userData.about" max-rows="5"></textarea>
+              </md-input-container>
+            </div>
+          </form>
         </div>
       </md-list>
     </div>
@@ -72,8 +109,15 @@
       </div>
     </div>
   </div>
-  <md-divider></md-divider>
-  <div ng-hide="userDetails.visitsCount===0">
+  <div layout="row" layout-align="center end" ng-hide="userDetails.isEditMode">
+    <md-button class="md-warn" ng-click="userDetails.removeUser($event)">Remove User</md-button>
+    <md-button class="md-primary" ng-click="userDetails.editUserProfile()">Edit</md-button>
+  </div>
+  <div layout="row" layout-align="center end" ng-hide="!userDetails.isEditMode">
+    <md-button class="md-primary" ng-click="userDetails.updateUserProfile(userForm)">Save</md-button>
+  </div>
+  <div ng-hide="userDetails.visitsCount===0 || userDetails.isEditMode">
+    <md-divider></md-divider>
     <md-list>
       <md-list-item>
         <div layout="row" layout-align="start center" layout-fill flex="noshrink">
@@ -114,9 +158,5 @@
     <dir-pagination-controls on-page-change="userDetails.pageChanged(newPageNumber)"
                              pagination-id="userDetailsVisits"></dir-pagination-controls>
 
-  </div>
-  <md-divider></md-divider>
-  <div layout="row" layout-align="center center">
-    <md-button class="md-warn" ng-click="userDetails.removeUser($event)">Remove User</md-button>
   </div>
 </md-dialog>

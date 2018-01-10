@@ -464,6 +464,20 @@ Meteor.methods({
     }
     logger.verbose("updateRegistrationInfo for userId: " + this.userId)
   },
+  updateUserProfile(userId, data, agencyId) {
+    logger.info(userId);
+    logger.info( data);
+    Errors.checkUserLoggedIn(this.userId, 'updateUserProfile', 'Must be logged in to update user info.')
+    Errors.checkUserIsAdministrator(this.userId, agencyId, 'updateUserProfile', 'Must be an agency administrator.');
+    var someUser = User.findOne({_id: userId}, {fields: {userData: 1}})
+    someUser.userData = data.userData;
+    someUser.save({fields: ['userData.phoneNumber', 'userData.location', 'userData.about']}, function (err) {
+      if (err) {
+        logger.error("updateUserProfile failed to update user. err: " + err)
+        throw err
+      }
+    })
+  },
   getUserPicture(userId){
     Errors.checkUserLoggedIn(this.userId, 'getUserPicture', 'Must be logged in to view user picture.')
     let user = User.findOne({_id: userId}, {fields: {'userData.picture': 1}})

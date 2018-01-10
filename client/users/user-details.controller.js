@@ -9,11 +9,11 @@ import {Enrollment} from '/model/enrollment'
 import {Agency} from '/model/agencies'
 import {logger} from '/client/logging'
 
-angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cookies, $reactive, AdminVisitDetailsDialog, $mdDialog) {
+angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cookies, $reactive, AdminVisitDetailsDialog, $mdDialog, $ionicPopup) {
   $reactive(this).attach($scope)
   this.userId = this.locals.userId
   this.agencyId = $cookies.get('agencyId')
-
+  this.isEditMode = false;
   //by passing null as agencyId, this covers applicants as well as members
   this.role = () => {
     return Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), null) ? "Visitor" : "Requester"
@@ -38,6 +38,9 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
     this.userPicture = result
   })
 
+  this.editUserProfile = ()=> {
+    this.isEditMode = true;
+  };
   this.visitsCount = 0
   this.recordPerPage = 5
   this.page = 1
@@ -161,4 +164,57 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
       }
     )
   }
+
+  this.isLoadingPlaces = false; //true when retrieving info from Google Places
+
+  this.location = {
+    address: (this.user && this.user.userData && this.user.userData.location) ? this.user.userData.location.address : "",
+    details: null
+  };
+
+  this.changeLocation = () => {
+    this.isLoadingPlaces = this.location.address && this.location.address.length > 0;
+    this.location.details = null;
+  };
+
+
+  this.updateUserProfile = (form) => {
+    if(form.$valid) {
+      if (form.location.$dirty) {
+        // location is optional - can be blank or selected
+        var newLocation = null;
+        if (this.location.address != null && this.location.address.length > 0) {
+          if (this.location.details) {
+            newLocation = {
+              address: this.location.details.name + ", " + this.location.details.vicinity,
+              formattedAddress: this.location.details.formatted_address,
+              geo: {
+                type: "Point",
+                coordinates: [this.location.details.geometry.location.lng(), this.location.details.geometry.location.lat()]
+              }
+            };
+          }
+        }
+        this.user.userData.location = newLocation;
+      }
+      logger.info(this.user);
+      Meteor.call('updateUserProfile', this.user._id, this.user, this.agencyId, (err) => {
+        if (err) {
+          return handleError(err);
+        }
+        $mdDialog.hide();
+      })
+    }
+  };
+
+  function handleError(err) {
+    logger.error('userData save error ', err.reason);
+
+    $ionicPopup.alert({
+      title: 'Save failed',
+      template: err.reason || 'Please try again',
+      okType: 'button-positive button-clear'
+    });
+  }
+
 })
