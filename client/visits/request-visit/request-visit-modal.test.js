@@ -139,7 +139,7 @@ describe('Request Visit', function () {
   describe('submit', ()=> {
     it('does submit if fromVisit provided',function () {
       controller.userSubmitted = true;
-      controller.fromVisit = { visitTime: new Date(), visitorId: Random.id()};
+      controller.fromVisit = { visitTime: new Date(2017, 12, 30, 9, 0 ,0 ,0), visitorId: Random.id()};
       var nextYear = new Date();
       nextYear.setFullYear(nextYear.getFullYear()+1)
       nextYear.setHours(9);
