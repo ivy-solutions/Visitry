@@ -55,6 +55,11 @@
                           ng-progress="userDetails.isLoadingPlaces" ng-change="userDetails.changeLocation()"
                           details="userDetails.location.details" placeholder=""/>
               </md-input-container>
+              <div layout="row">
+                <span flex></span>
+                <span class="error-message" ng-hide="userForm.location.$pristine  || userDetails.isLocationValid() || userDetails.isLoadingPlaces">
+                Select location from list or leave blank</span>
+              </div>
             </div>
             <div layout="row">
               <md-input-container flex>

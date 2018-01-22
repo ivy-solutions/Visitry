@@ -177,9 +177,21 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
     this.location.details = null;
   };
 
+  this.isLocationValid = ()=> {
+    if ( Meteor.userId() !== null ) {
+      var hasClearAddress =  !this.location.address || this.location.address.length == 0 ;
+      if (hasClearAddress) {
+        return true;
+      } else {
+        var userHasSelectedLocation = this.location.details != null && this.location.address != null && this.location.address.length > 0;
+        return userHasSelectedLocation;
+      }
+    }
+    return false;
+  };
 
   this.updateUserProfile = (form) => {
-    if(form.$valid) {
+    if(form.$valid && (form.location.$pristine || this.isLocationValid())) {
       if (form.location.$dirty) {
         // location is optional - can be blank or selected
         var newLocation = null;
@@ -197,7 +209,6 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
         }
         this.user.userData.location = newLocation;
       }
-      logger.info(this.user);
       Meteor.call('updateUserProfile', this.user._id, this.user, this.agencyId, (err) => {
         if (err) {
           return handleError(err);
@@ -209,6 +220,7 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
 
   function handleError(err) {
     logger.error('userData save error ', err.reason);
+    $mdDialog.hide();
 
     $ionicPopup.alert({
       title: 'Save failed',

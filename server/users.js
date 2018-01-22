@@ -465,16 +465,16 @@ Meteor.methods({
     logger.verbose("updateRegistrationInfo for userId: " + this.userId)
   },
   updateUserProfile(userId, data, agencyId) {
-    logger.info(userId);
-    logger.info( data);
     Errors.checkUserLoggedIn(this.userId, 'updateUserProfile', 'Must be logged in to update user info.')
     Errors.checkUserIsAdministrator(this.userId, agencyId, 'updateUserProfile', 'Must be an agency administrator.');
-    var someUser = User.findOne({_id: userId}, {fields: {userData: 1}})
+    var someUser = User.findOne({_id: userId}, {fields: {userData: 1}});
     someUser.userData = data.userData;
+    someUser.userData.phoneNumber = data.userData.phoneNumber ? data.userData.phoneNumber : null //remove phone number if there is none
+
     someUser.save({fields: ['userData.phoneNumber', 'userData.location', 'userData.about']}, function (err) {
       if (err) {
         logger.error("updateUserProfile failed to update user. err: " + err)
-        throw err
+        throw err;
       }
     })
   },
