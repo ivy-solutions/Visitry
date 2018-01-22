@@ -1,6 +1,6 @@
 <md-dialog flex="80">
   <div layout="row" flex="none">
-    <div layout="column">
+    <div layout="column" flex="80">
       <md-list flex>
         <md-list-item class="md-2-line">
           <img class="md-avatar" style="height:100px;width:100px"
@@ -25,63 +25,66 @@
             </div>
           </div>
         </md-list-item>
+      </md-list>
         <div layout-padding ng-hide="userDetails.isEditMode">
           <div><strong>Role:</strong> {{userDetails.role()}}
           </div>
-          <div ng-show="userDetails.user.userData.location"><strong>Location:</strong>
-            {{userDetails.user.userData.location.address}}
-          </div>
-          <div ng-show="userDetails.user.userData.phoneNumber"><strong>Phone:</strong>
-            {{userDetails.user.userData.phoneNumber}}
-          </div>
-          <div layout="row" layout-align="start start" ng-show="userDetails.user.userData.about">
-            <div><strong>About:</strong></div>
-            <div style="padding-left:4px">{{userDetails.user.userData.about}}</div>
-          </div>
+          <div layout="row">
+            <div ng-show="userDetails.user.userData.location" flex="70"><strong>Location:</strong>
+              {{userDetails.user.userData.location.address}}
+            </div>
+              <div flex="30">
+                <strong> Location Notes: </strong>{{userDetails.user.userData.locationInfo}}
+              </div>
+            </div>
+            <div ng-show="userDetails.user.userData.phoneNumber"><strong>Phone:</strong>
+              {{userDetails.user.userData.phoneNumber}}
+            </div>
+            <div layout="row" layout-align="start start" layout-wrap ng-show="userDetails.user.userData.about">
+               <div><strong>About:</strong></div>
+              <div style="padding-left:4px" flex="66">{{userDetails.user.userData.about}}</div>
+            </div>
         </div>
         <div layout-padding ng-show="userDetails.isEditMode">
           <form name="userForm" >
-            <div layout="row">
-            <md-input-container class="md-block" flex>
-              <div><strong>Role:</strong> {{userDetails.role()}}
-              </div>
-            </md-input-container>
-            </div>
-            <div layout="row">
-            <md-input-container flex>
-              <label>Location:</label>
-                   <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
+               <md-input-container class="md-block">
+                <div><strong>Role:</strong> {{userDetails.role()}}
+                </div>
+              </md-input-container>
+            <div layout="row" class="md-block">
+              <md-input-container flex >
+                <label>Location: </label>
+                <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
                           ng-model="userDetails.location.address"
                           ng-progress="userDetails.isLoadingPlaces" ng-change="userDetails.changeLocation()"
                           details="userDetails.location.details" placeholder=""/>
               </md-input-container>
-              <div layout="row">
-                <span flex></span>
-                <span class="error-message" ng-hide="userForm.location.$pristine  || userDetails.isLocationValid() || userDetails.isLoadingPlaces">
-                Select location from list or leave blank</span>
-              </div>
-            </div>
-            <div layout="row">
               <md-input-container flex>
-              <label>Phone:</label>
+                <label>Location Notes: </label>
+                <input type="text" id="locationInfo" name="locationInfo"
+                       ng-model="userDetails.user.userData.locationInfo"
+                       placeholder=""/>
+              </md-input-container>
+             </div>
+              <span class="error-message" ng-hide="userForm.location.$pristine  || userDetails.isLocationValid() || userDetails.isLoadingPlaces">
+                Select location from list or leave blank</span>
+            <div>
+              <md-input-container flex="none" width="15">
+                <label>Phone:</label>
                 <input type="tel" id="phone" name="phone" ng-model="userDetails.user.userData.phoneNumber"
                        ng-readonly="!userDetails.isEditMode" phone-input
                        ng-pattern="/^\(?[\d]{3}\)?[\s-]?[\d]{3}[\s-]?[\d]{4}$/" flex/>
               </md-input-container>
-              <div layout="row">
-                <span flex></span>
-                <span class="error-message" ng-show="userForm.phone.$invalid && userForm.phone.$touched">Phone number should be 10 digits</span>
-              </div>
+              <span class="error-message" ng-show="userForm.phone.$invalid && userForm.phone.$touched">Phone number should be 10 digits</span>
             </div>
             <div layout="row">
-              <md-input-container flex>
+              <md-input-container flex class="md-block">
                 <label>About:</label>
-                <textarea id="about" ng-model="userDetails.user.userData.about" max-rows="5"></textarea>
+                <textarea ng-model="userDetails.user.userData.about" rows="3"></textarea>
               </md-input-container>
             </div>
           </form>
         </div>
-      </md-list>
     </div>
     <span flex></span>
     <div layout="column" flex="none" ng-show="userDetails.enrolled.approvalDate">

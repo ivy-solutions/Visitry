@@ -114,6 +114,7 @@ Meteor.publish('visitorUsers', function (agencyId) {
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location': 1,
+        'userData.locationInfo': 1,
         'userData.about': 1,
         'userData.phoneNumber': 1,
         'roles': 1,
@@ -173,6 +174,7 @@ Meteor.publish("seniorUsers", function (agencyId, options) {
         'userData.firstName': 1,
         'userData.lastName': 1,
         'userData.location': 1,
+        'userData.locationInfo': 1,
         'userData.about': 1,
         'userData.phoneNumber': 1,
         'roles': 1,
@@ -470,8 +472,8 @@ Meteor.methods({
     var someUser = User.findOne({_id: userId}, {fields: {userData: 1}});
     someUser.userData = data.userData;
     someUser.userData.phoneNumber = data.userData.phoneNumber ? data.userData.phoneNumber : null //remove phone number if there is none
-
-    someUser.save({fields: ['userData.phoneNumber', 'userData.location', 'userData.about']}, function (err) {
+    logger.info(data);
+    someUser.save({fields: ['userData.phoneNumber', 'userData.location', 'userData.locationInfo', 'userData.about']}, function (err) {
       if (err) {
         logger.error("updateUserProfile failed to update user. err: " + err)
         throw err;

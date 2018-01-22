@@ -84,7 +84,7 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
       let queryOptions = {
         fields: {
           username: 1, emails: 1, fullName: 1, createdAt: 1, roles: 1,
-          'userData.location': 1, 'userData.firstName': 1, 'userData.lastName': 1,
+          'userData.location': 1, 'userData.locationInfo': 1, 'userData.firstName': 1, 'userData.lastName': 1,
           'userData.about': 1, 'userData.phoneNumber': 1, 'visitorHours': 1, 'visitorRating': 1
         }
       }
