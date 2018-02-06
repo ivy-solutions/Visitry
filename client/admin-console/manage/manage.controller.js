@@ -93,7 +93,9 @@ angular.module('visitry.browser').controller('adminManageCtrl', function ($scope
         else {
           this.freqVisitors = visitorFrequency.map(function (visitFreq) {
             var visitor = Meteor.users.findOne({_id: visitFreq._id.visitorId}, {userData: 1});
-            visitor.visitCount = visitFreq.numVisits;
+            if (visitor) {
+              visitor.visitCount = visitFreq.numVisits;
+            }
             return visitor;
           });
           this.isFrequentVisitorsReady = true;
