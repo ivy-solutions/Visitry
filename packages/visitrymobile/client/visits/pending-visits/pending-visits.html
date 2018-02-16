@@ -1,59 +1,64 @@
 <ion-view view-title="Requests" hide-back-button=true>
   <ion-nav-buttons side="secondary" class="show">
-    <button class="button button-clear icon ion-plus-circled" ng-disabled="!pendingVisits.hasAgency" ng-click="pendingVisits.showRequestVisitModal()">
+    <button class="button button-clear icon ion-plus-circled" ng-disabled="!pendingVisits.hasAgency"
+            ng-click="pendingVisits.showRequestVisitModal()">
     </button>
   </ion-nav-buttons>
   <ion-content class="has-header has-tabs pending">
     <div ng-hide="connectionStatus!=='ok'">
-        <div ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency" class="text-center">
-           <h4>No active requests. Press + to request a visit.</h4>
-            <button class="button button-balanced button-large icon ion-plus-circled" ng-click="pendingVisits.showRequestVisitModal()">
-            </button>
+      <div ng-hide="pendingVisits.hasRequests || !pendingVisits.hasAgency" class="text-center">
+        <h4>No active requests.</h4>
+        <h4> Press + to request a visit.</h4>
+        <button class="button button-balanced button-large icon ion-plus-circled"
+                ng-click="pendingVisits.showRequestVisitModal()">
+        </button>
+      </div>
+      <div ng-hide="pendingVisits.hasAgency" class="text-center">
+        <div ng-if="!pendingVisits.membershipPending">
+          <h4>You are not yet a member of a group.</h4>
+          <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
+            Join Group
+          </button>
         </div>
-        <div ng-hide="pendingVisits.hasAgency" class="text-center">
-          <div ng-if="!pendingVisits.membershipPending">
-            <h4>You are not yet a member of a group.</h4>
-            <button class="button button-assertive button-large" ng-click="pendingVisits.groups()">
-              Join Group
-            </button>
-          </div>
-          <div ng-if="pendingVisits.membershipPending">
-            <h4>Your membership is awaiting approval.</h4>
-            <button class="button button-clear button-large button-balanced" ng-click="pendingVisits.groups()">
-               Group
-            </button>
-          </div>
+        <div ng-if="pendingVisits.membershipPending">
+          <h4>Your membership is awaiting approval.</h4>
+          <button class="button button-clear button-large button-balanced" ng-click="pendingVisits.groups()">
+            Group
+          </button>
         </div>
-        <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
-          <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
-            <div class="item item-divider">
-                <span class="assertive" ng-if="pendingVisits.isToday(dateVisits.date)">Today :</span>
-              {{dateVisits.date|date: "EEEE, MMMM d"}}
-            </div>
-            <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
-                      on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
-                <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}" ng-click="pendingVisits.visitDetails(visit._id)">
-                <div ng-if="!visit.visitorId" class="visit-picture no-visitor" ng-click="pendingVisits.visitDetails(visit._id)"></div>
-                <a ng-click="pendingVisits.visitDetails(visit._id)">
-                  <div>
-                    <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
-                    </h4>
-                    <h2 ng-if="visit.visitorId">
-                        {{pendingVisits.getVisitor(visit) | firstNameLastInitial }}
-                        <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
-                    </h2>
-                    <span flex></span>
-                  </div>
-                  <p>{{visit.location.address}}</p>
-                  <p style="white-space: nowrap">{{visit.notes}}</p>
+      </div>
+      <ion-list show-delete="pendingVisits.showDelete" can-swipe="pendingVisits.canSwipe">
+        <div ng-repeat="dateVisits in pendingVisits.pendingVisits">
+          <div class="item item-divider">
+            <span class="assertive" ng-if="pendingVisits.isToday(dateVisits.date)">Today :</span>
+            {{dateVisits.date|date: "EEEE, MMMM d"}}
+          </div>
+          <ion-item ng-repeat="visit in dateVisits.visits" class="item-avatar"
+                    on-swipe-left="pendingVisits.showCancelVisitConfirm(visit)">
+            <img ng-if="visit.visitorId" ng-src="{{pendingVisits.getVisitorImage(visit)}}"
+                 ng-click="pendingVisits.visitDetails(visit._id)">
+            <div ng-if="!visit.visitorId" class="visit-picture no-visitor"
+                 ng-click="pendingVisits.visitDetails(visit._id)"></div>
+            <a ng-click="pendingVisits.visitDetails(visit._id)">
+              <div>
+                <h4 ng-if="!visit.visitorId" class="requestedTime">Requested <span class="timeAgo">{{pendingVisits.getTimeSinceRequested(visit.createdAt)}}</span>
+                </h4>
+                <h2 ng-if="visit.visitorId">
+                  {{pendingVisits.getVisitor(visit) | firstNameLastInitial }}
+                  <span class="time">{{visit.visitTime | date:'h:mm'}}</span>
+                </h2>
+                <span flex></span>
+              </div>
+              <p>{{visit.location.address}}</p>
+              <p style="white-space: nowrap">{{visit.notes}}</p>
 
-                </a>
-                  <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
-                    Cancel Visit
-                  </ion-option-button>
-            </ion-item>
-          </div>
-        </ion-list>
+            </a>
+            <ion-option-button class="button-assertive" ng-click="pendingVisits.showCancelVisitConfirm(visit)">
+              Cancel Visit
+            </ion-option-button>
+          </ion-item>
+        </div>
+      </ion-list>
     </div>
   </ion-content>
 </ion-view>
