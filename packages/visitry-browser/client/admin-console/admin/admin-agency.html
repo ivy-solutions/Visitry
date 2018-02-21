@@ -18,8 +18,8 @@
       <md-list>
         <md-list-item ng-hide="!adminAdminAgency.agency">
           <label class="md-title" for="administrators" layout-margin flex="20">Admins</label>
-          <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="true"
-                    md-removable="false" layout-margin flex>
+          <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="!adminAdminAgency.isEditMode"
+                    md-removable="adminAdminAgency.isEditMode" md-on-remove="adminAdminAgency.removeAdmin($chip)" flex >
             <md-chip-template>
               <strong>{{$chip.fullName}}</strong>
             </md-chip-template>

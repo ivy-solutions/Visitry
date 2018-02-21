@@ -17,7 +17,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     administrators: ()=> {
       let selector = {};
       selector['roles.'+this.getReactively('agencyId')] = 'administrator';
-      return User.find(selector);
+      return User.find(selector, {fields: {fullName:1, 'userData.firstName': 1, 'userData.lastName': 1} });
     }
   });
 
@@ -28,8 +28,25 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     this.isEditMode = true;
   };
 
+  this.adminsToRemove = []
+
+  this.removeAdmin = function(chip) {
+    if (chip._id) {
+      this.adminsToRemove.push(chip._id);
+    }
+  };
+
+
   this.save = (form)=> {
     if (form.$valid) {
+      for ( var i = 0; i < this.adminsToRemove.length; i++ ) {
+        logger.info(this.adminsToRemove);
+        Meteor.call('removeUserFromAgency', {userId: this.adminsToRemove[i], role: 'administrator', agencyId: this.agencyId},(err)=> {
+          if (err) {
+            handleError(err)
+          }
+        })
+      }
       Meteor.call('updateAgency', this.agency._id, {
         name: this.agency.name,
         contactPhone: this.agency.contactPhone,
@@ -42,11 +59,11 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
           logger.error('Error updating ' + this.agency.name + ' ' + err);
           handleError(err);
         } else {
-          logger.error('Editing ' + this.agency.name + " with id:" + result);
-          this.isEditMode = false;
+          logger.info('Editing ' + this.agency.name + " with id:" + result);
           this.agencyId = result;
         }
-      })
+      });
+      this.isEditMode = false;
     } else {
       let errors = '';
       for (key of Object.keys(form.$error)) {
