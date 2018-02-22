@@ -28,7 +28,11 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
     this.isEditMode = true;
   };
 
-  this.adminsToRemove = []
+  this.adminsToRemove = [];
+
+  this.canRemoveUser = function(chip) {
+     return this.isEditMode && chip._id !== Meteor.userId(); //cant remove myself
+  };
 
   this.removeAdmin = function(chip) {
     if (chip._id) {
@@ -92,7 +96,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
   };
 
   function handleError(err) {
-    logger.info('userData save error ', err.reason);
+    logger.info('admin agency save error ', err.reason);
     $mdDialog.show(
       $mdDialog.alert()
         .title('Update failed')

@@ -304,7 +304,9 @@ Meteor.methods({
       } else {
         Roles.removeUsersFromRoles(userArgs.userId, userArgs.role, userArgs.agencyId)
         let enrollment = Enrollment.findOne({userId: userArgs.userId, agencyId: userArgs.agencyId})
-        enrollment.remove()
+        if (enrollment) {
+          enrollment.remove()
+        }
       }
     })
   },
