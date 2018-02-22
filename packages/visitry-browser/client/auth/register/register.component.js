@@ -12,7 +12,6 @@ angular.module("visitry.browser").directive('register', function () {
     controller: function ($scope, $reactive, $state, $mdDialog, $cookies, $stateParams, UserDetailsDialog) {
       $reactive(this).attach($scope);
 
-      this.subscribe('userdata');
       this.agencyId = $cookies.get('agencyId');
       this.credentials = {
         email: '',
@@ -22,7 +21,7 @@ angular.module("visitry.browser").directive('register', function () {
           firstName: "",
           lastName: "",
           agencyIds: [this.agencyId],
-          phoneNumber: ""
+          phoneNumber: null
         }
       };
 

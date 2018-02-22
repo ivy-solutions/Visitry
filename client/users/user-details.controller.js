@@ -16,7 +16,12 @@ angular.module('visitry').controller('userDetailsCtrl', function ($scope, $cooki
   this.isEditMode = false;
   //by passing null as agencyId, this covers applicants as well as members
   this.role = () => {
-    return Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), null) ? "Visitor" : "Requester"
+    if (Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), null))
+      return "Visitor";
+    else if (Meteor.myFunctions.isAdministratorInAgency(this.getReactively('userId'), this.agencyId))
+      return "Administrator";
+    else
+      return "Requester";
   }
 
   this.isVisitor = Meteor.myFunctions.isVisitorInAgency(this.getReactively('userId'), this.agencyId)
