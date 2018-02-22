@@ -31,7 +31,7 @@ angular.module('visitry.browser').controller('adminAdminAgencyCtrl', function ($
   this.adminsToRemove = [];
 
   this.canRemoveUser = function(chip) {
-     return this.isEditMode && chip._id !== Meteor.userId(); //cant remove myself
+     return chip._id !== Meteor.userId(); //cant remove myself
   };
 
   this.removeAdmin = function(chip) {

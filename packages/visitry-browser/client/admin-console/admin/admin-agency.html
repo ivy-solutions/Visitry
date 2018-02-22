@@ -19,17 +19,15 @@
         <md-list-item ng-hide="!adminAdminAgency.agency">
           <label class="md-title" for="administrators" layout-margin flex="20">Admins</label>
           <md-chips ng-model="adminAdminAgency.administrators" id="administrators" name="administrators" readonly="!adminAdminAgency.isEditMode"
-                    md-on-remove="adminAdminAgency.removeAdmin($chip)" flex >
+                    md-removable="false" md-on-remove="adminAdminAgency.removeAdmin($chip)" layout-margin flex >
             <button
                 ng-if="adminAdminAgency.canRemoveUser($chip)"
-                class="md-chip-remove ng-scope"
                 md-chip-remove
-                type="button"
                 aria-hidden="true" tabindex="-1">
               <md-icon md-svg-icon="md-close"></md-icon>
             </button>
             <md-chip-template>
-              <strong>{{$chip.fullName}}</strong>
+              <strong>{{$chip.fullName}} </strong>
             </md-chip-template>
           </md-chips>
         </md-list-item>
