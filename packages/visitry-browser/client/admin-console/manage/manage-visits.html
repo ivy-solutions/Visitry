@@ -1,7 +1,7 @@
 <div layout="row" layout-align="center start" layout-margin layout-padding layout-fill>
   <div flex="0" flex-gt-sm="10"></div>
   <div layout="column" flex="80">
-    <div layout="row" layout-align="end none">
+    <div layout="row" layout-align="end none" flex="none">
       <span flex></span>
       <md-button class="md-raised md-primary" ng-click="adminManageVisits.createVisit()">+ Visit</md-button>
     </div>
@@ -21,11 +21,11 @@
           <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-completed.html'"></div>
         </md-content>
       </md-tab>
-        <md-tab label="Unfilled" ng-click="adminManageVisits.setSort('requestedDate','descending' )">
-            <md-content class="md-padding">
-                <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-unfilled.html'"></div>
-            </md-content>
-        </md-tab>
+      <md-tab label="Unfilled" ng-click="adminManageVisits.setSort('requestedDate','descending' )">
+        <md-content class="md-padding">
+          <div ng-include="'/packages/visitry-browser/client/admin-console/manage/manage-visits-unfilled.html'"></div>
+        </md-content>
+      </md-tab>
     </md-tabs>
   </div>
   <div flex="0" flex-gt-sm="10"></div>
