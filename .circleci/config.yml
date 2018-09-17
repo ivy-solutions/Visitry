@@ -21,6 +21,8 @@ jobs:
           command: |
              meteor npm install
              npm install -g spacejam
+             meteor npm install bcrypt
+             meteor npm install --save babel-runtime
       - run:
           name: unit tests
           command: npm test
