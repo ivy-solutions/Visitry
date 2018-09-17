@@ -80,7 +80,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "dev" ]; then
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
-                cd dev && mup deploy
+                cd ../dev && ls && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
             else
