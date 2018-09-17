@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/build
+    docker:
+      - image: meteor/circleci
+    steps:
+      #Checkout the code to working directory
+      - checkout
+      #Log the current branch
+      - run:
+        name: Show current branch
+        command: echo ${CIRCLE_BRANCH}
+      # Install project dependencies
+      - run:
+        name: install dependencies
+        command: |
+          npm install
+      # Install meteor
+      - run:
+        name: install meteor
+        command: |
+          meteor || curl https://install.meteor.com | /bin/sh
+      - run:
+        name: check versions
+        command: |
+        echo "Meteor version: "
+        meteor --version
+        which meteor
+        echo "Meteor node version: "
+        meteor node -v
+        echo "Meteor npm version: "
+        meteor npm -v
+        echo "Java version: "
+        java -version
+      - run:
+        name: install npm packages
+        command: |
+          npm install -g spacejam
+          meteor npm install
+      - run:
+        name: unit tests
+        command:
+          npm test
