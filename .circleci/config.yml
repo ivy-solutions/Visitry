@@ -28,5 +28,4 @@ jobs:
           meteor npm install
       - run:
         name: unit tests
-        command:
-          npm test
+        command: npm test
