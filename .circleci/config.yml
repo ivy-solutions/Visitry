@@ -58,7 +58,7 @@ jobs:
   build_mobile_android:
     working_directory: ~/build
     docker:
-      - image: circleci/android:api-25-alpha
+      - image: circleci/android:api-25-ndk-r17b
     steps:
       - checkout
       # Install meteor
@@ -66,6 +66,10 @@ jobs:
           name: Install meteor
           command: |
             meteor || curl https://install.meteor.com | /bin/sh
+      - run:
+          name: install npm packages
+          command: |
+             meteor npm install
       - run:
           name: Meteor mobile build
           command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
@@ -105,7 +109,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "dev" ]; then
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
-                cd ~/dev && mup deploy
+                cd ~/Visitry/.deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
             else
