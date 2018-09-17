@@ -13,6 +13,12 @@ jobs:
           command: |
               echo ${CIRCLE_BRANCH}
               echo ${CIRCLE_WORKING_DIRECTORY}
+      # Restore local dependencies from cache
+      - restore_cache:
+           keys:
+             - v1-dependencies-{{ checksum "package.json" }}
+             - v1-dependencies-#install npm
+             - build-meteor-system-{{ checksum "./.circleci/config.yml" }}
       # Install meteor
       - run:
           name: Install meteor
@@ -28,12 +34,6 @@ jobs:
             sudo dpkg-reconfigure --frontend=noninteractive locales
             sudo update-locale LANG=en_US.UTF-8
             export LANG=en_US.UTF-8
-      # Restore local dependencies from cache
-      - restore_cache:
-           keys:
-             - v1-dependencies-{{ checksum "package.json" }}
-             - v1-dependencies-#install npm
-             - build-meteor-system-{{ checksum "./.circleci/config.yml" }}
       - run:
           name: install npm packages
           command: |
@@ -121,7 +121,7 @@ jobs:
       - run:
           name: Install mup
           command: sudo npm -g install mup
-            # Install AWS cli
+      # Install AWS cli
       - run:
           name: Install aws cli
           command: sudo apt-get -y -qq install awscli
@@ -133,7 +133,8 @@ jobs:
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
                 pwd
-                cd ~/.deploy/dev && mup deploy
+                ls
+                cd ~/Visitry/.deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
             else
@@ -149,8 +150,8 @@ workflows:
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
-                requires:
-                   - build
+                #requires:
+                #  - build
                 filters:
                     branches:
                         only:
