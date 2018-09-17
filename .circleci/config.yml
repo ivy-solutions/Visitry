@@ -9,5 +9,23 @@ jobs:
       - checkout
       #Log the current branch
       - run:
-        name: Show current branch
-        command: echo ${CIRCLE_BRANCH}
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Install project dependencies
+      - run:
+          name: install dependencies
+          command: |
+          npm install
+      # Install meteor
+      - run:
+          name: install meteor
+          command: |
+            meteor || curl https://install.meteor.com | /bin/sh
+      - run:
+          name: install npm packages
+          command: |
+            npm install -g spacejam
+            meteor npm install
+      - run:
+          name: unit tests
+          command: npm test
