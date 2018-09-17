@@ -54,3 +54,46 @@ jobs:
           command: npm test
       - store_test_results:
           path: ~/build/test-results.xml
+  deploy:
+    working_directory: ~/.deploy
+    docker:
+      - image: circleci/node:8.9.1-browsers
+    steps:
+      #Checkout the code to working directory
+      - checkout
+      #Log the current branch
+      - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Install mup
+      - run:
+          name: Install mup
+          command: npm install mup
+      # Build project with different configuration based on
+      - run:
+          name: Deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
+                cd dev && mup deploy
+            elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                echo "Not yet configured"
+            else
+                echo "Not yet"
+            fi
+workflows:
+    version: 2
+    # The build and deploy workflow
+    build_and_deploy:
+        jobs:
+            - build
+            # The deploy job will only run on the filtered branches and
+            # require the build job to be successful before it starts
+            - deploy:
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only:
+                            - dev
