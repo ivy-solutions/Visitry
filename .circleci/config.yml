@@ -18,23 +18,40 @@ jobs:
             meteor || curl https://install.meteor.com | /bin/sh
       # https://github.com/meteor/meteor/issues/4019  - avoid mongodb error
       - run:
-           name: setup mongodb locale
-           command: |
-             sudo apt-get update
-             DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
-             sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-             sudo dpkg-reconfigure --frontend=noninteractive locales
-             sudo update-locale LANG=en_US.UTF-8
-             export LANG=en_US.UTF-8
-      #install npm
+          name: setup mongodb locale
+          command: |
+            sudo apt-get update
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+            sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+            sudo dpkg-reconfigure --frontend=noninteractive locales
+            sudo update-locale LANG=en_US.UTF-8
+            export LANG=en_US.UTF-8
+      # Restore local dependencies from cache
+      - restore_cache:
+           keys:
+             - v1-dependencies-{{ checksum "package.json" }}
+             - v1-dependencies-#install npm
+      - restore_cache:
+           key: build-meteor-system-{{ checksum "./.circleci/config.yml" }}
       - run:
           name: install npm packages
           command: |
              meteor npm install
              meteor npm install bcrypt
              npm install spacejam
+      # Cache local dependencies if they don't exist
+      - save_cache:
+           name: cache system's meteor build
+           key: build-meteor-system-{{ checksum "./.circleci/config.yml" }}
+           paths:
+             - ~/.meteor
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      #tests
       - run:
           name: unit tests
           command: npm test
       - store_test_results:
-          path: test-results
+          path: ~/test-results.xml
