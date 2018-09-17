@@ -60,7 +60,7 @@ jobs:
   build_mobile_android:
     working_directory: ~/project
     docker:
-      - image: circleci/android:api-26-node8-alpha
+      - image: circleci/android:api-25-node8-alpha
     steps:
       - checkout
       #Where are we
@@ -78,9 +78,19 @@ jobs:
           name: install npm packages
           command: |
              meteor npm install
+      #Android platform
       - run:
-          name: Download Dependencies
-          command: ./gradlew androidDependencies
+          name: Android SDK Platform 25
+          command: |
+              if [ ! -d "/usr/local/android-sdk-linux/platforms/android-25" ]; then
+                  echo y | android update sdk --no-ui --all --filter "android-25";
+              fi
+      - run:
+          name: Android Support Repository, revision 39 / Local Maven repository for Support Libraries
+          command: |
+              if [ ! -d "/usr/local/android-sdk-linux/extras/android/m2repository/com/android/support/design/25.0.0" ]; then
+                  echo y | android update sdk --no-ui --all --filter "extra-android-m2repository";
+              fi
       - run:
           name: Meteor mobile build
           command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
@@ -107,6 +117,21 @@ jobs:
           command: |
               echo ${CIRCLE_BRANCH}
               echo ${CIRCLE_WORKING_DIRECTORY}
+      # Install meteor
+      - run:
+          name: Install meteor
+          command: |
+            meteor || curl https://install.meteor.com | /bin/sh
+      # https://github.com/meteor/meteor/issues/4019  - avoid mongodb error
+      - run:
+          name: Set up mongodb locale
+          command: |
+            sudo apt-get update
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+            sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+            sudo dpkg-reconfigure --frontend=noninteractive locales
+            sudo update-locale LANG=en_US.UTF-8
+            export LANG=en_US.UTF-8
       # Install mup
       - run:
           name: Install mup
