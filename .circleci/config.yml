@@ -54,6 +54,21 @@ jobs:
           command: npm test
       - store_test_results:
           path: ~/build/test-results.xml
+
+  build_mobile_android:
+    working_directory: ~/build
+    docker:
+      - image: circleci/android:api-25-alpha
+    steps:
+      - checkout
+      # Install meteor
+      - run:
+          name: Install meteor
+          command: |
+            meteor || curl https://install.meteor.com | /bin/sh
+      - run:
+          name: Meteor mobile build
+          command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
   deploy:
     working_directory: ~/.deploy
     docker:
@@ -68,7 +83,7 @@ jobs:
       # Install mup
       - run:
           name: Install mup
-          command: npm install mup
+          command: sudo npm -g install mup
             # Install AWS cli
       - run:
           name: Install aws cli
@@ -80,7 +95,7 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "dev" ]; then
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
-                cd ../dev && ls && mup deploy
+                cd $HOME/Visitry/.deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
             else
