@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/build
     docker:
-      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/node:8.9.1-browsers
     steps:
       #Checkout the code to working directory
       - checkout
