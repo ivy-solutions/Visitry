@@ -16,6 +16,14 @@ jobs:
           name: install meteor
           command: |
             meteor || curl https://install.meteor.com | /bin/sh
+      # https://github.com/meteor/meteor/issues/4019
+      - run: sudo apt-get update
+      - run: DEBIAN_FRONTEND=noninteractive sudo apt-get install -y locales
+      - run: sudo sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+      - run: sudo dpkg-reconfigure --frontend=noninteractive locales
+      - run: sudo update-locale LANG=en_US.UTF-8
+      - run: export LANG=en_US.UTF-8
+      #install npm
       - run:
           name: install npm packages
           command: |
