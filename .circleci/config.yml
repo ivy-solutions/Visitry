@@ -15,7 +15,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-          npm install
+            npm install
       # Install meteor
       - run:
           name: install meteor
