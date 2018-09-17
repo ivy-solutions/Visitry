@@ -20,6 +20,7 @@ jobs:
           name: install npm packages
           command: |
              meteor npm install
+             npm install -g spacejam
       - run:
           name: unit tests
           command: npm test
