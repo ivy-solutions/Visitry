@@ -55,7 +55,7 @@ jobs:
           name: Unit tests
           command: npm test
       - store_test_results:
-          path: ~/build/test-results.xml
+          path: ~/test-results.xml
 
   build_mobile_android:
     working_directory: ~/project
@@ -82,13 +82,13 @@ jobs:
           name: Meteor mobile build
           command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
       - store_artifacts:
-          path: ~/Visitry/android
+          path: ~/android
           destination: debug.apk
       - store_artifacts:
-          path: ~/Visitry/android
+          path: ~/android
           destination: release-unsigned.apk
       - store_artifacts:
-          path: ~/Visitry/mobile/android/
+          path: ~/mobile/android/
           destination: Visitry.apk
 
   deploy:
@@ -117,11 +117,11 @@ jobs:
           name: Deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "dev" ]; then
-                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt ~/dev/bundle.crt
-                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key ~/dev/private.key
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt .deploy/dev/bundle.crt
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key .deploy/dev/private.key
                 pwd
-                ls
-                cd ~/.deploy/dev && mup deploy
+                ls -a
+                cd .deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
             else
@@ -132,13 +132,12 @@ workflows:
     # The build and deploy workflow
     build_and_deploy_dev:
         jobs:
-            #- build
-            - build_mobile_android
+            - build
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
-                #requires:
-                #  - build
+                requires:
+                  - build
                 filters:
                     branches:
                         only:
