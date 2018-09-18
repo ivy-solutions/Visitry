@@ -4,7 +4,7 @@ module.exports = {
       host: 'test.visitry.org',
       username: 'ubuntu',
       // for CircleCi:
-      pem: '/home/ubuntu/.ssh/id_staging-server',
+      pem: '~/.ssh/id_rsa_09a9cf5e16242896187711f1a9242477',
       //for Sarah;s machine
       //pem: '/Users/sarahcoletti/VISITRY.pem',
       // password:
@@ -18,7 +18,7 @@ module.exports = {
   meteor: {
     name: 'Visitry',
     // For CircleCI
-    path: '/home/ubuntu/Visitry',
+    path: '/home/circleci/project',
     //for Sarah's machine
     //path: '/Users/sarahcoletti/WebstormProjects/Visitry',
     // port: 000, // useful when deploying multiple instances (optional)
@@ -41,7 +41,7 @@ module.exports = {
       serverOnly: true,
       debug: false,
       cleanAfterBuild: true, // default
-      buildLocation: '/home/ubuntu/build/Visitry', // defaults to /tmp/<uuid>
+      buildLocation: '/home/circleci/project/build', // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       // mobileSettings: {
       // }
