@@ -4,7 +4,7 @@ module.exports = {
       host: 'dev.visitry.org',
       username: 'ubuntu',
       // for CircleCi:
-      pem: '/home/circleci/.ssh/id_rsa',
+      pem: '~/.ssh/id_rsa',
       //for Sarah;s machine
       //pem: '/Users/sarahcoletti/VISITRY.pem',
       // password:
