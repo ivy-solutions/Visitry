@@ -134,10 +134,7 @@ jobs:
       - run:
           name: Install aws cli
           command: sudo apt-get -y -qq install awscli
-      - add_ssh_keys:
-           fingerprints:
-              - "09:a9:cf:5e:16:24:28:96:18:77:11:f1:a9:24:24:77"
-      # Build project with different configuration based on
+       # Build project with different configuration based on
       - run:
           name: Deploy
           command: |
@@ -145,6 +142,7 @@ jobs:
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/bundle.crt .deploy/dev/bundle.crt
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key .deploy/dev/private.key
                 ssh-add -l
+                ls -a ../.ssh
                 cd .deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                 echo "Not yet configured"
@@ -156,13 +154,13 @@ workflows:
     # The build and deploy workflow
     build_and_deploy_dev:
         jobs:
-            - build
+            #- build
             #- build_mobile_android
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
-                requires:
-                  - build
+            #    requires:
+            #      - build
                 filters:
                     branches:
                         only:
