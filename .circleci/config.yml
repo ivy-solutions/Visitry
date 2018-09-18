@@ -113,6 +113,8 @@ jobs:
           name: Install meteor
           command: |
             meteor || curl https://install.meteor.com | /bin/sh
+            meteor npm install
+            meteor npm install --save babel-runtime
       # https://github.com/meteor/meteor/issues/4019  - avoid mongodb error
       - run:
           name: Set up mongodb locale
