@@ -38,7 +38,7 @@ module.exports = {
       serverOnly: true,
       debug: false,
       cleanAfterBuild: true, // default
-      buildLocation: '/home/circleci/project/build' // defaults to /tmp/<uuid>
+      buildLocation: '/home/circleci/project/.build' // defaults to /tmp/<uuid>
       //buildLocation: '/Users/sarahcoletti/build/Visitry', // defaults to /tmp/<uuid>
       //mobileSettings: {
       //}

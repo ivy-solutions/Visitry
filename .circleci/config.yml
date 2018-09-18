@@ -49,7 +49,7 @@ jobs:
           name: Unit tests
           command: npm test
       - store_test_results:
-          path: ~/project/test-results.xml
+          path: ~/junit
 
   build_mobile_android:
     working_directory: ~/project
@@ -148,18 +148,27 @@ jobs:
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key .deploy/dev/private.key
                 cd .deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
-                aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
-                aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt .deploy/staging/bundle.crt
-                aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key .deploy/staging/private.key
-                cd .deploy/staging && mup deploy
+                if [ -n "${CIRCLE_TAG}" ]; then
+                   aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
+                   aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
+                   aws s3 cp s3://visitry-build-info/site-ssl-certs/production/bundle.crt .deploy/production/bundle.crt
+                   aws s3 cp s3://visitry-build-info/site-ssl-certs/production/private.key .deploy/production/private.key
+                   cd .deploy/production && mup deploy
+                else
+                    aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
+                    aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
+                    aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt .deploy/staging/bundle.crt
+                    aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key .deploy/staging/private.key
+                    cd .deploy/staging && mup deploy
+                fi
             else
-                echo "Not yet"
+                 echo "No deployment for branch: ${CIRCLE_BRANCH}"
             fi
+
 workflows:
     version: 2
     # The build and deploy workflow
-    build_and_deploy_dev:
+    build_and_deploy:
         jobs:
             - build
             #- build_mobile_android
