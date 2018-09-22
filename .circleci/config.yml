@@ -55,7 +55,7 @@ jobs:
   build_mobile_android:
     working_directory: ~/project
     docker:
-      - image: circleci/android:api-25-node8-alpha
+      - image: circleci/android:api-26-node8-alpha
     steps:
       - checkout
       # Install meteor
@@ -68,6 +68,10 @@ jobs:
           command: |
              meteor npm install
              sudo apt-get install gradle
+      - run:
+          name: android
+          command: |
+            /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
       - run:
           name: Meteor mobile build
           command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
@@ -150,15 +154,15 @@ workflows:
     # The build and deploy workflow
     build_and_deploy:
         jobs:
-            #- build
-            - build_mobile_android
+            - build
+            #- build_mobile_android
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
-            #- deploy:
-            #    requires:
-            #      - build
-            #    filters:
-            #        branches:
-            #            only:
-            #                - dev
-            #                - master
+            - deploy:
+                requires:
+                  - build
+                filters:
+                    branches:
+                        only:
+                            - dev
+                            - master
