@@ -53,17 +53,16 @@
               </md-input-container>
             <div layout="row" class="md-block">
               <md-input-container flex >
-                <label>Location: </label>
+                <label ng-show="userDetails.location.address">Location: </label>
                 <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
                           ng-model="userDetails.location.address"
                           ng-progress="userDetails.isLoadingPlaces" ng-change="userDetails.changeLocation()"
-                          details="userDetails.location.details" placeholder=""/>
+                          details="userDetails.location.details"/>
               </md-input-container>
               <md-input-container flex>
                 <label>Location Notes: </label>
                 <input type="text" id="locationInfo" name="locationInfo"
-                       ng-model="userDetails.user.userData.locationInfo"
-                       placeholder=""/>
+                       ng-model="userDetails.user.userData.locationInfo"/>
               </md-input-container>
              </div>
               <span class="error-message" ng-hide="userForm.location.$pristine  || userDetails.isLocationValid() || userDetails.isLoadingPlaces">
@@ -117,12 +116,16 @@
       </div>
     </div>
   </div>
-  <div layout="row" layout-align="center end" ng-hide="userDetails.isEditMode">
+  <div ng-hide="userDetails.isEditMode">
+    <div layout="row" layout-align="center">
     <md-button class="md-warn" ng-click="userDetails.removeUser($event)">Remove User</md-button>
     <md-button class="md-primary" ng-click="userDetails.editUserProfile()">Edit</md-button>
+    </div>
   </div>
-  <div layout="row" layout-align="center end" ng-hide="!userDetails.isEditMode">
-    <md-button class="md-primary" ng-click="userDetails.updateUserProfile(userForm)">Save</md-button>
+  <div ng-hide="!userDetails.isEditMode">
+    <div layout="row" layout-align="center" >
+      <md-button class="md-primary" ng-click="userDetails.updateUserProfile(userForm)">Save</md-button>
+    </div>
   </div>
   <div ng-hide="userDetails.visitsCount===0 || userDetails.isEditMode">
     <md-divider></md-divider>

@@ -13,10 +13,10 @@
         <form name="createVisitForm" novalidate ng-submit="requestVisit.submit()">
           <div layout="row">
             <md-input-container class="md-block" flex>
-              <label>Visit for:</label>
+              <label ng-show="requestVisit.requesters">Visit for:</label>
               <md-autocomplete md-selected-item-change="requestVisit.onSelectUser(user)" md-input-name="requesterName"
                                md-items="user in requestVisit.requesters" md-item-text="requestVisit.getFullName(user)"
-                               md-search-text="requestVisit.searchText" style="background:white;" required>
+                               md-search-text="requestVisit.searchText" placeholder="Visit for..." style="background:white;" required>
                 <md-item-template>
                   {{user.userData.firstName}} {{user.userData.lastName}}
                 </md-item-template>
@@ -34,13 +34,13 @@
           </div>
           <div layout="row">
             <md-input-container class="md-block" flex>
-              <label>Location:</label>
+              <label ng-show="requestVisit.visitRequest.location.name">Location:</label>
               <div class="layout-row md-whiteframe-z1" style="height:40px;">
                 <input type="text" id="locationInput" ng-google-places-autocomplete-hack name="location"
                        options="requestVisit.autoCompleteOptions"
                        ng-model="requestVisit.visitRequest.location.name"
                        ng-progress="requestVisit.isLoadingPlaces" ng-change="requestVisit.changeLocation()"
-                       details="requestVisit.visitRequest.location.details" placeholder="" required/>
+                       details="requestVisit.visitRequest.location.details" required/>
               </div>
               <div
                   ng-messages="createVisitForm.location.$error">

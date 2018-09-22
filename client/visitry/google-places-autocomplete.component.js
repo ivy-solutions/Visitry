@@ -39,7 +39,7 @@ angular.module("visitry")
       },
 
       link: function (scope, element, attrs, controller) {
-
+        var sessionToken = ''
         var watchEnter = true;
         var opts = {};
         if (scope.options !=null) {
@@ -72,6 +72,7 @@ angular.module("visitry")
         $timeout(function() { //execute function after DOM renders
           // google's place autocomplete
           scope.gPlace = new google.maps.places.Autocomplete(element[0], {});
+          scope.gPlace.setFields(['address_component', 'adr_address', 'alt_id', 'formatted_address', 'geometry', 'icon', 'id', 'name', 'place_id', 'scope', 'type', 'vicinity'])
           if (opts.componentRestrictions) {
             scope.gPlace.setComponentRestrictions(opts.componentRestrictions);
           }
@@ -97,20 +98,27 @@ angular.module("visitry")
 
         //function to get retrieve the drop-down's first result using the AutocompleteService
         var getPlace = function (result) {
+          console.log('getting place')
           var autocompleteService = new google.maps.places.AutocompleteService();
+          sessionToken = sessionToken ? sessionToken : new google.maps.places.AutocompleteSessionToken()
           if (result.name.length > 0) {
             scope.ngProgress = true;
             autocompleteService.getPlacePredictions(
               {
                 input: result.name,
-                offset: result.name.length
+                offset: result.name.length,
+                sessionToken
               },
               function listentoresult(list, status) {
                 if ( status == google.maps.places.PlacesServiceStatus.OK) {
                   var placesService = new google.maps.places.PlacesService(element[0]);
                   placesService.getDetails(
-                    {'placeId': list[0].place_id},
+                    {'placeId': list[0].place_id,
+                      fields: ['address_component', 'adr_address', 'alt_id', 'formatted_address', 'geometry', 'icon', 'id', 'name', 'place_id', 'scope', 'type', 'vicinity'],
+                      sessionToken
+                    },
                     function detailsresult(detailsResult, placesServiceStatus) {
+                      console.log(detailsResult)
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
                         scope.$apply(function () {
                           scope.ngModel = detailsResult.name + ", " + detailsResult.vicinity;
@@ -171,6 +179,7 @@ angular.module("visitry")
 
 
         var getPlaceDetails = function (e) {
+          console.log('getting place details')
           var childNodes = Array.from(e.target.childNodes);
           var textArray = childNodes.map(function(childElem) {return childElem.textContent});
           var selectedPlaceName = textArray.join(" ");
@@ -178,17 +187,23 @@ angular.module("visitry")
           e.stopPropagation();
           scope.ngProgress = true;
           var autocompleteService = new google.maps.places.AutocompleteService();
+          sessionToken = sessionToken ? sessionToken : new google.maps.places.AutocompleteSessionToken()
           if (e.target.textContent.length > 0) {
             autocompleteService.getPlacePredictions(
               {
-                input: selectedPlaceName
+                input: selectedPlaceName,
+                sessionToken
               },
               function listentoresult(list, status) {
                 if ( status == google.maps.places.PlacesServiceStatus.OK) {
                   var placesService = new google.maps.places.PlacesService(document.createElement('div'));
                   placesService.getDetails(
-                    {'placeId': list[0].place_id},
+                    {'placeId': list[0].place_id,
+                      fields: ['address_component', 'adr_address', 'alt_id', 'formatted_address', 'geometry', 'icon', 'id', 'name', 'place_id', 'scope', 'type', 'vicinity'],
+                      sessionToken
+                    },
                     function detailsresult(detailsResult, placesServiceStatus) {
+                      console.log(detailsResult)
                       if (placesServiceStatus == google.maps.GeocoderStatus.OK) {
                         scope.$apply(function () {
                           scope.ngModel = detailsResult.name + ", " + detailsResult.vicinity;
