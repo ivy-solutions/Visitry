@@ -68,6 +68,10 @@ jobs:
           command: |
              meteor npm install
              sudo apt-get install gradle
+       - run:
+           name: android
+           command: |
+            /opt/android/sdk/tools/bin/sdkmanager --include_obsolete extras;android;m2repository
       - run:
           name: Meteor mobile build
           command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
