@@ -55,7 +55,7 @@ jobs:
   build_mobile_android:
     working_directory: ~/project
     docker:
-      - image: circleci/android:api-25-node8-alpha
+      - image: circleci/android:api-26-node8-alpha
     steps:
       - checkout
       # Install meteor
