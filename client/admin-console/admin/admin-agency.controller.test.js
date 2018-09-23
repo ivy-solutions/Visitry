@@ -8,7 +8,8 @@ import { visitry } from '/client/lib/app.js';
 import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/admin-console/admin/admin-agency.controller.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 import {Agencies, Agency} from '/model/agencies';
 
 describe('Admin Admin Agency', function () {

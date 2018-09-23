@@ -12,7 +12,8 @@ import '/client/users/user-details.controller.js';
 import { Roles } from 'meteor/alanning:roles'
 import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 
 describe('UserDetails', function () {
 

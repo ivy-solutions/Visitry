@@ -1,7 +1,4 @@
 /**
- * Created by sarahcoletti on 6/2/16.
- */
-/**
  * Created by sarahcoletti on 5/31/16.
  */
 import 'angular-mocks';

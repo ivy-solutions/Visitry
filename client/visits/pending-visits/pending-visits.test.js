@@ -1,5 +1,4 @@
 /**
-/**
  * Created by n0235626 on 6/6/16.
  */
 import 'angular-mocks';
@@ -8,7 +7,8 @@ import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/pending-visits/pending-visits.controller';
 import '/client/visits/request-visit/request-visit-modal.service'
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 import Visits from '/model/visits.js'
 
 describe('Pending Visit Requests', function () {

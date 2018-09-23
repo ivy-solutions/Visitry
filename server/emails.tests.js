@@ -6,7 +6,8 @@ import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/server/emails.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 import {Roles} from 'meteor/alanning:roles'
 import {Agencies} from '/model/agencies';
 

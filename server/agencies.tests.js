@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Random } from 'meteor/random';
 import { assert,expect,fail } from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 
 import {Agencies, Agency} from '/model/agencies'
 import '/server/agencies.js';
@@ -12,6 +13,7 @@ if (Meteor.isServer) {
   const userId = Random.id();
 
   describe('Agencies', () => {
+    console.log(StubCollections)
 
     describe('validation', () => {
       var invalidAgency;

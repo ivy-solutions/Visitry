@@ -11,7 +11,8 @@ import '/model/users.js'
 import {Errors} from '/server/server-errors';
 import {Enrollments,Enrollment} from '/model/enrollment'
 import {Visits} from '/model/visits'
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 
 if (Meteor.isServer) {
   describe('Users', () => {

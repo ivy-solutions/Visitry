@@ -11,7 +11,8 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/visit-details/admin-visit-details.controller.js';
 import { Visit,Visits } from '/model/visits';
 import { Feedbacks } from '/model/feedback';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 
 describe('AdminVisitDetails', function () {
 

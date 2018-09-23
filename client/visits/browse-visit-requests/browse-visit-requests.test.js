@@ -6,7 +6,8 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/browse-visit-requests/browse-visit-requests.component.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 import Visits from '/model/visits.js'
 import '/client/visits/schedule-visit/schedule-visit-modal.service';
 import '/model/users.js'

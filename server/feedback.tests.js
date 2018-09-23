@@ -8,7 +8,8 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import { HTTP } from 'meteor/http'
 import { Feedback, Feedbacks } from '/model/feedback'
 import '/server/feedback.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
+import StubPackage from 'meteor/hwillson:stub-collections';
+const StubCollections = StubPackage.default
 
 if (Meteor.isServer) {
 
