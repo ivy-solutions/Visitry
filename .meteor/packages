@@ -4,9 +4,9 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-base@1.0.4             # Packages every Meteor app needs to have
-mobile-experience@1.0.4       # Packages for a great mobile UX
-mongo@1.1.24                   # The database Meteor supports right now
+meteor-base@1.1.0             # Packages every Meteor app needs to have
+mobile-experience@1.0.5       # Packages for a great mobile UX
+mongo@1.2.3                   # The database Meteor supports right now
 session@1.1.7                 # Client-side reactive dictionary for your app
 jquery@1.11.10                  # Helpful client-side library
 tracker@1.1.3                 # Meteor's client-side reactive programming library
@@ -23,7 +23,7 @@ ogamedia:timer
 okland:camera-ui
 
 # users/accounts
-accounts-password@1.3.6
+accounts-password@1.4.0
 dotansimha:accounts-ui-angular
 mbanting:cordova-accounts-resume
 alanning:roles
@@ -44,8 +44,8 @@ meteorhacks:aggregate
 visitry-browser         # visitry package
 visitrymobile           # visitry package
 hybrid:asset-builder
-standard-minifier-css@1.3.4
-standard-minifier-js@2.0.0
+standard-minifier-css@1.3.5
+standard-minifier-js@2.1.2
 
 # testing
 practicalmeteor:mocha
@@ -58,12 +58,13 @@ practicalmeteor:mocha-xunit-reporter
 
 # notifications
 raix:push@3.1.0-pre.1
-email@1.2.1
+email@1.2.3
 percolate:synced-cron
 
 #other
 brentjanderson:winston-client
-shell-server@0.2.3
+shell-server@0.2.4
 meteorhacks:ssr
 http@1.2.12
 mdg:geolocation
+dynamic-import@0.1.3
