@@ -80,9 +80,10 @@ jobs:
               elif [ "${CIRCLE_BRANCH}" == "master" ]; then
                   meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
                   sh .deploy/staging/android-sign-apk.sh
-               elif [ -n "${CIRCLE_TAG}" ]; then
+              elif [ -n "${CIRCLE_TAG}" ]; then
                   meteor build $HOME/build/Visitry/mobile --server https://production.visitry.org
                   sh .deploy/production/android-sign-apk.sh
+              fi
       - store_artifacts:
           path: ~/android
           destination: debug.apk
