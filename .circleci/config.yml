@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Install meteor
           command: |
-            meteor || curl https://install.meteor.com | /bin/sh
+            meteor || curl https://install.meteor.com/?release=1.5.4.2 | /bin/sh
       # https://github.com/meteor/meteor/issues/4019  - avoid mongodb error
       - run:
           name: Set up mongodb locale
@@ -74,7 +74,15 @@ jobs:
             /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
       - run:
           name: Meteor mobile build
-          command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
+              elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
+                  sh .deploy/staging/android-sign-apk.sh
+               elif [ -n "${CIRCLE_TAG}" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://production.visitry.org
+                  sh .deploy/production/android-sign-apk.sh
       - store_artifacts:
           path: ~/android
           destination: debug.apk
