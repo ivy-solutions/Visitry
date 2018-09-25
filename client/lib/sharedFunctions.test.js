@@ -30,6 +30,7 @@ describe('SharedFunctions', function () {
 
   beforeEach(function () {
     console.log(JSON.stringify(StubCollections))
+    console.log(JSON.stringify(StubPackage))
     StubCollections.stub(Meteor.users);
     userIdStub = sinon.stub(Meteor, 'userId');
   });
