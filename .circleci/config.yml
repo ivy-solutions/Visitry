@@ -33,7 +33,8 @@ jobs:
           command: |
              meteor npm install
              meteor npm install --save bcrypt
-             npm install spacejam
+             meteor npm i -E --save-dev selenium-webdriver@3.0.0-beta-2
+             meteor npm i --save-dev chromedriver
              mkdir ~/junit
       # Cache local dependencies if they don't exist
       - save_cache:
