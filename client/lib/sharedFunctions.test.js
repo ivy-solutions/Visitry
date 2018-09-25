@@ -4,8 +4,8 @@
 import { Meteor } from 'meteor/meteor';
 import {assert} from 'meteor/practicalmeteor:chai';
 import '/client/lib/sharedFunctions.js';
-import StubCollections from 'meteor/hwillson:stub-collections';
-//let StubCollections = StubPackage.default
+import StubPackage from 'meteor/hwillson:stub-collections';
+let StubCollections = StubPackage.default
 import '/model/users.js'
 import { Roles } from 'meteor/alanning:roles'
 
@@ -29,11 +29,12 @@ describe('SharedFunctions', function () {
   let userIdStub;
 
   beforeEach(function () {
-    console.log(StubCollections)
+    console.log(JSON.stringify(StubCollections))
     StubCollections.stub(Meteor.users);
     userIdStub = sinon.stub(Meteor, 'userId');
   });
   afterEach(function () {
+    userIdStub.restore()
     StubCollections.restore();
   });
 
