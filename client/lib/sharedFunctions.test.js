@@ -4,8 +4,8 @@
 import { Meteor } from 'meteor/meteor';
 import {assert} from 'meteor/practicalmeteor:chai';
 import '/client/lib/sharedFunctions.js';
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
+import StubCollections from 'meteor/hwillson:stub-collections';
+//let StubCollections = StubPackage.default
 import '/model/users.js'
 import { Roles } from 'meteor/alanning:roles'
 
