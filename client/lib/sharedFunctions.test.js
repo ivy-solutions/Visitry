@@ -33,7 +33,6 @@ describe('SharedFunctions', function () {
     userIdStub = sinon.stub(Meteor, 'userId');
   });
   afterEach(function () {
-    Meteor.userId.restore();
     StubCollections.restore();
   });
 
@@ -45,6 +44,7 @@ describe('SharedFunctions', function () {
       assert.equal(pastVisitRequest.requestedDate, dateGroupedArray[0].visits[0].requestedDate, "pastVisitRequest");
       assert.equal(2, dateGroupedArray[1].visits.length, "Today");
       assert.equal(2, dateGroupedArray[2].visits.length, "Tomorrow");
+      console.log(Meteor.userId.restore)
     })
   });
 

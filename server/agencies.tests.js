@@ -13,7 +13,6 @@ if (Meteor.isServer) {
   const userId = Random.id();
 
   describe('Agencies', () => {
-    console.log(StubCollections)
 
     describe('validation', () => {
       var invalidAgency;
