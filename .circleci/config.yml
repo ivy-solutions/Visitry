@@ -35,7 +35,13 @@ jobs:
              meteor npm install --save bcrypt
              meteor npm i -E --save-dev selenium-webdriver@3.0.0-beta-2
              mkdir ~/junit
-      # Cache local dependencies if they don't exist
+      - run:
+            name: Install Chrome
+            command: |
+              wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+              sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+              sudo apt-get update
+              sudo apt-get -y install google-chrome-stable      # Cache local dependencies if they don't exist
       - save_cache:
            name: Saving Cache - meteor build
            key: build-meteor-system2-{{ checksum "./.circleci/config.yml" }}
