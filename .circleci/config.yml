@@ -48,7 +48,7 @@ jobs:
        - save_cache:
            key: v2-dependencies-#install npm
            paths:
-             - '~/.npm'
+             - ~/.npm
      #tests
       - run:
           name: Unit tests
