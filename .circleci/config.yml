@@ -10,9 +10,9 @@ jobs:
       # Restore local dependencies from cache
       - restore_cache:
            keys:
-             - v1-dependencies-{{ checksum "package.json" }}
-             - v1-dependencies-#install npm
-             - build-meteor-system-{{ checksum "./.circleci/config.yml" }}
+             - v2-dependencies-{{ checksum "package.json" }}
+             - v2-dependencies-#install npm
+             - build-meteor-system2-{{ checksum "./.circleci/config.yml" }}
       # Install meteor
       - run:
           name: Install meteor
@@ -38,14 +38,18 @@ jobs:
       # Cache local dependencies if they don't exist
       - save_cache:
            name: Saving Cache - meteor build
-           key: build-meteor-system-{{ checksum "./.circleci/config.yml" }}
+           key: build-meteor-system2-{{ checksum "./.circleci/config.yml" }}
            paths:
              - ~/.meteor
       - save_cache:
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v2-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-      #tests
+       - save_cache:
+           key: v2-dependencies-#install npm
+           paths:
+             - '~/.npm'
+     #tests
       - run:
           name: Unit tests
           command: |
