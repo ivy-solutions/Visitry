@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Install meteor
           command: |
-            meteor || curl https://install.meteor.com | /bin/sh
+            meteor || curl "https://install.meteor.com" | /bin/sh
       # https://github.com/meteor/meteor/issues/4019  - avoid mongodb error
       - run:
           name: Set up mongodb locale
@@ -48,7 +48,9 @@ jobs:
       #tests
       - run:
           name: Unit tests
-          command: npm test
+          command: |
+              export TOOL_NODE_FLAGS="--max_old_space_size=4096"
+              npm test
       - store_test_results:
           path: ~/junit
 
@@ -74,7 +76,16 @@ jobs:
             /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
       - run:
           name: Meteor mobile build
-          command: meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
+          command: |
+              if [ "${CIRCLE_BRANCH}" == "dev" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
+              elif [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
+                  sh .deploy/staging/android-sign-apk.sh
+              elif [ -n "${CIRCLE_TAG}" ]; then
+                  meteor build $HOME/build/Visitry/mobile --server https://production.visitry.org
+                  sh .deploy/production/android-sign-apk.sh
+              fi
       - store_artifacts:
           path: ~/android
           destination: debug.apk
@@ -132,19 +143,17 @@ jobs:
                 aws s3 cp s3://visitry-build-info/site-ssl-certs/dev/private.key .deploy/dev/private.key
                 cd .deploy/dev && mup deploy
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                if [ -n "${CIRCLE_TAG}" ]; then
-                   aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
-                   aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
-                   aws s3 cp s3://visitry-build-info/site-ssl-certs/production/bundle.crt .deploy/production/bundle.crt
-                   aws s3 cp s3://visitry-build-info/site-ssl-certs/production/private.key .deploy/production/private.key
-                   cd .deploy/production && mup deploy
-                else
-                    aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
-                    aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
-                    aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt .deploy/staging/bundle.crt
-                    aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key .deploy/staging/private.key
-                    cd .deploy/staging && mup deploy
-                fi
+                aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
+                aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/bundle.crt .deploy/staging/bundle.crt
+                aws s3 cp s3://visitry-build-info/site-ssl-certs/staging/private.key .deploy/staging/private.key
+                cd .deploy/staging && mup deploy
+            elif [ -n "${CIRCLE_TAG}" ]; then
+               aws s3 cp s3://visitry-build-info/push-notifications/VisitryPushProd.pem private/VisitryPushProd.pem
+               aws s3 cp s3://visitry-build-info/push-notifications/PushKey1216.pem private/PushKey1216.pem
+               aws s3 cp s3://visitry-build-info/site-ssl-certs/production/bundle.crt .deploy/production/bundle.crt
+               aws s3 cp s3://visitry-build-info/site-ssl-certs/production/private.key .deploy/production/private.key
+               cd .deploy/production && mup deploy
             else
                  echo "No deployment for branch: ${CIRCLE_BRANCH}"
             fi
@@ -155,7 +164,7 @@ workflows:
     build_and_deploy:
         jobs:
             - build
-            #- build_mobile_android
+            - build_mobile_android
             # The deploy job will only run on the filtered branches and
             # require the build job to be successful before it starts
             - deploy:
