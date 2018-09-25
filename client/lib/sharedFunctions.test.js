@@ -9,6 +9,9 @@ let StubCollections = StubPackage.default
 import '/model/users.js'
 import { Roles } from 'meteor/alanning:roles'
 
+console.log(JSON.stringify(StubCollections))
+console.log(JSON.stringify(StubPackage))
+
 describe('SharedFunctions', function () {
 
   let tomorrow = new Date();
@@ -29,8 +32,7 @@ describe('SharedFunctions', function () {
   let userIdStub;
 
   beforeEach(function () {
-    console.log(JSON.stringify(StubCollections))
-    console.log(JSON.stringify(StubPackage))
+
     StubCollections.stub(Meteor.users);
     userIdStub = sinon.stub(Meteor, 'userId');
   });
