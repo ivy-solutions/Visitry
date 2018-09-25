@@ -45,10 +45,10 @@ jobs:
           key: v2-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-       - save_cache:
-           key: v2-dependencies-#install npm
-           paths:
-             - ~/.npm
+      - save_cache:
+          key: v2-dependencies-#install npm
+          paths:
+            - ~/.npm
      #tests
       - run:
           name: Unit tests
