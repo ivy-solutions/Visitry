@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/project
     docker:
-      - image: circleci/node:8.9.1-browsers
+      - image: circleci/node:latest-browsers-legacy
     steps:
       #Checkout the code to working directory
       - checkout
