@@ -84,7 +84,8 @@ jobs:
       - run:
           name: android
           command: |
-            /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "extras;google;m2repository" "extras;android;m2repository"
+            /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "platform-tools" "tools" "extras;google;m2repository" "extras;android;m2repository"
+            /opt/android/sdk/tools/bin/sdkmanager --list
       - run:
           name: Meteor mobile build
           command: |
