@@ -90,22 +90,22 @@ jobs:
           name: Meteor mobile build
           command: |
               if [ "${CIRCLE_BRANCH}" == "dev" ]; then
-                  meteor build $HOME/build/Visitry/mobile --server https://dev.visitry.org
+                  meteor build ${HOME}/build/Visitry/mobile --server https://dev.visitry.org
               elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  meteor build $HOME/build/Visitry/mobile --server https://test.visitry.org
+                  meteor build ${HOME}/build/Visitry/mobile --server https://test.visitry.org
                   sh .deploy/staging/android-sign-apk.sh
               elif [ -n "${CIRCLE_TAG}" ]; then
-                  meteor build $HOME/build/Visitry/mobile --server https://production.visitry.org
+                  meteor build ${HOME}/build/Visitry/mobile --server https://production.visitry.org
                   sh .deploy/production/android-sign-apk.sh
               fi
       - store_artifacts:
-          path: build/Visitry/mobile/android
+          path: ${HOME}/build/Visitry/mobile/android
           destination: debug.apk
       - store_artifacts:
-          path: build/Visitry/mobile/android
+          path: ${HOME}/build/Visitry/mobile/android
           destination: release-unsigned.apk
       - store_artifacts:
-          path: build/Visitry/mobile/android
+          path: ${HOME}/build/Visitry/mobile/android
           destination: Visitry.apk
 
   deploy:
