@@ -6,8 +6,6 @@ import { visitry } from '/client/lib/app.js';
 import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/browse-visit-requests/browse-visit-requests.component.js';
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
 import Visits from '/model/visits.js'
 import '/client/visits/schedule-visit/schedule-visit-modal.service';
 import '/model/users.js'
@@ -28,7 +26,6 @@ describe ( 'BrowseVisitRequests', function() {
   var findOneStub;
 
   beforeEach(function() {
-    StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
     var available = {stop: function(){}};
     inject( function ($rootScope) {
@@ -39,7 +36,6 @@ describe ( 'BrowseVisitRequests', function() {
 
   afterEach(function() {
     Meteor.myFunctions.groupVisitsByRequestedDate.restore();
-    StubCollections.restore();
   });
 
 

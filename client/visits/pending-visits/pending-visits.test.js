@@ -7,8 +7,6 @@ import {chai} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/pending-visits/pending-visits.controller';
 import '/client/visits/request-visit/request-visit-modal.service'
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
 import Visits from '/model/visits.js'
 
 describe('Pending Visit Requests', function () {
@@ -24,7 +22,6 @@ describe('Pending Visit Requests', function () {
   var controller;
   var spyOnConfirm;
   beforeEach(function () {
-     StubCollections.add([Visits]);
     sinon.stub(Meteor.myFunctions, 'groupVisitsByRequestedDate');
 
     var promise = {then: function(){}, error: function(){} };
@@ -43,7 +40,6 @@ describe('Pending Visit Requests', function () {
   });
 
   afterEach(function () {
-    StubCollections.restore();
     Meteor.myFunctions.groupVisitsByRequestedDate.restore();
   });
 

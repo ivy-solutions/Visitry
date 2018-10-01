@@ -12,8 +12,7 @@ import '/client/users/user-details.controller.js';
 import { Roles } from 'meteor/alanning:roles'
 import { Visit,Visits } from '/model/visits'
 import { Feedback,Feedbacks } from '/model/feedback'
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
+import StubCollections from 'meteor/hwillson:stub-collections';
 
 describe('UserDetails', function () {
 
@@ -90,6 +89,7 @@ describe('UserDetails', function () {
 
   beforeEach(function () {
     StubCollections.stub([Visits, Feedbacks]);
+
     Visits.insert(completedVisit);
     Visits.insert(scheduledVisit);
     Visits.insert(availableVisit);
@@ -97,6 +97,11 @@ describe('UserDetails', function () {
     Feedbacks.insert(feedbackTwoHours);
     Feedbacks.insert(feedbackThreeHours);
     Feedbacks.insert(feedbackLongAgo);
+
+  });
+
+  afterEach( function () {
+    StubCollections.restore();
   });
 
   let controller;
@@ -119,9 +124,6 @@ describe('UserDetails', function () {
     initializeController();
   }));
 
-  afterEach(function () {
-    StubCollections.restore();
-  });
 
   describe('AgencyId Cookie', () => {
     let agencyId = Random.id();

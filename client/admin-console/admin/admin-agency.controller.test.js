@@ -8,8 +8,6 @@ import { visitry } from '/client/lib/app.js';
 import {assert} from 'meteor/practicalmeteor:chai';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/admin-console/admin/admin-agency.controller.js';
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
 import {Agencies, Agency} from '/model/agencies';
 
 describe('Admin Admin Agency', function () {
@@ -36,7 +34,6 @@ describe('Admin Admin Agency', function () {
   describe('Editing An Agency', function() {
 
     beforeEach(function () {
-      StubCollections.stub(Agencies);
       agencyId = Agencies.insert(agency);
       inject(function ($rootScope, $state, $stateParams) {
         scope = $rootScope.$new(true);
@@ -50,7 +47,6 @@ describe('Admin Admin Agency', function () {
     });
 
     afterEach(function () {
-      StubCollections.restore();
       stateSpy.restore();
     });
 
@@ -101,7 +97,6 @@ describe('Admin Admin Agency', function () {
   describe('Creating An Agency - no agencyId is passed', function() {
 
     beforeEach(function () {
-      StubCollections.stub(Agencies);
       inject(function ($rootScope, $state, $stateParams) {
         scope = $rootScope.$new(true);
         controller = $controller('adminAdminAgencyCtrl', {
@@ -114,7 +109,6 @@ describe('Admin Admin Agency', function () {
     });
 
     afterEach(function () {
-      StubCollections.restore();
       stateSpy.restore();
     });
 

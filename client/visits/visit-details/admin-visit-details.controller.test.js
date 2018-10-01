@@ -11,8 +11,6 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 import '/client/visits/visit-details/admin-visit-details.controller.js';
 import { Visit,Visits } from '/model/visits';
 import { Feedbacks } from '/model/feedback';
-import StubPackage from 'meteor/hwillson:stub-collections';
-const StubCollections = StubPackage.default
 
 describe('AdminVisitDetails', function () {
 
@@ -36,7 +34,6 @@ describe('AdminVisitDetails', function () {
     let defaultVisit = {
       _id: visitId
     };
-    StubCollections.stub([Visits, Meteor.users, Feedbacks]);
     Visits.insert(defaultVisit);
     meteorStub = sinon.stub(Meteor, 'call');
   });
@@ -59,7 +56,6 @@ describe('AdminVisitDetails', function () {
 
 
   afterEach(function () {
-    StubCollections.restore();
     meteorStub.restore();
   });
 
