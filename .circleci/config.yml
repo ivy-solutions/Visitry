@@ -61,7 +61,7 @@ jobs:
               export TOOL_NODE_FLAGS="--max_old_space_size=4096"
               npm test
       - store_test_results:
-          path: ~/junit
+          path: junit/testresults.xml
 
   build_mobile_android:
     working_directory: ~/project
@@ -97,14 +97,9 @@ jobs:
                   sh .deploy/production/android-sign-apk.sh
               fi
       - store_artifacts:
-          path: ./build/Visitry/mobile/android
-          destination: debug.apk
+          path: ./build/Visitry/mobile/android/release-unsigned.apk
       - store_artifacts:
-          path: ./build/Visitry/mobile/android
-          destination: release-unsigned.apk
-      - store_artifacts:
-          path: ./build/Visitry/mobile/android
-          destination: Visitry.apk
+          path: ./build/Visitry/mobile/android/Visitry.apk
 
   deploy:
     working_directory: ~/project
