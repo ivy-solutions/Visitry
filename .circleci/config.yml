@@ -33,6 +33,7 @@ jobs:
           command: |
              meteor npm install
              meteor npm install --save bcrypt
+             npm install -g spacejam
              mkdir ~/junit
       - run:
             name: Install Chrome
