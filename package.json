@@ -8,7 +8,6 @@
     "testchrome": "TEST_BROWSER_DRIVER=chrome SERVER_TEST_REPORTER=xunit XUNIT_FILE=$PWD/junit/testresults.xml meteor test --once --driver-package meteortesting:mocha",
     "testphantomjs": "TEST_BROWSER_DRIVER=phantomjs SERVER_TEST_REPORTER=xunit XUNIT_FILE=$PWD/junit/testresults.xml meteor test --once --driver-package meteortesting:mocha",
     "test": "spacejam test --use-system-phantomjs --driver-package practicalmeteor:mocha-xunit-reporter --xunit-out test-results.xml"
-
   },
   "repository": {
     "type": "git",
@@ -48,7 +47,6 @@
     "chromedriver": "^2.42.0",
     "mocha": "^3.2.0",
     "mocha-circleci-reporter": "0.0.3",
-    "phantomjs-prebuilt": "^2.1.16",
     "selenium-webdriver": "3.0.0-beta-2"
   }
 }
