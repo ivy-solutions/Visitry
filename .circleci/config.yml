@@ -10,8 +10,8 @@ jobs:
       # Restore local dependencies from cache
       - restore_cache:
            keys:
-             - v2-dependencies-{{ checksum "package.json" }}
-             - v2-dependencies-#install npm
+             - v3-dependencies-{{ checksum "package.json" }}
+             - v3-dependencies-#install npm
              - build-meteor-system2-{{ checksum "./.circleci/config.yml" }}
       # Install meteor
       - run:
@@ -32,27 +32,19 @@ jobs:
           name: install npm packages
           command: |
              meteor npm install
-             meteor npm install --save bcrypt
              npm install -g spacejam
              mkdir ~/junit
-      - run:
-            name: Install Chrome
-            command: |
-              wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-              sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-              sudo apt-get update
-              sudo apt-get -y install google-chrome-stable      # Cache local dependencies if they don't exist
       - save_cache:
            name: Saving Cache - meteor build
-           key: build-meteor-system2-{{ checksum "./.circleci/config.yml" }}
+           key: build-meteor-system-{{ checksum "./.circleci/config.yml" }}
            paths:
              - ~/.meteor
       - save_cache:
-          key: v2-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
       - save_cache:
-          key: v2-dependencies-#install npm
+          key: v3-dependencies-#install npm
           paths:
             - ~/.npm
      #tests
