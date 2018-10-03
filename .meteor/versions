@@ -113,11 +113,6 @@ pbastowski:angular-babel@1.3.7
 percolate:synced-cron@1.3.2
 practicalmeteor:chai@2.1.0_1
 practicalmeteor:faker@3.0.1_1
-practicalmeteor:loglevel@1.2.0_2
-practicalmeteor:mocha@2.4.5_5
-practicalmeteor:mocha-console-runner@0.2.3
-practicalmeteor:mocha-core@1.0.1
-practicalmeteor:mocha-xunit-reporter@0.1.0
 practicalmeteor:sinon@1.14.1_2
 promise@0.9.0
 raix:eventemitter@0.1.3
@@ -147,7 +142,6 @@ templating-runtime@1.2.15
 templating-tools@1.1.1
 tmeasday:check-npm-versions@0.3.1
 tmeasday:publish-counts@0.8.0
-tmeasday:test-reporter-helpers@0.2.1
 tracker@1.1.3
 ui@1.0.13
 underscore@1.0.10

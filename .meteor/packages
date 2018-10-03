@@ -53,6 +53,7 @@ dburles:factory
 practicalmeteor:faker
 random@1.0.10
 meteortesting:mocha
+meteortesting:mocha-core@1.0.1
 
 # notifications
 raix:push@3.1.0-pre.1
@@ -67,5 +68,3 @@ http@1.2.12
 mdg:geolocation
 dynamic-import@0.1.3
 
-practicalmeteor:mocha-xunit-reporter
-practicalmeteor:mocha-console-runner

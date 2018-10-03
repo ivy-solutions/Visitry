@@ -32,7 +32,7 @@ jobs:
           name: install npm packages
           command: |
              meteor npm install
-             sudo npm install -g --unsafe-perm --ignore-scripts spacejam
+             #sudo npm install -g --unsafe-perm --ignore-scripts spacejam
              mkdir ~/junit
       - save_cache:
            name: Saving Cache - meteor build
@@ -49,12 +49,17 @@ jobs:
             - ~/.npm
      #tests
       - run:
-          name: Unit tests
+          name: Client tests
           command: |
               export TOOL_NODE_FLAGS="--max_old_space_size=4096"
-              npm test
+              npm run testclient
+      - run:
+          name: Server tests
+          command: |
+              export TOOL_NODE_FLAGS="--max_old_space_size=4096"
+              npm run testserver
       - store_test_results:
-          path: junit/testresults.xml
+          path: junit/testserverresults.xml
 
   build_mobile_android:
     working_directory: ~/project
