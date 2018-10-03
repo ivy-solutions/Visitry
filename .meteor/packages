@@ -69,3 +69,4 @@ mdg:geolocation
 dynamic-import@0.1.3
 
 practicalmeteor:mocha-xunit-reporter
+practicalmeteor:mocha-console-runner
