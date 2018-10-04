@@ -85,6 +85,7 @@ jobs:
       - run:
           name: Meteor mobile build
           command: |
+              export TOOL_NODE_FLAGS="--max_old_space_size=4096"
               if [ "${CIRCLE_BRANCH}" == "dev" ]; then
                   meteor build ./build/Visitry/mobile --server https://dev.visitry.org
               elif [ "${CIRCLE_BRANCH}" == "master" ]; then
