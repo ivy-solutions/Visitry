@@ -57,7 +57,9 @@ jobs:
           name: Server tests
           command: |
               export TOOL_NODE_FLAGS="--max_old_space_size=4096"
-              npm run testserver
+              for i in {1..3}; do
+                npm run testserver && break;
+              done
       - store_test_results:
           path: junit/testserverresults.xml
 
@@ -82,9 +84,6 @@ jobs:
           command: |
             /opt/android/sdk/tools/bin/sdkmanager --include_obsolete "platforms;android-25" "build-tools;25.0.2" "platform-tools" "tools" "extras;google;m2repository" "extras;android;m2repository"
             /opt/android/sdk/tools/bin/sdkmanager --list
-      - run:
-          name: chmod permissions
-          command: chmod +x ./gradle
       - run:
           name: Meteor mobile build
           command: |
