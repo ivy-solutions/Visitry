@@ -84,7 +84,7 @@ jobs:
             /opt/android/sdk/tools/bin/sdkmanager --list
       - run:
           name: chmod permissions
-          command: chmod +x ./gradlew
+          command: chmod +x ./gradle
       - run:
           name: Meteor mobile build
           command: |
